@@ -1,0 +1,120 @@
+import React, { useEffect, useState } from "react";
+import CTAButton from "./Button";
+import { FaArrowRight } from "react-icons/fa";
+
+interface CTAButtonType {
+    active: boolean;
+    linkto?: string;
+    link?: string;
+    btnText: string;
+}
+
+interface CodeBlocksProps {
+    position: string;
+    heading: React.ReactNode;
+    subheading: string;
+    ctabtn1: CTAButtonType;
+    ctabtn2: CTAButtonType;
+    codeblock: string;
+    backgroundGradient: string;
+    codeColor: string;
+}
+
+const CodeBlocks: React.FC<CodeBlocksProps> = ({
+    position,
+    heading,
+    subheading,
+    ctabtn1,
+    ctabtn2,
+    codeblock,
+    backgroundGradient,
+    codeColor,
+}) => {
+    const [displayedText, setDisplayedText] = useState("");
+
+    useEffect(() => {
+        let timeout: NodeJS.Timeout | undefined;
+        let currentIndex = 0;
+
+        const runTyping = () => {
+            if (currentIndex < codeblock.length) {
+                // Determine next char
+                setDisplayedText(codeblock.slice(0, currentIndex + 1));
+                currentIndex++;
+                // Random variation for realism? Or fixed? Fixed is "cleaner".
+                timeout = setTimeout(runTyping, 50);
+            } else {
+                // Finished, wait 2s then reset
+                timeout = setTimeout(() => {
+                    setDisplayedText("");
+                    currentIndex = 0;
+                    runTyping();
+                }, 2000);
+            }
+        };
+
+        runTyping();
+
+        return () => clearTimeout(timeout);
+    }, [codeblock]);
+
+    return (
+        <div className={`flex ${position} my-20 justify-between flex-col lg:gap-10 gap-10`}>
+
+            {/* Section 1  */}
+            <div className="w-[100%] lg:w-[50%] flex flex-col gap-8">
+                {heading}
+
+                {/* Sub Heading */}
+                <div className="text-richblack-300 text-base font-bold w-[85%] -mt-3">
+                    {subheading}
+                </div>
+
+                {/* Button Group */}
+                <div className="flex gap-7 mt-7">
+                    <CTAButton active={ctabtn1.active} linkto={ctabtn1.linkto || ctabtn1.link || "#"}>
+                        <div className="flex items-center gap-2">
+                            {ctabtn1.btnText}
+                            <FaArrowRight />
+                        </div>
+                    </CTAButton>
+                    <CTAButton active={ctabtn2.active} linkto={ctabtn2.linkto || ctabtn2.link || "#"}>
+                        {ctabtn2.btnText}
+                    </CTAButton>
+                </div>
+            </div>
+
+            {/* Section 2 */}
+            <div className="h-fit code-border border border-richblack-700 rounded-xl flex flex-row py-3 text-[10px] sm:text-sm leading-[18px] sm:leading-6 relative w-[100%] lg:w-[470px]">
+
+                {/* Indexing */}
+                <div className="text-center flex flex-col w-[10%] select-none text-richblack-400 font-inter font-bold ">
+                    <p>1</p>
+                    <p>2</p>
+                    <p>3</p>
+                    <p>4</p>
+                    <p>5</p>
+                    <p>6</p>
+                    <p>7</p>
+                    <p>8</p>
+                    <p>9</p>
+                    <p>10</p>
+                    <p>11</p>
+                </div>
+
+                {/* Codes */}
+                <div
+                    className={`w-[90%] flex flex-col gap-2 font-bold font-mono ${codeColor} pr-1`}
+                >
+                    <div className={`${backgroundGradient}`}></div>
+
+                    <div className="font-mono" style={{ whiteSpace: "pre-line", display: "block" }}>
+                        {displayedText}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default CodeBlocks;
