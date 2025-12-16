@@ -40,17 +40,20 @@ const randomImages = [
  * Handles all business logic: data fetching, state management, API calls
  */
 const HomeContainer = () => {
-  // Initialize background image - use first image for SSR, random for client
-  // Calculate random image only on client to avoid hydration mismatch
-  const [backgroundImg] = useState<string>(() => {
-    if (typeof window === "undefined") {
-      // Server-side: use first image for consistent SSR rendering
-      return getImageUrl(randomImages[0]);
-    }
-    // Client-side: use random image
-    const bg = randomImages[Math.floor(Math.random() * randomImages.length)];
-    return getImageUrl(bg);
-  });
+  // Initialize with first image for SSR consistency
+  // Update to random image only after client-side mount to avoid hydration mismatch
+  const [backgroundImg, setBackgroundImg] = useState<string>(() => 
+    getImageUrl(randomImages[0])
+  );
+
+  // Update to random image only after component mounts on client
+  // Use queueMicrotask to avoid synchronous setState warning
+  useEffect(() => {
+    queueMicrotask(() => {
+      const randomBg = randomImages[Math.floor(Math.random() * randomImages.length)];
+      setBackgroundImg(getImageUrl(randomBg));
+    });
+  }, []);
   const { token } = useSelector((state: RootState) => state.auth);
   const [catalogPageData, setCatalogPageData] =
     useState<CatalogPageData | null>(null);

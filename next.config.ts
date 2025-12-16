@@ -15,7 +15,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Configurar path aliases para Next.js
+  // Configuración de Turbopack (Next.js 16 usa Turbopack por defecto)
+  // Los path aliases ya están configurados en tsconfig.json y Turbopack los respeta automáticamente
+  turbopack: {},
+  // Configuración de webpack (solo se usa si se ejecuta con --webpack flag)
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
