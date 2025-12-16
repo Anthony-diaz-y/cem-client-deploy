@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 import { useAppSelector } from '../store/hooks'
 
 import { NavbarLinks } from "../data/navbar-links"
@@ -21,16 +21,21 @@ import { MdKeyboardArrowDown } from "react-icons/md"
 
 const Navbar = () => {
     // console.log("Printing base url: ", process.env.NEXT_PUBLIC_BASE_URL);
-    const router = useRouter()
+    const location = usePathname()
     const { token } = useAppSelector((state) => state.auth);
     const { user } = useAppSelector((state) => state.profile);
     // console.log('USER data from Navbar (store) = ', user)
     const { totalItems } = useAppSelector((state) => state.cart)
-    const location = router.asPath;
+
+
+    interface SubLink {
+        name: string;
+        link?: string;
+    }
 
     // Evitar errores de hidratación: solo renderizar contenido dependiente del estado después de montar
     const [mounted, setMounted] = useState(false);
-    const [subLinks, setSubLinks] = useState([]);
+    const [subLinks, setSubLinks] = useState<SubLink[]>([]);
     const [loading, setLoading] = useState(false);
 
 
@@ -59,7 +64,8 @@ const Navbar = () => {
 
 
     // when user click Navbar link then it will hold yellow color
-    const matchRoute = (route) => {
+    const matchRoute = (route: string | null | undefined) => {
+        if (!route) return false
         if (route.includes(':')) {
             // Handle dynamic routes like /catalog/:catalogName
             const routePattern = route.replace(/:[^/]+/g, '[^/]+')
@@ -154,7 +160,7 @@ const Navbar = () => {
                                             </div>
                                         </div>
                                     ) : (
-                                        <Link href={link?.path}>
+                                        <Link href={link?.path || "/"}>
                                             <p className={`${matchRoute(link?.path) ? "bg-yellow-25 text-black" : "text-richblack-25"} rounded-xl p-1 px-3 `}>
                                                 {link.title}
                                             </p>

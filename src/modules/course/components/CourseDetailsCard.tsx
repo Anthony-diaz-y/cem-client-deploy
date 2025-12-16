@@ -5,7 +5,7 @@ import copy from "copy-to-clipboard"
 import { toast } from "react-hot-toast"
 import { useDispatch, useSelector } from "react-redux"
 
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 import { BsFillCaretRightFill } from "react-icons/bs"
 import { FaShareSquare } from "react-icons/fa"

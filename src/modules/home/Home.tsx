@@ -1,4 +1,5 @@
-import React from 'react'
+'use client'
+import React, { useState, useEffect } from 'react'
 import Link from "next/link"
 import Image from "next/image"
 
@@ -48,6 +49,7 @@ interface CatalogPageData {
 interface HomeProps {
   backgroundImg: string | null
   catalogPageData: CatalogPageData | null
+  token: string | null
 }
 
 /**
@@ -55,7 +57,14 @@ interface HomeProps {
  * Receives all data and handlers as props from container
  * No business logic, only UI rendering
  */
-const Home: React.FC<HomeProps> = ({ backgroundImg, catalogPageData }) => {
+const Home: React.FC<HomeProps> = ({ backgroundImg, catalogPageData, token }) => {
+  const [learnMoreLink, setLearnMoreLink] = useState("/auth/login")
+
+  useEffect(() => {
+    // Set link only on client to avoid hydration mismatch
+    setLearnMoreLink(token ? "/dashboard/my-profile" : "/auth/login")
+  }, [token])
+
   return (
     <React.Fragment>
       {/* background random image */}
@@ -115,7 +124,7 @@ const Home: React.FC<HomeProps> = ({ backgroundImg, catalogPageData }) => {
 
 
           <div className='flex flex-row gap-7 mt-8'>
-            <CTAButton active={true} linkto={"/auth/login"}>
+            <CTAButton active={true} linkto={learnMoreLink}>
               Learn More
             </CTAButton>
 
@@ -151,7 +160,7 @@ const Home: React.FC<HomeProps> = ({ backgroundImg, catalogPageData }) => {
               ctabtn2={
                 {
                   btnText: "learn more",
-                  linkto: "/auth/login",
+                  linkto: learnMoreLink,
                   active: false,
                 }
               }
@@ -183,7 +192,7 @@ const Home: React.FC<HomeProps> = ({ backgroundImg, catalogPageData }) => {
               }}
               ctabtn2={{
                 btnText: "Learn More",
-                linkto: "/auth/login",
+                linkto: learnMoreLink,
                 active: false,
               }}
               codeColor={"text-white"}
@@ -222,7 +231,7 @@ const Home: React.FC<HomeProps> = ({ backgroundImg, catalogPageData }) => {
                     <FaArrowRight />
                   </div>
                 </CTAButton>
-                <CTAButton active={false} linkto={"/auth/login"}>
+                <CTAButton active={false} linkto={learnMoreLink}>
                   <div>
                     Learn more
                   </div>
@@ -242,7 +251,7 @@ const Home: React.FC<HomeProps> = ({ backgroundImg, catalogPageData }) => {
                 <div className='text-[16px]'>
                   The modern StudyNotion is the dictates its own terms. Today, to be a competitive specialist requires more than professional skills.
                 </div>
-                <CTAButton active={true} linkto={"/auth/login"}>
+                <CTAButton active={true} linkto={learnMoreLink}>
                   <div>
                     Learn more
                   </div>

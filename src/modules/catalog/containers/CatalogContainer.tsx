@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from "react"
-import { useRouter } from "next/router"
+import { useParams } from "next/navigation"
 import Footer from "../../../shared/components/Footer"
 import Course_Card from "../components/Course_Card"
 import Course_Slider from "../components/Course_Slider"
@@ -44,8 +44,7 @@ interface CatalogPageData {
  * Handles all business logic: data fetching, state management, API calls
  */
 const CatalogContainer = () => {
-  const router = useRouter()
-  const { catalogName } = router.query
+  const { catalogName } = useParams()
   const [active, setActive] = useState(1)
   const [catalogPageData, setCatalogPageData] = useState<CatalogPageData | null>(null)
   const [categoryId, setCategoryId] = useState("")

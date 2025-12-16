@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react"
 import { BiInfoCircle } from "react-icons/bi"
 import { HiOutlineGlobeAlt } from "react-icons/hi"
 import { useDispatch, useSelector } from "react-redux"
-import { useRouter } from "next/router"
+import { useRouter, useParams } from "next/navigation"
 import { GiReturnArrow } from 'react-icons/gi'
 import { MdOutlineVerified } from 'react-icons/md'
 import toast from "react-hot-toast"
@@ -28,7 +28,7 @@ import { addToCart } from "../store/cartSlice"
  */
 const CourseDetailsContainer = () => {
   const router = useRouter()
-  const { courseId } = router.query
+  const { courseId } = useParams()
   const { user } = useSelector((state) => state.profile)
   const { token } = useSelector((state) => state.auth)
   const { loading } = useSelector((state) => state.profile)

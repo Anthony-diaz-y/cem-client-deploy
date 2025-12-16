@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from "react-redux"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 import { updateProfile } from "../../../../shared/services/SettingsAPI"
 import IconBtn from "../../../../shared/components/IconBtn"

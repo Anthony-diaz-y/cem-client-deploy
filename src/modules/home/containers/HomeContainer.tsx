@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import Home from '../Home'
 import { getCatalogPageData } from '../../../shared/services/pageAndComponentData'
 import { getImageUrl } from '../../../shared/utils/imageHelper'
@@ -38,10 +39,14 @@ const randomImages = [
  */
 const HomeContainer = () => {
   // Initialize random background image using lazy initialization
-  const [backgroundImg] = useState<string>(() => {
+  // Initialize random background image using lazy initialization
+  const [backgroundImg, setBackgroundImg] = useState<string>("")
+  const { token } = useSelector((state: any) => state.auth)
+
+  useEffect(() => {
     const bg = randomImages[Math.floor(Math.random() * randomImages.length)]
-    return getImageUrl(bg)
-  })
+    setBackgroundImg(getImageUrl(bg))
+  }, [])
   const [catalogPageData, setCatalogPageData] = useState(null)
   const categoryID = "6506c9dff191d7ffdb4a3fe2" // hard coded
 
@@ -57,7 +62,7 @@ const HomeContainer = () => {
   }, [categoryID])
 
   // Pass data to presentational component
-  return <Home backgroundImg={backgroundImg} catalogPageData={catalogPageData} />
+  return <Home backgroundImg={backgroundImg} catalogPageData={catalogPageData} token={token} />
 }
 
 export default HomeContainer

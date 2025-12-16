@@ -6,7 +6,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { useAppDispatch } from "../../../shared/store/hooks"
 
 
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 import { sendOtp } from "../../../shared/services/authAPI"
 import { setSignupData } from "../store/authSlice"

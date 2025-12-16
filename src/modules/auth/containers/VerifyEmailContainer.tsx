@@ -7,7 +7,7 @@ import { BiArrowBack } from "react-icons/bi";
 import { RxCountdownTimer } from "react-icons/rx";
 import { useDispatch } from "react-redux";
 import { sendOtp, signUp } from "../../../shared/services/authAPI";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useAppSelector } from "../../../shared/store/hooks";
 import Loading from "../../../shared/components/Loading";
 

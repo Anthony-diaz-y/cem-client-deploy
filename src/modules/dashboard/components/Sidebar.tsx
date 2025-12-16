@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { VscSignOut } from "react-icons/vsc"
 
 
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 import { sidebarLinks } from './../../../shared/data/dashboard-links';
 import { logout } from "../../auth/services/authAPI"
@@ -102,7 +102,7 @@ export default function Sidebar() {
 
         <div className="flex flex-col">
           <SidebarLink
-            link={{ name: "Settings", path: "/dashboard/Settings" }}
+            link={{ name: "Settings", path: "/dashboard/settings" }}
             iconName={"VscSettingsGear"}
             setOpenSideMenu={setOpenSideMenu}
           />

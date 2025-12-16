@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 import IconBtn from './../../../shared/components/IconBtn';
 import { setCourseViewSidebar } from "../../dashboard/store/sidebarSlice"

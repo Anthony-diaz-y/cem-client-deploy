@@ -1,7 +1,7 @@
 'use client'
 
 import { useDispatch, useSelector } from "react-redux"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 import IconBtn from "../../../../shared/components/IconBtn"
 import { buyCourse } from "../../../../shared/services/studentFeaturesAPI"

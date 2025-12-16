@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 import "video-react/dist/video-react.css"
 import { BigPlayButton, Player } from "video-react"

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from "react-redux"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 import { editCourseDetails } from "../../../../../shared/services/courseDetailsAPI"
 import { resetCourseState, setStep } from "../../../../course/store/courseSlice"

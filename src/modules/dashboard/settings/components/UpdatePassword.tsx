@@ -4,7 +4,7 @@ import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { useSelector } from "react-redux"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 import { changePassword } from "../../../../shared/services/SettingsAPI"
 import IconBtn from "../../../../shared/components/IconBtn"
@@ -39,7 +39,7 @@ export default function UpdatePassword() {
           <h2 className="text-lg font-semibold text-richblack-5">Password</h2>
 
           <div className="flex flex-col gap-5 lg:flex-row">
-          {/* Current Password */}
+            {/* Current Password */}
             <div className="relative flex flex-col gap-2 lg:w-[48%]">
               <label htmlFor="oldPassword" className="lable-style">
                 Current Password

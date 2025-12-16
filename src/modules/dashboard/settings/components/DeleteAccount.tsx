@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { FiTrash2 } from "react-icons/fi"
 import { useDispatch, useSelector } from "react-redux"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 import ConfirmationModal from './../../../../shared/components/ConfirmationModal';
 import { deleteProfile } from "../../../../shared/services/SettingsAPI"

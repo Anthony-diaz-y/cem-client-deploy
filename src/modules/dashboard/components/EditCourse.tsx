@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 import { useAppSelector } from "../../../shared/store/hooks"
 
 import { getFullDetailsOfCourse, } from "../../../shared/services/courseDetailsAPI"

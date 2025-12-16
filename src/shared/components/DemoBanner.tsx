@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState, useEffect } from 'react';
 import { MOCK_MODE } from "../services/apiConnector";
 import { switchDemoAccount, clearDemoData } from '../../shared/data/demoHelper';

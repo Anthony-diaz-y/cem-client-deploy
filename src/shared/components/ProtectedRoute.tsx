@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useAppSelector } from '../store/hooks'
 import { MOCK_MODE } from '../services/apiConnector'
 

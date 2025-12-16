@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../../shared/store/hooks";
 
 
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 import useOnClickOutside from "../../../shared/hooks/useOnClickOutside";
 import { logout } from "../services/authAPI";

@@ -12,7 +12,7 @@ import { HiClock } from "react-icons/hi"
 import { RiDeleteBin6Line } from "react-icons/ri"
 
 
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 import { formatDate } from "../../../../shared/utils/formatDate"
 import { deleteCourse, fetchInstructorCourses, } from "../../../../shared/services/courseDetailsAPI"
@@ -120,117 +120,127 @@ export default function CoursesTable({ courses, setCourses, loading, setLoading 
         </Thead>
 
 
-        {/* loading Skeleton */}
-        {loading && <div >
-          {skItem()}
-          {skItem()}
-          {skItem()}
-        </div>
-        }
-
         <Tbody>
-          {!loading && courses?.length === 0 ? (
+          {/* loading Skeleton */}
+          {loading ? (
+            <>
+              <Tr>
+                <Td colSpan={4}>
+                  {skItem()}
+                </Td>
+              </Tr>
+              <Tr>
+                <Td colSpan={4}>
+                  {skItem()}
+                </Td>
+              </Tr>
+              <Tr>
+                <Td colSpan={4}>
+                  {skItem()}
+                </Td>
+              </Tr>
+            </>
+          ) : courses?.length === 0 ? (
             <Tr>
-              <Td className="py-10 text-center text-2xl font-medium text-richblack-100">
+              <Td className="py-10 text-center text-2xl font-medium text-richblack-100" colSpan={4}>
                 No courses found
               </Td>
             </Tr>
-          )
-            : (
-              courses?.map((course) => (
-                <Tr
-                  key={course._id}
-                  className="flex gap-x-10 border-b border-richblack-800 px-6 py-8"
-                >
-                  <Td className="flex flex-1 gap-x-4 relative">
-                    {/* course Thumbnail */}
-                    <Img
-                      src={course?.thumbnail}
-                      alt={course?.courseName}
-                      className="h-[148px] min-w-[270px] max-w-[270px] rounded-lg object-cover"
-                    />
+          ) : (
+            courses?.map((course) => (
+              <Tr
+                key={course._id}
+                className="flex gap-x-10 border-b border-richblack-800 px-6 py-8"
+              >
+                <Td className="flex flex-1 gap-x-4 relative">
+                  {/* course Thumbnail */}
+                  <Img
+                    src={course?.thumbnail}
+                    alt={course?.courseName}
+                    className="h-[148px] min-w-[270px] max-w-[270px] rounded-lg object-cover"
+                  />
 
-                    <div className="flex flex-col">
-                      <p className="text-lg font-semibold text-richblack-5 capitalize">{course.courseName}</p>
-                      <p className="text-xs text-richblack-300 ">
-                        {course.courseDescription.split(" ").length > TRUNCATE_LENGTH
-                          ? course.courseDescription
-                            .split(" ")
-                            .slice(0, TRUNCATE_LENGTH)
-                            .join(" ") + "..."
-                          : course.courseDescription}
-                      </p>
+                  <div className="flex flex-col">
+                    <p className="text-lg font-semibold text-richblack-5 capitalize">{course.courseName}</p>
+                    <p className="text-xs text-richblack-300 ">
+                      {course.courseDescription.split(" ").length > TRUNCATE_LENGTH
+                        ? course.courseDescription
+                          .split(" ")
+                          .slice(0, TRUNCATE_LENGTH)
+                          .join(" ") + "..."
+                        : course.courseDescription}
+                    </p>
 
-                      {/* created At */}
-                      <p className="text-[12px] text-richblack-100 mt-4">
-                        Created: {formatDate(course?.createdAt)}
-                      </p>
+                    {/* created At */}
+                    <p className="text-[12px] text-richblack-100 mt-4">
+                      Created: {formatDate(course?.createdAt)}
+                    </p>
 
-                      {/* updated At */}
-                      <p className="text-[12px] text-richblack-100 ">
-                        updated: {formatDate(course?.updatedAt)}
-                      </p>
+                    {/* updated At */}
+                    <p className="text-[12px] text-richblack-100 ">
+                      updated: {formatDate(course?.updatedAt)}
+                    </p>
 
-                      {/* course status */}
-                      {course.status === COURSE_STATUS.DRAFT ? (
-                        <p className="mt-2 flex w-fit flex-row items-center gap-2 rounded-full bg-richblack-700 px-2 py-[2px] text-[12px] font-medium text-pink-100">
-                          <HiClock size={14} />
-                          Drafted
-                        </p>)
-                        :
-                        (<div className="mt-2 flex w-fit flex-row items-center gap-2 rounded-full bg-richblack-700 px-2 py-[2px] text-[12px] font-medium text-yellow-100">
-                          <p className="flex h-3 w-3 items-center justify-center rounded-full bg-yellow-100 text-richblack-700">
-                            <FaCheck size={8} />
-                          </p>
-                          Published
-                        </div>
-                        )}
-                    </div>
-                  </Td>
+                    {/* course status */}
+                    {course.status === COURSE_STATUS.DRAFT ? (
+                      <p className="mt-2 flex w-fit flex-row items-center gap-2 rounded-full bg-richblack-700 px-2 py-[2px] text-[12px] font-medium text-pink-100">
+                        <HiClock size={14} />
+                        Drafted
+                      </p>)
+                      :
+                      (<div className="mt-2 flex w-fit flex-row items-center gap-2 rounded-full bg-richblack-700 px-2 py-[2px] text-[12px] font-medium text-yellow-100">
+                        <p className="flex h-3 w-3 items-center justify-center rounded-full bg-yellow-100 text-richblack-700">
+                          <FaCheck size={8} />
+                        </p>
+                        Published
+                      </div>
+                      )}
+                  </div>
+                </Td>
 
-                  {/* course duration */}
-                  <Td className="text-sm font-medium text-richblack-100">2hr 30min</Td>
-                  <Td className="text-sm font-medium text-richblack-100">₹{course.price}</Td>
+                {/* course duration */}
+                <Td className="text-sm font-medium text-richblack-100">2hr 30min</Td>
+                <Td className="text-sm font-medium text-richblack-100">₹{course.price}</Td>
 
-                  <Td className="text-sm font-medium text-richblack-100 ">
-                    {/* Edit button */}
-                    <button
-                      disabled={loading}
-                      onClick={() => { router.push(`/dashboard/edit-course/${course._id}`) }}
-                      title="Edit"
-                      className="px-2 transition-all duration-200 hover:scale-110 hover:text-caribbeangreen-300"
-                    >
-                      <FiEdit2 size={20} />
-                    </button>
+                <Td className="text-sm font-medium text-richblack-100 ">
+                  {/* Edit button */}
+                  <button
+                    disabled={loading}
+                    onClick={() => { router.push(`/dashboard/edit-course/${course._id}`) }}
+                    title="Edit"
+                    className="px-2 transition-all duration-200 hover:scale-110 hover:text-caribbeangreen-300"
+                  >
+                    <FiEdit2 size={20} />
+                  </button>
 
-                    {/* Delete button */}
-                    <button
-                      disabled={loading}
-                      onClick={() => {
-                        setConfirmationModal({
-                          text1: "Do you want to delete this course?",
-                          text2:
-                            "All the data related to this course will be deleted",
-                          btn1Text: !loading ? "Delete" : "Loading...  ",
-                          btn2Text: "Cancel",
-                          btn1Handler: !loading
-                            ? () => handleCourseDelete(course._id)
-                            : () => { },
-                          btn2Handler: !loading
-                            ? () => setConfirmationModal(null)
-                            : () => { },
+                  {/* Delete button */}
+                  <button
+                    disabled={loading}
+                    onClick={() => {
+                      setConfirmationModal({
+                        text1: "Do you want to delete this course?",
+                        text2:
+                          "All the data related to this course will be deleted",
+                        btn1Text: !loading ? "Delete" : "Loading...  ",
+                        btn2Text: "Cancel",
+                        btn1Handler: !loading
+                          ? () => handleCourseDelete(course._id)
+                          : () => { },
+                        btn2Handler: !loading
+                          ? () => setConfirmationModal(null)
+                          : () => { },
 
-                        })
-                      }}
-                      title="Delete"
-                      className="px-1 transition-all duration-200 hover:scale-110 hover:text-[#ff0000]"
-                    >
-                      <RiDeleteBin6Line size={20} />
-                    </button>
-                  </Td>
-                </Tr>
-              ))
-            )}
+                      })
+                    }}
+                    title="Delete"
+                    className="px-1 transition-all duration-200 hover:scale-110 hover:text-[#ff0000]"
+                  >
+                    <RiDeleteBin6Line size={20} />
+                  </button>
+                </Td>
+              </Tr>
+            ))
+          )}
         </Tbody>
       </Table>
 

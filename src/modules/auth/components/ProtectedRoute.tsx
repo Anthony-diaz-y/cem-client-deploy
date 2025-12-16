@@ -2,7 +2,7 @@
 
 import React, { useEffect, ReactNode } from 'react'
 import { useSelector } from 'react-redux'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { MOCK_MODE } from "../../../shared/services/apiConnector";
 import { RootState } from "../../../shared/store/store"
 

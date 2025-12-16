@@ -3,7 +3,7 @@
 // This will prevent authenticated users from accessing this route
 import { useEffect, ReactNode, useState } from "react"
 import { useSelector } from "react-redux"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 import { RootState } from "../../../shared/store/store"
 

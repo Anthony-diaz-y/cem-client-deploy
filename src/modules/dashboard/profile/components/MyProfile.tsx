@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import { RiEditBoxLine } from "react-icons/ri"
 import { useSelector } from "react-redux"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 import { formattedDate } from "../../../../shared/utils/dateFormatter"
 import IconBtn from "../../../../shared/components/IconBtn"
@@ -45,7 +45,7 @@ export default function MyProfile() {
         <IconBtn
           text="Edit"
           onclick={() => {
-            router.push("/dashboard/Settings")
+            router.push("/dashboard/settings")
           }}
         >
           <RiEditBoxLine />
@@ -58,7 +58,7 @@ export default function MyProfile() {
           <IconBtn
             text="Edit"
             onclick={() => {
-              router.push("/dashboard/Settings")
+              router.push("/dashboard/settings")
             }}
           >
             <RiEditBoxLine />
@@ -83,7 +83,7 @@ export default function MyProfile() {
           <IconBtn
             text="Edit"
             onclick={() => {
-              router.push("/dashboard/Settings")
+              router.push("/dashboard/settings")
             }}
           >
             <RiEditBoxLine />

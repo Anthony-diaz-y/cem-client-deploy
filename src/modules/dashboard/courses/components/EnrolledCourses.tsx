@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import ProgressBar from "@ramonak/react-progress-bar"
 import { useSelector } from "react-redux"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 import { getUserEnrolledCourses } from "../../../../shared/services/profileAPI"
 import Img from '../../../../shared/components/Img';
