@@ -163,3 +163,19 @@ export interface CourseAccordionBarProps {
   isActive: string[]
   handleActive: (id: string) => void
 }
+
+// Course Details Response Type
+export interface CourseDetailsResponse {
+  success: boolean
+  data: {
+    courseDetails: Course & {
+      _id: string | string[]
+      instructor: Instructor & {
+        additionalDetails?: {
+          about?: string
+        }
+      }
+    }
+    totalDuration: string
+  }
+}

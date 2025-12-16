@@ -1,9 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useDropzone, FileWithPath } from "react-dropzone";
 import { FiUploadCloud } from "react-icons/fi";
-
-import "video-react/dist/video-react.css";
-import { Player } from "video-react";
 import { UploadProps } from "../types";
 import Image from "next/image";
 
@@ -89,7 +86,13 @@ export default function Upload({
                 />
               )
             ) : (
-              <Player aspectRatio="16:9" playsInline src={previewSource} />
+              <video
+                src={previewSource}
+                className="w-full h-full rounded-md object-cover"
+                controls
+                playsInline
+                style={{ aspectRatio: "16/9" }}
+              />
             )}
 
             {!viewData && (
