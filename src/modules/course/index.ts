@@ -1,5 +1,31 @@
 // Course Module - Public API
 
+// Types
+export type { 
+  Course, 
+  Section, 
+  SubSection, 
+  Instructor, 
+  Review, 
+  Category, 
+  CartItem,
+  CartState,
+  UserDetails,
+  PaymentResponse,
+  VerifyPaymentData,
+  ApiError,
+  CourseFormData,
+  SectionData,
+  SubSectionData,
+  DeleteSectionData,
+  DeleteSubSectionData,
+  DeleteCourseData,
+  LectureCompletionData,
+  RatingData,
+  CourseDetailsCardProps,
+  CourseAccordionBarProps
+} from './types'
+
 // Components
 export { default as CourseAccordionBar } from './components/CourseAccordionBar'
 export { default as CourseDetailsCard } from './components/CourseDetailsCard'

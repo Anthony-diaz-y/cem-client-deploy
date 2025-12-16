@@ -1,26 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { toast } from "react-hot-toast"
 import { getLocalStorage } from "../../../shared/utils/localStorage"
-
-// Define the CartItem interface
-export interface CartItem {
-  _id: string;
-  courseName: string;
-  price: number;
-  thumbnail: string;
-  courseDescription?: string;
-  category?: {
-    name: string;
-  };
-  ratingAndReviews?: any[];
-}
-
-// Define the CartState interface
-interface CartState {
-  cart: CartItem[];
-  total: number;
-  totalItems: number;
-}
+import { CartItem, CartState } from "../types"
 
 const getInitialCart = (): CartItem[] => {
   if (typeof window === 'undefined') {

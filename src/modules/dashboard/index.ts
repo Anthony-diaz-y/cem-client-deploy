@@ -1,40 +1,45 @@
 // Dashboard Module - Public API
+// This module now re-exports from the new modular structure for backward compatibility
 
-// Main components
+// Types
+export type { ConfirmationModalData, SidebarLinkProps } from './types';
+
+// Dashboard Shared Components (Sidebar, etc.)
 export { default as Sidebar } from './components/Sidebar';
 export { default as SidebarLink } from './components/SidebarLink';
+export { default as sidebarReducer } from './store/sidebarSlice';
 
 // Profile
-export { default as MyProfile } from './profile/components/MyProfile';
+export { MyProfile } from '../profile';
 
 // Settings
-export { default as Settings } from './settings/components/Settings';
-export { default as ChangeProfilePicture } from './settings/components/ChangeProfilePicture';
-export { default as DeleteAccount } from './settings/components/DeleteAccount';
-export { default as EditProfile } from './settings/components/EditProfile';
-export { default as UpdatePassword } from './settings/components/UpdatePassword';
+export {
+  Settings,
+  ChangeProfilePicture,
+  DeleteAccount,
+  EditProfile,
+  UpdatePassword
+} from '../settings';
 
-// Courses
-export { default as MyCourses } from './courses/components/MyCourses';
-export { default as EnrolledCourses } from './courses/components/EnrolledCourses';
-export { default as CourseTable } from './courses/components/CourseTable';
+// Student
+export { EnrolledCourses, MyCourses } from '../student';
 
 // Add Course
-export { default as AddCourse } from './courses/add-course/components/AddCourse';
+export { AddCourse } from '../add-course';
 
 // Cart
-export { default as Cart } from './cart/components/Cart';
-export { default as RenderCartCourses } from './cart/components/RenderCartCourses';
-export { default as RenderTotalAmount } from './cart/components/RenderTotalAmount';
+export { Cart, RenderCartCourses, RenderTotalAmount } from '../cart';
 
 // Instructor
-export { default as Instructor } from './instructor/components/Instructor';
-export { default as InstructorChart } from './instructor/components/InstructorChart';
+export {
+  Instructor,
+  InstructorChart,
+  CoursesTable,
+  EditCourse,
+  InstructorCourses // Explicitly added to replace implicit export
+} from '../instructor';
 
-// Services
-export * from './settings/services/SettingsAPI';
-export * from './profile/services/profileAPI';
-export * from './instructor/services/InstructorDashboardAPI';
-
-// Store
-export { default as sidebarReducer } from './store/sidebarSlice';
+// Services - Re-export from new modules
+export * from '../settings';
+export * from '../profile';
+export { fetchInstructorCourses, deleteCourse } from '../instructor';

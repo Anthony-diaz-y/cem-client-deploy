@@ -10,12 +10,14 @@ import { sendOtp, signUp } from "../../../shared/services/authAPI";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "../../../shared/store/hooks";
 import Loading from "../../../shared/components/Loading";
+import { AppDispatch } from "../../../shared/store/store";
+import type { SignupData } from "../types";
 
 function VerifyEmailContainer() {
   const [otp, setOtp] = useState("");
   const router = useRouter();
   const { signupData, loading } = useAppSelector((state) => state.auth);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     // Only allow access of this route when user has filled the signup form
@@ -25,15 +27,19 @@ function VerifyEmailContainer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleVerifyAndSignup = (e) => {
+  const handleVerifyAndSignup = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!signupData) return;
+    
     const { accountType, firstName, lastName, email, password, confirmPassword, } = signupData;
 
-    dispatch(signUp(accountType, firstName, lastName, email, password, confirmPassword, otp, router.push));
+    dispatch(signUp(accountType, firstName, lastName, email, password, confirmPassword, otp, router.push as (path: string) => void));
   };
 
   const handleResendOtp = () => {
-    dispatch(sendOtp(signupData.email, router.push));
+    if (!signupData) return;
+    const email = (signupData as SignupData).email;
+    dispatch(sendOtp(email, router.push as (path: string) => void));
     setOtp('');
   };
 

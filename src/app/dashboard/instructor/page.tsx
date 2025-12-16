@@ -2,7 +2,7 @@
 
 
 import { useState, useEffect } from 'react'
-import Instructor from '../../../modules/dashboard/instructor/components/Instructor'
+import { Instructor } from '../../../modules/dashboard'
 import { useAppSelector } from '../../../shared/store/hooks'
 import { ACCOUNT_TYPE } from '../../../shared/utils/constants'
 

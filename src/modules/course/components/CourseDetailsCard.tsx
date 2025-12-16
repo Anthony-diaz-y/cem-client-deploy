@@ -12,34 +12,19 @@ import { FaShareSquare } from "react-icons/fa"
 
 import { addToCart } from "../store/cartSlice"
 import { ACCOUNT_TYPE } from "../../../shared/utils/constants"
-import Img from './../../../shared/components/Img';
-
-
-interface Course {
-  _id: string;
-  thumbnail: string;
-  price: number;
-  courseName: string;
-  studentsEnrolled: string[];
-  instructions: string[];
-}
-
-interface CourseDetailsCardProps {
-  course: Course;
-  setConfirmationModal: React.Dispatch<React.SetStateAction<any>>;
-  handleBuyCourse: () => void;
-}
+import Img from './../../../shared/components/Img'
+import { CourseDetailsCardProps } from '../types'
+import { RootState, AppDispatch } from "../../../shared/store/store"
 
 function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }: CourseDetailsCardProps) {
-  const { user } = useSelector((state: any) => state.profile)
-  const { token } = useSelector((state: any) => state.auth)
+  const { user } = useSelector((state: RootState) => state.profile)
+  const { token } = useSelector((state: RootState) => state.auth)
   const router = useRouter()
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   const {
     thumbnail: ThumbnailImage,
     price: CurrentPrice,
-    _id: courseId,
   } = course
 
   const handleShare = () => {

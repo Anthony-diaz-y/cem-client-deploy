@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useMemo } from "react"
 import { BiInfoCircle } from "react-icons/bi"
 import { HiOutlineGlobeAlt } from "react-icons/hi"
 import { useDispatch, useSelector } from "react-redux"
@@ -16,11 +16,13 @@ import CourseAccordionBar from "../components/CourseAccordionBar"
 import CourseDetailsCard from "../components/CourseDetailsCard"
 import Img from '../../../shared/components/Img'
 import { formatDate } from "../../../shared/utils/formatDate"
-import { fetchCourseDetails } from "../../../shared/services/courseDetailsAPI"
 import { buyCourse } from "../../../shared/services/studentFeaturesAPI"
 import GetAvgRating from "../../../shared/utils/avgRating"
 import { ACCOUNT_TYPE } from "../../../shared/utils/constants"
 import { addToCart } from "../store/cartSlice"
+import { RootState, AppDispatch } from "../../../shared/store/store"
+import { Course } from "../types"
+import { ConfirmationModalData } from "../../../shared/components/ConfirmationModal"
 
 /**
  * CourseDetailsContainer - Container component for Course Details page
@@ -29,18 +31,47 @@ import { addToCart } from "../store/cartSlice"
 const CourseDetailsContainer = () => {
   const router = useRouter()
   const { courseId } = useParams()
-  const { user } = useSelector((state) => state.profile)
-  const { token } = useSelector((state) => state.auth)
-  const { loading } = useSelector((state) => state.profile)
-  const { paymentLoading } = useSelector((state) => state.course)
-  const dispatch = useDispatch()
+  const { user } = useSelector((state: RootState) => state.profile)
+  const { token } = useSelector((state: RootState) => state.auth)
+  const { loading } = useSelector((state: RootState) => state.profile)
+  const { paymentLoading } = useSelector((state: RootState) => state.course)
+  const dispatch = useDispatch<AppDispatch>()
 
   // State management
-  const [response, setResponse] = useState(null)
-  const [confirmationModal, setConfirmationModal] = useState(null)
-  const [avgReviewCount, setAvgReviewCount] = useState(0)
-  const [isActive, setIsActive] = useState(Array(0))
-  const [totalNoOfLectures, setTotalNoOfLectures] = useState(0)
+  type CourseDetailsResponse = {
+    success: boolean
+    data: {
+      courseDetails: Course & {
+        _id: string | string[]
+        instructor: Course['instructor'] & {
+          additionalDetails?: {
+            about?: string
+          }
+        }
+      }
+      totalDuration: string
+    }
+  }
+
+  const [response, setResponse] = useState<CourseDetailsResponse | null>(null)
+  const [confirmationModal, setConfirmationModal] = useState<ConfirmationModalData | null>(null)
+  const [isActive, setIsActive] = useState<string[]>([])
+
+  // Calculate average rating using useMemo instead of useEffect
+  const avgReviewCount = useMemo(() => {
+    if (!response?.data?.courseDetails?.ratingAndReviews) return 0
+    return GetAvgRating(response.data.courseDetails.ratingAndReviews)
+  }, [response?.data?.courseDetails?.ratingAndReviews])
+
+  // Calculate total lectures using useMemo instead of useEffect
+  const totalNoOfLectures = useMemo(() => {
+    if (!response?.data?.courseDetails?.courseContent) return 0
+    let lectures = 0
+    response.data.courseDetails.courseContent.forEach((sec) => {
+      lectures += sec.subSection.length || 0
+    })
+    return lectures
+  }, [response?.data?.courseDetails?.courseContent])
 
   // Fetch course details
   useEffect(() => {
@@ -90,28 +121,14 @@ const CourseDetailsContainer = () => {
           }
         }
         // const res = await fetchCourseDetails(courseId)
-        setResponse(mockResponse)
-      } catch (error) {
+        setResponse(mockResponse as CourseDetailsResponse)
+      } catch {
         console.log("Could not fetch Course Details")
       }
     }
     fetchCourseDetailsData()
   }, [courseId])
 
-  // Calculate average rating
-  useEffect(() => {
-    const count = GetAvgRating(response?.data?.courseDetails?.ratingAndReviews)
-    setAvgReviewCount(count)
-  }, [response])
-
-  // Calculate total lectures
-  useEffect(() => {
-    let lectures = 0
-    response?.data?.courseDetails?.courseContent?.forEach((sec) => {
-      lectures += sec.subSection.length || 0
-    })
-    setTotalNoOfLectures(lectures)
-  }, [response])
 
   // Scroll to top on mount
   useEffect(() => {
@@ -121,11 +138,11 @@ const CourseDetailsContainer = () => {
   }, [])
 
   // Event handlers
-  const handleActive = (id) => {
+  const handleActive = (id: string) => {
     setIsActive(
       !isActive.includes(id)
         ? isActive.concat([id])
-        : isActive.filter((e) => e != id)
+        : isActive.filter((e) => e !== id)
     )
   }
 
@@ -150,8 +167,8 @@ const CourseDetailsContainer = () => {
       toast.error("You are an Instructor. You can't buy a course.")
       return
     }
-    if (token) {
-      dispatch(addToCart(response?.data.courseDetails))
+    if (token && response?.data?.courseDetails) {
+      dispatch(addToCart(response.data.courseDetails as Course))
       return
     }
     setConfirmationModal({
@@ -260,7 +277,7 @@ const CourseDetailsContainer = () => {
         <div className="mx-auto max-w-maxContentTab lg:mx-0 xl:max-w-[810px]">
           {/* What you'll learn */}
           <div className="my-8 border border-richblack-600 p-8">
-            <p className="text-3xl font-semibold">What you'll learn</p>
+            <p className="text-3xl font-semibold">What you&apos;ll learn</p>
             <div className="mt-3">
               {whatYouWillLearn && (
                 whatYouWillLearn.split('\n').map((line, index) => (

@@ -1,8 +1,5 @@
 import React from 'react'
-
-interface HighlightTextProps {
-  text: string;
-}
+import { HighlightTextProps } from '../types'
 
 const HighlightText: React.FC<HighlightTextProps> = ({ text }) => {
   return (

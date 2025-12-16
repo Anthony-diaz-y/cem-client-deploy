@@ -2,7 +2,7 @@
 
 
 import { useState, useEffect } from 'react'
-import AddCourse from '../../../modules/dashboard/courses/add-course/components/AddCourse'
+import AddCourse from '../../../modules/add-course/containers/AddCourse'
 import { useAppSelector } from '../../../shared/store/hooks'
 import { ACCOUNT_TYPE } from '../../../shared/utils/constants'
 

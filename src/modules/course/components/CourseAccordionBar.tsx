@@ -1,41 +1,29 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useMemo } from "react"
 import CourseSubSectionAccordion from "./CourseSubSectionAccordion"
-
 import { IoMdArrowDropdown } from "react-icons/io"
-
-
-interface SubSection {
-  _id: string;
-  title: string;
-  description: string;
-}
-
-interface CourseSection {
-  _id: string;
-  sectionName: string;
-  subSection: SubSection[];
-}
-
-interface CourseAccordionBarProps {
-  course: CourseSection;
-  isActive: string[];
-  handleActive: (id: string) => void;
-}
+import { CourseAccordionBarProps } from '../types'
 
 export default function CourseAccordionBar({ course, isActive, handleActive }: CourseAccordionBarProps) {
 
   const contentEl = useRef<HTMLDivElement>(null)
-  const [active, setActive] = useState(false)  // Accordian state
   const [sectionHeight, setSectionHeight] = useState(0)
 
-  useEffect(() => {
-    setActive(isActive?.includes(course._id))
-  }, [isActive])
-
+  // Calculate active state directly from props instead of using useState + useEffect
+  const active = useMemo(() => isActive?.includes(course._id) ?? false, [isActive, course._id])
 
   useEffect(() => {
-    setSectionHeight(active && contentEl.current ? contentEl.current.scrollHeight : 0)
-  }, [active])
+    // Use a callback to measure height after render
+    const updateHeight = () => {
+      if (contentEl.current) {
+        setSectionHeight(active ? contentEl.current.scrollHeight : 0)
+      }
+    }
+    
+    // Small delay to ensure DOM is updated
+    const timeoutId = setTimeout(updateHeight, 0)
+    
+    return () => clearTimeout(timeoutId)
+  }, [active, course.subSection])
 
 
 

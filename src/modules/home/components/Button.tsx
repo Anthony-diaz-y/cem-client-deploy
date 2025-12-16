@@ -1,11 +1,6 @@
 import React from 'react'
 import Link from "next/link"
-
-interface ButtonProps {
-  children: React.ReactNode;
-  active?: boolean;
-  linkto?: string;
-}
+import { ButtonProps } from '../types'
 
 const Button: React.FC<ButtonProps> = ({ children, active, linkto }) => {
   // Validar que linkto existe y no es vacío antes de renderizar Link

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { HomePageExplore } from "../../../shared/data/homepage-explore";
 import CourseCard from "./CourseCard";
 import HighlightText from "./HighlightText";
+import { ExploreCourseCard } from '../types';
 
 const tabsName = [
   "Free",
@@ -9,21 +10,22 @@ const tabsName = [
   "Most popular",
   "Skills paths",
   "Career paths",
-];
-
+] as const;
 
 const ExploreMore = () => {
-  const [currentTab, setCurrentTab] = useState(tabsName[0]);
-  const [courses, setCourses] = useState(HomePageExplore[0].courses);
-  const [currentCard, setCurrentCard] = useState(
+  const [currentTab, setCurrentTab] = useState<string>(tabsName[0]);
+  const [courses, setCourses] = useState<ExploreCourseCard[]>(HomePageExplore[0].courses);
+  const [currentCard, setCurrentCard] = useState<string>(
     HomePageExplore[0].courses[0].heading
   );
 
-  const setMyCards = (value) => {
+  const setMyCards = (value: string) => {
     setCurrentTab(value);
     const result = HomePageExplore.filter((course) => course.tag === value);
-    setCourses(result[0].courses);
-    setCurrentCard(result[0].courses[0].heading);
+    if (result.length > 0 && result[0].courses.length > 0) {
+      setCourses(result[0].courses);
+      setCurrentCard(result[0].courses[0].heading);
+    }
   };
 
   return (

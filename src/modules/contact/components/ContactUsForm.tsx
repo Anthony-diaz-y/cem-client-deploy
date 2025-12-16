@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
 import CountryCode from '../../../shared/data/countrycode.json'
+import { ContactFormData } from '../types'
 // import { apiConnector } from "../../../services/apiConnector"
 // import { contactusEndpoint } from "../../../services/apis"
-
 
 const ContactUsForm = () => {
   const [loading, setLoading] = useState(false)
@@ -14,18 +14,20 @@ const ContactUsForm = () => {
     handleSubmit,
     reset,
     formState: { errors, isSubmitSuccessful },
-  } = useForm()
+  } = useForm<ContactFormData>()
 
-  const submitContactForm = async (data: Record<string, any>) => {
+  const submitContactForm = async (data: ContactFormData) => {
     // console.log("Form Data - ", data)
     try {
       setLoading(true)
+      // TODO: Uncomment when API is ready
       // const res = await apiConnector(
       //   "POST",
       //   contactusEndpoint.CONTACT_US_API,
       //   data
       // )
       // console.log("Email Res - ", res)
+      console.log("Contact form data:", data) // Temporary: Remove when API is uncommented
       setLoading(false)
     } catch (error: unknown) {
       console.log("ERROR WHILE CONATACT US  - ", (error as Error).message)

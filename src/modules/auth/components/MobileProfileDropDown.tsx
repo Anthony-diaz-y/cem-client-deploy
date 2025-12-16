@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Link from "next/link";
@@ -16,7 +16,6 @@ import { AiOutlineCaretDown, AiOutlineHome } from "react-icons/ai";
 import { MdOutlineContactPhone } from "react-icons/md";
 import { TbMessage2Plus } from "react-icons/tb";
 import { PiNotebook } from "react-icons/pi";
-import { fetchCourseCategories } from "./../../../shared/services/courseDetailsAPI";
 
 // const CatalogDropDown = ({ subLinks }) => {
 //     if (!subLinks) return
@@ -32,38 +31,15 @@ import { RootState, AppDispatch } from "../../../shared/store/store";
 
 export default function MobileProfileDropDown() {
   const { user } = useSelector((state: RootState) => state.profile);
-  if (!user) return null;
-  // console.log('user data from store = ', user )
-
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
 
   useOnClickOutside(ref, () => setOpen(false));
 
-  const [open, setOpen] = useState(false);
-  const [subLinks, setSubLinks] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchSublinks = async () => {
-    try {
-      setLoading(true);
-      const res = await fetchCourseCategories();
-      // const result = await apiConnector("GET", categories.CATEGORIES_API);
-      // const result = await apiConnector('GET', 'http://localhost:4000/api/v1/course/showAllCategories');
-      // console.log("Printing Sublinks result:", result);
-      setSubLinks(res);
-    } catch (error) {
-      console.log("Could not fetch the category list = ", error);
-    }
-    setLoading(false);
-  };
-
-  // console.log('data of store  = ', useSelector((state)=> state))
-
-  useEffect(() => {
-    fetchSublinks();
-  }, []);
+  if (!user) return null;
+  // console.log('user data from store = ', user )
 
   return (
     // only for small devices

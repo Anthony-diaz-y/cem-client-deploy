@@ -2,7 +2,7 @@
 
 
 import { useState, useEffect } from 'react'
-import Cart from '../../../modules/dashboard/cart/components/Cart'
+import Cart from '../../../modules/cart/components/Cart'
 import { useAppSelector } from '../../../shared/store/hooks'
 import { ACCOUNT_TYPE } from '../../../shared/utils/constants'
 

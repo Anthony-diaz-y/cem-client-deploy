@@ -1,5 +1,21 @@
 // Home Module - Public API
 
+// Types
+export type { 
+  HomeProps, 
+  CatalogPageData, 
+  CategoryWithCourses, 
+  Course, 
+  CTAButtonType, 
+  CodeBlocksProps, 
+  ButtonProps,
+  HighlightTextProps,
+  ExploreCourseCard,
+  HomePageExploreItem,
+  CourseCardProps,
+  TimelineItem
+} from './types'
+
 // Components
 export { default as Button } from './components/Button'
 export { default as CodeBlocks } from './components/CodeBlocks'

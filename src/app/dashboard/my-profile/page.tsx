@@ -1,6 +1,6 @@
 'use client'
 
-import MyProfile from '../../../modules/dashboard/profile/components/MyProfile'
+import MyProfile from '../../../modules/profile/components/MyProfile'
 
 export default function MyProfilePage() {
   return (

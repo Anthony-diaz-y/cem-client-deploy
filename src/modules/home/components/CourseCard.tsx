@@ -3,9 +3,9 @@ import React from "react";
 // Importing React Icons
 import { HiUsers } from "react-icons/hi";
 import { ImTree } from "react-icons/im";
+import { CourseCardProps } from '../types';
 
-
-const CourseCard = ({ cardData, currentCard, setCurrentCard }) => {
+const CourseCard = ({ cardData, currentCard, setCurrentCard }: CourseCardProps) => {
   return (
     <div
       className={`w-[360px] lg:w-[30%] ${currentCard === cardData?.heading

@@ -5,6 +5,7 @@ import rzpLogo from "../../../shared/assets/Logo/rzp_logo.png";
 import { setPaymentLoading } from "../store/courseSlice";
 import { resetCart } from "../store/cartSlice";
 import type { Dispatch } from "@reduxjs/toolkit";
+import { UserDetails, PaymentResponse, VerifyPaymentData, ApiError } from "../types";
 
 const { COURSE_PAYMENT_API, COURSE_VERIFY_API, SEND_PAYMENT_SUCCESS_EMAIL_API } = studentEndpoints;
 
@@ -27,11 +28,6 @@ function loadScript(src: string): Promise<boolean> {
         }
         document.body.appendChild(script);
     })
-}
-
-interface UserDetails {
-    firstName: string;
-    email: string;
 }
 
 // ================ buyCourse ================ 
@@ -96,19 +92,12 @@ export async function buyCourse(
         })
 
     }
-    catch (error: any) {
-        console.log("PAYMENT API ERROR.....", error);
-        toast.error(error.response?.data?.message);
-        // toast.error("Could not make Payment");
+    catch (error) {
+        const apiError = error as ApiError;
+        console.log("PAYMENT API ERROR.....", apiError);
+        toast.error(apiError.response?.data?.message || "Could not make Payment");
     }
     toast.dismiss(toastId);
-}
-
-
-interface PaymentResponse {
-    razorpay_payment_id: string;
-    razorpay_order_id: string;
-    razorpay_signature: string;
 }
 
 // ================ send Payment Success Email ================
@@ -122,14 +111,10 @@ async function sendPaymentSuccessEmail(response: PaymentResponse, amount: number
             Authorization: `Bearer ${token}`
         })
     }
-    catch (error: any) {
-        console.log("PAYMENT SUCCESS EMAIL ERROR....", error);
+    catch (error) {
+        const apiError = error as ApiError;
+        console.log("PAYMENT SUCCESS EMAIL ERROR....", apiError);
     }
-}
-
-
-interface VerifyPaymentData extends PaymentResponse {
-    coursesId: string[];
 }
 
 // ================ verify payment ================
@@ -154,9 +139,10 @@ async function verifyPayment(
         navigate("/dashboard/enrolled-courses");
         dispatch(resetCart());
     }
-    catch (error: any) {
-        console.log("PAYMENT VERIFY ERROR....", error);
-        toast.error("Could not verify Payment");
+    catch (error) {
+        const apiError = error as ApiError;
+        console.log("PAYMENT VERIFY ERROR....", apiError);
+        toast.error(apiError.response?.data?.message || "Could not verify Payment");
     }
     toast.dismiss(toastId);
     dispatch(setPaymentLoading(false));

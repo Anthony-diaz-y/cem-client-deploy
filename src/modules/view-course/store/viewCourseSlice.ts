@@ -1,40 +1,41 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Section, Course } from "../types";
 
-interface ViewCourseState {
-  courseSectionData: any[]
-  courseEntireData: any[]
-  completedLectures: string[]
-  totalNoOfLectures: number
+interface ViewCourseSliceState {
+  courseSectionData: Section[];
+  courseEntireData: Course | null;
+  completedLectures: string[];
+  totalNoOfLectures: number;
 }
 
-const initialState: ViewCourseState = {
+const initialState: ViewCourseSliceState = {
   courseSectionData: [],
-  courseEntireData: [],
+  courseEntireData: null,
   completedLectures: [],
   totalNoOfLectures: 0,
-}
+};
 
 const viewCourseSlice = createSlice({
   name: "viewCourse",
   initialState,
   reducers: {
-    setCourseSectionData: (state, action) => {
-      state.courseSectionData = action.payload
+    setCourseSectionData: (state, action: PayloadAction<Section[]>) => {
+      state.courseSectionData = action.payload;
     },
-    setEntireCourseData: (state, action) => {
-      state.courseEntireData = action.payload
+    setEntireCourseData: (state, action: PayloadAction<Course>) => {
+      state.courseEntireData = action.payload;
     },
-    setTotalNoOfLectures: (state, action) => {
-      state.totalNoOfLectures = action.payload
+    setTotalNoOfLectures: (state, action: PayloadAction<number>) => {
+      state.totalNoOfLectures = action.payload;
     },
-    setCompletedLectures: (state, action) => {
-      state.completedLectures = action.payload
+    setCompletedLectures: (state, action: PayloadAction<string[]>) => {
+      state.completedLectures = action.payload;
     },
-    updateCompletedLectures: (state, action) => {
-      state.completedLectures = [...state.completedLectures, action.payload]
+    updateCompletedLectures: (state, action: PayloadAction<string>) => {
+      state.completedLectures = [...state.completedLectures, action.payload];
     },
   },
-})
+});
 
 export const {
   setCourseSectionData,
@@ -42,6 +43,6 @@ export const {
   setTotalNoOfLectures,
   setCompletedLectures,
   updateCompletedLectures,
-} = viewCourseSlice.actions
+} = viewCourseSlice.actions;
 
-export default viewCourseSlice.reducer
+export default viewCourseSlice.reducer;

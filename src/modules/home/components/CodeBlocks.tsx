@@ -1,24 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CTAButton from "./Button";
 import { FaArrowRight } from "react-icons/fa";
-
-interface CTAButtonType {
-    active: boolean;
-    linkto?: string;
-    link?: string;
-    btnText: string;
-}
-
-interface CodeBlocksProps {
-    position: string;
-    heading: React.ReactNode;
-    subheading: string;
-    ctabtn1: CTAButtonType;
-    ctabtn2: CTAButtonType;
-    codeblock: string;
-    backgroundGradient: string;
-    codeColor: string;
-}
+import { CodeBlocksProps } from '../types'
 
 const CodeBlocks: React.FC<CodeBlocksProps> = ({
     position,

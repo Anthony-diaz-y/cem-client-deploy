@@ -1,14 +1,16 @@
 import IconBtn from "./IconBtn"
 
+export interface ConfirmationModalData {
+    text1?: string;
+    text2?: string;
+    btn1Handler?: () => void;
+    btn1Text?: string;
+    btn2Handler?: () => void;
+    btn2Text?: string;
+}
+
 interface ConfirmationModalProps {
-    modalData: {
-        text1?: string;
-        text2?: string;
-        btn1Handler?: () => void;
-        btn1Text?: string;
-        btn2Handler?: () => void;
-        btn2Text?: string;
-    } | null;
+    modalData: ConfirmationModalData | null;
 }
 
 export default function ConfirmationModal({ modalData }: ConfirmationModalProps) {

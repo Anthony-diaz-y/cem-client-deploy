@@ -6,6 +6,7 @@ import { setUser } from "../store/profileSlice"
 import { apiConnector } from "../../../shared/services/apiConnector"
 import { endpoints } from "../../../shared/services/apis"
 import { AppDispatch } from "../../../shared/store/store"
+import { NavigateFunction, ApiError } from "../types"
 
 const {
   SENDOTP_API,
@@ -14,9 +15,6 @@ const {
   RESETPASSTOKEN_API,
   RESETPASSWORD_API,
 } = endpoints
-
-// Define a type for the navigate function (router.push from next/router)
-type NavigateFunction = (url: string) => void;
 
 // ================ send Otp ================
 export function sendOtp(email: string, navigate: NavigateFunction) {
@@ -39,10 +37,10 @@ export function sendOtp(email: string, navigate: NavigateFunction) {
 
       navigate("/verify-email");
       toast.success("OTP Sent Successfully");
-    } catch (error: any) {
-      console.log("SENDOTP API ERROR --> ", error);
-      toast.error(error.response?.data?.message);
-      // toast.error("Could Not Send OTP")
+    } catch (error) {
+      const apiError = error as ApiError;
+      console.log("SENDOTP API ERROR --> ", apiError);
+      toast.error(apiError.response?.data?.message || "Could Not Send OTP");
     }
     dispatch(setLoading(false));
     toast.dismiss(toastId);
@@ -83,11 +81,10 @@ export function signUp(
 
       toast.success("Signup Successful");
       navigate("/login");
-    } catch (error: any) {
-      console.log("SIGNUP API ERROR --> ", error);
-      // toast.error(error.response.data.message);
-      toast.error("Invalid OTP");
-      // navigate("/signup")
+    } catch (error) {
+      const apiError = error as ApiError;
+      console.log("SIGNUP API ERROR --> ", apiError);
+      toast.error(apiError.response?.data?.message || "Invalid OTP");
     }
     dispatch(setLoading(false))
     toast.dismiss(toastId)
@@ -149,9 +146,10 @@ export function login(email: string, password: string, navigate: NavigateFunctio
       localStorage.setItem("user", JSON.stringify({ ...response.data.user, image: userImage }));
 
       navigate("/dashboard/my-profile");
-    } catch (error: any) {
-      console.log("LOGIN API ERROR.......", error)
-      toast.error(error.response?.data?.message)
+    } catch (error) {
+      const apiError = error as ApiError;
+      console.log("LOGIN API ERROR.......", apiError)
+      toast.error(apiError.response?.data?.message || "Login failed")
     }
     dispatch(setLoading(false))
     toast.dismiss(toastId)
@@ -178,10 +176,10 @@ export function getPasswordResetToken(email: string, setEmailSent: (sent: boolea
 
       toast.success("Reset Email Sent")
       setEmailSent(true)
-    } catch (error: any) {
-      console.log("RESET PASS TOKEN ERROR............", error)
-      toast.error(error.response?.data?.message)
-      // toast.error("Failed To Send Reset Email")
+    } catch (error) {
+      const apiError = error as ApiError;
+      console.log("RESET PASS TOKEN ERROR............", apiError)
+      toast.error(apiError.response?.data?.message || "Failed To Send Reset Email")
     }
     toast.dismiss(toastId)
     dispatch(setLoading(false))
@@ -210,10 +208,10 @@ export function resetPassword(password: string, confirmPassword: string, token: 
 
       toast.success("Password Reset Successfully")
       navigate("/login")
-    } catch (error: any) {
-      console.log("RESETPASSWORD ERROR............", error)
-      toast.error(error.response?.data?.message)
-      // toast.error("Failed To Reset Password");
+    } catch (error) {
+      const apiError = error as ApiError;
+      console.log("RESETPASSWORD ERROR............", apiError)
+      toast.error(apiError.response?.data?.message || "Failed To Reset Password")
     }
     toast.dismiss(toastId)
     dispatch(setLoading(false))

@@ -4,15 +4,15 @@ import { useState } from "react"
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { useDispatch } from "react-redux"
 
-
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 import { login } from "../../../shared/services/authAPI"
+import { AppDispatch } from "../../../shared/store/store"
 
 function LoginForm() {
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -31,7 +31,7 @@ function LoginForm() {
 
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(login(email, password, router.push) as any)
+    dispatch(login(email, password, router.push as (path: string) => void))
   }
 
   return (

@@ -17,15 +17,7 @@ import { IoMdClose } from 'react-icons/io'
 
 import { setOpenSideMenu, setScreenSize } from "../store/sidebarSlice";
 import { useAppDispatch, useAppSelector } from "../../../shared/store/hooks"
-
-interface ConfirmationModalData {
-  text1: string
-  text2: string
-  btn1Text: string
-  btn2Text: string
-  btn1Handler: () => any
-  btn2Handler: () => any
-}
+import { ConfirmationModalData } from '../types'
 
 export default function Sidebar() {
   const { user, loading: profileLoading } = useAppSelector((state) => state.profile)
@@ -37,6 +29,7 @@ export default function Sidebar() {
   const [confirmationModal, setConfirmationModal] = useState<ConfirmationModalData | null>(null)
 
   // Evitar errores de hidratación: solo renderizar contenido dependiente del estado después de montar
+  // Initialize mounted state lazily to avoid hydration mismatches
   const [mounted, setMounted] = useState(false)
 
   // handle side bar menu - open / close
@@ -44,11 +37,14 @@ export default function Sidebar() {
   // const [screenSize, setScreenSize] = useState(undefined)
 
   const { openSideMenu, screenSize } = useAppSelector((state) => state.sidebar)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
   // console.log('openSideMenu ======' , openSideMenu)
   // console.log('screenSize ======' , screenSize)
 
   useEffect(() => {
-    setMounted(true)
     if (typeof window === 'undefined') return;
 
     const handleResize = () => dispatch(setScreenSize(window.innerWidth))
@@ -56,7 +52,7 @@ export default function Sidebar() {
     window.addEventListener('resize', handleResize)
     handleResize()
     return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  }, [dispatch])
 
   // If screen size is small then close the side bar
   useEffect(() => {
@@ -64,7 +60,7 @@ export default function Sidebar() {
       dispatch(setOpenSideMenu(false))
     }
     else dispatch(setOpenSideMenu(true))
-  }, [screenSize])
+  }, [screenSize, dispatch])
 
 
 
@@ -88,7 +84,7 @@ export default function Sidebar() {
 
 
       {/* Sidebar: visible en pantallas grandes siempre, en móviles solo si openSideMenu es true (después de montar) */}
-      <div className={`hidden sm:flex ${mounted && screenSize && screenSize <= 640 ? (openSideMenu ? 'flex' : 'hidden') : ''} h-[calc(100vh-3.5rem)] min-w-[220px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800 py-10`}>
+      <div className={`hidden sm:flex ${mounted && screenSize && screenSize <= 640 && !openSideMenu ? 'hidden' : ''} h-[calc(100vh-3.5rem)] min-w-[220px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800 py-10`}>
         <div className="flex flex-col mt-6">
           {sidebarLinks.map((link) => {
             if (link.type && user?.accountType !== link.type) return null

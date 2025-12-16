@@ -8,25 +8,20 @@ import { useSelector } from "react-redux"
 import { createRating } from "../../../shared/services/courseDetailsAPI"
 import IconBtn from './../../../shared/components/IconBtn';
 import Img from './../../../shared/components/Img';
-
-
-
-
-interface VideoDetailsReviewModalProps {
-  setReviewModal: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { VideoDetailsReviewModalProps, ReviewFormData } from '../types'
+import { RootState } from "../../../shared/store/store"
 
 export default function VideoDetailsReviewModal({ setReviewModal }: VideoDetailsReviewModalProps) {
-  const { user } = useSelector((state: any) => state.profile)
-  const { token } = useSelector((state: any) => state.auth)
-  const { courseEntireData } = useSelector((state: any) => state.viewCourse)
+  const { user } = useSelector((state: RootState) => state.profile)
+  const { token } = useSelector((state: RootState) => state.auth)
+  const { courseEntireData } = useSelector((state: RootState) => state.viewCourse)
 
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm()
+  } = useForm<ReviewFormData>()
 
   useEffect(() => {
     setValue("courseExperience", "")
@@ -39,7 +34,9 @@ export default function VideoDetailsReviewModal({ setReviewModal }: VideoDetails
     setValue("courseRating", newRating)
   }
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: ReviewFormData) => {
+    if (!token || !courseEntireData?._id) return
+    
     await createRating(
       {
         courseId: courseEntireData._id,

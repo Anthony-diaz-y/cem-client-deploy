@@ -2,15 +2,7 @@
 import LoginForm from "./LoginForm"
 import SignupForm from "./SignupForm"
 import Img from './../../../shared/components/Img';
-
-
-interface TemplateProps {
-  title: string;
-  description1: string;
-  description2: string;
-  image: string;
-  formType: "login" | "signup";
-}
+import { TemplateProps } from '../types';
 
 function Template({ title, description1, description2, image, formType }: TemplateProps) {
   // const { loading } = useSelector((state) => state.auth);

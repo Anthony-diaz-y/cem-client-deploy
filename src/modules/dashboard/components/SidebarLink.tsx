@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import * as Icons from "react-icons/vsc";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -10,29 +10,20 @@ import { usePathname } from "next/navigation";
 import { resetCourseState } from "../../course/store/courseSlice";
 import { RootState } from "../../../shared/store/store";
 import { setOpenSideMenu } from "../store/sidebarSlice";
-
-interface SidebarLinkProps {
-  link: {
-    id?: string | number;
-    name: string;
-    path: string;
-    type?: string;
-  };
-  iconName: string;
-  setOpenSideMenu?: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { SidebarLinkProps } from '../types'
 
 export default function SidebarLink({ link, iconName }: SidebarLinkProps) {
-  const Icon = (Icons as any)[iconName];
+  const Icon = (Icons as Record<string, React.ComponentType<{ className?: string }>>)[iconName];
   const pathname = usePathname();
   const dispatch = useDispatch();
+  // Initialize mounted state to false to ensure consistent SSR/client rendering
   const [mounted, setMounted] = useState(false);
-
-  const { openSideMenu, screenSize } = useSelector((state: RootState) => state.sidebar);
-
+  
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const { openSideMenu, screenSize } = useSelector((state: RootState) => state.sidebar);
 
   const matchRoute = (route: string) => {
     if (!mounted || !pathname) return false; // Evitar diferencias durante SSR
@@ -49,11 +40,11 @@ export default function SidebarLink({ link, iconName }: SidebarLinkProps) {
     if (openSideMenu && screenSize !== undefined && screenSize <= 640) dispatch(setOpenSideMenu(false));
   };
 
-  const isActive = matchRoute(link.path);
+  const isActive = mounted ? matchRoute(link.path) : false;
 
   // Usar className estático durante SSR para evitar diferencias
   const baseClasses = "relative px-8 py-2 text-sm font-medium transition-all flex items-center gap-x-2"
-  const activeClasses = mounted && isActive
+  const activeClasses = isActive
     ? "bg-yellow-800 text-yellow-50"
     : "text-richblack-300 hover:bg-richblack-700 duration-200"
 
@@ -62,7 +53,6 @@ export default function SidebarLink({ link, iconName }: SidebarLinkProps) {
       href={link.path || "#"}
       onClick={handleClick}
       className={`${baseClasses} ${activeClasses}`}
-      suppressHydrationWarning
     >
       <span
         className={`absolute left-0 top-0 h-full w-[0.15rem] bg-yellow-50 ${isActive ? "opacity-100" : "opacity-0"

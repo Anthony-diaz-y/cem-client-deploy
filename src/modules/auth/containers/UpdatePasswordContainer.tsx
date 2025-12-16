@@ -6,14 +6,16 @@ import { BiArrowBack } from "react-icons/bi"
 import { useDispatch, useSelector } from "react-redux"
 
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 
 import { resetPassword } from "../../../shared/services/authAPI"
+import { RootState, AppDispatch } from "../../../shared/store/store"
 
 function UpdatePasswordContainer() {
   const router = useRouter()
-  const dispatch = useDispatch()
-  const { loading } = useSelector((state) => state.auth)
+  const pathname = usePathname()
+  const dispatch = useDispatch<AppDispatch>()
+  const { loading } = useSelector((state: RootState) => state.auth)
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
@@ -24,17 +26,17 @@ function UpdatePasswordContainer() {
 
   const { password, confirmPassword } = formData
 
-  const handleOnChange = (e) => {
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevData) => ({
       ...prevData,
       [e.target.name]: e.target.value,
     }))
   }
 
-  const handleOnSubmit = (e) => {
+  const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const token = router.asPath.split("/").at(-1)
-    dispatch(resetPassword(password, confirmPassword, token, router.push))
+    const token = pathname?.split("/").at(-1) || ""
+    dispatch(resetPassword(password, confirmPassword, token, router.push as (path: string) => void))
   }
 
   return (
@@ -48,7 +50,7 @@ function UpdatePasswordContainer() {
           </h1>
 
           <p className="my-4 text-[1.125rem] leading-[1.625rem] text-richblack-100">
-            Almost done. Enter your new password and you're all set.
+            Almost done. Enter your new password and you&apos;re all set.
           </p>
 
           <form onSubmit={handleOnSubmit}>

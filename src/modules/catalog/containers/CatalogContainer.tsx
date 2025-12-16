@@ -1,112 +1,142 @@
-'use client'
+"use client";
 
-import React, { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
-import Footer from "../../../shared/components/Footer"
-import Course_Card from "../components/Course_Card"
-import Course_Slider from "../components/Course_Slider"
-import Loading from '../../../shared/components/Loading'
-import { fetchCourseCategories } from '../../../shared/services/courseDetailsAPI'
-
-// Type definitions
-interface Course {
-  _id: string
-  courseName: string
-  price: number
-  thumbnail: string
-  instructor: {
-    firstName: string
-    lastName: string
-  }
-  ratingAndReviews: unknown[]
-  studentsEnrolled: unknown[]
-}
-
-interface Category {
-  _id: string
-  name: string
-}
-
-interface CategoryWithCourses {
-  name: string
-  description?: string
-  courses: Course[]
-}
-
-interface CatalogPageData {
-  selectedCategory: CategoryWithCourses
-  differentCategory: CategoryWithCourses
-  mostSellingCourses: Course[]
-}
+import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import Footer from "../../../shared/components/Footer";
+import CourseCard from "../components/CourseCard";
+import CourseSlider from "../components/CourseSlider";
+import Loading from "../../../shared/components/Loading";
+import { fetchCourseCategories } from "../../../shared/services/courseDetailsAPI";
+import { Course, Category, CatalogPageData } from "../types";
 
 /**
  * CatalogContainer - Container component for Catalog page
  * Handles all business logic: data fetching, state management, API calls
  */
 const CatalogContainer = () => {
-  const { catalogName } = useParams()
-  const [active, setActive] = useState(1)
-  const [catalogPageData, setCatalogPageData] = useState<CatalogPageData | null>(null)
-  const [categoryId, setCategoryId] = useState("")
-  const [loading, setLoading] = useState(false)
+  const { catalogName } = useParams();
+  const [active, setActive] = useState(1);
+  const [catalogPageData, setCatalogPageData] =
+    useState<CatalogPageData | null>(null);
+  const [categoryId, setCategoryId] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Fetch All Categories
   useEffect(() => {
-    ; (async () => {
+    (async () => {
       try {
-        const res = await fetchCourseCategories() as Category[]
-        const catalogNameStr = Array.isArray(catalogName) ? catalogName[0] : catalogName
+        const res = (await fetchCourseCategories()) as Category[];
+        const catalogNameStr = Array.isArray(catalogName)
+          ? catalogName[0]
+          : catalogName;
         if (catalogNameStr) {
           const category_id = res.filter(
-            (ct: Category) => ct.name.split(" ").join("-").toLowerCase() === catalogNameStr.toLowerCase()
-          )[0]?._id
+            (ct: Category) =>
+              ct.name.split(" ").join("-").toLowerCase() ===
+              catalogNameStr.toLowerCase()
+          )[0]?._id;
           if (category_id) {
-            setCategoryId(category_id)
+            setCategoryId(category_id);
           }
         }
       } catch (error) {
-        console.error("Could not fetch Categories.", error)
+        console.error("Could not fetch Categories.", error);
       }
-    })()
-  }, [catalogName])
+    })();
+  }, [catalogName]);
 
   // Fetch Catalog Page Data
   useEffect(() => {
     if (categoryId) {
-      ; (async () => {
-        setLoading(true)
+      (async () => {
+        setLoading(true);
         try {
           // Mock Data for Catalog
           const mockCatalogData = {
             selectedCategory: {
               name: "Web Development",
-              description: "Master the art of web development with our comprehensive courses.",
+              description:
+                "Master the art of web development with our comprehensive courses.",
               courses: [
-                { _id: "c1", courseName: "MERN Stack Bootcamp", price: 4999, thumbnail: "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/webdev_thumb.jpg", instructor: { firstName: "John", lastName: "Doe" }, ratingAndReviews: [], studentsEnrolled: [] },
-                { _id: "c2", courseName: "React Zero to Hero", price: 2999, thumbnail: "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/react_thumb.jpg", instructor: { firstName: "Jane", lastName: "Smith" }, ratingAndReviews: [], studentsEnrolled: [] },
-                { _id: "c3", courseName: "Node.js Advanced", price: 3499, thumbnail: "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/node_thumb.jpg", instructor: { firstName: "Mike", lastName: "Johnson" }, ratingAndReviews: [], studentsEnrolled: [] }
-              ]
+                {
+                  _id: "c1",
+                  courseName: "MERN Stack Bootcamp",
+                  price: 4999,
+                  thumbnail:
+                    "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/webdev_thumb.jpg",
+                  instructor: { firstName: "John", lastName: "Doe" },
+                  ratingAndReviews: [],
+                  studentsEnrolled: [],
+                },
+                {
+                  _id: "c2",
+                  courseName: "React Zero to Hero",
+                  price: 2999,
+                  thumbnail:
+                    "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/react_thumb.jpg",
+                  instructor: { firstName: "Jane", lastName: "Smith" },
+                  ratingAndReviews: [],
+                  studentsEnrolled: [],
+                },
+                {
+                  _id: "c3",
+                  courseName: "Node.js Advanced",
+                  price: 3499,
+                  thumbnail:
+                    "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/node_thumb.jpg",
+                  instructor: { firstName: "Mike", lastName: "Johnson" },
+                  ratingAndReviews: [],
+                  studentsEnrolled: [],
+                },
+              ],
             },
             differentCategory: {
               name: "Python",
               courses: [
-                { _id: "c4", courseName: "Python Masterclass", price: 1999, thumbnail: "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/python_thumb.jpg", instructor: { firstName: "Sarah", lastName: "Lee" }, ratingAndReviews: [], studentsEnrolled: [] }
-              ]
+                {
+                  _id: "c4",
+                  courseName: "Python Masterclass",
+                  price: 1999,
+                  thumbnail:
+                    "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/python_thumb.jpg",
+                  instructor: { firstName: "Sarah", lastName: "Lee" },
+                  ratingAndReviews: [],
+                  studentsEnrolled: [],
+                },
+              ],
             },
             mostSellingCourses: [
-              { _id: "c1", courseName: "MERN Stack Bootcamp", price: 4999, thumbnail: "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/webdev_thumb.jpg", instructor: { firstName: "John", lastName: "Doe" }, ratingAndReviews: [], studentsEnrolled: [] },
-              { _id: "c5", courseName: "Java DSA Upgrade", price: 5999, thumbnail: "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/java_thumb.jpg", instructor: { firstName: "David", lastName: "Brown" }, ratingAndReviews: [], studentsEnrolled: [] }
-            ]
-          }
+              {
+                _id: "c1",
+                courseName: "MERN Stack Bootcamp",
+                price: 4999,
+                thumbnail:
+                  "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/webdev_thumb.jpg",
+                instructor: { firstName: "John", lastName: "Doe" },
+                ratingAndReviews: [],
+                studentsEnrolled: [],
+              },
+              {
+                _id: "c5",
+                courseName: "Java DSA Upgrade",
+                price: 5999,
+                thumbnail:
+                  "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/java_thumb.jpg",
+                instructor: { firstName: "David", lastName: "Brown" },
+                ratingAndReviews: [],
+                studentsEnrolled: [],
+              },
+            ],
+          };
           // const res = await getCatalogPageData(categoryId)
-          setCatalogPageData(mockCatalogData)
+          setCatalogPageData(mockCatalogData);
         } catch (error) {
-          console.error("Error fetching catalog page data:", error)
+          console.error("Error fetching catalog page data:", error);
         }
-        setLoading(false)
-      })()
+        setLoading(false);
+      })();
     }
-  }, [categoryId])
+  }, [categoryId]);
 
   // Loading state
   if (loading) {
@@ -114,7 +144,7 @@ const CatalogContainer = () => {
       <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
         <Loading />
       </div>
-    )
+    );
   }
 
   // No data state
@@ -123,7 +153,7 @@ const CatalogContainer = () => {
       <div className="text-white text-4xl flex justify-center items-center mt-[20%]">
         No Courses found for selected Category
       </div>
-    )
+    );
   }
 
   // Render presentational component with data
@@ -152,26 +182,28 @@ const CatalogContainer = () => {
         <div className="section_heading">Courses to get you started</div>
         <div className="my-4 flex border-b border-b-richblack-600 text-sm">
           <p
-            className={`px-4 py-2 ${active === 1
-              ? "border-b border-b-yellow-25 text-yellow-25"
-              : "text-richblack-50"
-              } cursor-pointer`}
+            className={`px-4 py-2 ${
+              active === 1
+                ? "border-b border-b-yellow-25 text-yellow-25"
+                : "text-richblack-50"
+            } cursor-pointer`}
             onClick={() => setActive(1)}
           >
             Most Popular
           </p>
           <p
-            className={`px-4 py-2 ${active === 2
-              ? "border-b border-b-yellow-25 text-yellow-25"
-              : "text-richblack-50"
-              } cursor-pointer`}
+            className={`px-4 py-2 ${
+              active === 2
+                ? "border-b border-b-yellow-25 text-yellow-25"
+                : "text-richblack-50"
+            } cursor-pointer`}
             onClick={() => setActive(2)}
           >
             New
           </p>
         </div>
         <div>
-          <Course_Slider
+          <CourseSlider
             Courses={catalogPageData?.selectedCategory?.courses || []}
           />
         </div>
@@ -183,7 +215,7 @@ const CatalogContainer = () => {
           Top courses in {catalogPageData?.differentCategory?.name}
         </div>
         <div>
-          <Course_Slider
+          <CourseSlider
             Courses={catalogPageData?.differentCategory?.courses || []}
           />
         </div>
@@ -197,7 +229,11 @@ const CatalogContainer = () => {
             {catalogPageData?.mostSellingCourses
               ?.slice(0, 4)
               .map((course: Course, i: number) => (
-                <Course_Card course={course} key={course._id || i} Height={"h-[300px]"} />
+                <CourseCard
+                  course={course}
+                  key={course._id || i}
+                  Height={"h-[300px]"}
+                />
               ))}
           </div>
         </div>
@@ -205,8 +241,7 @@ const CatalogContainer = () => {
 
       <Footer />
     </>
-  )
-}
+  );
+};
 
-export default CatalogContainer
-
+export default CatalogContainer;

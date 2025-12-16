@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Link from "next/link"
 import Image from "next/image"
 
@@ -12,7 +12,7 @@ import InstructorSection from './components/InstructorSection'
 import Footer from '../../shared/components/Footer'
 import ExploreMore from './components/ExploreMore'
 import ReviewSlider from '../../shared/components/ReviewSlider'
-import Course_Slider from '../catalog/components/Course_Slider'
+import { CourseSlider } from '../catalog'
 
 import { MdOutlineRateReview } from 'react-icons/md'
 import { FaArrowRight } from "react-icons/fa"
@@ -20,37 +20,7 @@ import { FaArrowRight } from "react-icons/fa"
 import { motion } from 'framer-motion'
 import { fadeIn } from '../../shared/utils/motionFrameVarients'
 
-// Type definitions
-interface Course {
-  _id: string
-  courseName: string
-  price: number
-  thumbnail: string
-  instructor: {
-    firstName: string
-    lastName: string
-  }
-  ratingAndReviews: unknown[]
-  studentsEnrolled: unknown[]
-}
-
-interface CategoryWithCourses {
-  name: string
-  description?: string
-  courses: Course[]
-}
-
-interface CatalogPageData {
-  selectedCategory?: CategoryWithCourses
-  differentCategory?: CategoryWithCourses
-  mostSellingCourses?: Course[]
-}
-
-interface HomeProps {
-  backgroundImg: string | null
-  catalogPageData: CatalogPageData | null
-  token: string | null
-}
+import type { HomeProps } from './types'
 
 /**
  * Home - Presentational component for Home page
@@ -58,10 +28,11 @@ interface HomeProps {
  * No business logic, only UI rendering
  */
 const Home: React.FC<HomeProps> = ({ backgroundImg, catalogPageData, token }) => {
-  const [learnMoreLink, setLearnMoreLink] = useState("/auth/login")
-
-  useEffect(() => {
-    // Set link only on client to avoid hydration mismatch
+  // Use state to avoid hydration mismatch - only update after mount
+  const [learnMoreLink, setLearnMoreLink] = React.useState("/auth/login")
+  
+  // Update link after component mounts to avoid SSR/client mismatch
+  React.useEffect(() => {
     setLearnMoreLink(token ? "/dashboard/my-profile" : "/auth/login")
   }, [token])
 
@@ -206,13 +177,13 @@ const Home: React.FC<HomeProps> = ({ backgroundImg, catalogPageData, token }) =>
             <h2 className='text-white mb-6 text-2xl '>
               Popular Picks for You 🏆
             </h2>
-            <Course_Slider Courses={catalogPageData?.selectedCategory?.courses || []} />
+            <CourseSlider Courses={catalogPageData?.selectedCategory?.courses || []} />
           </div>
           <div className=' mx-auto box-content w-full max-w-maxContentTab px- py-12 lg:max-w-maxContent'>
             <h2 className='text-white mb-6 text-2xl '>
               Top Enrollments Today 🔥
             </h2>
-            <Course_Slider Courses={catalogPageData?.mostSellingCourses || []} />
+            <CourseSlider Courses={catalogPageData?.mostSellingCourses || []} />
           </div>
 
 

@@ -1,14 +1,7 @@
-import React, { useEffect, useRef, useState } from "react"
-import { AiOutlineDown } from "react-icons/ai"
 import { HiOutlineVideoCamera } from "react-icons/hi"
+import { SubSection } from '../types'
 
-interface ISubSection {
-  _id: string;
-  title: string;
-  description: string;
-}
-
-function CourseSubSectionAccordion({ subSec }: { subSec: ISubSection }) {
+function CourseSubSectionAccordion({ subSec }: { subSec: SubSection }) {
   return (
     <div>
       <div className="flex justify-between py-2">

@@ -1,0 +1,70 @@
+// Add Course Module Types
+
+import { UseFormRegister, UseFormSetValue, FieldErrors, FieldValues, Path } from 'react-hook-form';
+import { SubSection } from '../../course/types';
+
+export interface ChipInputProps {
+  label: string;
+  name: string;
+  placeholder: string;
+  register: UseFormRegister<FieldValues>;
+  errors: FieldErrors<FieldValues>;
+  setValue: UseFormSetValue<FieldValues>;
+}
+
+export interface CourseInformationFormData {
+  courseTitle: string;
+  courseShortDesc: string;
+  coursePrice: number;
+  courseTags: string[];
+  courseBenefits: string;
+  courseCategory: { _id: string; name: string };
+  courseRequirements: string[];
+  courseImage: string;
+}
+
+export interface CourseBuilderFormData {
+  sectionName: string;
+}
+
+export interface UploadProps {
+  name: string;
+  label: string;
+  register: UseFormRegister<FieldValues>;
+  setValue: UseFormSetValue<FieldValues>;
+  errors: FieldErrors<FieldValues>;
+  video?: boolean;
+  viewData?: string | null;
+  editData?: string | null | undefined;
+}
+
+export interface NestedViewProps {
+  handleChangeEditSectionName: (sectionId: string, sectionName: string) => void;
+}
+
+export interface PublishCourseFormData {
+  public: boolean;
+}
+
+export interface RequirementFieldProps<T extends FieldValues = FieldValues> {
+  name: Path<T>;
+  label: string;
+  register: UseFormRegister<T>;
+  setValue: UseFormSetValue<T>;
+  errors: FieldErrors<T>;
+}
+
+export interface SubSectionModalFormData {
+  lectureTitle: string;
+  lectureDesc: string;
+  lectureVideo: string;
+}
+
+export interface SubSectionModalProps {
+  modalData: string | (SubSection & { sectionId?: string }) | null;
+  setModalData: React.Dispatch<React.SetStateAction<string | (SubSection & { sectionId?: string }) | null>>;
+  add?: boolean;
+  view?: boolean;
+  edit?: boolean;
+}
+

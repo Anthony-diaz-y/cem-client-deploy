@@ -2,7 +2,7 @@
 
 
 import { useState, useEffect } from 'react'
-import EditCourse from '../../../../modules/dashboard/components/EditCourse'
+import EditCourse from '../../../../modules/instructor/containers/EditCourse'
 import { useAppSelector } from '../../../../shared/store/hooks'
 import { ACCOUNT_TYPE } from '../../../../shared/utils/constants'
 
