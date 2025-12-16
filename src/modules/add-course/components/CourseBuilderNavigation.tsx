@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
-import React from "react"
-import { MdNavigateNext } from "react-icons/md"
-import IconBtn from "../../../shared/components/IconBtn"
+import React from "react";
+import { MdNavigateNext } from "react-icons/md";
+import IconBtn from "@shared/components/IconBtn";
 
 interface CourseBuilderNavigationProps {
-  loading: boolean
-  onNext: () => void
-  onBack: () => void
+  loading: boolean;
+  onNext: () => void;
+  onBack: () => void;
 }
 
 /**
@@ -30,8 +30,7 @@ const CourseBuilderNavigation: React.FC<CourseBuilderNavigationProps> = ({
         <MdNavigateNext />
       </IconBtn>
     </div>
-  )
-}
+  );
+};
 
-export default CourseBuilderNavigation
-
+export default CourseBuilderNavigation;

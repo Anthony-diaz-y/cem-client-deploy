@@ -1,33 +1,37 @@
-'use client'
+"use client";
 
-import { useForm } from "react-hook-form"
-import { useDispatch, useSelector } from "react-redux"
-import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
-import { updateProfile } from "../../../shared/services/SettingsAPI"
-import IconBtn from "../../../shared/components/IconBtn"
-import { RootState, AppDispatch } from "../../../shared/store/store"
-import { ProfileFormData } from '../types'
+import { updateProfile } from "@shared/services/SettingsAPI";
+import IconBtn from "@shared/components/IconBtn";
+import { RootState, AppDispatch } from "@shared/store/store";
+import { ProfileFormData } from "../types";
 
-const genders = ["Male", "Female", "Non-Binary", "Prefer not to say", "Other"]
+const genders = ["Male", "Female", "Non-Binary", "Prefer not to say", "Other"];
 
 export default function EditProfile() {
-  const { user } = useSelector((state: RootState) => state.profile)
-  const { token } = useSelector((state: RootState) => state.auth)
-  const router = useRouter()
-  const dispatch = useDispatch<AppDispatch>()
+  const { user } = useSelector((state: RootState) => state.profile);
+  const { token } = useSelector((state: RootState) => state.auth);
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<ProfileFormData>()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ProfileFormData>();
 
   const submitProfileForm = async (data: ProfileFormData) => {
     // console.log("Form Data - ", data)
-    if (!token) return
+    if (!token) return;
     try {
-      dispatch(updateProfile(token, data))
+      dispatch(updateProfile(token, data));
     } catch (error) {
-      console.log("ERROR MESSAGE - ", (error as Error).message)
+      console.log("ERROR MESSAGE - ", (error as Error).message);
     }
-  }
+  };
   return (
     <>
       <form onSubmit={handleSubmit(submitProfileForm)}>
@@ -44,7 +48,6 @@ export default function EditProfile() {
               </label>
               <input
                 type="text"
-
                 id="firstName"
                 placeholder="Enter first name"
                 className="form-style"
@@ -64,7 +67,6 @@ export default function EditProfile() {
               </label>
               <input
                 type="text"
-
                 id="lastName"
                 placeholder="Enter first name"
                 className="form-style"
@@ -86,7 +88,6 @@ export default function EditProfile() {
               </label>
               <input
                 type="date"
-
                 id="dateOfBirth"
                 className="form-style"
                 {...register("dateOfBirth", {
@@ -113,8 +114,6 @@ export default function EditProfile() {
                 Gender
               </label>
               <select
-
-
                 id="gender"
                 className="form-style"
                 {...register("gender", { required: true })}
@@ -125,7 +124,7 @@ export default function EditProfile() {
                     <option key={i} value={ele}>
                       {ele}
                     </option>
-                  )
+                  );
                 })}
               </select>
               {errors.gender && (
@@ -143,7 +142,6 @@ export default function EditProfile() {
               </label>
               <input
                 type="tel"
-
                 id="contactNumber"
                 placeholder="Enter Contact Number"
                 className="form-style"
@@ -170,7 +168,6 @@ export default function EditProfile() {
               </label>
               <input
                 type="text"
-
                 id="about"
                 placeholder="Enter Bio Details"
                 className="form-style"
@@ -188,15 +185,16 @@ export default function EditProfile() {
 
         <div className="flex justify-end gap-2">
           <button
-            onClick={() => { router.push("/dashboard/my-profile") }}
+            onClick={() => {
+              router.push("/dashboard/my-profile");
+            }}
             className="cursor-pointer rounded-md bg-richblack-700 py-2 px-5 font-semibold text-richblack-50"
           >
             Cancel
           </button>
           <IconBtn type="submit" text="Save" />
         </div>
-
       </form>
     </>
-  )
+  );
 }

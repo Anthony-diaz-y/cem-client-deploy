@@ -1,5 +1,5 @@
-import { useMemo } from "react"
-import { InstructorDataType, Course } from "../types"
+import { useMemo } from "react";
+import { InstructorDataType, Course } from "../types";
 
 /**
  * Custom hook for instructor statistics calculations
@@ -10,20 +10,26 @@ export const useInstructorStats = (
   courses: Course[]
 ) => {
   const totalAmount = useMemo(() => {
-    return instructorData?.reduce((acc, curr) => acc + curr.totalAmountGenerated, 0) || 0
-  }, [instructorData])
+    return (
+      instructorData?.reduce(
+        (acc, curr) => acc + curr.totalAmountGenerated,
+        0
+      ) || 0
+    );
+  }, [instructorData]);
 
   const totalStudents = useMemo(() => {
-    return instructorData?.reduce(
-      (acc, curr) => acc + curr.totalStudentsEnrolled,
-      0
-    ) || 0
-  }, [instructorData])
+    return (
+      instructorData?.reduce(
+        (acc, curr) => acc + curr.totalStudentsEnrolled,
+        0
+      ) || 0
+    );
+  }, [instructorData]);
 
   const totalCourses = useMemo(() => {
-    return courses.length
-  }, [courses])
+    return courses.length;
+  }, [courses]);
 
-  return { totalAmount, totalStudents, totalCourses }
-}
-
+  return { totalAmount, totalStudents, totalCourses };
+};

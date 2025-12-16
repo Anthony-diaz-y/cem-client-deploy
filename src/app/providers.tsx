@@ -1,11 +1,15 @@
-'use client';
+"use client";
 
-import StoreProvider from '../shared/store/Provider';
-import { Toaster } from 'react-hot-toast';
-import { checkAndInitializeDemo } from '../shared/data/demoHelper';
-import { useEffect } from 'react';
+import { useEffect } from "react";
+import { Toaster } from "react-hot-toast";
+import StoreProvider from "@shared/store/Provider";
+import { checkAndInitializeDemo } from "@shared/data/demoHelper";
 
-export default function GlobalProviders({ children }: { children: React.ReactNode }) {
+export default function GlobalProviders({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   // 🎭 Initialize demo mode if enabled
   useEffect(() => {
     checkAndInitializeDemo();

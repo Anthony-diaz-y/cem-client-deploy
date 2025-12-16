@@ -1,131 +1,146 @@
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { toast } from "react-hot-toast"
-import { RxCross2 } from "react-icons/rx"
-import { useDispatch, useSelector } from "react-redux"
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import { RxCross2 } from "react-icons/rx";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   createSubSection,
   updateSubSection,
-} from "../../../shared/services/courseDetailsAPI"
-import { setCourse } from "../../course/store/courseSlice"
-import { RootState } from "../../../shared/store/store"
-import { Course, Section, SubSection } from "../../course/types"
-import { SubSectionModalFormData, SubSectionModalProps } from '../types/index'
-import IconBtn from "../../../shared/components/IconBtn"
-import Upload from "./Upload"
+} from "@shared/services/courseDetailsAPI";
+import { setCourse } from "../../course/store/courseSlice";
+import { RootState } from "@shared/store/store";
+import { Course, Section, SubSection } from "../../course/types";
+import { SubSectionModalFormData, SubSectionModalProps } from "../types/index";
+import IconBtn from "@shared/components/IconBtn";
+import Upload from "./Upload";
 
-export default function SubSectionModal({ modalData, setModalData, add = false, view = false, edit = false }: SubSectionModalProps) {
+export default function SubSectionModal({
+  modalData,
+  setModalData,
+  add = false,
+  view = false,
+  edit = false,
+}: SubSectionModalProps) {
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
     getValues,
-  } = useForm<SubSectionModalFormData>()
+  } = useForm<SubSectionModalFormData>();
 
   // console.log("view", view)
   // console.log("edit", edit)
   // console.log("add", add)
 
-  const dispatch = useDispatch()
-  const [loading, setLoading] = useState(false)
-  const { token } = useSelector((state: RootState) => state.auth)
-  const { course } = useSelector((state: RootState) => state.course)
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const { token } = useSelector((state: RootState) => state.auth);
+  const { course } = useSelector((state: RootState) => state.course);
 
   useEffect(() => {
-    if ((view || edit) && modalData && typeof modalData === 'object') {
-      const subSectionData = modalData as SubSection & { sectionId?: string }
-      setValue("lectureTitle", subSectionData.title)
-      setValue("lectureDesc", subSectionData.description)
-      setValue("lectureVideo", subSectionData.videoUrl)
+    if ((view || edit) && modalData && typeof modalData === "object") {
+      const subSectionData = modalData as SubSection & { sectionId?: string };
+      setValue("lectureTitle", subSectionData.title);
+      setValue("lectureDesc", subSectionData.description);
+      setValue("lectureVideo", subSectionData.videoUrl);
     }
-  }, [view, edit, modalData, setValue])
+  }, [view, edit, modalData, setValue]);
 
   // detect whether form is updated or not
   const isFormUpdated = () => {
-    if (!modalData || typeof modalData === 'string') return false
-    const currentValues = getValues()
-    const subSectionData = modalData as SubSection & { sectionId?: string }
+    if (!modalData || typeof modalData === "string") return false;
+    const currentValues = getValues();
+    const subSectionData = modalData as SubSection & { sectionId?: string };
     // console.log("changes after editing form values:", currentValues)
     if (
       currentValues.lectureTitle !== subSectionData.title ||
       currentValues.lectureDesc !== subSectionData.description ||
       currentValues.lectureVideo !== subSectionData.videoUrl
     ) {
-      return true
+      return true;
     }
-    return false
-  }
+    return false;
+  };
 
   // handle the editing of subsection
   const handleEditSubsection = async () => {
-    if (!modalData || typeof modalData === 'string' || !token || !course) return
-    const currentValues = getValues()
-    const subSectionData = modalData as SubSection & { sectionId: string }
-    const courseData = course as Course
+    if (!modalData || typeof modalData === "string" || !token || !course)
+      return;
+    const currentValues = getValues();
+    const subSectionData = modalData as SubSection & { sectionId: string };
+    const courseData = course as Course;
     // console.log("changes after editing form values:", currentValues)
-    const formData = new FormData()
+    const formData = new FormData();
     // console.log("Values After Editing form values:", currentValues)
-    formData.append("sectionId", subSectionData.sectionId)
-    formData.append("subSectionId", subSectionData._id)
+    formData.append("sectionId", subSectionData.sectionId);
+    formData.append("subSectionId", subSectionData._id);
     if (currentValues.lectureTitle !== subSectionData.title) {
-      formData.append("title", currentValues.lectureTitle)
+      formData.append("title", currentValues.lectureTitle);
     }
     if (currentValues.lectureDesc !== subSectionData.description) {
-      formData.append("description", currentValues.lectureDesc)
+      formData.append("description", currentValues.lectureDesc);
     }
     if (currentValues.lectureVideo !== subSectionData.videoUrl) {
-      formData.append("video", currentValues.lectureVideo)
+      formData.append("video", currentValues.lectureVideo);
     }
-    setLoading(true)
-    const result = await updateSubSection(formData, token)
+    setLoading(true);
+    const result = await updateSubSection(formData, token);
     if (result) {
       // console.log("result", result)
       // update the structure of course
-      const updatedCourseContent = courseData.courseContent.map((section: Section) =>
-        section._id === subSectionData.sectionId ? result : section
-      )
-      const updatedCourse: Course = { ...courseData, courseContent: updatedCourseContent }
-      dispatch(setCourse(updatedCourse))
+      const updatedCourseContent = courseData.courseContent.map(
+        (section: Section) =>
+          section._id === subSectionData.sectionId ? result : section
+      );
+      const updatedCourse: Course = {
+        ...courseData,
+        courseContent: updatedCourseContent,
+      };
+      dispatch(setCourse(updatedCourse));
     }
-    setModalData(null)
-    setLoading(false)
-  }
+    setModalData(null);
+    setLoading(false);
+  };
 
   const onSubmit = async (data: SubSectionModalFormData) => {
     // console.log(data)
-    if (view) return
+    if (view) return;
 
     if (edit) {
       if (!isFormUpdated()) {
-        toast.error("No changes made to the form")
+        toast.error("No changes made to the form");
       } else {
-        handleEditSubsection()
+        handleEditSubsection();
       }
-      return
+      return;
     }
 
-    if (!modalData || typeof modalData !== 'string' || !token || !course) return
-    const courseData = course as Course
-    const formData = new FormData()
-    formData.append("sectionId", modalData)
-    formData.append("title", data.lectureTitle)
-    formData.append("description", data.lectureDesc)
-    formData.append("video", data.lectureVideo)
-    setLoading(true)
-    const result = await createSubSection(formData, token)
+    if (!modalData || typeof modalData !== "string" || !token || !course)
+      return;
+    const courseData = course as Course;
+    const formData = new FormData();
+    formData.append("sectionId", modalData);
+    formData.append("title", data.lectureTitle);
+    formData.append("description", data.lectureDesc);
+    formData.append("video", data.lectureVideo);
+    setLoading(true);
+    const result = await createSubSection(formData, token);
     if (result) {
       // update the structure of course
-      const updatedCourseContent = courseData.courseContent.map((section: Section) =>
-        section._id === modalData ? result : section
-      )
-      const updatedCourse: Course = { ...courseData, courseContent: updatedCourseContent }
-      dispatch(setCourse(updatedCourse))
+      const updatedCourseContent = courseData.courseContent.map(
+        (section: Section) => (section._id === modalData ? result : section)
+      );
+      const updatedCourse: Course = {
+        ...courseData,
+        courseContent: updatedCourseContent,
+      };
+      dispatch(setCourse(updatedCourse));
     }
-    setModalData(null)
-    setLoading(false)
-  }
+    setModalData(null);
+    setLoading(false);
+  };
 
   return (
     <div className="fixed inset-0 z-[1000] !mt-0 grid h-screen w-screen place-items-center overflow-auto bg-white bg-opacity-10 backdrop-blur-sm">
@@ -148,12 +163,24 @@ export default function SubSectionModal({ modalData, setModalData, add = false, 
           <Upload
             name="lectureVideo"
             label="Lecture Video"
-            register={register as unknown as Parameters<typeof Upload>[0]['register']}
-            setValue={setValue as unknown as Parameters<typeof Upload>[0]['setValue']}
-            errors={errors as unknown as Parameters<typeof Upload>[0]['errors']}
+            register={
+              register as unknown as Parameters<typeof Upload>[0]["register"]
+            }
+            setValue={
+              setValue as unknown as Parameters<typeof Upload>[0]["setValue"]
+            }
+            errors={errors as unknown as Parameters<typeof Upload>[0]["errors"]}
             video={true}
-            viewData={view && modalData && typeof modalData === 'object' ? (modalData as SubSection).videoUrl : null}
-            editData={edit && modalData && typeof modalData === 'object' ? (modalData as SubSection).videoUrl : null}
+            viewData={
+              view && modalData && typeof modalData === "object"
+                ? (modalData as SubSection).videoUrl
+                : null
+            }
+            editData={
+              edit && modalData && typeof modalData === "object"
+                ? (modalData as SubSection).videoUrl
+                : null
+            }
           />
           {/* Lecture Title */}
           <div className="flex flex-col space-y-2">
@@ -204,5 +231,5 @@ export default function SubSectionModal({ modalData, setModalData, add = false, 
         </form>
       </div>
     </div>
-  )
+  );
 }

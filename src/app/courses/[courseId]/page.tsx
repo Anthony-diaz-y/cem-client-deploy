@@ -1,9 +1,5 @@
-import React from 'react'
-import CourseDetailsContainer from '../../../modules/course/containers/CourseDetailsContainer'
+import CourseDetailsContainer from "@modules/course/containers/CourseDetailsContainer";
 
 export default function CourseDetails() {
-  return (
-    <CourseDetailsContainer />
-  )
+  return <CourseDetailsContainer />;
 }
-

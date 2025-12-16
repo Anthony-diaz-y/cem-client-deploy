@@ -1,42 +1,59 @@
-import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
-import { Section } from "../types"
+import { useMemo, useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+import { Section } from "../types";
 
 /**
  * Custom hook for sidebar state management
  * Separates sidebar state logic from component
  */
 export const useSidebarState = (courseSectionData: Section[]) => {
-  const params = useParams()
-  const sectionId = params?.sectionId as string
-  const subSectionId = params?.subSectionId as string
+  const params = useParams();
+  const sectionId = params?.sectionId as string;
+  const subSectionId = params?.subSectionId as string;
 
-  const [activeStatus, setActiveStatus] = useState("")
-  const [videoBarActive, setVideoBarActive] = useState("")
-
-  useEffect(() => {
-    if (!courseSectionData.length) return
+  // Calculate initial values using useMemo
+  const calculatedValues = useMemo(() => {
+    if (!courseSectionData.length) {
+      return { activeStatus: "", videoBarActive: "" };
+    }
 
     const currentSectionIndx = courseSectionData.findIndex(
       (data: Section) => data._id === sectionId
-    )
+    );
     const currentSubSectionIndx = courseSectionData?.[
       currentSectionIndx
-    ]?.subSection.findIndex((data) => data._id === subSectionId)
+    ]?.subSection.findIndex((data) => data._id === subSectionId);
     const activeSubSectionId =
-      courseSectionData[currentSectionIndx]?.subSection?.[
-        currentSubSectionIndx
-      ]?._id
+      courseSectionData[currentSectionIndx]?.subSection?.[currentSubSectionIndx]
+        ?._id;
 
-    setActiveStatus(courseSectionData?.[currentSectionIndx]?._id || "")
-    setVideoBarActive(activeSubSectionId || "")
-  }, [courseSectionData, sectionId, subSectionId])
+    return {
+      activeStatus: courseSectionData?.[currentSectionIndx]?._id || "",
+      videoBarActive: activeSubSectionId || "",
+    };
+  }, [courseSectionData, sectionId, subSectionId]);
+
+  // Initialize state with calculated values
+  const [activeStatus, setActiveStatus] = useState(
+    calculatedValues.activeStatus
+  );
+  const [videoBarActive, setVideoBarActive] = useState(
+    calculatedValues.videoBarActive
+  );
+
+  // Update state asynchronously when calculated values change
+  useEffect(() => {
+    // Use queueMicrotask to avoid synchronous setState
+    queueMicrotask(() => {
+      setActiveStatus(calculatedValues.activeStatus);
+      setVideoBarActive(calculatedValues.videoBarActive);
+    });
+  }, [calculatedValues.activeStatus, calculatedValues.videoBarActive]);
 
   return {
     activeStatus,
     videoBarActive,
     setActiveStatus,
     setVideoBarActive,
-  }
-}
-
+  };
+};

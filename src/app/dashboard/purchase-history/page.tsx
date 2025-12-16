@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 function PurchaseHistory() {
   return (
@@ -13,8 +13,7 @@ function PurchaseHistory() {
         </p>
       </div>
     </div>
-  )
+  );
 }
 
-export default PurchaseHistory
-
+export default PurchaseHistory;

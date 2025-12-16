@@ -1,63 +1,79 @@
-import { useState } from "react"
-import { AiFillCaretDown } from "react-icons/ai"
-import { FaPlus } from "react-icons/fa"
-import { MdEdit } from "react-icons/md"
-import { RiDeleteBin6Line } from "react-icons/ri"
-import { RxDropdownMenu } from "react-icons/rx"
-import { useDispatch, useSelector } from "react-redux"
+import { useState } from "react";
+import { AiFillCaretDown } from "react-icons/ai";
+import { FaPlus } from "react-icons/fa";
+import { MdEdit } from "react-icons/md";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { RxDropdownMenu } from "react-icons/rx";
+import { useDispatch, useSelector } from "react-redux";
 
-import { deleteSection, deleteSubSection } from "../../../shared/services/courseDetailsAPI"
-import { setCourse } from "../../course/store/courseSlice"
-import { RootState } from "../../../shared/store/store"
-import { Course, Section, SubSection } from "../../course/types"
-import { ConfirmationModalData } from "../../../shared/components/ConfirmationModal"
-import { NestedViewProps } from '../types/index'
+import {
+  deleteSection,
+  deleteSubSection,
+} from "@shared/services/courseDetailsAPI";
+import { setCourse } from "../../course/store/courseSlice";
+import { RootState } from "@shared/store/store";
+import { Course, Section, SubSection } from "../../course/types";
+import { ConfirmationModalData } from "@shared/components/ConfirmationModal";
+import { NestedViewProps } from "../types/index";
 
-import ConfirmationModal from "../../../shared/components/ConfirmationModal"
-import SubSectionModal from "./SubSectionModal"
+import ConfirmationModal from "@shared/components/ConfirmationModal";
+import SubSectionModal from "./SubSectionModal";
 
-export default function NestedView({ handleChangeEditSectionName }: NestedViewProps) {
-
-  const { course } = useSelector((state: RootState) => state.course)
-  const { token } = useSelector((state: RootState) => state.auth)
-  const dispatch = useDispatch()
+export default function NestedView({
+  handleChangeEditSectionName,
+}: NestedViewProps) {
+  const { course } = useSelector((state: RootState) => state.course);
+  const { token } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch();
 
   // States to keep track of mode of modal [add, view, edit]
-  const [addSubSection, setAddSubsection] = useState<string | null>(null)
-  const [viewSubSection, setViewSubSection] = useState<SubSection | null>(null)
-  const [editSubSection, setEditSubSection] = useState<(SubSection & { sectionId: string }) | null>(null)
+  const [addSubSection, setAddSubsection] = useState<string | null>(null);
+  const [viewSubSection, setViewSubSection] = useState<SubSection | null>(null);
+  const [editSubSection, setEditSubSection] = useState<
+    (SubSection & { sectionId: string }) | null
+  >(null);
   // to keep track of confirmation modal
-  const [confirmationModal, setConfirmationModal] = useState<ConfirmationModalData | null>(null)
+  const [confirmationModal, setConfirmationModal] =
+    useState<ConfirmationModalData | null>(null);
 
   // Delele Section
   const handleDeleleSection = async (sectionId: string) => {
-    if (!course || !token) return
-    const courseData = course as Course
-    const result = await deleteSection({ sectionId, courseId: courseData._id }, token)
+    if (!course || !token) return;
+    const courseData = course as Course;
+    const result = await deleteSection(
+      { sectionId, courseId: courseData._id },
+      token
+    );
     if (result) {
-      dispatch(setCourse(result))
+      dispatch(setCourse(result));
     }
-    setConfirmationModal(null)
-  }
+    setConfirmationModal(null);
+  };
 
-  // Delete SubSection 
-  const handleDeleteSubSection = async (subSectionId: string, sectionId: string) => {
-    if (!course || !token) return
-    const courseData = course as Course
-    const result = await deleteSubSection({ subSectionId, sectionId }, token)
+  // Delete SubSection
+  const handleDeleteSubSection = async (
+    subSectionId: string,
+    sectionId: string
+  ) => {
+    if (!course || !token) return;
+    const courseData = course as Course;
+    const result = await deleteSubSection({ subSectionId, sectionId }, token);
     if (result && courseData) {
-      // update the structure of course - As we have got only updated section details 
-      const updatedCourseContent = courseData.courseContent.map((section: Section) =>
-        section._id === sectionId ? result : section
-      )
-      const updatedCourse: Course = { ...courseData, courseContent: updatedCourseContent }
-      dispatch(setCourse(updatedCourse))
+      // update the structure of course - As we have got only updated section details
+      const updatedCourseContent = courseData.courseContent.map(
+        (section: Section) => (section._id === sectionId ? result : section)
+      );
+      const updatedCourse: Course = {
+        ...courseData,
+        courseContent: updatedCourseContent,
+      };
+      dispatch(setCourse(updatedCourse));
     }
-    setConfirmationModal(null)
-  }
+    setConfirmationModal(null);
+  };
 
-  if (!course) return null
-  const courseData = course as Course
+  if (!course) return null;
+  const courseData = course as Course;
 
   return (
     <>
@@ -109,7 +125,6 @@ export default function NestedView({ handleChangeEditSectionName }: NestedViewPr
                 <span className="font-medium text-richblack-300">|</span>
                 <AiFillCaretDown className={`text-xl text-richblack-300`} />
               </div>
-
             </summary>
             <div className="px-6 pb-4">
               {/* Render All Sub Sections Within a Section */}
@@ -167,20 +182,24 @@ export default function NestedView({ handleChangeEditSectionName }: NestedViewPr
         ))}
       </div>
 
-
-
       {/* Modal Display */}
       {addSubSection ? (
         <SubSectionModal
           modalData={addSubSection}
-          setModalData={(value: React.SetStateAction<string | (SubSection & { sectionId?: string }) | null>) => {
-            if (typeof value === 'function') {
+          setModalData={(
+            value: React.SetStateAction<
+              string | (SubSection & { sectionId?: string }) | null
+            >
+          ) => {
+            if (typeof value === "function") {
               setAddSubsection((prev) => {
-                const newValue = value(prev as string | (SubSection & { sectionId?: string }) | null);
-                return typeof newValue === 'string' ? newValue : null;
+                const newValue = value(
+                  prev as string | (SubSection & { sectionId?: string }) | null
+                );
+                return typeof newValue === "string" ? newValue : null;
               });
             } else {
-              setAddSubsection(typeof value === 'string' ? value : null);
+              setAddSubsection(typeof value === "string" ? value : null);
             }
           }}
           add={true}
@@ -188,14 +207,26 @@ export default function NestedView({ handleChangeEditSectionName }: NestedViewPr
       ) : viewSubSection ? (
         <SubSectionModal
           modalData={viewSubSection}
-          setModalData={(value: React.SetStateAction<string | (SubSection & { sectionId?: string }) | null>) => {
-            if (typeof value === 'function') {
+          setModalData={(
+            value: React.SetStateAction<
+              string | (SubSection & { sectionId?: string }) | null
+            >
+          ) => {
+            if (typeof value === "function") {
               setViewSubSection((prev) => {
-                const newValue = value(prev as string | (SubSection & { sectionId?: string }) | null);
-                return typeof newValue === 'object' && newValue !== null ? newValue as SubSection : null;
+                const newValue = value(
+                  prev as string | (SubSection & { sectionId?: string }) | null
+                );
+                return typeof newValue === "object" && newValue !== null
+                  ? (newValue as SubSection)
+                  : null;
               });
             } else {
-              setViewSubSection(typeof value === 'object' && value !== null ? value as SubSection : null);
+              setViewSubSection(
+                typeof value === "object" && value !== null
+                  ? (value as SubSection)
+                  : null
+              );
             }
           }}
           view={true}
@@ -203,14 +234,26 @@ export default function NestedView({ handleChangeEditSectionName }: NestedViewPr
       ) : editSubSection ? (
         <SubSectionModal
           modalData={editSubSection}
-          setModalData={(value: React.SetStateAction<string | (SubSection & { sectionId?: string }) | null>) => {
-            if (typeof value === 'function') {
+          setModalData={(
+            value: React.SetStateAction<
+              string | (SubSection & { sectionId?: string }) | null
+            >
+          ) => {
+            if (typeof value === "function") {
               setEditSubSection((prev) => {
-                const newValue = value(prev as string | (SubSection & { sectionId?: string }) | null);
-                return typeof newValue === 'object' && newValue !== null ? newValue as (SubSection & { sectionId: string }) : null;
+                const newValue = value(
+                  prev as string | (SubSection & { sectionId?: string }) | null
+                );
+                return typeof newValue === "object" && newValue !== null
+                  ? (newValue as SubSection & { sectionId: string })
+                  : null;
               });
             } else {
-              setEditSubSection(typeof value === 'object' && value !== null ? value as (SubSection & { sectionId: string }) : null);
+              setEditSubSection(
+                typeof value === "object" && value !== null
+                  ? (value as SubSection & { sectionId: string })
+                  : null
+              );
             }
           }}
           edit={true}
@@ -225,5 +268,5 @@ export default function NestedView({ handleChangeEditSectionName }: NestedViewPr
         <></>
       )}
     </>
-  )
+  );
 }

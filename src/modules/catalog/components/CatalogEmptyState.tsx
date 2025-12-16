@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import React from "react"
+import React from "react";
 
 /**
  * CatalogEmptyState - Empty state component for catalog page
@@ -10,8 +10,7 @@ const CatalogEmptyState: React.FC = () => {
     <div className="text-white text-4xl flex justify-center items-center mt-[20%]">
       No Courses found for selected Category
     </div>
-  )
-}
+  );
+};
 
-export default CatalogEmptyState
-
+export default CatalogEmptyState;

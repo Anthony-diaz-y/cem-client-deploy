@@ -1,47 +1,48 @@
-'use client'
+"use client";
 
-import React from "react"
-import copy from "copy-to-clipboard"
-import { toast } from "react-hot-toast"
-import { useDispatch, useSelector } from "react-redux"
+import React from "react";
+import copy from "copy-to-clipboard";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 
-import { BsFillCaretRightFill } from "react-icons/bs"
-import { FaShareSquare } from "react-icons/fa"
+import { BsFillCaretRightFill } from "react-icons/bs";
+import { FaShareSquare } from "react-icons/fa";
 
-import { addToCart } from "../store/cartSlice"
-import { ACCOUNT_TYPE } from "../../../shared/utils/constants"
-import Img from './../../../shared/components/Img'
-import { CourseDetailsCardProps } from '../types'
-import { RootState, AppDispatch } from "../../../shared/store/store"
+import { addToCart } from "../store/cartSlice";
+import { ACCOUNT_TYPE } from "@shared/utils/constants";
+import Img from "@shared/components/Img";
+import { CourseDetailsCardProps } from "../types";
+import { RootState, AppDispatch } from "@shared/store/store";
 
-function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }: CourseDetailsCardProps) {
-  const { user } = useSelector((state: RootState) => state.profile)
-  const { token } = useSelector((state: RootState) => state.auth)
-  const router = useRouter()
-  const dispatch = useDispatch<AppDispatch>()
+function CourseDetailsCard({
+  course,
+  setConfirmationModal,
+  handleBuyCourse,
+}: CourseDetailsCardProps) {
+  const { user } = useSelector((state: RootState) => state.profile);
+  const { token } = useSelector((state: RootState) => state.auth);
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const {
-    thumbnail: ThumbnailImage,
-    price: CurrentPrice,
-  } = course
+  const { thumbnail: ThumbnailImage, price: CurrentPrice } = course;
 
   const handleShare = () => {
-    if (typeof window !== 'undefined') {
-      copy(window.location.href)
-      toast.success("Link copied to clipboard")
+    if (typeof window !== "undefined") {
+      copy(window.location.href);
+      toast.success("Link copied to clipboard");
     }
-  }
+  };
 
   const handleAddToCart = () => {
     if (user && user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
-      toast.error("You are an Instructor. You can't buy a course.")
-      return
+      toast.error("You are an Instructor. You can't buy a course.");
+      return;
     }
     if (token) {
-      dispatch(addToCart(course))
-      return
+      dispatch(addToCart(course));
+      return;
     }
     setConfirmationModal({
       text1: "You are not logged in!",
@@ -50,8 +51,8 @@ function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }: Co
       btn2Text: "Cancel",
       btn1Handler: () => router.push("/auth/login"),
       btn2Handler: () => setConfirmationModal(null),
-    })
-  }
+    });
+  };
 
   // console.log("Student already enrolled ", course?.studentsEnroled, user?._id)
 
@@ -85,7 +86,10 @@ function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }: Co
                 : "Buy Now"}
             </button>
             {(!user || !course?.studentsEnrolled.includes(user?._id)) && (
-              <button onClick={handleAddToCart} className="blackButton outline-none">
+              <button
+                onClick={handleAddToCart}
+                className="blackButton outline-none"
+              >
                 Add to Cart
               </button>
             )}
@@ -106,7 +110,7 @@ function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }: Co
                     <BsFillCaretRightFill />
                     <span>{item}</span>
                   </p>
-                )
+                );
               })}
             </div>
           </div>
@@ -122,7 +126,7 @@ function CourseDetailsCard({ course, setConfirmationModal, handleBuyCourse }: Co
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default CourseDetailsCard
+export default CourseDetailsCard;

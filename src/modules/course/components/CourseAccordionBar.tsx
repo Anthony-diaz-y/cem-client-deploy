@@ -1,42 +1,52 @@
-import { useEffect, useRef, useState, useMemo } from "react"
-import CourseSubSectionAccordion from "./CourseSubSectionAccordion"
-import { IoMdArrowDropdown } from "react-icons/io"
-import { CourseAccordionBarProps } from '../types'
+import { useEffect, useRef, useState, useMemo } from "react";
+import CourseSubSectionAccordion from "./CourseSubSectionAccordion";
+import { IoMdArrowDropdown } from "react-icons/io";
+import { CourseAccordionBarProps } from "../types";
 
-export default function CourseAccordionBar({ course, isActive, handleActive }: CourseAccordionBarProps) {
-
-  const contentEl = useRef<HTMLDivElement>(null)
-  const [sectionHeight, setSectionHeight] = useState(0)
+export default function CourseAccordionBar({
+  course,
+  isActive,
+  handleActive,
+}: CourseAccordionBarProps) {
+  const contentEl = useRef<HTMLDivElement>(null);
+  const [sectionHeight, setSectionHeight] = useState(0);
 
   // Calculate active state directly from props instead of using useState + useEffect
-  const active = useMemo(() => isActive?.includes(course._id) ?? false, [isActive, course._id])
+  const active = useMemo(
+    () => isActive?.includes(course._id) ?? false,
+    [isActive, course._id]
+  );
 
   useEffect(() => {
     // Use a callback to measure height after render
     const updateHeight = () => {
       if (contentEl.current) {
-        setSectionHeight(active ? contentEl.current.scrollHeight : 0)
+        setSectionHeight(active ? contentEl.current.scrollHeight : 0);
       }
-    }
-    
+    };
+
     // Small delay to ensure DOM is updated
-    const timeoutId = setTimeout(updateHeight, 0)
-    
-    return () => clearTimeout(timeoutId)
-  }, [active, course.subSection])
+    const timeoutId = setTimeout(updateHeight, 0);
 
-
+    return () => clearTimeout(timeoutId);
+  }, [active, course.subSection]);
 
   return (
-    <div className='overflow-hidden border border-solid border-richblack-600 bg-richblack-700 hover:bg-richblack-600 text-richblack-5 last:mb-0 duration-200 '>
+    <div className="overflow-hidden border border-solid border-richblack-600 bg-richblack-700 hover:bg-richblack-600 text-richblack-5 last:mb-0 duration-200 ">
       <div>
         <div
           className={`flex cursor-pointer items-start justify-between bg-opacity-20 px-7 py-6 transition-[0.3s]`}
-          onClick={() => { handleActive(course._id) }}
+          onClick={() => {
+            handleActive(course._id);
+          }}
         >
           <div className="flex items-center gap-2">
             <i
-              className={isActive.includes(course._id) ? "rotate-180 duration-300" : "rotate-0 duration-300"}
+              className={
+                isActive.includes(course._id)
+                  ? "rotate-180 duration-300"
+                  : "rotate-0 duration-300"
+              }
             >
               <IoMdArrowDropdown size={25} />
             </i>
@@ -53,14 +63,14 @@ export default function CourseAccordionBar({ course, isActive, handleActive }: C
       <div
         ref={contentEl}
         className={`relative h-0 overflow-hidden bg-richblack-900 transition-[height] duration-[0.35s] ease-[ease]`}
-        style={{ height: sectionHeight, }}
+        style={{ height: sectionHeight }}
       >
         <div className="text-textHead flex flex-col gap-2 px-7 py-6 font-semibold">
           {course?.subSection?.map((subSec, i) => {
-            return <CourseSubSectionAccordion subSec={subSec} key={i} />
+            return <CourseSubSectionAccordion subSec={subSec} key={i} />;
           })}
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,16 +1,8 @@
-'use client'
+"use client";
 
-import React from "react"
-import CourseAccordionBar from "./CourseAccordionBar"
-import { CourseDetailsResponse } from "../types"
-
-interface CourseContentSectionProps {
-  response: CourseDetailsResponse
-  totalNoOfLectures: number
-  isActive: string[]
-  handleActive: (id: string) => void
-  onCollapseAll: () => void
-}
+import React from "react";
+import CourseAccordionBar from "./CourseAccordionBar";
+import { CourseContentSectionProps } from "../types";
 
 /**
  * CourseContentSection - Section component for course content
@@ -23,7 +15,7 @@ const CourseContentSection: React.FC<CourseContentSectionProps> = ({
   handleActive,
   onCollapseAll,
 }) => {
-  const { courseContent } = response.data.courseDetails
+  const { courseContent } = response.data.courseDetails;
 
   return (
     <div className="max-w-[830px] mt-9">
@@ -31,8 +23,12 @@ const CourseContentSection: React.FC<CourseContentSectionProps> = ({
         <p className="text-[28px] font-semibold">Course Content</p>
         <div className="flex flex-wrap justify-between gap-2">
           <div className="flex gap-2">
-            <span>{courseContent.length} {`section(s)`}</span>
-            <span>{totalNoOfLectures} {`lecture(s)`}</span>
+            <span>
+              {courseContent.length} {`section(s)`}
+            </span>
+            <span>
+              {totalNoOfLectures} {`lecture(s)`}
+            </span>
             <span>{response.data?.totalDuration} Total Time</span>
           </div>
           <button className="text-yellow-25" onClick={onCollapseAll}>
@@ -53,8 +49,7 @@ const CourseContentSection: React.FC<CourseContentSectionProps> = ({
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CourseContentSection
-
+export default CourseContentSection;

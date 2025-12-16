@@ -1,19 +1,17 @@
-'use client'
+"use client";
 
-import React from "react"
-import CourseSlider from "./CourseSlider"
-import CourseCard from "./CourseCard"
-import { CatalogPageData, Course } from "../types"
-
-interface CatalogSectionsProps {
-  catalogPageData: CatalogPageData
-}
+import React from "react";
+import CourseSlider from "./CourseSlider";
+import CourseCard from "./CourseCard";
+import { CatalogSectionsProps, Course } from "../types";
 
 /**
  * CatalogSections - Sections component for catalog page
  * Displays different category sections and most selling courses
  */
-const CatalogSections: React.FC<CatalogSectionsProps> = ({ catalogPageData }) => {
+const CatalogSections: React.FC<CatalogSectionsProps> = ({
+  catalogPageData,
+}) => {
   return (
     <>
       {/* Section 2 - Different Category */}
@@ -46,8 +44,7 @@ const CatalogSections: React.FC<CatalogSectionsProps> = ({ catalogPageData }) =>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default CatalogSections
-
+export default CatalogSections;

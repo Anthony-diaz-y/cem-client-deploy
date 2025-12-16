@@ -1,22 +1,12 @@
-'use client'
+"use client";
 
-import React from "react"
-import { useRouter } from "next/navigation"
-import { useDispatch, useSelector } from "react-redux"
-import { BsChevronDown } from "react-icons/bs"
-import { setCourseViewSidebar } from "../../dashboard/store/sidebarSlice"
-import { RootState, AppDispatch } from "../../../shared/store/store"
-import { Section } from "../types"
-
-interface SidebarSectionListProps {
-  courseSectionData: Section[]
-  courseId?: string
-  activeStatus: string
-  videoBarActive: string
-  completedLectures: string[]
-  onSectionClick: (sectionId: string) => void
-  onSubSectionClick: (sectionId: string, subSectionId: string) => void
-}
+import React from "react";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { BsChevronDown } from "react-icons/bs";
+import { setCourseViewSidebar } from "@modules/dashboard/store/sidebarSlice";
+import { RootState, AppDispatch } from "@shared/store/store";
+import { Section, SidebarSectionListProps } from "../types";
 
 /**
  * SidebarSectionList - Section list component for video details sidebar
@@ -30,25 +20,25 @@ const SidebarSectionList: React.FC<SidebarSectionListProps> = ({
   onSectionClick,
   onSubSectionClick,
 }) => {
-  const router = useRouter()
-  const dispatch = useDispatch<AppDispatch>()
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
   const { courseViewSidebar } = useSelector(
     (state: RootState) => state.sidebar
-  )
+  );
 
   const handleSubSectionClick = (sectionId: string, subSectionId: string) => {
-    onSubSectionClick(sectionId, subSectionId)
+    onSubSectionClick(sectionId, subSectionId);
     router.push(
       `/view-course/${courseId}/section/${sectionId}/sub-section/${subSectionId}`
-    )
+    );
     if (
       courseViewSidebar &&
       typeof window !== "undefined" &&
       window.innerWidth <= 640
     ) {
-      dispatch(setCourseViewSidebar(false))
+      dispatch(setCourseViewSidebar(false));
     }
-  }
+  };
 
   return (
     <div className="h-[calc(100vh - 5rem)] overflow-y-auto">
@@ -87,8 +77,8 @@ const SidebarSectionList: React.FC<SidebarSectionListProps> = ({
                   }`}
                   key={i}
                   onClick={(e) => {
-                    e.stopPropagation()
-                    handleSubSectionClick(section._id, topic._id)
+                    e.stopPropagation();
+                    handleSubSectionClick(section._id, topic._id);
                   }}
                 >
                   <input
@@ -104,8 +94,7 @@ const SidebarSectionList: React.FC<SidebarSectionListProps> = ({
         </div>
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default SidebarSectionList
-
+export default SidebarSectionList;

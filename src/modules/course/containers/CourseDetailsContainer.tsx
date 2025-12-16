@@ -3,10 +3,10 @@
 import React, { useEffect } from "react"
 import { useSelector } from "react-redux"
 import { useParams } from "next/navigation"
-import { RootState } from "../../../shared/store/store"
+import { RootState } from "@shared/store/store"
 
-import ConfirmationModal from "../../../shared/components/ConfirmationModal"
-import Footer from "../../../shared/components/Footer"
+import ConfirmationModal from "@shared/components/ConfirmationModal"
+import Footer from "@shared/components/Footer"
 import CourseDetailsCard from "../components/CourseDetailsCard"
 import CourseHero from "../components/CourseHero"
 import CourseInfoSection from "../components/CourseInfoSection"

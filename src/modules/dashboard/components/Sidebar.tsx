@@ -1,96 +1,102 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from "react"
-import { VscSignOut } from "react-icons/vsc"
+import { useEffect, useState } from "react";
+import { VscSignOut } from "react-icons/vsc";
 
+import { useRouter } from "next/navigation";
 
-import { useRouter } from "next/navigation"
+import { sidebarLinks } from "@shared/data/dashboard-links";
+import { logout } from "@modules/auth/services/authAPI";
+import ConfirmationModal from "@shared/components/ConfirmationModal";
+import SidebarLink from "./SidebarLink";
+import Loading from "@shared/components/Loading";
 
-import { sidebarLinks } from './../../../shared/data/dashboard-links';
-import { logout } from "../../auth/services/authAPI"
-import ConfirmationModal from "../../../shared/components/ConfirmationModal"
-import SidebarLink from "./SidebarLink"
-import Loading from './../../../shared/components/Loading';
-
-import { HiMenuAlt1 } from 'react-icons/hi'
-import { IoMdClose } from 'react-icons/io'
+import { HiMenuAlt1 } from "react-icons/hi";
+import { IoMdClose } from "react-icons/io";
 
 import { setOpenSideMenu, setScreenSize } from "../store/sidebarSlice";
-import { useAppDispatch, useAppSelector } from "../../../shared/store/hooks"
-import { ConfirmationModalData } from '../types'
+import { useAppDispatch, useAppSelector } from "@shared/store/hooks";
+import { ConfirmationModalData } from "../types";
 
 export default function Sidebar() {
-  const { user, loading: profileLoading } = useAppSelector((state) => state.profile)
-  const { loading: authLoading } = useAppSelector((state) => state.auth)
-  const dispatch = useAppDispatch()
-  const router = useRouter()
+  const { user, loading: profileLoading } = useAppSelector(
+    (state) => state.profile
+  );
+  const { loading: authLoading } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
   // to keep track of confirmation modal
-  const [confirmationModal, setConfirmationModal] = useState<ConfirmationModalData | null>(null)
+  const [confirmationModal, setConfirmationModal] =
+    useState<ConfirmationModalData | null>(null);
 
   // Evitar errores de hidratación: solo renderizar contenido dependiente del estado después de montar
   // Initialize mounted state lazily to avoid hydration mismatches
-  const [mounted, setMounted] = useState(false)
+  const [mounted] = useState(() => typeof window !== "undefined");
 
   // handle side bar menu - open / close
   // const [openSideMenu, setOpenSideMenu] = useState(false)
   // const [screenSize, setScreenSize] = useState(undefined)
 
-  const { openSideMenu, screenSize } = useAppSelector((state) => state.sidebar)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const { openSideMenu, screenSize } = useAppSelector((state) => state.sidebar);
   // console.log('openSideMenu ======' , openSideMenu)
   // console.log('screenSize ======' , screenSize)
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
-    const handleResize = () => dispatch(setScreenSize(window.innerWidth))
+    const handleResize = () => dispatch(setScreenSize(window.innerWidth));
 
-    window.addEventListener('resize', handleResize)
-    handleResize()
-    return () => window.removeEventListener('resize', handleResize)
-  }, [dispatch])
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, [dispatch]);
 
   // If screen size is small then close the side bar
   useEffect(() => {
     if (screenSize && screenSize <= 640) {
-      dispatch(setOpenSideMenu(false))
-    }
-    else dispatch(setOpenSideMenu(true))
-  }, [screenSize, dispatch])
-
-
+      dispatch(setOpenSideMenu(false));
+    } else dispatch(setOpenSideMenu(true));
+  }, [screenSize, dispatch]);
 
   if (profileLoading || authLoading) {
     return (
       <div className="grid h-[calc(100vh-3.5rem)] min-w-[220px] items-center border-r-[1px] border-r-richblack-700 bg-richblack-800">
         <Loading />
       </div>
-    )
+    );
   }
 
   return (
     <>
       {mounted && (
-        <div className="sm:hidden text-white absolute left-7 top-3 cursor-pointer " onClick={() => dispatch(setOpenSideMenu(!openSideMenu))}>
-          {
-            openSideMenu ? <IoMdClose size={33} /> : <HiMenuAlt1 size={33} />
-          }
+        <div
+          className="sm:hidden text-white absolute left-7 top-3 cursor-pointer "
+          onClick={() => dispatch(setOpenSideMenu(!openSideMenu))}
+        >
+          {openSideMenu ? <IoMdClose size={33} /> : <HiMenuAlt1 size={33} />}
         </div>
       )}
 
-
       {/* Sidebar: visible en pantallas grandes siempre, en móviles solo si openSideMenu es true (después de montar) */}
-      <div className={`hidden sm:flex ${mounted && screenSize && screenSize <= 640 && !openSideMenu ? 'hidden' : ''} h-[calc(100vh-3.5rem)] min-w-[220px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800 py-10`}>
+      <div
+        className={`hidden sm:flex ${
+          mounted && screenSize && screenSize <= 640 && !openSideMenu
+            ? "hidden"
+            : ""
+        } h-[calc(100vh-3.5rem)] min-w-[220px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800 py-10`}
+      >
         <div className="flex flex-col mt-6">
           {sidebarLinks.map((link) => {
-            if (link.type && user?.accountType !== link.type) return null
+            if (link.type && user?.accountType !== link.type) return null;
             return (
-              <SidebarLink key={link.id} link={link} iconName={link.icon} setOpenSideMenu={setOpenSideMenu} />
-            )
+              <SidebarLink
+                key={link.id}
+                link={link}
+                iconName={link.icon}
+                setOpenSideMenu={setOpenSideMenu}
+              />
+            );
           })}
         </div>
 
@@ -121,12 +127,10 @@ export default function Sidebar() {
               <span>Logout</span>
             </div>
           </button>
-
         </div>
       </div>
 
-
       {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
     </>
-  )
+  );
 }

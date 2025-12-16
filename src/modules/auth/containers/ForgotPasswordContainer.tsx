@@ -1,23 +1,23 @@
-'use client'
+"use client";
 
-import React, { useState } from "react"
-import { BiArrowBack } from "react-icons/bi"
-import Link from "next/link"
+import React, { useState } from "react";
+import { BiArrowBack } from "react-icons/bi";
+import Link from "next/link";
 
-import { getPasswordResetToken } from "../../../shared/services/authAPI"
-import { useAppDispatch, useAppSelector } from "../../../shared/store/hooks"
-import OpenRoute from '../components/OpenRoute'
+import { getPasswordResetToken } from "@shared/services/authAPI";
+import { useAppDispatch, useAppSelector } from "@shared/store/hooks";
+import OpenRoute from "../components/OpenRoute";
 
 function ForgotPasswordContainer() {
-  const [email, setEmail] = useState("")
-  const [emailSent, setEmailSent] = useState(false)
-  const dispatch = useAppDispatch()
-  const { loading } = useAppSelector((state) => state.auth)
+  const [email, setEmail] = useState("");
+  const [emailSent, setEmailSent] = useState(false);
+  const dispatch = useAppDispatch();
+  const { loading } = useAppSelector((state) => state.auth);
 
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    dispatch(getPasswordResetToken(email, setEmailSent))
-  }
+    e.preventDefault();
+    dispatch(getPasswordResetToken(email, setEmailSent));
+  };
 
   return (
     <OpenRoute>
@@ -30,9 +30,14 @@ function ForgotPasswordContainer() {
               {!emailSent ? "Reset your password" : "Check email"}
             </h1>
             <div className="my-4 text-[1.125rem] leading-[1.625rem] text-richblack-100">
-              {!emailSent
-                ? "Have no fear. We'll email you instructions to reset your password. If you dont have access to your email we can try account recovery"
-                : <p>We have sent the reset email to <span className="text-yellow-200">{email}</span></p>}
+              {!emailSent ? (
+                "Have no fear. We'll email you instructions to reset your password. If you dont have access to your email we can try account recovery"
+              ) : (
+                <p>
+                  We have sent the reset email to{" "}
+                  <span className="text-yellow-200">{email}</span>
+                </p>
+              )}
             </div>
 
             <form onSubmit={handleOnSubmit}>
@@ -75,8 +80,7 @@ function ForgotPasswordContainer() {
         )}
       </div>
     </OpenRoute>
-  )
+  );
 }
 
-export default ForgotPasswordContainer
-
+export default ForgotPasswordContainer;

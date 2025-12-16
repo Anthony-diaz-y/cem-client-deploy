@@ -1,19 +1,17 @@
-'use client'
+"use client";
 
-import React from "react"
-import Link from "next/link"
-import Img from "../../../shared/components/Img"
-import { Course } from "../types"
-
-interface InstructorCoursesGridProps {
-  courses: Course[]
-}
+import React from "react";
+import Link from "next/link";
+import Img from "@shared/components/Img";
+import { InstructorCoursesGridProps } from "../types";
 
 /**
  * InstructorCoursesGrid - Courses grid component for instructor dashboard
  * Displays instructor's courses
  */
-const InstructorCoursesGrid: React.FC<InstructorCoursesGridProps> = ({ courses }) => {
+const InstructorCoursesGrid: React.FC<InstructorCoursesGridProps> = ({
+  courses,
+}) => {
   return (
     <div className="rounded-md bg-richblack-800 p-6">
       <div className="flex items-center justify-between">
@@ -55,8 +53,7 @@ const InstructorCoursesGrid: React.FC<InstructorCoursesGridProps> = ({ courses }
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default InstructorCoursesGrid
-
+export default InstructorCoursesGrid;

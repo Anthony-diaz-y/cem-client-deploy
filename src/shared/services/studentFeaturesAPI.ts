@@ -1,14 +1,16 @@
 import { toast } from "react-hot-toast";
 import { studentEndpoints } from "./apis";
 import { apiConnector } from "./apiConnector";
-import rzpLogo from "../assets/Logo/rzp_logo.png"
-import { setPaymentLoading } from "../../modules/course/store/courseSlice";
-import { resetCart } from "../../modules/course/store/cartSlice";
+import rzpLogo from "@shared/assets/Logo/rzp_logo.png"
+import { setPaymentLoading } from "@modules/course/store/courseSlice";
+import { resetCart } from "@modules/course/store/cartSlice";
+import type { AppDispatch } from "@shared/store/store";
+import type { NavigateFunction, ApiError } from "@modules/auth/types";
 
 
 const { COURSE_PAYMENT_API, COURSE_VERIFY_API, SEND_PAYMENT_SUCCESS_EMAIL_API } = studentEndpoints;
 
-function loadScript(src) {
+function loadScript(src: string): Promise<boolean> {
     return new Promise((resolve) => {
         // Only run on client-side
         if (typeof window === 'undefined' || typeof document === 'undefined') {
@@ -30,7 +32,13 @@ function loadScript(src) {
 }
 
 // ================ buyCourse ================ 
-export async function buyCourse(token, coursesId, userDetails, navigate, dispatch) {
+export async function buyCourse(
+    token: string,
+    coursesId: string[],
+    userDetails: { firstName: string; email: string },
+    navigate: NavigateFunction,
+    dispatch: AppDispatch
+) {
     const toastId = toast.loading("Loading...");
 
     try {
@@ -64,12 +72,12 @@ export async function buyCourse(token, coursesId, userDetails, navigate, dispatc
             order_id: orderResponse.data.message.id,
             name: "StudyNotion",
             description: "Thank You for Purchasing the Course",
-            image: rzpLogo,
+            image: rzpLogo.src,
             prefill: {
                 name: userDetails.firstName,
                 email: userDetails.email
             },
-            handler: function (response) {
+            handler: function (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) {
                 //send successful mail
                 sendPaymentSuccessEmail(response, orderResponse.data.message.amount, token);
                 //verifyPayment
@@ -86,16 +94,20 @@ export async function buyCourse(token, coursesId, userDetails, navigate, dispatc
 
     }
     catch (error) {
-        console.log("PAYMENT API ERROR.....", error);
-        toast.error(error.response?.data?.message);
-        // toast.error("Could not make Payment");
+        const apiError = error as ApiError;
+        console.log("PAYMENT API ERROR.....", apiError);
+        toast.error(apiError.response?.data?.message || "Could not make Payment");
     }
     toast.dismiss(toastId);
 }
 
 
 // ================ send Payment Success Email ================
-async function sendPaymentSuccessEmail(response, amount, token) {
+async function sendPaymentSuccessEmail(
+    response: { razorpay_order_id: string; razorpay_payment_id: string },
+    amount: number,
+    token: string
+) {
     try {
         await apiConnector("POST", SEND_PAYMENT_SUCCESS_EMAIL_API, {
             orderId: response.razorpay_order_id,
@@ -112,7 +124,12 @@ async function sendPaymentSuccessEmail(response, amount, token) {
 
 
 // ================ verify payment ================
-async function verifyPayment(bodyData, token, navigate, dispatch) {
+async function verifyPayment(
+    bodyData: Record<string, unknown>,
+    token: string,
+    navigate: NavigateFunction,
+    dispatch: AppDispatch
+) {
     const toastId = toast.loading("Verifying Payment....");
     dispatch(setPaymentLoading(true));
 

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { HomePageExplore } from "../../../shared/data/homepage-explore";
+import { HomePageExplore } from "@shared/data/homepage-explore";
 import CourseCard from "./CourseCard";
 import HighlightText from "./HighlightText";
-import { ExploreCourseCard } from '../types';
+import { ExploreCourseCard } from "../types";
 
 const tabsName = [
   "Free",
@@ -14,7 +14,9 @@ const tabsName = [
 
 const ExploreMore = () => {
   const [currentTab, setCurrentTab] = useState<string>(tabsName[0]);
-  const [courses, setCourses] = useState<ExploreCourseCard[]>(HomePageExplore[0].courses);
+  const [courses, setCourses] = useState<ExploreCourseCard[]>(
+    HomePageExplore[0].courses
+  );
   const [currentCard, setCurrentCard] = useState<string>(
     HomePageExplore[0].courses[0].heading
   );
@@ -46,10 +48,11 @@ const ExploreMore = () => {
         {tabsName.map((ele, index) => {
           return (
             <div
-              className={` text-[16px] flex flex-row items-center gap-2 ${currentTab === ele
-                ? "bg-richblack-900 text-richblack-5 font-medium"
-                : "text-richblack-200"
-                } px-7 py-[7px] rounded-full transition-all duration-200 cursor-pointer hover:bg-richblack-900 hover:text-richblack-5`}
+              className={` text-[16px] flex flex-row items-center gap-2 ${
+                currentTab === ele
+                  ? "bg-richblack-900 text-richblack-5 font-medium"
+                  : "text-richblack-200"
+              } px-7 py-[7px] rounded-full transition-all duration-200 cursor-pointer hover:bg-richblack-900 hover:text-richblack-5`}
               key={index}
               onClick={() => setMyCards(ele)}
             >
@@ -71,11 +74,11 @@ const ExploreMore = () => {
               currentCard={currentCard}
               setCurrentCard={setCurrentCard}
             />
-          )
+          );
         })}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default ExploreMore;

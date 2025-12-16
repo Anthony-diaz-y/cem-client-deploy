@@ -3,8 +3,8 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { HiMenuAlt1 } from "react-icons/hi";
-import { setCourseViewSidebar } from "../../dashboard/store/sidebarSlice";
-import { RootState } from "../../../shared/store/store";
+import { setCourseViewSidebar } from "@modules/dashboard/store/sidebarSlice";
+import { RootState } from "@shared/store/store";
 import VideoPlayer from "./VideoPlayer";
 import { useVideoNavigation } from "../hooks/useVideoNavigation";
 import { useVideoPlayer } from "../hooks/useVideoPlayer";
@@ -22,12 +22,8 @@ const VideoDetails = () => {
     (state: RootState) => state.sidebar
   );
 
-  const {
-    isFirstVideo,
-    isLastVideo,
-    goToNextVideo,
-    goToPrevVideo,
-  } = useVideoNavigation(courseSectionData);
+  const { isFirstVideo, isLastVideo, goToNextVideo, goToPrevVideo } =
+    useVideoNavigation(courseSectionData);
 
   const {
     playerRef,

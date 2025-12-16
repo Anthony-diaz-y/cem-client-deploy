@@ -1,47 +1,48 @@
-import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
-import { fetchCourseCategories } from "../../../shared/services/courseDetailsAPI"
-import { Category, CatalogPageData } from "../types"
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { fetchCourseCategories } from "@shared/services/courseDetailsAPI";
+import { Category, CatalogPageData } from "../types";
 
 /**
  * Custom hook to fetch and manage catalog data
  * Separates data fetching logic from component
  */
 export const useCatalogData = () => {
-  const { catalogName } = useParams()
-  const [catalogPageData, setCatalogPageData] = useState<CatalogPageData | null>(null)
-  const [categoryId, setCategoryId] = useState("")
-  const [loading, setLoading] = useState(false)
+  const { catalogName } = useParams();
+  const [catalogPageData, setCatalogPageData] =
+    useState<CatalogPageData | null>(null);
+  const [categoryId, setCategoryId] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Fetch All Categories
   useEffect(() => {
     (async () => {
       try {
-        const res = (await fetchCourseCategories()) as Category[]
+        const res = (await fetchCourseCategories()) as Category[];
         const catalogNameStr = Array.isArray(catalogName)
           ? catalogName[0]
-          : catalogName
+          : catalogName;
         if (catalogNameStr) {
           const category_id = res.filter(
             (ct: Category) =>
               ct.name.split(" ").join("-").toLowerCase() ===
               catalogNameStr.toLowerCase()
-          )[0]?._id
+          )[0]?._id;
           if (category_id) {
-            setCategoryId(category_id)
+            setCategoryId(category_id);
           }
         }
       } catch (error) {
-        console.error("Could not fetch Categories.", error)
+        console.error("Could not fetch Categories.", error);
       }
-    })()
-  }, [catalogName])
+    })();
+  }, [catalogName]);
 
   // Fetch Catalog Page Data
   useEffect(() => {
     if (categoryId) {
       (async () => {
-        setLoading(true)
+        setLoading(true);
         try {
           // Mock Data for Catalog
           const mockCatalogData: CatalogPageData = {
@@ -119,17 +120,16 @@ export const useCatalogData = () => {
                 studentsEnrolled: [],
               },
             ],
-          }
+          };
           // const res = await getCatalogPageData(categoryId)
-          setCatalogPageData(mockCatalogData)
+          setCatalogPageData(mockCatalogData);
         } catch (error) {
-          console.error("Error fetching catalog page data:", error)
+          console.error("Error fetching catalog page data:", error);
         }
-        setLoading(false)
-      })()
+        setLoading(false);
+      })();
     }
-  }, [categoryId])
+  }, [categoryId]);
 
-  return { catalogPageData, loading }
-}
-
+  return { catalogPageData, loading };
+};

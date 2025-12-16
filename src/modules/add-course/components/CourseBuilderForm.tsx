@@ -4,7 +4,7 @@ import SectionForm from "./SectionForm";
 import CourseBuilderNavigation from "./CourseBuilderNavigation";
 import { useSectionForm } from "../hooks/useSectionForm";
 import { useCourseBuilderNavigation } from "../hooks/useCourseBuilderNavigation";
-import { RootState } from "../../../shared/store/store";
+import { RootState } from "@shared/store/store";
 import { Course } from "../../course/types";
 
 /**
@@ -43,7 +43,11 @@ export default function CourseBuilderForm() {
         <NestedView handleChangeEditSectionName={handleChangeEditSectionName} />
       )}
 
-      <CourseBuilderNavigation loading={loading} onNext={goToNext} onBack={goBack} />
+      <CourseBuilderNavigation
+        loading={loading}
+        onNext={goToNext}
+        onBack={goBack}
+      />
     </div>
   );
 }

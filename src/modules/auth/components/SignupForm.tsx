@@ -1,19 +1,16 @@
-'use client'
+"use client";
 
-import { useState } from "react"
-import { toast } from "react-hot-toast"
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
-import { useAppDispatch } from "../../../shared/store/hooks"
+import { useState } from "react";
+import { toast } from "react-hot-toast";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { useAppDispatch } from "@shared/store/hooks";
 
+import { useRouter } from "next/navigation";
 
-import { useRouter } from "next/navigation"
-
-import { sendOtp } from "../../../shared/services/authAPI"
-import { setSignupData } from "../store/authSlice"
-import { ACCOUNT_TYPE } from "../../../shared/utils/constants"
-import Tab from "../../../shared/components/Tab"
-
-
+import { sendOtp } from "@shared/services/authAPI";
+import { setSignupData } from "../store/authSlice";
+import { ACCOUNT_TYPE } from "@shared/utils/constants";
+import Tab from "@shared/components/Tab";
 
 function SignupForm() {
   const router = useRouter();
@@ -50,7 +47,7 @@ function SignupForm() {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      toast.error("Passwords Do Not Match")
+      toast.error("Passwords Do Not Match");
       return;
     }
     const signupData = {
@@ -71,7 +68,7 @@ function SignupForm() {
       email: "",
       password: "",
       confirmPassword: "",
-    })
+    });
     setAccountType(ACCOUNT_TYPE.STUDENT);
   };
 
@@ -155,7 +152,6 @@ function SignupForm() {
           />
         </label>
 
-
         <div className="flex gap-x-4">
           {/* Create Password */}
           <label className="relative">
@@ -216,7 +212,6 @@ function SignupForm() {
           </label>
         </div>
 
-
         <button
           type="submit"
           className="mt-6 rounded-[8px] bg-yellow-50 py-[8px] px-[12px] font-medium text-richblack-900"
@@ -225,7 +220,7 @@ function SignupForm() {
         </button>
       </form>
     </div>
-  )
+  );
 }
 
-export default SignupForm
+export default SignupForm;

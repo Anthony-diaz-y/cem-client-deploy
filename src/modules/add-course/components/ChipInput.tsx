@@ -1,66 +1,74 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
-import { MdClose } from "react-icons/md"
-import { useSelector } from "react-redux"
-import { RootState } from "../../../shared/store/store"
-import { ChipInputProps } from '../types'
-import { Course } from '../../course/types'
+import { MdClose } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { RootState } from "@shared/store/store";
+import { ChipInputProps } from "../types";
+import { Course } from "../../course/types";
 
 // Defining a functional component ChipInput
-export default function ChipInput({ label, name, placeholder, register, errors, setValue }: ChipInputProps) {
-  const { editCourse, course } = useSelector((state: RootState) => state.course)
+export default function ChipInput({
+  label,
+  name,
+  placeholder,
+  register,
+  errors,
+  setValue,
+}: ChipInputProps) {
+  const { editCourse, course } = useSelector(
+    (state: RootState) => state.course
+  );
 
   // Setting up state for managing chips array
   // Initialize chips from course data if editing, otherwise empty array
   const [chips, setChips] = useState<string[]>(() => {
     if (editCourse && course) {
-      const courseData = course as Course
+      const courseData = course as Course;
       if (courseData.tag && Array.isArray(courseData.tag)) {
-        return courseData.tag
+        return courseData.tag;
       }
     }
-    return []
-  })
+    return [];
+  });
 
   useEffect(() => {
     register(name, { required: true, validate: (value) => value.length > 0 });
-  }, [name, register])
+  }, [name, register]);
 
   // "Updates value whenever 'chips' is modified
   useEffect(() => {
-    setValue(name, chips)
-  }, [chips, name, setValue])
+    setValue(name, chips);
+  }, [chips, name, setValue]);
 
   // Function to handle user input when chips are added
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     // Check if user presses "Enter" or ","
     if (event.key === "Enter" || event.key === ",") {
-      event.preventDefault()
-      const target = event.target as HTMLInputElement
+      event.preventDefault();
+      const target = event.target as HTMLInputElement;
       // Get the input value and remove any leading/trailing spaces
-      const chipValue = target.value.trim()
+      const chipValue = target.value.trim();
       // Check if the input value exists and is not already in the chips array
       if (chipValue && !chips.includes(chipValue)) {
         // Add the chip to the array and clear the input
-        const newChips = [...chips, chipValue]
+        const newChips = [...chips, chipValue];
 
-        setChips(newChips)
-        target.value = ""
+        setChips(newChips);
+        target.value = "";
       }
     }
-  }
+  };
 
   // Function to handle deletion of a chip
   const handleDeleteChip = (chipIndex: number) => {
     // Filter the chips array to remove the chip with the given index
-    const newChips = chips.filter((_, index) => index !== chipIndex)
-    setChips(newChips)
-  }
+    const newChips = chips.filter((_, index) => index !== chipIndex);
+    setChips(newChips);
+  };
 
   // Render the component
   return (
     <div className="flex flex-col space-y-2">
-
       <label className="text-sm text-richblack-5" htmlFor={name}>
         {label} <sup className="text-pink-200">*</sup>
       </label>
@@ -84,7 +92,6 @@ export default function ChipInput({ label, name, placeholder, register, errors, 
           </div>
         ))}
 
-
         <input
           id={name}
           name={name}
@@ -100,5 +107,5 @@ export default function ChipInput({ label, name, placeholder, register, errors, 
         </span>
       )}
     </div>
-  )
+  );
 }

@@ -1,5 +1,5 @@
-import { HiOutlineVideoCamera } from "react-icons/hi"
-import { SubSection } from '../types'
+import { HiOutlineVideoCamera } from "react-icons/hi";
+import { SubSection } from "../types";
 
 function CourseSubSectionAccordion({ subSec }: { subSec: SubSection }) {
   return (
@@ -13,7 +13,7 @@ function CourseSubSectionAccordion({ subSec }: { subSec: SubSection }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default CourseSubSectionAccordion
+export default CourseSubSectionAccordion;

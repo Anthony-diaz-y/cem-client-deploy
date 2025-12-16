@@ -2,14 +2,11 @@
 
 import { useSelector } from "react-redux";
 import { useParams } from "next/navigation";
-import { RootState } from "../../../shared/store/store";
+import { RootState } from "@shared/store/store";
 import SidebarHeader from "./SidebarHeader";
 import SidebarSectionList from "./SidebarSectionList";
 import { useSidebarState } from "../hooks/useSidebarState";
-
-interface VideoDetailsSidebarProps {
-  setReviewModal: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { VideoDetailsSidebarProps } from "../types";
 
 /**
  * VideoDetailsSidebar - Sidebar component for video details page

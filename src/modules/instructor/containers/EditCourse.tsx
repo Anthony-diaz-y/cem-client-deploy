@@ -1,72 +1,73 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from "react"
-import { useDispatch } from "react-redux"
-import { useParams } from "next/navigation"
-import { useAppSelector } from "../../../shared/store/hooks"
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useParams } from "next/navigation";
+import { useAppSelector } from "@shared/store/hooks";
 
-import { getFullDetailsOfCourse, } from "../../../shared/services/courseDetailsAPI"
-import { setCourse, setEditCourse } from "../../course/store/courseSlice"
-import RenderSteps from "../../add-course/components/RenderSteps"
-import Loading from '../../../shared/components/Loading';
-import { AppDispatch } from "../../../shared/store/store"
+import { getFullDetailsOfCourse } from "@shared/services/courseDetailsAPI";
+import { setCourse, setEditCourse } from "@modules/course/store/courseSlice";
+import RenderSteps from "@modules/add-course/components/RenderSteps";
+import Loading from "@shared/components/Loading";
+import { AppDispatch } from "@shared/store/store";
 
 export default function EditCourse() {
   const { courseId } = useParams();
-  const dispatch = useDispatch<AppDispatch>()
-  const { token } = useAppSelector((state) => state.auth)
-  const { course } = useAppSelector((state) => state.course)
+  const dispatch = useDispatch<AppDispatch>();
+  const { token } = useAppSelector((state) => state.auth);
+  const { course } = useAppSelector((state) => state.course);
   // console.log('before course data = ', course)
 
-  const [loading, setLoading] = useState(false)
-
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchFullCourseDetails = async () => {
-      if (!courseId || !token) return
-      
-      setLoading(true)
+      if (!courseId || !token) return;
+
+      setLoading(true);
       try {
-        const courseIdString = Array.isArray(courseId) ? courseId[0] : courseId
+        const courseIdString = Array.isArray(courseId) ? courseId[0] : courseId;
         const result = await getFullDetailsOfCourse(courseIdString, token);
         // console.log('Data from edit course file = ', result)
         if (result?.courseDetails) {
-          dispatch(setEditCourse(true))
-          dispatch(setCourse(result.courseDetails))
+          dispatch(setEditCourse(true));
+          dispatch(setCourse(result.courseDetails));
         }
       } catch (error) {
-        console.error("Error fetching course details:", error)
+        console.error("Error fetching course details:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
     fetchFullCourseDetails();
-  }, [courseId, token, dispatch])
+  }, [courseId, token, dispatch]);
 
   // Loading
   if (loading) {
-    return <Loading />
+    return <Loading />;
   }
 
   return (
     <div className="flex w-full items-start gap-x-6">
-
       <div className="flex flex-1 flex-col">
         <h1 className="mb-14 text-3xl font-medium text-richblack-5 text-center sm:text-left">
           Edit Course
         </h1>
 
-        {loading ? <Loading />
-          :
-          (<div className="flex-1">
-            {course ? <RenderSteps />
-              :
-              (<p className="mt-14 text-center text-3xl font-semibold text-richblack-100">
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className="flex-1">
+            {course ? (
+              <RenderSteps />
+            ) : (
+              <p className="mt-14 text-center text-3xl font-semibold text-richblack-100">
                 Course not found
-              </p>)
-            }
-          </div>)}
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Course Upload Tips  */}
@@ -84,7 +85,6 @@ export default function EditCourse() {
           <li>Notes to all enrolled students at once.</li>
         </ul>
       </div> */}
-
     </div>
-  )
+  );
 }

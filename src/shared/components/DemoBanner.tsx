@@ -1,29 +1,26 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MOCK_MODE } from "../services/apiConnector";
-import { switchDemoAccount, clearDemoData } from '../../shared/data/demoHelper';
+import { switchDemoAccount, clearDemoData } from '@shared/data/demoHelper';
 
 const DemoBanner = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-
-  if (!MOCK_MODE) return null;
-
-  const [accountType, setAccountType] = useState('Student');
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
+  const [accountType] = useState(() => {
+    if (typeof window === 'undefined') return 'Student';
+    try {
       const currentUser = localStorage.getItem('user');
       if (currentUser) {
-        try {
-          const parsed = JSON.parse(currentUser);
-          setAccountType(parsed.accountType || 'Student');
-        } catch (e) {
-          console.error('Error parsing user data');
-        }
+        const parsed = JSON.parse(currentUser);
+        return parsed.accountType || 'Student';
       }
+    } catch {
+      console.error('Error parsing user data');
     }
-  }, []);
+    return 'Student';
+  });
+
+  if (!MOCK_MODE) return null;
 
   return (
     <div className="fixed bottom-4 right-4 z-50">

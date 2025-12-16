@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import Template from '../components/Template'
-import OpenRoute from '../components/OpenRoute'
-import loginImage from '../../../shared/assets/Images/login2.webp'
+import Template from "../components/Template";
+import OpenRoute from "../components/OpenRoute";
+import loginImage from "@shared/assets/Images/login2.webp";
 
 function LoginContainer() {
   return (
@@ -15,8 +15,7 @@ function LoginContainer() {
         formType="login"
       />
     </OpenRoute>
-  )
+  );
 }
 
-export default LoginContainer
-
+export default LoginContainer;

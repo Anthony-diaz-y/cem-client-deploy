@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import React from "react"
-import Link from "next/link"
+import React from "react";
+import Link from "next/link";
 
 /**
  * InstructorEmptyState - Empty state component for instructor dashboard
@@ -19,8 +19,7 @@ const InstructorEmptyState: React.FC = () => {
         </p>
       </Link>
     </div>
-  )
-}
+  );
+};
 
-export default InstructorEmptyState
-
+export default InstructorEmptyState;

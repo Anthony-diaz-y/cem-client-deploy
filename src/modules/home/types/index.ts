@@ -1,36 +1,36 @@
 // Home Module Types
 
 export interface Course {
-  _id: string
-  courseName: string
-  price: number
-  thumbnail: string
+  _id: string;
+  courseName: string;
+  price: number;
+  thumbnail: string;
   instructor: {
-    firstName: string
-    lastName: string
-  }
-  firstName: string
-  lastName: string
-  ratingAndReviews: unknown[]
-  studentsEnrolled: unknown[]
+    firstName: string;
+    lastName: string;
+  };
+  firstName: string;
+  lastName: string;
+  ratingAndReviews: unknown[];
+  studentsEnrolled: unknown[];
 }
 
 export interface CategoryWithCourses {
-  name: string
-  description?: string
-  courses: Course[]
+  name: string;
+  description?: string;
+  courses: Course[];
 }
 
 export interface CatalogPageData {
-  selectedCategory?: CategoryWithCourses
-  differentCategory?: CategoryWithCourses
-  mostSellingCourses?: Course[]
+  selectedCategory?: CategoryWithCourses;
+  differentCategory?: CategoryWithCourses;
+  mostSellingCourses?: Course[];
 }
 
 export interface HomeProps {
-  backgroundImg: string | null
-  catalogPageData: CatalogPageData | null
-  token: string | null
+  backgroundImg: string | null;
+  catalogPageData: CatalogPageData | null;
+  token: string | null;
 }
 
 export interface CTAButtonType {

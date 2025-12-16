@@ -20,4 +20,3 @@ export interface Course {
   progressPercentage: number;
   courseContent: Section[];
 }
-

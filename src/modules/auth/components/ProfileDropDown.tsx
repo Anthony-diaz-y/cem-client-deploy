@@ -3,15 +3,14 @@
 import { useRef, useState } from "react";
 import { AiOutlineCaretDown } from "react-icons/ai";
 import { VscDashboard, VscSignOut } from "react-icons/vsc";
-import { useAppDispatch, useAppSelector } from "../../../shared/store/hooks";
-
+import { useAppDispatch, useAppSelector } from "@shared/store/hooks";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import useOnClickOutside from "../../../shared/hooks/useOnClickOutside";
+import useOnClickOutside from "@shared/hooks/useOnClickOutside";
 import { logout } from "../services/authAPI";
-import Img from "./../../../shared/components/Img";
+import Img from "@shared/components/Img";
 
 export default function ProfileDropdown() {
   const { user } = useAppSelector((state) => state.profile);

@@ -2,15 +2,15 @@
 // This module now re-exports from the new modular structure for backward compatibility
 
 // Types
-export type { ConfirmationModalData, SidebarLinkProps } from './types';
+export type { ConfirmationModalData, SidebarLinkProps } from "./types";
 
 // Dashboard Shared Components (Sidebar, etc.)
-export { default as Sidebar } from './components/Sidebar';
-export { default as SidebarLink } from './components/SidebarLink';
-export { default as sidebarReducer } from './store/sidebarSlice';
+export { default as Sidebar } from "./components/Sidebar";
+export { default as SidebarLink } from "./components/SidebarLink";
+export { default as sidebarReducer } from "./store/sidebarSlice";
 
 // Profile
-export { MyProfile } from '../profile';
+export { MyProfile } from "../profile";
 
 // Settings
 export {
@@ -18,17 +18,17 @@ export {
   ChangeProfilePicture,
   DeleteAccount,
   EditProfile,
-  UpdatePassword
-} from '../settings';
+  UpdatePassword,
+} from "../settings";
 
 // Student
-export { EnrolledCourses, MyCourses } from '../student';
+export { EnrolledCourses, MyCourses } from "../student";
 
 // Add Course
-export { AddCourse } from '../add-course';
+export { AddCourse } from "../add-course";
 
 // Cart
-export { Cart, RenderCartCourses, RenderTotalAmount } from '../cart';
+export { Cart, RenderCartCourses, RenderTotalAmount } from "../cart";
 
 // Instructor
 export {
@@ -36,10 +36,10 @@ export {
   InstructorChart,
   CoursesTable,
   EditCourse,
-  InstructorCourses // Explicitly added to replace implicit export
-} from '../instructor';
+  InstructorCourses, // Explicitly added to replace implicit export
+} from "../instructor";
 
 // Services - Re-export from new modules
-export * from '../settings';
-export * from '../profile';
-export { fetchInstructorCourses, deleteCourse } from '../instructor';
+export * from "../settings";
+export * from "../profile";
+export { fetchInstructorCourses, deleteCourse } from "../instructor";

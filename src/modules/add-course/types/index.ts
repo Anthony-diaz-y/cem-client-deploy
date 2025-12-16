@@ -1,7 +1,14 @@
 // Add Course Module Types
 
-import { UseFormRegister, UseFormSetValue, FieldErrors, FieldValues, Path } from 'react-hook-form';
-import { SubSection } from '../../course/types';
+import {
+  UseFormRegister,
+  UseFormSetValue,
+  FieldErrors,
+  FieldValues,
+  Path,
+  UseFormHandleSubmit,
+} from "react-hook-form";
+import { Course, SubSection } from "../../course/types";
 
 export interface ChipInputProps {
   label: string;
@@ -25,6 +32,21 @@ export interface CourseInformationFormData {
 
 export interface CourseBuilderFormData {
   sectionName: string;
+}
+
+export interface CourseFormActionsProps {
+  loading: boolean;
+  editCourse: boolean;
+}
+
+export interface CourseFormFieldsProps {
+  register: UseFormRegister<CourseInformationFormData>;
+  setValue: UseFormSetValue<CourseInformationFormData>;
+  errors: FieldErrors<CourseInformationFormData>;
+  courseCategories: Array<{ _id: string; name: string }>;
+  loading: boolean;
+  editCourse: boolean;
+  course?: Course | null;
 }
 
 export interface UploadProps {
@@ -54,6 +76,16 @@ export interface RequirementFieldProps<T extends FieldValues = FieldValues> {
   errors: FieldErrors<T>;
 }
 
+export interface SectionFormProps {
+  register: UseFormRegister<CourseBuilderFormData>;
+  handleSubmit: UseFormHandleSubmit<CourseBuilderFormData>;
+  errors: FieldErrors<CourseBuilderFormData>;
+  loading: boolean;
+  editSectionName: string | null;
+  onSubmit: (data: CourseBuilderFormData) => void;
+  onCancelEdit: () => void;
+}
+
 export interface SubSectionModalFormData {
   lectureTitle: string;
   lectureDesc: string;
@@ -62,9 +94,10 @@ export interface SubSectionModalFormData {
 
 export interface SubSectionModalProps {
   modalData: string | (SubSection & { sectionId?: string }) | null;
-  setModalData: React.Dispatch<React.SetStateAction<string | (SubSection & { sectionId?: string }) | null>>;
+  setModalData: React.Dispatch<
+    React.SetStateAction<string | (SubSection & { sectionId?: string }) | null>
+  >;
   add?: boolean;
   view?: boolean;
   edit?: boolean;
 }
-

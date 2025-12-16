@@ -19,4 +19,3 @@ export interface SidebarLinkProps {
   iconName: string;
   setOpenSideMenu?: React.Dispatch<React.SetStateAction<boolean>>;
 }
-

@@ -1,9 +1,5 @@
-import React from 'react'
-import UpdatePasswordContainer from '../../../../modules/auth/containers/UpdatePasswordContainer'
+import UpdatePasswordContainer from "@modules/auth/containers/UpdatePasswordContainer";
 
 export default function UpdatePassword() {
-  return (
-    <UpdatePasswordContainer />
-  )
+  return <UpdatePasswordContainer />;
 }
-

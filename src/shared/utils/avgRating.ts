@@ -1,6 +1,10 @@
-export default function GetAvgRating(ratingArr) {
+interface RatingItem {
+  rating: number;
+}
+
+export default function GetAvgRating(ratingArr: RatingItem[] | null | undefined): number {
   if (!ratingArr || ratingArr.length === 0) return 0
-  const totalReviewCount = ratingArr?.reduce((acc, curr) => {
+  const totalReviewCount = ratingArr.reduce((acc: number, curr: RatingItem) => {
     acc += curr.rating
     return acc
   }, 0)

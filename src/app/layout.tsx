@@ -1,13 +1,13 @@
-import type { Metadata } from 'next';
-import GlobalProviders from './providers';
-import Navbar from '../shared/components/Navbar';
-import DemoBanner from '../shared/components/DemoBanner';
-import ScrollToTop from '../shared/components/ScrollToTop'; // We'll need to create this or inline it
-import '../index.css';
+import type { Metadata } from "next";
+import GlobalProviders from "./providers";
+import Navbar from "@shared/components/Navbar";
+import DemoBanner from "@shared/components/DemoBanner";
+import ScrollToTop from "@shared/components/ScrollToTop"; // We'll need to create this or inline it
+import "../index.css";
 
 export const metadata: Metadata = {
-  title: 'E-Learning Platform',
-  description: 'Learn new skills today',
+  title: "E-Learning Platform",
+  description: "Learn new skills today",
 };
 
 export default function RootLayout({

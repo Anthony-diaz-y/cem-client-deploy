@@ -1,23 +1,12 @@
-'use client'
+"use client";
 
-import React from "react"
-import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form"
-import { HiOutlineCurrencyRupee } from "react-icons/hi"
-import ChipInput from "./ChipInput"
-import Upload from "./Upload"
-import RequirementsField from "./RequirementField"
-import { CourseInformationFormData } from "../types"
-import { Course } from "../../course/types"
-
-interface CourseFormFieldsProps {
-  register: UseFormRegister<CourseInformationFormData>
-  setValue: UseFormSetValue<CourseInformationFormData>
-  errors: FieldErrors<CourseInformationFormData>
-  courseCategories: Array<{ _id: string; name: string }>
-  loading: boolean
-  editCourse: boolean
-  course?: Course | null
-}
+import React from "react";
+import { HiOutlineCurrencyRupee } from "react-icons/hi";
+import ChipInput from "./ChipInput";
+import Upload from "./Upload";
+import RequirementsField from "./RequirementField";
+import { CourseFormFieldsProps } from "../types";
+import { Course } from "../../course/types";
 
 /**
  * CourseFormFields - Form fields component for course information
@@ -83,7 +72,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
               valueAsNumber: true,
               min: {
                 value: 0,
-                message: "Price must be greater than or equal to 0"
+                message: "Price must be greater than or equal to 0",
               },
             })}
             className="form-style w-full !pl-12"
@@ -130,18 +119,26 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         label="Tags"
         name="courseTags"
         placeholder="Enter Tags and press Enter or Comma"
-        register={register as unknown as Parameters<typeof ChipInput>[0]['register']}
-        errors={errors as unknown as Parameters<typeof ChipInput>[0]['errors']}
-        setValue={setValue as unknown as Parameters<typeof ChipInput>[0]['setValue']}
+        register={
+          register as unknown as Parameters<typeof ChipInput>[0]["register"]
+        }
+        errors={errors as unknown as Parameters<typeof ChipInput>[0]["errors"]}
+        setValue={
+          setValue as unknown as Parameters<typeof ChipInput>[0]["setValue"]
+        }
       />
 
       {/* Course Thumbnail Image */}
       <Upload
         name="courseImage"
         label="Course Thumbnail"
-        register={register as unknown as Parameters<typeof Upload>[0]['register']}
-        setValue={setValue as unknown as Parameters<typeof Upload>[0]['setValue']}
-        errors={errors as unknown as Parameters<typeof Upload>[0]['errors']}
+        register={
+          register as unknown as Parameters<typeof Upload>[0]["register"]
+        }
+        setValue={
+          setValue as unknown as Parameters<typeof Upload>[0]["setValue"]
+        }
+        errors={errors as unknown as Parameters<typeof Upload>[0]["errors"]}
         editData={editCourse && course ? (course as Course).thumbnail : null}
       />
 
@@ -172,8 +169,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         errors={errors}
       />
     </>
-  )
-}
+  );
+};
 
-export default CourseFormFields
-
+export default CourseFormFields;

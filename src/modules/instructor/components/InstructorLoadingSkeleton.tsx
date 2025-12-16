@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import React from "react"
-import Link from "next/link"
+import React from "react";
+import Link from "next/link";
 
 /**
  * InstructorLoadingSkeleton - Loading skeleton component for instructor dashboard
@@ -44,8 +44,7 @@ const InstructorLoadingSkeleton: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default InstructorLoadingSkeleton
-
+export default InstructorLoadingSkeleton;

@@ -1,74 +1,75 @@
-import { useEffect, useRef, useState, ChangeEvent } from "react"
-import { FiUpload } from "react-icons/fi"
-import { useSelector } from "react-redux"
-import { RootState } from "../../../shared/store/store"
-import { useAppDispatch } from "../../../shared/store/hooks"
+import { useEffect, useRef, useState, ChangeEvent } from "react";
+import { FiUpload } from "react-icons/fi";
+import { useSelector } from "react-redux";
+import { RootState } from "@shared/store/store";
+import { useAppDispatch } from "@shared/store/hooks";
 
-import { updateUserProfileImage } from "../../../shared/services/SettingsAPI"
-import IconBtn from "../../../shared/components/IconBtn"
-import Img from '../../../shared/components/Img';
-
-
+import { updateUserProfileImage } from "@shared/services/SettingsAPI";
+import IconBtn from "@shared/components/IconBtn";
+import Img from "@shared/components/Img";
 
 export default function ChangeProfilePicture() {
-  const { token } = useSelector((state: RootState) => state.auth)
-  const { user } = useSelector((state: RootState) => state.profile)
-  const dispatch = useAppDispatch()
+  const { token } = useSelector((state: RootState) => state.auth);
+  const { user } = useSelector((state: RootState) => state.profile);
+  const dispatch = useAppDispatch();
 
-  const [loading, setLoading] = useState(false)
-  const [profileImage, setProfileImage] = useState<File | null>(null)
-  const [previewSource, setPreviewSource] = useState<string | ArrayBuffer | null>(null)
+  const [loading, setLoading] = useState(false);
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [previewSource, setPreviewSource] = useState<
+    string | ArrayBuffer | null
+  >(null);
 
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
-    fileInputRef.current?.click()
-  }
+    fileInputRef.current?.click();
+  };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     // console.log(file)
     if (file) {
-      setProfileImage(file)
-      previewFile(file)
+      setProfileImage(file);
+      previewFile(file);
     }
-  }
+  };
 
   const previewFile = (file: File) => {
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
     reader.onloadend = () => {
-      setPreviewSource(reader.result)
-    }
-  }
+      setPreviewSource(reader.result);
+    };
+  };
 
   const handleFileUpload = () => {
     try {
       // console.log("uploading...")
-      if (!profileImage || !token) return
+      if (!profileImage || !token) return;
 
-      setLoading(true)
-      const formData = new FormData()
-      formData.append("profileImage", profileImage)
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("profileImage", profileImage);
 
-      dispatch(updateUserProfileImage(token, formData)).then(() => {
-        setLoading(false)
-      }).catch((error) => {
-        console.log("ERROR MESSAGE - ", (error as Error).message)
-        setLoading(false)
-      })
+      dispatch(updateUserProfileImage(token, formData))
+        .then(() => {
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log("ERROR MESSAGE - ", (error as Error).message);
+          setLoading(false);
+        });
     } catch (error) {
-      console.log("ERROR MESSAGE - ", (error as Error).message)
-      setLoading(false)
+      console.log("ERROR MESSAGE - ", (error as Error).message);
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (profileImage) {
-      previewFile(profileImage)
+      previewFile(profileImage);
     }
-  }, [profileImage])
-
+  }, [profileImage]);
 
   return (
     <>
@@ -103,15 +104,12 @@ export default function ChangeProfilePicture() {
                 text={loading ? "Uploading..." : "Upload"}
                 onclick={handleFileUpload}
               >
-                {!loading && (
-                  <FiUpload className="text-lg" />
-                )}
+                {!loading && <FiUpload className="text-lg" />}
               </IconBtn>
-
             </div>
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }

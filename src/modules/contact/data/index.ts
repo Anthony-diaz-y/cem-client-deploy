@@ -1,6 +1,6 @@
 // Contact Module Data
 
-import { ContactDetail } from '../types'
+import { ContactDetail } from "../types";
 
 export const contactDetails: ContactDetail[] = [
   {
@@ -22,5 +22,4 @@ export const contactDetails: ContactDetail[] = [
     description: "Mon - Fri From 8am to 5pm",
     details: "+123 456 7869",
   },
-]
-
+];

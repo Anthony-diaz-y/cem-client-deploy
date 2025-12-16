@@ -1,16 +1,23 @@
-import React from "react"
-import * as Icon1 from "react-icons/bi"
-import * as Icon3 from "react-icons/hi2"
-import * as Icon2 from "react-icons/io5"
-import { contactDetails } from '../data'
+import React from "react";
+import * as Icon1 from "react-icons/bi";
+import * as Icon3 from "react-icons/hi2";
+import * as Icon2 from "react-icons/io5";
+import { contactDetails } from "../data";
 
 const ContactDetails = () => {
   return (
     <div className="flex flex-col gap-6 rounded-xl bg-richblack-800 p-4 lg:p-6">
       {contactDetails.map((ele, i) => {
-        const Icon = (Icon1 as Record<string, React.ComponentType<{ size?: number }>>)[ele.icon] 
-          || (Icon2 as Record<string, React.ComponentType<{ size?: number }>>)[ele.icon] 
-          || (Icon3 as Record<string, React.ComponentType<{ size?: number }>>)[ele.icon]
+        const Icon =
+          (Icon1 as Record<string, React.ComponentType<{ size?: number }>>)[
+            ele.icon
+          ] ||
+          (Icon2 as Record<string, React.ComponentType<{ size?: number }>>)[
+            ele.icon
+          ] ||
+          (Icon3 as Record<string, React.ComponentType<{ size?: number }>>)[
+            ele.icon
+          ];
         return (
           <div
             className="flex flex-col gap-[2px] p-3 text-sm text-richblack-200"
@@ -27,10 +34,10 @@ const ContactDetails = () => {
             <p className="font-medium">{ele?.description}</p>
             <p className="font-semibold">{ele?.details}</p>
           </div>
-        )
+        );
       })}
     </div>
-  )
-}
+  );
+};
 
-export default ContactDetails
+export default ContactDetails;

@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import Template from '../components/Template'
-import OpenRoute from '../components/OpenRoute'
-import signupImage from '../../../shared/assets/Images/signup2.webp'
+import Template from "../components/Template";
+import OpenRoute from "../components/OpenRoute";
+import signupImage from "@shared/assets/Images/signup2.webp";
 
 function SignupContainer() {
   return (
@@ -15,8 +15,7 @@ function SignupContainer() {
         formType="signup"
       />
     </OpenRoute>
-  )
+  );
 }
 
-export default SignupContainer
-
+export default SignupContainer;

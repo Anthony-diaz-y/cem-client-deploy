@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import React from "react"
-import { CatalogPageData } from "../types"
+import React from "react";
+import { CatalogPageData } from "../types";
 
 interface CatalogHeroProps {
-  catalogPageData: CatalogPageData
+  catalogPageData: CatalogPageData;
 }
 
 /**
@@ -29,8 +29,7 @@ const CatalogHero: React.FC<CatalogHeroProps> = ({ catalogPageData }) => {
         </p>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CatalogHero
-
+export default CatalogHero;

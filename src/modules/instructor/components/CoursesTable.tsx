@@ -1,59 +1,65 @@
-'use client'
+"use client";
 
-import { useAppSelector } from "../../../shared/store/hooks"
+import { useAppSelector } from "@shared/store/hooks";
 
-import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table'
-import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
+import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 
-import { useState } from "react"
-import { FaCheck } from "react-icons/fa"
-import { FiEdit2 } from "react-icons/fi"
-import { HiClock } from "react-icons/hi"
-import { RiDeleteBin6Line } from "react-icons/ri"
+import { useState } from "react";
+import { FaCheck } from "react-icons/fa";
+import { FiEdit2 } from "react-icons/fi";
+import { HiClock } from "react-icons/hi";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
+import { useRouter } from "next/navigation";
 
-import { useRouter } from "next/navigation"
+import { formatDate } from "@shared/utils/formatDate";
+import {
+  deleteCourse,
+  fetchInstructorCourses,
+} from "@shared/services/courseDetailsAPI";
+import { COURSE_STATUS } from "@shared/utils/constants";
+import ConfirmationModal from "@shared/components/ConfirmationModal";
+import Img from "@shared/components/Img";
+import toast from "react-hot-toast";
+import { Course, CoursesTableProps, ConfirmationModalData } from "../types";
 
-import { formatDate } from "../../../shared/utils/formatDate"
-import { deleteCourse, fetchInstructorCourses, } from "../../../shared/services/courseDetailsAPI"
-import { COURSE_STATUS } from "../../../shared/utils/constants"
-import ConfirmationModal from "../../../shared/components/ConfirmationModal"
-import Img from '../../../shared/components/Img';
-import toast from 'react-hot-toast'
-import { Course, CoursesTableProps, ConfirmationModalData } from '../types'
+export type { Course };
 
-export type { Course }
+export default function CoursesTable({
+  courses,
+  setCourses,
+  loading,
+  setLoading,
+}: CoursesTableProps) {
+  const router = useRouter();
+  const { token } = useAppSelector((state) => state.auth);
 
-export default function CoursesTable({ courses, setCourses, loading, setLoading }: CoursesTableProps) {
-
-  const router = useRouter()
-  const { token } = useAppSelector((state) => state.auth)
-
-  const [confirmationModal, setConfirmationModal] = useState<ConfirmationModalData | null>(null)
-  const TRUNCATE_LENGTH = 25
+  const [confirmationModal, setConfirmationModal] =
+    useState<ConfirmationModalData | null>(null);
+  const TRUNCATE_LENGTH = 25;
 
   // delete course
   const handleCourseDelete = async (courseId: string) => {
-    setLoading(true)
-    const toastId = toast.loading('Deleting...');
-    await deleteCourse({ courseId: courseId }, token)
-    const result = await fetchInstructorCourses(token)
+    setLoading(true);
+    const toastId = toast.loading("Deleting...");
+    await deleteCourse({ courseId: courseId }, token);
+    const result = await fetchInstructorCourses(token);
     if (result) {
-      setCourses(result)
+      setCourses(result);
     }
-    setConfirmationModal(null)
-    setLoading(false)
-    toast.dismiss(toastId)
+    setConfirmationModal(null);
+    setLoading(false);
+    toast.dismiss(toastId);
     // console.log("All Course ", courses)
-  }
-
+  };
 
   // Loading Skeleton
   const skItem = () => {
     return (
       <div className="flex border-b border-richblack-800 px-6 py-8 w-full">
         <div className="flex flex-1 gap-x-4 ">
-          <div className='h-[148px] min-w-[300px] rounded-xl skeleton '></div>
+          <div className="h-[148px] min-w-[300px] rounded-xl skeleton "></div>
 
           <div className="flex flex-col w-[40%]">
             <p className="h-5 w-[50%] rounded-xl skeleton"></p>
@@ -64,8 +70,8 @@ export default function CoursesTable({ courses, setCourses, loading, setLoading 
           </div>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -88,30 +94,26 @@ export default function CoursesTable({ courses, setCourses, loading, setLoading 
           </Tr>
         </Thead>
 
-
         <Tbody>
           {/* loading Skeleton */}
           {loading ? (
             <>
               <Tr>
-                <Td colSpan={4}>
-                  {skItem()}
-                </Td>
+                <Td colSpan={4}>{skItem()}</Td>
               </Tr>
               <Tr>
-                <Td colSpan={4}>
-                  {skItem()}
-                </Td>
+                <Td colSpan={4}>{skItem()}</Td>
               </Tr>
               <Tr>
-                <Td colSpan={4}>
-                  {skItem()}
-                </Td>
+                <Td colSpan={4}>{skItem()}</Td>
               </Tr>
             </>
           ) : courses?.length === 0 ? (
             <Tr>
-              <Td className="py-10 text-center text-2xl font-medium text-richblack-100" colSpan={4}>
+              <Td
+                className="py-10 text-center text-2xl font-medium text-richblack-100"
+                colSpan={4}
+              >
                 No courses found
               </Td>
             </Tr>
@@ -130,13 +132,16 @@ export default function CoursesTable({ courses, setCourses, loading, setLoading 
                   />
 
                   <div className="flex flex-col">
-                    <p className="text-lg font-semibold text-richblack-5 capitalize">{course.courseName}</p>
+                    <p className="text-lg font-semibold text-richblack-5 capitalize">
+                      {course.courseName}
+                    </p>
                     <p className="text-xs text-richblack-300 ">
-                      {course.courseDescription.split(" ").length > TRUNCATE_LENGTH
+                      {course.courseDescription.split(" ").length >
+                      TRUNCATE_LENGTH
                         ? course.courseDescription
-                          .split(" ")
-                          .slice(0, TRUNCATE_LENGTH)
-                          .join(" ") + "..."
+                            .split(" ")
+                            .slice(0, TRUNCATE_LENGTH)
+                            .join(" ") + "..."
                         : course.courseDescription}
                     </p>
 
@@ -155,27 +160,33 @@ export default function CoursesTable({ courses, setCourses, loading, setLoading 
                       <p className="mt-2 flex w-fit flex-row items-center gap-2 rounded-full bg-richblack-700 px-2 py-[2px] text-[12px] font-medium text-pink-100">
                         <HiClock size={14} />
                         Drafted
-                      </p>)
-                      :
-                      (<div className="mt-2 flex w-fit flex-row items-center gap-2 rounded-full bg-richblack-700 px-2 py-[2px] text-[12px] font-medium text-yellow-100">
+                      </p>
+                    ) : (
+                      <div className="mt-2 flex w-fit flex-row items-center gap-2 rounded-full bg-richblack-700 px-2 py-[2px] text-[12px] font-medium text-yellow-100">
                         <p className="flex h-3 w-3 items-center justify-center rounded-full bg-yellow-100 text-richblack-700">
                           <FaCheck size={8} />
                         </p>
                         Published
                       </div>
-                      )}
+                    )}
                   </div>
                 </Td>
 
                 {/* course duration */}
-                <Td className="text-sm font-medium text-richblack-100">2hr 30min</Td>
-                <Td className="text-sm font-medium text-richblack-100">₹{course.price}</Td>
+                <Td className="text-sm font-medium text-richblack-100">
+                  2hr 30min
+                </Td>
+                <Td className="text-sm font-medium text-richblack-100">
+                  ₹{course.price}
+                </Td>
 
                 <Td className="text-sm font-medium text-richblack-100 ">
                   {/* Edit button */}
                   <button
                     disabled={loading}
-                    onClick={() => { router.push(`/dashboard/edit-course/${course._id}`) }}
+                    onClick={() => {
+                      router.push(`/dashboard/edit-course/${course._id}`);
+                    }}
                     title="Edit"
                     className="px-2 transition-all duration-200 hover:scale-110 hover:text-caribbeangreen-300"
                   >
@@ -194,12 +205,11 @@ export default function CoursesTable({ courses, setCourses, loading, setLoading 
                         btn2Text: "Cancel",
                         btn1Handler: !loading
                           ? () => handleCourseDelete(course._id)
-                          : () => { },
+                          : () => {},
                         btn2Handler: !loading
                           ? () => setConfirmationModal(null)
-                          : () => { },
-
-                      })
+                          : () => {},
+                      });
                     }}
                     title="Delete"
                     className="px-1 transition-all duration-200 hover:scale-110 hover:text-[#ff0000]"
@@ -216,5 +226,5 @@ export default function CoursesTable({ courses, setCourses, loading, setLoading 
       {/* Confirmation Modal */}
       {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
     </>
-  )
+  );
 }

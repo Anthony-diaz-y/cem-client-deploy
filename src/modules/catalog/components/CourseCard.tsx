@@ -1,24 +1,24 @@
-import React, { useMemo } from "react"
+import React, { useMemo } from "react";
 // Icons
 // import { FaRegStar, FaStar } from "react-icons/fa"
 // import ReactStars from "react-rating-stars-component"
-import Link from "next/link"
+import Link from "next/link";
 
-import GetAvgRating from "../../../shared/utils/avgRating"
-import RatingStars from "../../../shared/components/RatingStars"
-import Img from './../../../shared/components/Img';
-import { CourseCardProps } from '../types'
+import GetAvgRating from "@shared/utils/avgRating";
+import RatingStars from "@shared/components/RatingStars";
+import Img from "@shared/components/Img";
+import { CourseCardProps } from "../types";
 
 function CourseCard({ course, Height }: CourseCardProps) {
   // const avgReviewCount = GetAvgRating(course.ratingAndReviews)
   // console.log(course.ratingAndReviews)
   const avgReviewCount = useMemo(() => {
-    return GetAvgRating(course.ratingAndReviews)
-  }, [course.ratingAndReviews])
+    return GetAvgRating(course.ratingAndReviews);
+  }, [course.ratingAndReviews]);
   // console.log("count............", avgReviewCount)
 
   return (
-    <div className='hover:scale-[1.03] transition-all duration-200 z-50 '>
+    <div className="hover:scale-[1.03] transition-all duration-200 z-50 ">
       <Link href={`/courses/${course._id}`}>
         <div className="">
           <div className="rounded-lg">
@@ -54,7 +54,7 @@ function CourseCard({ course, Height }: CourseCardProps) {
         </div>
       </Link>
     </div>
-  )
+  );
 }
 
-export default CourseCard
+export default CourseCard;

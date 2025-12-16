@@ -1,20 +1,10 @@
-'use client'
+"use client";
 
-import React from "react"
-import { UseFormRegister, FieldErrors, UseFormHandleSubmit } from "react-hook-form"
-import { IoAddCircleOutline } from "react-icons/io5"
-import IconBtn from "../../../shared/components/IconBtn"
-import { CourseBuilderFormData } from "../types"
+import React from "react";
 
-interface SectionFormProps {
-  register: UseFormRegister<CourseBuilderFormData>
-  handleSubmit: UseFormHandleSubmit<CourseBuilderFormData>
-  errors: FieldErrors<CourseBuilderFormData>
-  loading: boolean
-  editSectionName: string | null
-  onSubmit: (data: CourseBuilderFormData) => void
-  onCancelEdit: () => void
-}
+import { IoAddCircleOutline } from "react-icons/io5";
+import IconBtn from "@shared/components/IconBtn";
+import { SectionFormProps } from "../types";
 
 /**
  * SectionForm - Form component for creating/editing sections
@@ -68,8 +58,7 @@ const SectionForm: React.FC<SectionFormProps> = ({
         )}
       </div>
     </form>
-  )
-}
+  );
+};
 
-export default SectionForm
-
+export default SectionForm;

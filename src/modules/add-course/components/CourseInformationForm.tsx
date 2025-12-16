@@ -1,15 +1,15 @@
-import { useSelector } from "react-redux"
-import CourseFormFields from "./CourseFormFields"
-import CourseFormActions from "./CourseFormActions"
-import { useCourseInformationForm } from "../hooks/useCourseInformationForm"
-import { RootState } from "../../../shared/store/store"
+import { useSelector } from "react-redux";
+import CourseFormFields from "./CourseFormFields";
+import CourseFormActions from "./CourseFormActions";
+import { useCourseInformationForm } from "../hooks/useCourseInformationForm";
+import { RootState } from "@shared/store/store";
 
 /**
  * CourseInformationForm - Main component for course information form
  * Orchestrates form logic through custom hooks and delegates rendering to presentational components
  */
 export default function CourseInformationForm() {
-  const { course, editCourse } = useSelector((state: RootState) => state.course)
+  const { course } = useSelector((state: RootState) => state.course);
   const {
     register,
     handleSubmit,
@@ -19,7 +19,7 @@ export default function CourseInformationForm() {
     courseCategories,
     editCourse: isEditMode,
     onSubmit,
-  } = useCourseInformationForm()
+  } = useCourseInformationForm();
 
   return (
     <form
@@ -38,7 +38,5 @@ export default function CourseInformationForm() {
 
       <CourseFormActions loading={loading} editCourse={isEditMode} />
     </form>
-  )
+  );
 }
-
-

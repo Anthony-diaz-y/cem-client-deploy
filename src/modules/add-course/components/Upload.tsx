@@ -68,23 +68,18 @@ export default function Upload({
         {previewSource ? (
           <div className="flex w-full flex-col p-6">
             {!video ? (
-              previewSource.startsWith('http') || previewSource.startsWith('//') ? (
-                // Use regular img tag for external URLs
-                <img
-                  src={previewSource}
-                  alt="Preview"
-                  className="h-full w-full rounded-md object-cover"
-                />
-              ) : (
-                // Use Next.js Image for local/relative URLs
-                <Image
-                  src={previewSource}
-                  alt="Preview"
-                  className="h-full w-full rounded-md object-cover"
-                  width={800}
-                  height={450}
-                />
-              )
+              <Image
+                src={previewSource}
+                alt="Preview"
+                className="h-full w-full rounded-md object-cover"
+                width={800}
+                height={450}
+                unoptimized={
+                  previewSource.startsWith("data:") ||
+                  previewSource.startsWith("http") ||
+                  previewSource.startsWith("//")
+                }
+              />
             ) : (
               <video
                 src={previewSource}
@@ -101,7 +96,10 @@ export default function Upload({
                 onClick={() => {
                   setPreviewSource("");
                   setSelectedFile(null);
-                  setValue(name, null as unknown as Parameters<typeof setValue>[1]);
+                  setValue(
+                    name,
+                    null as unknown as Parameters<typeof setValue>[1]
+                  );
                 }}
                 className="mt-3 text-richblack-400 underline"
               >

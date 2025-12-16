@@ -1,18 +1,20 @@
-import { useEffect, useState } from "react"
-import { InstructorDataType, Course } from "../types"
+import { useEffect, useState } from "react";
+import { InstructorDataType, Course } from "../types";
 
 /**
  * Custom hook to fetch and manage instructor data
  * Separates data fetching logic from component
  */
 export const useInstructorData = () => {
-  const [loading, setLoading] = useState(false)
-  const [instructorData, setInstructorData] = useState<InstructorDataType[] | null>(null)
-  const [courses, setCourses] = useState<Course[]>([])
+  const [loading, setLoading] = useState(false);
+  const [instructorData, setInstructorData] = useState<
+    InstructorDataType[] | null
+  >(null);
+  const [courses, setCourses] = useState<Course[]>([]);
 
   useEffect(() => {
     (async () => {
-      setLoading(true)
+      setLoading(true);
       // const instructorApiData = await getInstructorData(token)
       // const result = await fetchInstructorCourses(token)
 
@@ -39,7 +41,7 @@ export const useInstructorData = () => {
           totalStudentsEnrolled: 200,
           totalAmountGenerated: 5000,
         },
-      ]
+      ];
 
       const mockCourses: Course[] = [
         {
@@ -56,22 +58,6 @@ export const useInstructorData = () => {
           ),
           price: 100,
           status: "Published",
-          instructor: {
-            _id: "inst1",
-            firstName: "John",
-            lastName: "Doe",
-            email: "john@example.com",
-          },
-          whatYouWillLearn: "",
-          courseContent: [],
-          ratingAndReviews: [],
-          tag: [],
-          category: {
-            _id: "cat1",
-            name: "Web Development",
-            description: "",
-          },
-          instructions: [],
         },
         {
           _id: "2",
@@ -84,22 +70,6 @@ export const useInstructorData = () => {
           studentsEnrolled: Array.from({ length: 85 }, (_, i) => `student${i}`),
           price: 100,
           status: "Published",
-          instructor: {
-            _id: "inst1",
-            firstName: "John",
-            lastName: "Doe",
-            email: "john@example.com",
-          },
-          whatYouWillLearn: "",
-          courseContent: [],
-          ratingAndReviews: [],
-          tag: [],
-          category: {
-            _id: "cat1",
-            name: "Web Development",
-            description: "",
-          },
-          instructions: [],
         },
         {
           _id: "3",
@@ -115,34 +85,17 @@ export const useInstructorData = () => {
           ),
           price: 25,
           status: "Draft",
-          instructor: {
-            _id: "inst1",
-            firstName: "John",
-            lastName: "Doe",
-            email: "john@example.com",
-          },
-          whatYouWillLearn: "",
-          courseContent: [],
-          ratingAndReviews: [],
-          tag: [],
-          category: {
-            _id: "cat1",
-            name: "Web Development",
-            description: "",
-          },
-          instructions: [],
         },
-      ]
+      ];
       // -----------------------------------
 
-      if (mockInstructorData?.length) setInstructorData(mockInstructorData)
+      if (mockInstructorData?.length) setInstructorData(mockInstructorData);
       if (mockCourses) {
-        setCourses(mockCourses)
+        setCourses(mockCourses);
       }
-      setLoading(false)
-    })()
-  }, [])
+      setLoading(false);
+    })();
+  }, []);
 
-  return { loading, instructorData, courses }
-}
-
+  return { loading, instructorData, courses };
+};

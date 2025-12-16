@@ -1,48 +1,56 @@
-import { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
-import { RiDeleteBin6Line } from 'react-icons/ri'
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
-import { RootState } from "../../../shared/store/store"
-import { Course } from "../../course/types"
-import { FieldValues, Path } from 'react-hook-form'
-import { RequirementFieldProps } from '../types/index'
+import { RootState } from "@shared/store/store";
+import { Course } from "../../course/types";
+import { FieldValues, Path } from "react-hook-form";
+import { RequirementFieldProps } from "../types/index";
 
-export default function RequirementsField<T extends FieldValues = FieldValues>({ name, label, register, setValue, errors }: RequirementFieldProps<T>) {
-  const { editCourse, course } = useSelector((state: RootState) => state.course)
-  const [requirement, setRequirement] = useState("")
+export default function RequirementsField<T extends FieldValues = FieldValues>({
+  name,
+  label,
+  register,
+  setValue,
+  errors,
+}: RequirementFieldProps<T>) {
+  const { editCourse, course } = useSelector(
+    (state: RootState) => state.course
+  );
+  const [requirement, setRequirement] = useState("");
   const [requirementsList, setRequirementsList] = useState<string[]>(() => {
     if (editCourse && course) {
-      const courseData = course as Course
-      return courseData.instructions || []
+      const courseData = course as Course;
+      return courseData.instructions || [];
     }
-    return []
-  })
+    return [];
+  });
 
   useEffect(() => {
-    register(name, { 
-      required: true, 
-      validate: (value: string[]) => value.length > 0 
-    })
-  }, [name, register])
+    register(name, {
+      required: true,
+      validate: (value: string[]) => value.length > 0,
+    });
+  }, [name, register]);
 
   useEffect(() => {
-    setValue(name, requirementsList as T[Path<T>])
-  }, [requirementsList, name, setValue])
+    setValue(name, requirementsList as T[Path<T>]);
+  }, [requirementsList, name, setValue]);
 
   // add instruction
   const handleAddRequirement = () => {
     if (requirement && !requirementsList.includes(requirement)) {
-      setRequirementsList([...requirementsList, requirement])
-      setRequirement("")
+      setRequirementsList([...requirementsList, requirement]);
+      setRequirement("");
     }
-  }
+  };
 
   // delete instruction
   const handleRemoveRequirement = (index: number) => {
-    const updatedRequirements = [...requirementsList]
-    updatedRequirements.splice(index, 1)
-    setRequirementsList(updatedRequirements)
-  }
+    const updatedRequirements = [...requirementsList];
+    updatedRequirements.splice(index, 1);
+    setRequirementsList(updatedRequirements);
+  };
 
   return (
     <div className="flex flex-col space-y-2">
@@ -91,5 +99,5 @@ export default function RequirementsField<T extends FieldValues = FieldValues>({
         </span>
       )}
     </div>
-  )
+  );
 }

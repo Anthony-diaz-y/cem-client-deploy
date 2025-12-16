@@ -1,25 +1,25 @@
-'use client'
-import React, { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
+"use client";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
-import CountryCode from '../../../shared/data/countrycode.json'
-import { ContactFormData } from '../types'
+import CountryCode from "@shared/data/countrycode.json";
+import { ContactFormData } from "../types";
 // import { apiConnector } from "../../../services/apiConnector"
 // import { contactusEndpoint } from "../../../services/apis"
 
 const ContactUsForm = () => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitSuccessful },
-  } = useForm<ContactFormData>()
+  } = useForm<ContactFormData>();
 
   const submitContactForm = async (data: ContactFormData) => {
     // console.log("Form Data - ", data)
     try {
-      setLoading(true)
+      setLoading(true);
       // TODO: Uncomment when API is ready
       // const res = await apiConnector(
       //   "POST",
@@ -27,13 +27,13 @@ const ContactUsForm = () => {
       //   data
       // )
       // console.log("Email Res - ", res)
-      console.log("Contact form data:", data) // Temporary: Remove when API is uncommented
-      setLoading(false)
+      console.log("Contact form data:", data); // Temporary: Remove when API is uncommented
+      setLoading(false);
     } catch (error: unknown) {
-      console.log("ERROR WHILE CONATACT US  - ", (error as Error).message)
-      setLoading(false)
+      console.log("ERROR WHILE CONATACT US  - ", (error as Error).message);
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -43,9 +43,9 @@ const ContactUsForm = () => {
         lastname: "",
         message: "",
         phoneNo: "",
-      })
+      });
     }
-  }, [reset, isSubmitSuccessful])
+  }, [reset, isSubmitSuccessful]);
 
   return (
     <form
@@ -120,7 +120,7 @@ const ContactUsForm = () => {
                   <option key={i} value={ele.code}>
                     {ele.code} -{ele.country}
                   </option>
-                )
+                );
               })}
             </select>
           </div>
@@ -172,14 +172,15 @@ const ContactUsForm = () => {
         disabled={loading}
         type="submit"
         className={`rounded-md bg-yellow-50 px-6 py-3 text-center text-[13px] font-bold text-black shadow-[2px_2px_0px_0px_rgba(255,255,255,0.18)] 
-         ${!loading &&
-          "transition-all duration-200 hover:scale-95 hover:shadow-none"
-          }  disabled:bg-richblack-500 sm:text-[16px] `}
+         ${
+           !loading &&
+           "transition-all duration-200 hover:scale-95 hover:shadow-none"
+         }  disabled:bg-richblack-500 sm:text-[16px] `}
       >
         Send Message
       </button>
     </form>
-  )
-}
+  );
+};
 
-export default ContactUsForm
+export default ContactUsForm;

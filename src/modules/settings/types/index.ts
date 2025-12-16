@@ -1,7 +1,7 @@
 // Settings Module Types
 
 // Re-export types from auth module
-export type { ApiError, NavigateFunction } from '../../auth/types';
+export type { ApiError, NavigateFunction } from "../../auth/types";
 
 export interface PasswordFormData {
   oldPassword?: string;
@@ -16,5 +16,4 @@ export type ProfileFormData = {
   gender: string;
   contactNumber: string;
   about: string;
-}
-
+};

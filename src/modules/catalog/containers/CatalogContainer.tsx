@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Footer from "../../../shared/components/Footer";
+import Footer from "@shared/components/Footer";
 import CatalogHero from "../components/CatalogHero";
 import CatalogTabs from "../components/CatalogTabs";
 import CatalogSections from "../components/CatalogSections";

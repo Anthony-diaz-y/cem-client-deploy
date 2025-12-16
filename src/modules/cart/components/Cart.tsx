@@ -1,16 +1,17 @@
-import { useSelector } from "react-redux"
+import { useSelector } from "react-redux";
 
-import RenderCartCourses from "./RenderCartCourses"
-import RenderTotalAmount from "./RenderTotalAmount"
-import { RootState } from '../../../shared/store/store';
-
+import RenderCartCourses from "./RenderCartCourses";
+import RenderTotalAmount from "./RenderTotalAmount";
+import { RootState } from "@shared/store/store";
 
 export default function Cart() {
-  const { total, totalItems } = useSelector((state: RootState) => state.cart)
+  const { total, totalItems } = useSelector((state: RootState) => state.cart);
 
   return (
     <>
-      <h1 className="mb-14 text-3xl font-medium text-richblack-5 font-boogaloo text-center sm:text-left">Cart</h1>
+      <h1 className="mb-14 text-3xl font-medium text-richblack-5 font-boogaloo text-center sm:text-left">
+        Cart
+      </h1>
       <p className="border-b border-b-richblack-400 pb-2 font-semibold text-richblack-400">
         {totalItems} Courses in Cart
       </p>
@@ -25,5 +26,5 @@ export default function Cart() {
         </p>
       )}
     </>
-  )
+  );
 }

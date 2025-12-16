@@ -1,22 +1,22 @@
 'use client'
 import React from "react"
 
-import FoundingStory from "../../../shared/assets/Images/FoundingStory.png"
-import BannerImage1 from "../../../shared/assets/Images/aboutus1.webp"
-import BannerImage2 from "../../../shared/assets/Images/aboutus2.webp"
-import BannerImage3 from "../../../shared/assets/Images/aboutus3.webp"
+import FoundingStory from "@shared/assets/Images/FoundingStory.png"
+import BannerImage1 from "@shared/assets/Images/aboutus1.webp"
+import BannerImage2 from "@shared/assets/Images/aboutus2.webp"
+import BannerImage3 from "@shared/assets/Images/aboutus3.webp"
 
-import Footer from "../../../shared/components/Footer"
+import Footer from "@shared/components/Footer"
 import ContactFormSection from "../components/ContactFormSection"
 import LearningGrid from "../components/LearningGrid"
 import Quote from "../components/Quote"
 import StatsComponenet from "../components/Stats"
-import HighlightText from "../../home/components/HighlightText"
-import Img from "../../../shared/components/Img"
-import ReviewSlider from "../../../shared/components/ReviewSlider"
+import HighlightText from "@modules/home/components/HighlightText"
+import Img from "@shared/components/Img"
+import ReviewSlider from "@shared/components/ReviewSlider"
 
 import { motion } from 'framer-motion'
-import { fadeIn } from "../../../shared/utils/motionFrameVarients"
+import { fadeIn } from "@shared/utils/motionFrameVarients"
 
 /**
  * AboutContainer - Container component for About page

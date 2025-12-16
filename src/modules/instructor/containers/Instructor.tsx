@@ -8,7 +8,7 @@ import InstructorLoadingSkeleton from "../components/InstructorLoadingSkeleton";
 import InstructorEmptyState from "../components/InstructorEmptyState";
 import { useInstructorData } from "../hooks/useInstructorData";
 import { useInstructorStats } from "../hooks/useInstructorStats";
-import { RootState } from "../../../shared/store/store";
+import { RootState } from "@shared/store/store";
 
 /**
  * Instructor - Main component for instructor dashboard

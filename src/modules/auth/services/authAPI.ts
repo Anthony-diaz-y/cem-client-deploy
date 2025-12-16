@@ -1,12 +1,12 @@
-import { toast } from "react-hot-toast"
+import { toast } from "react-hot-toast";
 
-import { setLoading, setToken } from "../store/authSlice"
-import { resetCart } from "../../course/store/cartSlice"
-import { setUser } from "../store/profileSlice"
-import { apiConnector } from "../../../shared/services/apiConnector"
-import { endpoints } from "../../../shared/services/apis"
-import { AppDispatch } from "../../../shared/store/store"
-import { NavigateFunction, ApiError } from "../types"
+import { setLoading, setToken } from "../store/authSlice";
+import { resetCart } from "../../course/store/cartSlice";
+import { setUser } from "../store/profileSlice";
+import { apiConnector } from "@shared/services/apiConnector";
+import { endpoints } from "@shared/services/apis";
+import { AppDispatch } from "@shared/store/store";
+import { NavigateFunction, ApiError } from "../types";
 
 const {
   SENDOTP_API,
@@ -14,12 +14,11 @@ const {
   LOGIN_API,
   RESETPASSTOKEN_API,
   RESETPASSWORD_API,
-} = endpoints
+} = endpoints;
 
 // ================ send Otp ================
 export function sendOtp(email: string, navigate: NavigateFunction) {
   return async (dispatch: AppDispatch) => {
-
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
 
@@ -27,7 +26,7 @@ export function sendOtp(email: string, navigate: NavigateFunction) {
       const response = await apiConnector("POST", SENDOTP_API, {
         email,
         checkUserPresent: true,
-      })
+      });
       // console.log("SENDOTP API RESPONSE ---> ", response)
 
       // console.log(response.data.success)
@@ -44,7 +43,7 @@ export function sendOtp(email: string, navigate: NavigateFunction) {
     }
     dispatch(setLoading(false));
     toast.dismiss(toastId);
-  }
+  };
 }
 
 // ================ sign Up ================
@@ -59,7 +58,6 @@ export function signUp(
   navigate: NavigateFunction
 ) {
   return async (dispatch: AppDispatch) => {
-
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
     try {
@@ -71,7 +69,7 @@ export function signUp(
         password,
         confirmPassword,
         otp,
-      })
+      });
 
       // console.log("SIGNUP API RESPONSE --> ", response);
       if (!response.data.success) {
@@ -86,148 +84,161 @@ export function signUp(
       console.log("SIGNUP API ERROR --> ", apiError);
       toast.error(apiError.response?.data?.message || "Invalid OTP");
     }
-    dispatch(setLoading(false))
-    toast.dismiss(toastId)
-  }
+    dispatch(setLoading(false));
+    toast.dismiss(toastId);
+  };
 }
 
-
 // ================ Login ================
-export function login(email: string, password: string, navigate: NavigateFunction) {
+export function login(
+  email: string,
+  password: string,
+  navigate: NavigateFunction
+) {
   return async (dispatch: AppDispatch) => {
-
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
 
     try {
       if (email === "admin@test.com" && password === "123456") {
         // Mock Admin Login
-        toast.success("Login Successful (Demo Admin)")
+        toast.success("Login Successful (Demo Admin)");
         const mockAdmin = {
           _id: "admin_id_123",
           firstName: "Admin",
           lastName: "User",
           email: "admin@test.com",
           accountType: "Admin",
-          image: "https://api.dicebear.com/5.x/initials/svg?seed=Admin%20User"
-        }
-        dispatch(setToken("mock_admin_token"))
-        dispatch(setUser(mockAdmin))
-        localStorage.setItem("token", JSON.stringify("mock_admin_token"))
-        localStorage.setItem("user", JSON.stringify(mockAdmin))
-        navigate("/dashboard/my-profile")
-        dispatch(setLoading(false))
-        toast.dismiss(toastId)
-        return
+          image: "https://api.dicebear.com/5.x/initials/svg?seed=Admin%20User",
+        };
+        dispatch(setToken("mock_admin_token"));
+        dispatch(setUser(mockAdmin));
+        localStorage.setItem("token", JSON.stringify("mock_admin_token"));
+        localStorage.setItem("user", JSON.stringify(mockAdmin));
+        navigate("/dashboard/my-profile");
+        dispatch(setLoading(false));
+        toast.dismiss(toastId);
+        return;
       }
 
       const response = await apiConnector("POST", LOGIN_API, {
         email,
         password,
-      })
+      });
 
       console.log("LOGIN API RESPONSE............", response);
 
       if (!response.data.success) {
-        throw new Error(response.data.message)
+        throw new Error(response.data.message);
       }
 
-      toast.success("Login Successful")
-      dispatch(setToken(response.data.token))
+      toast.success("Login Successful");
+      dispatch(setToken(response.data.token));
 
       const userImage = response.data?.user?.image
         ? response.data.user.image
-        : `https://api.dicebear.com/5.x/initials/svg?seed=${response.data.user.firstName} ${response.data.user.lastName}`
+        : `https://api.dicebear.com/5.x/initials/svg?seed=${response.data.user.firstName} ${response.data.user.lastName}`;
 
       dispatch(setUser({ ...response.data.user, image: userImage }));
       // console.log('User data - ', response.data.user);/
       localStorage.setItem("token", JSON.stringify(response.data?.token));
 
-      localStorage.setItem("user", JSON.stringify({ ...response.data.user, image: userImage }));
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ ...response.data.user, image: userImage })
+      );
 
       navigate("/dashboard/my-profile");
     } catch (error) {
       const apiError = error as ApiError;
-      console.log("LOGIN API ERROR.......", apiError)
-      toast.error(apiError.response?.data?.message || "Login failed")
+      console.log("LOGIN API ERROR.......", apiError);
+      toast.error(apiError.response?.data?.message || "Login failed");
     }
-    dispatch(setLoading(false))
-    toast.dismiss(toastId)
-  }
+    dispatch(setLoading(false));
+    toast.dismiss(toastId);
+  };
 }
 
-
 // ================ get Password Reset Token ================
-export function getPasswordResetToken(email: string, setEmailSent: (sent: boolean) => void) {
+export function getPasswordResetToken(
+  email: string,
+  setEmailSent: (sent: boolean) => void
+) {
   return async (dispatch: AppDispatch) => {
-
-    const toastId = toast.loading("Loading...")
-    dispatch(setLoading(true))
+    const toastId = toast.loading("Loading...");
+    dispatch(setLoading(true));
     try {
       const response = await apiConnector("POST", RESETPASSTOKEN_API, {
         email,
-      })
+      });
 
-      console.log("RESET PASS TOKEN RESPONSE............", response)
+      console.log("RESET PASS TOKEN RESPONSE............", response);
 
       if (!response.data.success) {
-        throw new Error(response.data.message)
+        throw new Error(response.data.message);
       }
 
-      toast.success("Reset Email Sent")
-      setEmailSent(true)
+      toast.success("Reset Email Sent");
+      setEmailSent(true);
     } catch (error) {
       const apiError = error as ApiError;
-      console.log("RESET PASS TOKEN ERROR............", apiError)
-      toast.error(apiError.response?.data?.message || "Failed To Send Reset Email")
+      console.log("RESET PASS TOKEN ERROR............", apiError);
+      toast.error(
+        apiError.response?.data?.message || "Failed To Send Reset Email"
+      );
     }
-    toast.dismiss(toastId)
-    dispatch(setLoading(false))
-  }
+    toast.dismiss(toastId);
+    dispatch(setLoading(false));
+  };
 }
 
-
 // ================ reset Password ================
-export function resetPassword(password: string, confirmPassword: string, token: string, navigate: NavigateFunction) {
+export function resetPassword(
+  password: string,
+  confirmPassword: string,
+  token: string,
+  navigate: NavigateFunction
+) {
   return async (dispatch: AppDispatch) => {
-    const toastId = toast.loading("Loading...")
-    dispatch(setLoading(true))
+    const toastId = toast.loading("Loading...");
+    dispatch(setLoading(true));
 
     try {
       const response = await apiConnector("POST", RESETPASSWORD_API, {
         password,
         confirmPassword,
         token,
-      })
+      });
 
-      console.log("RESETPASSWORD RESPONSE............", response)
+      console.log("RESETPASSWORD RESPONSE............", response);
 
       if (!response.data.success) {
-        throw new Error(response.data.message)
+        throw new Error(response.data.message);
       }
 
-      toast.success("Password Reset Successfully")
-      navigate("/login")
+      toast.success("Password Reset Successfully");
+      navigate("/login");
     } catch (error) {
       const apiError = error as ApiError;
-      console.log("RESETPASSWORD ERROR............", apiError)
-      toast.error(apiError.response?.data?.message || "Failed To Reset Password")
+      console.log("RESETPASSWORD ERROR............", apiError);
+      toast.error(
+        apiError.response?.data?.message || "Failed To Reset Password"
+      );
     }
-    toast.dismiss(toastId)
-    dispatch(setLoading(false))
-  }
+    toast.dismiss(toastId);
+    dispatch(setLoading(false));
+  };
 }
-
 
 // ================ Logout ================
 export function logout(navigate: NavigateFunction) {
   return (dispatch: AppDispatch) => {
-    dispatch(setToken(null))
-    dispatch(setUser(null))
-    dispatch(resetCart())
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
-    toast.success("Logged Out")
-    navigate("/")
-  }
+    dispatch(setToken(null));
+    dispatch(setUser(null));
+    dispatch(resetCart());
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    toast.success("Logged Out");
+    navigate("/");
+  };
 }

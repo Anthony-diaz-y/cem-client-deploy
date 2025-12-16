@@ -2,7 +2,7 @@
  * Helper function to get the correct image URL from imported images
  * Handles both string URLs and module imports that may return objects
  */
-export const getImageUrl = (image: string | { default?: string; src?: string } | any): string => {
+export const getImageUrl = (image: string | { default?: string; src?: string } | unknown): string => {
   if (!image) return '';
   
   // If it's already a string, return it (but validate it's a valid URL or path)

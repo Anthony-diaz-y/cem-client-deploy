@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 
-import { resetPassword } from "../../../shared/services/authAPI";
-import { RootState, AppDispatch } from "../../../shared/store/store";
+import { resetPassword } from "@shared/services/authAPI";
+import { RootState, AppDispatch } from "@shared/store/store";
 
 function UpdatePassword() {
   const router = useRouter();
@@ -37,7 +37,14 @@ function UpdatePassword() {
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const token = pathname?.split("/").at(-1) || "";
-    dispatch(resetPassword(password, confirmPassword, token, router.push as (path: string) => void));
+    dispatch(
+      resetPassword(
+        password,
+        confirmPassword,
+        token,
+        router.push as (path: string) => void
+      )
+    );
   };
 
   return (

@@ -1,23 +1,7 @@
-'use client'
+"use client";
 
-import React, { useRef, useEffect, useState } from "react"
-import { SubSection } from "../types"
-
-interface VideoPlayerProps {
-  videoData: SubSection | null
-  previewSource: string
-  videoEnded: boolean
-  playerRef: React.RefObject<{ seek: (time: number) => void } | null>
-  onVideoEnd: () => void
-  onMarkComplete: () => void
-  onRewatch: () => void
-  onNext: () => void
-  onPrev: () => void
-  loading: boolean
-  isCompleted: boolean
-  isFirst: boolean
-  isLast: boolean
-}
+import React, { useRef, useEffect, useState } from "react";
+import { VideoPlayerProps } from "../types";
 
 /**
  * VideoPlayer - Video player component using native HTML5 video
@@ -38,8 +22,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   isFirst,
   isLast,
 }) => {
-  const videoElementRef = useRef<HTMLVideoElement>(null)
-  const [showControls, setShowControls] = useState(true)
+  const videoElementRef = useRef<HTMLVideoElement>(null);
+  const [showControls, setShowControls] = useState(true);
 
   // Expose seek method to parent component via ref
   useEffect(() => {
@@ -47,36 +31,36 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       playerRef.current = {
         seek: (time: number) => {
           if (videoElementRef.current) {
-            videoElementRef.current.currentTime = time
+            videoElementRef.current.currentTime = time;
           }
         },
-      }
+      };
     }
-  }, [playerRef])
+  }, [playerRef]);
 
   // Handle video end
   useEffect(() => {
-    const video = videoElementRef.current
-    if (!video) return
+    const video = videoElementRef.current;
+    if (!video) return;
 
     const handleEnded = () => {
-      onVideoEnd()
-    }
+      onVideoEnd();
+    };
 
-    video.addEventListener('ended', handleEnded)
+    video.addEventListener("ended", handleEnded);
     return () => {
-      video.removeEventListener('ended', handleEnded)
-    }
-  }, [onVideoEnd])
+      video.removeEventListener("ended", handleEnded);
+    };
+  }, [onVideoEnd]);
 
   // Auto-play video when videoData changes
   useEffect(() => {
     if (videoElementRef.current && videoData?.videoUrl) {
       videoElementRef.current.play().catch((error) => {
-        console.error("Error playing video:", error)
-      })
+        console.error("Error playing video:", error);
+      });
     }
-  }, [videoData])
+  }, [videoData]);
 
   if (!videoData) {
     return previewSource ? (
@@ -91,7 +75,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       <div className="h-full w-full rounded-md bg-richblack-800 flex items-center justify-center">
         <p className="text-richblack-400">No preview available</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -155,8 +139,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default VideoPlayer
-
+export default VideoPlayer;

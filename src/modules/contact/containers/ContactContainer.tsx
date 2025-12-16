@@ -1,9 +1,9 @@
-import React from "react"
+import React from "react";
 
-import Footer from "../../../shared/components/Footer"
-import ContactDetails from "../components/ContactDetails"
-import ContactForm from "../components/ContactForm"
-import ReviewSlider from "../../../shared/components/ReviewSlider"
+import Footer from "@shared/components/Footer";
+import ContactDetails from "../components/ContactDetails";
+import ContactForm from "../components/ContactForm";
+import ReviewSlider from "@shared/components/ReviewSlider";
 
 /**
  * ContactContainer - Container component for Contact page
@@ -35,8 +35,7 @@ const ContactContainer = () => {
       {/* Footer */}
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default ContactContainer
-
+export default ContactContainer;

@@ -1,9 +1,5 @@
-import React from 'react'
-import ContactContainer from '../../modules/contact/containers/ContactContainer'
+import ContactContainer from "@modules/contact/containers/ContactContainer";
 
 export default function Contact() {
-  return (
-    <ContactContainer />
-  )
+  return <ContactContainer />;
 }
-

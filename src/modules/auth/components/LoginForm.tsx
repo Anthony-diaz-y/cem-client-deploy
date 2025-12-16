@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import { useState } from "react"
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
-import { useDispatch } from "react-redux"
+import { useState } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { useDispatch } from "react-redux";
 
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-import { login } from "../../../shared/services/authAPI"
-import { AppDispatch } from "../../../shared/store/store"
+import { login } from "@shared/services/authAPI";
+import { AppDispatch } from "@shared/store/store";
 
 function LoginForm() {
   const router = useRouter();
@@ -18,7 +18,7 @@ function LoginForm() {
     password: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
 
   const { email, password } = formData;
 
@@ -26,13 +26,13 @@ function LoginForm() {
     setFormData((prevData) => ({
       ...prevData,
       [e.target.name]: e.target.value,
-    }))
-  }
+    }));
+  };
 
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(login(email, password, router.push as (path: string) => void))
-  }
+    dispatch(login(email, password, router.push as (path: string) => void));
+  };
 
   return (
     <form
@@ -90,7 +90,6 @@ function LoginForm() {
         </Link>
       </label>
 
-
       <button
         type="submit"
         className="mt-6 rounded-[8px] bg-yellow-50 py-[8px] px-[12px] font-medium text-richblack-900"
@@ -98,7 +97,7 @@ function LoginForm() {
         Sign In
       </button>
     </form>
-  )
+  );
 }
 
-export default LoginForm
+export default LoginForm;

@@ -1,5 +1,9 @@
 // Instructor Module Types
 
+export interface InstructorCoursesGridProps {
+  courses: Course[];
+}
+
 export interface InstructorDataType {
   _id: string;
   courseName: string;
@@ -44,5 +48,10 @@ export type ConfirmationModalData = {
   btn2Text: string;
   btn1Handler: () => void;
   btn2Handler: () => void;
-}
+};
 
+export interface InstructorStatsProps {
+  totalCourses: number;
+  totalStudents: number;
+  totalAmount: number;
+}

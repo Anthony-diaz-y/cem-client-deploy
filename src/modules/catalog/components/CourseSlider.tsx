@@ -1,13 +1,13 @@
 // Import Swiper styles
-import "swiper/css"
-import "swiper/css/free-mode"
-import "swiper/css/pagination"
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/pagination";
 // Import Swiper React components
-import { Swiper, SwiperSlide } from "swiper/react"
+import { Swiper, SwiperSlide } from "swiper/react";
 // import {  Pagination } from "swiper"
 
-import CourseCard from "./CourseCard"
-import { CourseSliderProps } from '../types'
+import CourseCard from "./CourseCard";
+import { CourseSliderProps } from "../types";
 
 function CourseSlider({ Courses }: CourseSliderProps) {
   return (
@@ -40,7 +40,7 @@ function CourseSlider({ Courses }: CourseSliderProps) {
         </div>
       )}
     </>
-  )
+  );
 }
 
-export default CourseSlider
+export default CourseSlider;

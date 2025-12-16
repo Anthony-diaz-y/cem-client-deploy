@@ -1,14 +1,8 @@
-'use client'
+"use client";
 
-import React from "react"
-import CourseSlider from "./CourseSlider"
-import { CatalogPageData } from "../types"
-
-interface CatalogTabsProps {
-  catalogPageData: CatalogPageData
-  active: number
-  onTabChange: (tab: number) => void
-}
+import React from "react";
+import CourseSlider from "./CourseSlider";
+import { CatalogTabsProps } from "../types";
 
 /**
  * CatalogTabs - Tabs component for catalog page
@@ -50,8 +44,7 @@ const CatalogTabs: React.FC<CatalogTabsProps> = ({
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CatalogTabs
-
+export default CatalogTabs;

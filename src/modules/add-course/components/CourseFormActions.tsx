@@ -1,15 +1,11 @@
-'use client'
+"use client";
 
-import React from "react"
-import { useDispatch } from "react-redux"
-import { MdNavigateNext } from "react-icons/md"
-import IconBtn from "../../../shared/components/IconBtn"
-import { setStep } from "../../course/store/courseSlice"
-
-interface CourseFormActionsProps {
-  loading: boolean
-  editCourse: boolean
-}
+import React from "react";
+import { useDispatch } from "react-redux";
+import { MdNavigateNext } from "react-icons/md";
+import IconBtn from "@shared/components/IconBtn";
+import { setStep } from "@modules/course/store/courseSlice";
+import { CourseFormActionsProps } from "../types";
 
 /**
  * CourseFormActions - Actions component for course information form
@@ -18,7 +14,7 @@ const CourseFormActions: React.FC<CourseFormActionsProps> = ({
   loading,
   editCourse,
 }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   return (
     <div className="flex justify-end gap-x-2">
@@ -31,15 +27,11 @@ const CourseFormActions: React.FC<CourseFormActionsProps> = ({
           Continue Wihout Saving
         </button>
       )}
-      <IconBtn
-        disabled={loading}
-        text={!editCourse ? "Next" : "Save Changes"}
-      >
+      <IconBtn disabled={loading} text={!editCourse ? "Next" : "Save Changes"}>
         <MdNavigateNext />
       </IconBtn>
     </div>
-  )
-}
+  );
+};
 
-export default CourseFormActions
-
+export default CourseFormActions;

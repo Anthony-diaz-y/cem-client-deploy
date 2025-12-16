@@ -1,16 +1,16 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from "react"
-import ProgressBar from "@ramonak/react-progress-bar"
-import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react";
+import ProgressBar from "@ramonak/react-progress-bar";
+import { useRouter } from "next/navigation";
 
-import Img from '../../../shared/components/Img';
-import { Course } from '../types'
+import Img from "@shared/components/Img";
+import { Course } from "../types";
 
 export default function EnrolledCourses() {
-  const router = useRouter()
+  const router = useRouter();
 
-  const [enrolledCourses, setEnrolledCourses] = useState<Course[] | null>(null)
+  const [enrolledCourses, setEnrolledCourses] = useState<Course[] | null>(null);
 
   useEffect(() => {
     // fetch all users enrolled courses
@@ -22,47 +22,52 @@ export default function EnrolledCourses() {
             _id: "mock1",
             courseName: "Full Stack Web Development",
             courseDescription: "Become a full-stack developer with MERN stack.",
-            thumbnail: "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/webdev_thumb.jpg",
+            thumbnail:
+              "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/webdev_thumb.jpg",
             totalDuration: "12h 30m",
             progressPercentage: 45,
-            courseContent: [{ _id: "sec1", subSection: [{ _id: "sub1" }] }]
+            courseContent: [{ _id: "sec1", subSection: [{ _id: "sub1" }] }],
           },
           {
             _id: "mock2",
             courseName: "Machine Learning A-Z",
-            courseDescription: "Learn Python for Data Science and Machine Learning.",
-            thumbnail: "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/ml_thumb.jpg",
+            courseDescription:
+              "Learn Python for Data Science and Machine Learning.",
+            thumbnail:
+              "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/ml_thumb.jpg",
             totalDuration: "25h 10m",
             progressPercentage: 10,
-            courseContent: [{ _id: "sec2", subSection: [{ _id: "sub2" }] }]
+            courseContent: [{ _id: "sec2", subSection: [{ _id: "sub2" }] }],
           },
           {
             _id: "mock3",
             courseName: "Digital Marketing Masterclass",
-            courseDescription: "Complete Digital Marketing course for beginners.",
-            thumbnail: "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/marketing_thumb.jpg",
+            courseDescription:
+              "Complete Digital Marketing course for beginners.",
+            thumbnail:
+              "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/marketing_thumb.jpg",
             totalDuration: "8h 45m",
             progressPercentage: 100,
-            courseContent: [{ _id: "sec3", subSection: [{ _id: "sub3" }] }]
-          }
+            courseContent: [{ _id: "sec3", subSection: [{ _id: "sub3" }] }],
+          },
         ];
         // TODO: Uncomment when API is ready
         // const res = await getUserEnrolledCourses(token);
         setEnrolledCourses(mockData);
       } catch {
-        console.log("Could not fetch enrolled courses.")
+        console.log("Could not fetch enrolled courses.");
       }
     };
 
     getEnrolledCourses();
-  }, [])
+  }, []);
 
   // Loading Skeleton
   const sklItem = () => {
     return (
       <div className="flex border border-richblack-700 px-5 py-3 w-full">
         <div className="flex flex-1 gap-x-4 ">
-          <div className='h-14 w-14 rounded-lg skeleton '></div>
+          <div className="h-14 w-14 rounded-lg skeleton "></div>
 
           <div className="flex flex-col w-[40%] ">
             <p className="h-2 w-[50%] rounded-xl  skeleton"></p>
@@ -75,22 +80,23 @@ export default function EnrolledCourses() {
           <p className="h-2 w-[40%] rounded-xl skeleton mt-3"></p>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   // return if data is null
   if (enrolledCourses?.length == 0) {
     return (
       <p className="grid h-[50vh] w-full place-content-center text-center text-richblack-5 text-3xl">
         You have not enrolled in any course yet.
-      </p>)
+      </p>
+    );
   }
-
-
 
   return (
     <>
-      <div className="text-4xl text-richblack-5 font-boogaloo text-center sm:text-left">Enrolled Courses</div>
+      <div className="text-4xl text-richblack-5 font-boogaloo text-center sm:text-left">
+        Enrolled Courses
+      </div>
       {
         <div className="my-8 text-richblack-5">
           {/* Headings */}
@@ -100,68 +106,57 @@ export default function EnrolledCourses() {
             <p className="flex-1 px-2 py-3">Progress</p>
           </div>
 
-
           {/* loading Skeleton */}
-          {!enrolledCourses && <div >
-            {sklItem()}
-            {sklItem()}
-            {sklItem()}
-            {sklItem()}
-            {sklItem()}
-          </div>}
+          {!enrolledCourses && (
+            <div>
+              {sklItem()}
+              {sklItem()}
+              {sklItem()}
+              {sklItem()}
+              {sklItem()}
+            </div>
+          )}
 
           {/* Course Names */}
-          {
-            enrolledCourses?.map((course, i, arr) => (
+          {enrolledCourses?.map((course, i, arr) => (
+            <div
+              className={`flex flex-col sm:flex-row sm:items-center border border-richblack-700 ${
+                i === arr.length - 1 ? "rounded-b-2xl" : "rounded-none"
+              }`}
+              key={i}
+            >
               <div
-                className={`flex flex-col sm:flex-row sm:items-center border border-richblack-700 ${i === arr.length - 1 ? "rounded-b-2xl" : "rounded-none"}`}
-                key={i}
+                className="flex sm:w-[45%] cursor-pointer items-center gap-4 px-5 py-3"
+                onClick={() => {
+                  router.push(
+                    `/view-course/${course?._id}/section/${course.courseContent?.[0]?._id}/sub-section/${course.courseContent?.[0]?.subSection?.[0]?._id}`
+                  );
+                }}
               >
-                <div
-                  className="flex sm:w-[45%] cursor-pointer items-center gap-4 px-5 py-3"
-                  onClick={() => {
-                    router.push(
-                      `/view-course/${course?._id}/section/${course.courseContent?.[0]?._id}/sub-section/${course.courseContent?.[0]?.subSection?.[0]?._id}`
-                    )
-                  }}
-                >
-                  <Img
-                    src={course.thumbnail}
-                    alt="course_img"
-                    className="h-14 w-14 rounded-lg object-cover"
-                  />
+                <Img
+                  src={course.thumbnail}
+                  alt="course_img"
+                  className="h-14 w-14 rounded-lg object-cover"
+                />
 
-                  <div className="flex max-w-xs flex-col gap-2">
-                    <p className="font-semibold">{course.courseName}</p>
-                    <p className="text-xs text-richblack-300">
-                      {course.courseDescription.length > 50
-                        ? `${course.courseDescription.slice(0, 50)}...`
-                        : course.courseDescription}
-                    </p>
-                  </div>
+                <div className="flex max-w-xs flex-col gap-2">
+                  <p className="font-semibold">{course.courseName}</p>
+                  <p className="text-xs text-richblack-300">
+                    {course.courseDescription.length > 50
+                      ? `${course.courseDescription.slice(0, 50)}...`
+                      : course.courseDescription}
+                  </p>
                 </div>
+              </div>
 
-                {/* only for smaller devices */}
-                {/* duration -  progress */}
-                <div className='sm:hidden'>
-                  <div className=" px-2 py-3">{course?.totalDuration}</div>
+              {/* only for smaller devices */}
+              {/* duration -  progress */}
+              <div className="sm:hidden">
+                <div className=" px-2 py-3">{course?.totalDuration}</div>
 
-                  <div className="flex sm:w-2/5 flex-col gap-2 px-2 py-3">
-                    {/* {console.log('Course ============== ', course.progressPercentage)} */}
+                <div className="flex sm:w-2/5 flex-col gap-2 px-2 py-3">
+                  {/* {console.log('Course ============== ', course.progressPercentage)} */}
 
-                    <p>Progress: {course.progressPercentage || 0}%</p>
-                    <ProgressBar
-                      completed={course.progressPercentage || 0}
-                      height="8px"
-                      isLabelVisible={false}
-                    />
-                  </div>
-                </div>
-
-                {/* only for larger devices */}
-                {/* duration -  progress */}
-                <div className="hidden w-1/5 sm:flex px-2 py-3">{course?.totalDuration}</div>
-                <div className="hidden sm:flex w-1/5 flex-col gap-2 px-2 py-3">
                   <p>Progress: {course.progressPercentage || 0}%</p>
                   <ProgressBar
                     completed={course.progressPercentage || 0}
@@ -170,10 +165,24 @@ export default function EnrolledCourses() {
                   />
                 </div>
               </div>
-            ))
-          }
+
+              {/* only for larger devices */}
+              {/* duration -  progress */}
+              <div className="hidden w-1/5 sm:flex px-2 py-3">
+                {course?.totalDuration}
+              </div>
+              <div className="hidden sm:flex w-1/5 flex-col gap-2 px-2 py-3">
+                <p>Progress: {course.progressPercentage || 0}%</p>
+                <ProgressBar
+                  completed={course.progressPercentage || 0}
+                  height="8px"
+                  isLabelVisible={false}
+                />
+              </div>
+            </div>
+          ))}
         </div>
       }
     </>
-  )
+  );
 }

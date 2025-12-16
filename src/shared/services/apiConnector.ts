@@ -7,7 +7,7 @@ export const MOCK_MODE = true; // Set to false to use real backend
 export const axiosInstance = axios.create({});
 
 // Mock response helper
-const createMockResponse = (data, success = true, message = "Success") => {
+const createMockResponse = <T = unknown>(data: T, success: boolean = true, message: string = "Success") => {
     return Promise.resolve({
         data: {
             success,
@@ -21,21 +21,48 @@ const createMockResponse = (data, success = true, message = "Success") => {
 const mockDelay = (ms = 500) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Original apiConnector
-const realApiConnector = (method: string, url: string, bodyData?: any, headers?: any, params?: any) => {
+const realApiConnector = (
+    method: string,
+    url: string,
+    bodyData?: Record<string, unknown>,
+    headers?: Record<string, string>,
+    params?: Record<string, string | number>
+) => {
     return axiosInstance({
         method: `${method}`,
         url: `${url}`,
-        data: bodyData ? bodyData : null,
-        headers: headers ? headers : null,
-        params: params ? params : null,
+        data: bodyData ?? undefined,
+        headers: headers ?? undefined,
+        params: params ?? undefined,
     });
 };
 
 // In-memory state for mock mode (simulates server-side state)
-const mockCourseState = {};
+interface MockCourse {
+    _id: string;
+    courseContent: Array<{
+        _id: string;
+        sectionName?: string;
+        subSection?: Array<{
+            _id: string;
+            title?: string;
+            description?: string;
+            videoUrl?: string;
+            timeDuration?: string;
+        }>;
+    }>;
+}
+
+const mockCourseState: Record<string, MockCourse> = {};
 
 // Mock API responses based on URL patterns
-const mockApiConnector = async (method: string, url: string, bodyData?: any, headers?: any, params?: any) => {
+const mockApiConnector = async (
+    method: string,
+    url: string,
+    bodyData?: Record<string, unknown>,
+    headers?: Record<string, string>,
+    params?: Record<string, string | number>
+) => {
     console.log(`🎭 MOCK MODE: ${method} ${url}`, { bodyData, params });
 
     await mockDelay(300); // Simulate network delay
@@ -67,10 +94,10 @@ const mockApiConnector = async (method: string, url: string, bodyData?: any, hea
     // Get catalog page data
     if (url.includes('/course/getCategoryPageDetails') || url.includes('CATALOGPAGEDATA_API')) {
         const categoryId = bodyData?.categoryId || params?.categoryId;
-        const categoryName = bodyData?.categoryName || params?.categoryName;
+        const categoryName = (bodyData?.categoryName || params?.categoryName) as string | undefined;
 
         let selectedCategory = mockCategories.find(cat =>
-            cat._id === categoryId || cat.name.toLowerCase() === categoryName?.toLowerCase()
+            cat._id === categoryId || (typeof categoryName === 'string' && cat.name.toLowerCase() === categoryName.toLowerCase())
         );
 
         if (!selectedCategory) {
@@ -116,10 +143,13 @@ const mockApiConnector = async (method: string, url: string, bodyData?: any, hea
             try {
                 const parsedUser = JSON.parse(userType);
                 if (parsedUser.accountType === 'Instructor') {
-                    userData = mockUserData.instructor;
+                    userData = {
+                        ...mockUserData.instructor,
+                        courseProgress: [] // Instructors don't have course progress, but type requires it
+                    };
                 }
             } catch (e) {
-                console.log('Error parsing user data');
+                console.log('Error parsing user data:', e);
             }
         }
 
@@ -185,15 +215,18 @@ const mockApiConnector = async (method: string, url: string, bodyData?: any, hea
             return createMockResponse({ ...bodyData }, true, "Course updated successfully");
         }
         if (url.includes('addSection') || url.includes('CREATE_SECTION_API')) {
+            if (!bodyData) {
+                return createMockResponse(null, false, "Body data is required");
+            }
             // Create a new section with the provided data
             const newSection = {
                 _id: `section-${Date.now()}`,
-                sectionName: bodyData.sectionName,
+                sectionName: bodyData.sectionName as string,
                 subSection: []
             };
 
             // Get existing course state or create new one
-            const courseId = bodyData.courseId || 'new-course-id';
+            const courseId = (bodyData.courseId as string) || 'new-course-id';
             if (!mockCourseState[courseId]) {
                 mockCourseState[courseId] = {
                     _id: courseId,
@@ -219,18 +252,21 @@ const mockApiConnector = async (method: string, url: string, bodyData?: any, hea
             return createMockResponse({ updatedCourseDetails: updatedCourse }, true, "Section created successfully");
         }
         if (url.includes('addSubSection') || url.includes('CREATE_SUBSECTION_API')) {
+            if (!bodyData) {
+                return createMockResponse(null, false, "Body data is required");
+            }
             // Create a new subsection
             const newSubSection = {
                 _id: `subsection-${Date.now()}`,
-                title: bodyData.title,
-                description: bodyData.description,
-                videoUrl: bodyData.videoUrl || '',
-                timeDuration: bodyData.timeDuration || '0:00'
+                title: bodyData.title as string,
+                description: bodyData.description as string,
+                videoUrl: (bodyData.videoUrl as string) || '',
+                timeDuration: (bodyData.timeDuration as string) || '0:00'
             };
 
             // Add subsection to the correct section in course state
-            const courseId = bodyData.courseId;
-            const sectionId = bodyData.sectionId;
+            const courseId = bodyData.courseId as string;
+            const sectionId = bodyData.sectionId as string;
 
             if (mockCourseState[courseId]) {
                 // Create new courseContent array with updated section (immutable)
@@ -253,8 +289,11 @@ const mockApiConnector = async (method: string, url: string, bodyData?: any, hea
             return createMockResponse(newSubSection, true, "Lecture added successfully");
         }
         if (url.includes('updateSection') || url.includes('UPDATE_SECTION_API')) {
-            const courseId = bodyData.courseId;
-            const sectionId = bodyData.sectionId;
+            if (!bodyData) {
+                return createMockResponse(null, false, "Body data is required");
+            }
+            const courseId = bodyData.courseId as string;
+            const sectionId = bodyData.sectionId as string;
 
             if (mockCourseState[courseId]) {
                 // Update section name immutably
@@ -262,7 +301,7 @@ const mockApiConnector = async (method: string, url: string, bodyData?: any, hea
                     if (section._id === sectionId) {
                         return {
                             ...section,
-                            sectionName: bodyData.sectionName
+                            sectionName: bodyData.sectionName as string
                         };
                     }
                     return section;
@@ -285,12 +324,15 @@ const mockApiConnector = async (method: string, url: string, bodyData?: any, hea
             return createMockResponse({ ...bodyData }, true, "Lecture updated successfully");
         }
         if (url.includes('deleteSection') || url.includes('DELETE_SECTION_API')) {
-            const courseId = bodyData.courseId;
-            const sectionId = bodyData.sectionId;
+            if (!bodyData) {
+                return createMockResponse(null, false, "Body data is required");
+            }
+            const courseId = bodyData.courseId as string;
+            const sectionId = bodyData.sectionId as string;
 
             if (mockCourseState[courseId]) {
                 mockCourseState[courseId].courseContent = mockCourseState[courseId].courseContent.filter(
-                    s => s._id !== sectionId
+                    (s: { _id: string }) => s._id !== sectionId
                 );
             }
 
@@ -327,7 +369,13 @@ const mockApiConnector = async (method: string, url: string, bodyData?: any, hea
 };
 
 // Export the apiConnector with mock capability
-export const apiConnector = (method: string, url: string, bodyData?: any, headers?: any, params?: any) => {
+export const apiConnector = (
+    method: string,
+    url: string,
+    bodyData?: Record<string, unknown>,
+    headers?: Record<string, string>,
+    params?: Record<string, string | number>
+) => {
     if (MOCK_MODE) {
         return mockApiConnector(method, url, bodyData, headers, params);
     }

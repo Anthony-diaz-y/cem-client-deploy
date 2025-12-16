@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getLocalStorage } from "../../../shared/utils/localStorage";
+import { getLocalStorage } from "@shared/utils/localStorage";
 
 const getInitialToken = () => {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return null;
   }
   const token = getLocalStorage("token");

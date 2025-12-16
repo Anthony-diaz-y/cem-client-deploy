@@ -1,27 +1,22 @@
-'use client'
-import React, { useEffect, useState } from "react"
-import ReactStars from "react-rating-stars-component"
-import Img from './Img';
+"use client";
+import React, { useEffect, useState } from "react";
+import ReactStars from "react-rating-stars-component";
+import Img from "./Img";
 
 // Import Swiper React components
-import { Swiper, SwiperSlide } from "swiper/react"
+import { Swiper, SwiperSlide } from "swiper/react";
 // import SwiperCore, { Autoplay, FreeMode, Pagination } from 'swiper/core';
 // Import Swiper styles
-import "swiper/css"
-import "swiper/css/free-mode"
-import "swiper/css/pagination"
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/pagination";
 
 // Icons
-import { FaStar } from "react-icons/fa"
+import { FaStar } from "react-icons/fa";
 
 // Get apiFunction and the endpoint
 import { apiConnector } from "../services/apiConnector";
-import { ratingsEndpoints } from "../services/apis"
-
-
-
-
-
+import { ratingsEndpoints } from "../services/apis";
 
 interface User {
   firstName: string;
@@ -41,25 +36,23 @@ interface Review {
 }
 
 function ReviewSlider() {
-  const [reviews, setReviews] = useState<Review[] | null>(null)
-  const truncateWords = 15
+  const [reviews, setReviews] = useState<Review[] | null>(null);
+  const truncateWords = 15;
 
   useEffect(() => {
-    ; (async () => {
+    (async () => {
       const { data } = await apiConnector(
         "GET",
         ratingsEndpoints.REVIEWS_DETAILS_API
-      )
+      );
       if (data?.success) {
-        setReviews(data?.data)
+        setReviews(data?.data);
       }
-    })()
-  }, [])
-
+    })();
+  }, []);
 
   // console.log('reviews= ', reviews)
   if (!reviews) return;
-
 
   return (
     <div className="text-white">
@@ -114,9 +107,9 @@ function ReviewSlider() {
                   <p className="font-medium text-richblack-25">
                     {review?.review.split(" ").length > truncateWords
                       ? `${review?.review
-                        .split(" ")
-                        .slice(0, truncateWords)
-                        .join(" ")} ...`
+                          .split(" ")
+                          .slice(0, truncateWords)
+                          .join(" ")} ...`
                       : `${review?.review}`}
                   </p>
 
@@ -127,7 +120,7 @@ function ReviewSlider() {
                     </h3>
                     <ReactStars
                       count={5}
-                      value={parseInt(review.rating)} // Convert to a number
+                      value={typeof review.rating === 'number' ? review.rating : parseFloat(review.rating.toString())}
                       size={20}
                       edit={false}
                       activeColor="#ffd700"
@@ -137,13 +130,13 @@ function ReviewSlider() {
                   </div>
                 </div>
               </SwiperSlide>
-            )
+            );
           })}
           {/* <SwiperSlide>Slide 1</SwiperSlide> */}
         </Swiper>
       </div>
     </div>
-  )
+  );
 }
 
-export default ReviewSlider
+export default ReviewSlider;

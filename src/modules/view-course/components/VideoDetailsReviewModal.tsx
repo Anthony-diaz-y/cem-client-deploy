@@ -1,42 +1,46 @@
-import { useEffect } from "react"
+import { useEffect } from "react";
 
-import { useForm } from "react-hook-form"
-import { RxCross2 } from "react-icons/rx"
-import ReactStars from "react-rating-stars-component"
-import { useSelector } from "react-redux"
+import { useForm } from "react-hook-form";
+import { RxCross2 } from "react-icons/rx";
+import ReactStars from "react-rating-stars-component";
+import { useSelector } from "react-redux";
 
-import { createRating } from "../../../shared/services/courseDetailsAPI"
-import IconBtn from './../../../shared/components/IconBtn';
-import Img from './../../../shared/components/Img';
-import { VideoDetailsReviewModalProps, ReviewFormData } from '../types'
-import { RootState } from "../../../shared/store/store"
+import { createRating } from "@shared/services/courseDetailsAPI";
+import IconBtn from "@shared/components/IconBtn";
+import Img from "@shared/components/Img";
+import { VideoDetailsReviewModalProps, ReviewFormData } from "../types";
+import { RootState } from "@shared/store/store";
 
-export default function VideoDetailsReviewModal({ setReviewModal }: VideoDetailsReviewModalProps) {
-  const { user } = useSelector((state: RootState) => state.profile)
-  const { token } = useSelector((state: RootState) => state.auth)
-  const { courseEntireData } = useSelector((state: RootState) => state.viewCourse)
+export default function VideoDetailsReviewModal({
+  setReviewModal,
+}: VideoDetailsReviewModalProps) {
+  const { user } = useSelector((state: RootState) => state.profile);
+  const { token } = useSelector((state: RootState) => state.auth);
+  const { courseEntireData } = useSelector(
+    (state: RootState) => state.viewCourse
+  );
 
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<ReviewFormData>()
+  } = useForm<ReviewFormData>();
 
   useEffect(() => {
-    setValue("courseExperience", "")
-    setValue("courseRating", 0)
+    setValue("courseExperience", "");
+    setValue("courseRating", 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
   const ratingChanged = (newRating: number) => {
     // console.log(newRating)
-    setValue("courseRating", newRating)
-  }
+    setValue("courseRating", newRating);
+  };
 
   const onSubmit = async (data: ReviewFormData) => {
-    if (!token || !courseEntireData?._id) return
-    
+    if (!token || !courseEntireData?._id) return;
+
     await createRating(
       {
         courseId: courseEntireData._id,
@@ -44,9 +48,9 @@ export default function VideoDetailsReviewModal({ setReviewModal }: VideoDetails
         review: data.courseExperience,
       },
       token
-    )
-    setReviewModal(false)
-  }
+    );
+    setReviewModal(false);
+  };
 
   return (
     <div className="fixed inset-0 z-[1000] !mt-0 grid h-screen w-screen place-items-center overflow-auto bg-white bg-opacity-10 backdrop-blur-sm">
@@ -74,7 +78,6 @@ export default function VideoDetailsReviewModal({ setReviewModal }: VideoDetails
               <p className="text-sm text-richblack-5">Posting Publicly</p>
             </div>
           </div>
-
 
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -121,5 +124,5 @@ export default function VideoDetailsReviewModal({ setReviewModal }: VideoDetails
         </div>
       </div>
     </div>
-  )
+  );
 }

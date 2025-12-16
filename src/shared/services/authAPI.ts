@@ -1,10 +1,12 @@
 import { toast } from "react-hot-toast"
 
-import { setLoading, setToken } from "../../modules/auth/store/authSlice"
-import { resetCart } from "../../modules/course/store/cartSlice"
-import { setUser } from "../../modules/auth/store/profileSlice"
+import { setLoading, setToken } from "@modules/auth/store/authSlice"
+import { resetCart } from "@modules/course/store/cartSlice"
+import { setUser } from "@modules/auth/store/profileSlice"
 import { apiConnector } from "./apiConnector"
 import { endpoints } from "./apis"
+import type { AppDispatch } from "@shared/store/store"
+import type { NavigateFunction, ApiError } from "@modules/auth/types"
 
 const {
   SENDOTP_API,
@@ -15,8 +17,8 @@ const {
 } = endpoints
 
 // ================ send Otp ================
-export function sendOtp(email, navigate) {
-  return async (dispatch) => {
+export function sendOtp(email: string, navigate: NavigateFunction) {
+  return async (dispatch: AppDispatch) => {
 
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
@@ -37,8 +39,8 @@ export function sendOtp(email, navigate) {
       toast.success("OTP Sent Successfully");
     } catch (error) {
       console.log("SENDOTP API ERROR --> ", error);
-      toast.error(error.response.data?.message);
-      // toast.error("Could Not Send OTP")
+      const apiError = error as ApiError;
+      toast.error(apiError.response?.data?.message || "Could Not Send OTP");
     }
     dispatch(setLoading(false));
     toast.dismiss(toastId);
@@ -46,8 +48,17 @@ export function sendOtp(email, navigate) {
 }
 
 // ================ sign Up ================
-export function signUp(accountType, firstName, lastName, email, password, confirmPassword, otp, navigate) {
-  return async (dispatch) => {
+export function signUp(
+  accountType: string,
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string,
+  confirmPassword: string,
+  otp: string,
+  navigate: NavigateFunction
+) {
+  return async (dispatch: AppDispatch) => {
 
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
@@ -71,10 +82,9 @@ export function signUp(accountType, firstName, lastName, email, password, confir
       toast.success("Signup Successful");
       navigate("/auth/login");
     } catch (error) {
-      console.log("SIGNUP API ERROR --> ", error);
-      // toast.error(error.response.data.message);
-      toast.error("Invalid OTP");
-      // navigate("/signup")
+      const apiError = error as ApiError;
+      console.log("SIGNUP API ERROR --> ", apiError);
+      toast.error(apiError.response?.data?.message || "Invalid OTP");
     }
     dispatch(setLoading(false))
     toast.dismiss(toastId)
@@ -83,8 +93,8 @@ export function signUp(accountType, firstName, lastName, email, password, confir
 
 
 // ================ Login ================
-export function login(email, password, navigate) {
-  return async (dispatch) => {
+export function login(email: string, password: string, navigate: NavigateFunction) {
+  return async (dispatch: AppDispatch) => {
 
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
@@ -137,8 +147,9 @@ export function login(email, password, navigate) {
 
       navigate("/dashboard/my-profile");
     } catch (error) {
-      console.log("LOGIN API ERROR.......", error)
-      toast.error(error.response?.data?.message)
+      const apiError = error as ApiError;
+      console.log("LOGIN API ERROR.......", apiError)
+      toast.error(apiError.response?.data?.message || "Login Failed");
     }
     dispatch(setLoading(false))
     toast.dismiss(toastId)
@@ -147,8 +158,8 @@ export function login(email, password, navigate) {
 
 
 // ================ get Password Reset Token ================
-export function getPasswordResetToken(email, setEmailSent) {
-  return async (dispatch) => {
+export function getPasswordResetToken(email: string, setEmailSent: (sent: boolean) => void) {
+  return async (dispatch: AppDispatch) => {
 
     const toastId = toast.loading("Loading...")
     dispatch(setLoading(true))
@@ -166,9 +177,9 @@ export function getPasswordResetToken(email, setEmailSent) {
       toast.success("Reset Email Sent")
       setEmailSent(true)
     } catch (error) {
-      console.log("RESET PASS TOKEN ERROR............", error)
-      toast.error(error.response?.data?.message)
-      // toast.error("Failed To Send Reset Email")
+      const apiError = error as ApiError;
+      console.log("RESET PASS TOKEN ERROR............", apiError)
+      toast.error(apiError.response?.data?.message || "Failed To Send Reset Email")
     }
     toast.dismiss(toastId)
     dispatch(setLoading(false))
@@ -177,8 +188,8 @@ export function getPasswordResetToken(email, setEmailSent) {
 
 
 // ================ reset Password ================
-export function resetPassword(password, confirmPassword, token, navigate) {
-  return async (dispatch) => {
+export function resetPassword(password: string, confirmPassword: string, token: string, navigate: NavigateFunction) {
+  return async (dispatch: AppDispatch) => {
     const toastId = toast.loading("Loading...")
     dispatch(setLoading(true))
 
@@ -198,9 +209,9 @@ export function resetPassword(password, confirmPassword, token, navigate) {
       toast.success("Password Reset Successfully")
       navigate("/login")
     } catch (error) {
-      console.log("RESETPASSWORD ERROR............", error)
-      toast.error(error.response?.data?.message)
-      // toast.error("Failed To Reset Password");
+      const apiError = error as ApiError;
+      console.log("RESETPASSWORD ERROR............", apiError)
+      toast.error(apiError.response?.data?.message || "Failed To Reset Password");
     }
     toast.dismiss(toastId)
     dispatch(setLoading(false))
@@ -209,8 +220,8 @@ export function resetPassword(password, confirmPassword, token, navigate) {
 
 
 // ================ Logout ================
-export function logout(navigate) {
-  return (dispatch) => {
+export function logout(navigate: NavigateFunction) {
+  return (dispatch: AppDispatch) => {
     dispatch(setToken(null))
     dispatch(setUser(null))
     dispatch(resetCart())

@@ -1,10 +1,15 @@
+import LoginForm from "./LoginForm";
+import SignupForm from "./SignupForm";
+import Img from "@shared/components/Img";
+import { TemplateProps } from "../types";
 
-import LoginForm from "./LoginForm"
-import SignupForm from "./SignupForm"
-import Img from './../../../shared/components/Img';
-import { TemplateProps } from '../types';
-
-function Template({ title, description1, description2, image, formType }: TemplateProps) {
+function Template({
+  title,
+  description1,
+  description2,
+  image,
+  formType,
+}: TemplateProps) {
   // const { loading } = useSelector((state) => state.auth);
 
   return (
@@ -24,17 +29,16 @@ function Template({ title, description1, description2, image, formType }: Templa
           {formType === "signup" ? <SignupForm /> : <LoginForm />}
         </div>
 
-
         <div className="relative max-w-[550px] md:mx-0 my-0">
           <Img
             src={image}
             alt={formType}
-            className={' min-w-[105%] h-full text-white'}
+            className={" min-w-[105%] h-full text-white"}
           />
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Template
+export default Template;

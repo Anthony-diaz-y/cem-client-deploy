@@ -1,43 +1,50 @@
-'use client'
+"use client";
 
-import { useState } from "react"
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
-import { BiArrowBack } from "react-icons/bi"
-import { useDispatch, useSelector } from "react-redux"
+import { useState } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { BiArrowBack } from "react-icons/bi";
+import { useDispatch, useSelector } from "react-redux";
 
-import Link from "next/link"
-import { useRouter, usePathname } from "next/navigation"
+import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 
-import { resetPassword } from "../../../shared/services/authAPI"
-import { RootState, AppDispatch } from "../../../shared/store/store"
+import { resetPassword } from "@shared/services/authAPI";
+import { RootState, AppDispatch } from "@shared/store/store";
 
 function UpdatePasswordContainer() {
-  const router = useRouter()
-  const pathname = usePathname()
-  const dispatch = useDispatch<AppDispatch>()
-  const { loading } = useSelector((state: RootState) => state.auth)
+  const router = useRouter();
+  const pathname = usePathname();
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading } = useSelector((state: RootState) => state.auth);
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
-  })
+  });
 
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const { password, confirmPassword } = formData
+  const { password, confirmPassword } = formData;
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevData) => ({
       ...prevData,
       [e.target.name]: e.target.value,
-    }))
-  }
+    }));
+  };
 
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const token = pathname?.split("/").at(-1) || ""
-    dispatch(resetPassword(password, confirmPassword, token, router.push as (path: string) => void))
-  }
+    e.preventDefault();
+    const token = pathname?.split("/").at(-1) || "";
+    dispatch(
+      resetPassword(
+        password,
+        confirmPassword,
+        token,
+        router.push as (path: string) => void
+      )
+    );
+  };
 
   return (
     <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
@@ -128,8 +135,7 @@ function UpdatePasswordContainer() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default UpdatePasswordContainer
-
+export default UpdatePasswordContainer;

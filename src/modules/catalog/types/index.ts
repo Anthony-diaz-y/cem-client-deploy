@@ -24,6 +24,16 @@ export interface CategoryWithCourses {
   courses: Course[];
 }
 
+export interface CatalogSectionsProps {
+  catalogPageData: CatalogPageData;
+}
+
+export interface CatalogTabsProps {
+  catalogPageData: CatalogPageData;
+  active: number;
+  onTabChange: (tab: number) => void;
+}
+
 export interface CatalogPageData {
   selectedCategory: CategoryWithCourses;
   differentCategory: CategoryWithCourses;
@@ -38,4 +48,3 @@ export interface CourseCardProps {
 export interface CourseSliderProps {
   Courses: Course[];
 }
-

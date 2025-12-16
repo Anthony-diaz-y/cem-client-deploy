@@ -1,12 +1,7 @@
-'use client'
+"use client";
 
-import React from "react"
-
-interface InstructorStatsProps {
-  totalCourses: number
-  totalStudents: number
-  totalAmount: number
-}
+import React from "react";
+import { InstructorStatsProps } from "../types";
 
 /**
  * InstructorStats - Statistics component for instructor dashboard
@@ -41,8 +36,7 @@ const InstructorStats: React.FC<InstructorStatsProps> = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default InstructorStats
-
+export default InstructorStats;

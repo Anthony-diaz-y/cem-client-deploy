@@ -1,36 +1,39 @@
-'use client'
+"use client";
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAppSelector } from '../store/hooks'
-import { MOCK_MODE } from '../services/apiConnector'
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAppSelector } from "../store/hooks";
+import { MOCK_MODE } from "../services/apiConnector";
 
-export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const router = useRouter()
-  const { token } = useAppSelector((state) => state.auth)
+export default function ProtectedRoute({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+  const { token } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     // 🎭 DEMO MODE: Allow access without authentication when in mock mode
     if (MOCK_MODE) {
-      return
+      return;
     }
 
     // user not logged in
     if (token === null) {
-      router.push('/')
+      router.push("/");
     }
-  }, [token, router])
+  }, [token, router]);
 
   // 🎭 DEMO MODE: Allow access without authentication when in mock mode
   if (MOCK_MODE) {
-    return <>{children}</>
+    return <>{children}</>;
   }
 
   // user logged in
   if (token !== null) {
-    return <>{children}</>
+    return <>{children}</>;
   }
 
-  return null
+  return null;
 }
-

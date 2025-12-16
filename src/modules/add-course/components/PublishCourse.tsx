@@ -1,77 +1,79 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { useDispatch, useSelector } from "react-redux"
-import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
-import { editCourseDetails } from "../../../shared/services/courseDetailsAPI"
-import { resetCourseState, setStep } from "../../course/store/courseSlice"
-import { COURSE_STATUS } from "../../../shared/utils/constants"
-import { RootState } from "../../../shared/store/store"
-import { Course } from "../../course/types"
-import { PublishCourseFormData } from '../types'
-import IconBtn from "../../../shared/components/IconBtn"
+import { editCourseDetails } from "@shared/services/courseDetailsAPI";
+import { resetCourseState, setStep } from "../../course/store/courseSlice";
+import { COURSE_STATUS } from "@shared/utils/constants";
+import { RootState } from "@shared/store/store";
+import { Course } from "../../course/types";
+import { PublishCourseFormData } from "../types";
+import IconBtn from "@shared/components/IconBtn";
 
 export default function PublishCourse() {
-  const { register, handleSubmit, setValue, getValues } = useForm<PublishCourseFormData>()
+  const { register, handleSubmit, setValue, getValues } =
+    useForm<PublishCourseFormData>();
 
-  const dispatch = useDispatch()
-  const router = useRouter()
-  const { token } = useSelector((state: RootState) => state.auth)
-  const { course } = useSelector((state: RootState) => state.course)
-  const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { token } = useSelector((state: RootState) => state.auth);
+  const { course } = useSelector((state: RootState) => state.course);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (course) {
-      const courseData = course as Course
+      const courseData = course as Course;
       if (courseData.status === COURSE_STATUS.PUBLISHED) {
-        setValue("public", true)
+        setValue("public", true);
       }
     }
-  }, [course, setValue])
+  }, [course, setValue]);
 
   const goBack = () => {
-    dispatch(setStep(2))
-  }
+    dispatch(setStep(2));
+  };
 
   const goToCourses = () => {
-    dispatch(resetCourseState())
-    router.push("/dashboard/my-courses")
-  }
+    dispatch(resetCourseState());
+    router.push("/dashboard/my-courses");
+  };
 
   const handleCoursePublish = async () => {
-    if (!course || !token) return
-    
-    const courseData = course as Course
+    if (!course || !token) return;
+
+    const courseData = course as Course;
     // check if form has been updated or not
     if (
       (courseData.status === COURSE_STATUS.PUBLISHED &&
         getValues("public") === true) ||
-      (courseData.status === COURSE_STATUS.DRAFT && getValues("public") === false)
+      (courseData.status === COURSE_STATUS.DRAFT &&
+        getValues("public") === false)
     ) {
       // form has not been updated
       // no need to make api call
-      goToCourses()
-      return
+      goToCourses();
+      return;
     }
-    const formData = new FormData()
-    formData.append("courseId", courseData._id)
+    const formData = new FormData();
+    formData.append("courseId", courseData._id);
     const courseStatus = getValues("public")
       ? COURSE_STATUS.PUBLISHED
-      : COURSE_STATUS.DRAFT
-    formData.append("status", courseStatus)
-    setLoading(true)
-    const result = await editCourseDetails(formData, token)
+      : COURSE_STATUS.DRAFT;
+    formData.append("status", courseStatus);
+    setLoading(true);
+    const result = await editCourseDetails(formData, token);
     if (result) {
-      goToCourses()
+      goToCourses();
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   const onSubmit = () => {
-    handleCoursePublish()
-  }
+    handleCoursePublish();
+  };
 
   return (
     <div className="rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-6">
@@ -108,5 +110,5 @@ export default function PublishCourse() {
         </div>
       </form>
     </div>
-  )
+  );
 }

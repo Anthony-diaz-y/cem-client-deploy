@@ -1,20 +1,22 @@
 import { toast } from "react-hot-toast"
 
-import { setLoading, setUser } from "../../modules/auth/store/profileSlice"
+import { setLoading, setUser } from "@modules/auth/store/profileSlice"
 import { apiConnector } from "./apiConnector"
 import { profileEndpoints } from "./apis"
-import { logout } from "../../modules/auth/services/authAPI"
+import { logout } from "@modules/auth/services/authAPI"
+import type { AppDispatch } from "@shared/store/store"
+import type { NavigateFunction } from "@modules/auth/types"
 
 const { GET_USER_DETAILS_API, GET_USER_ENROLLED_COURSES_API, GET_INSTRUCTOR_DATA_API } = profileEndpoints
 
 
 // ================ get User Details  ================
-export function getUserDetails(token, navigate) {
-  return async (dispatch) => {
+export function getUserDetails(token: string, navigate: NavigateFunction) {
+  return async (dispatch: AppDispatch) => {
     const toastId = toast.loading("Loading...")
     dispatch(setLoading(true))
     try {
-      const response = await apiConnector("GET", GET_USER_DETAILS_API, null, { Authorization: `Bearer ${token}`, })
+      const response = await apiConnector("GET", GET_USER_DETAILS_API, undefined, { Authorization: `Bearer ${token}`, })
       console.log("GET_USER_DETAILS API RESPONSE............", response)
 
       if (!response.data.success) {
@@ -35,7 +37,7 @@ export function getUserDetails(token, navigate) {
 }
 
 // ================ get User Enrolled Courses  ================
-export async function getUserEnrolledCourses(token) {
+export async function getUserEnrolledCourses(token: string) {
   // const toastId = toast.loading("Loading...")
   let result = []
   try {
@@ -56,11 +58,11 @@ export async function getUserEnrolledCourses(token) {
 }
 
 // ================ get Instructor Data  ================
-export async function getInstructorData(token) {
+export async function getInstructorData(token: string) {
   // const toastId = toast.loading("Loading...")
   let result = []
   try {
-    const response = await apiConnector("GET", GET_INSTRUCTOR_DATA_API, null, {
+    const response = await apiConnector("GET", GET_INSTRUCTOR_DATA_API, undefined, {
       Authorization: `Bearer ${token}`,
     })
     console.log("GET_INSTRUCTOR_DATA_API API RESPONSE............", response)
