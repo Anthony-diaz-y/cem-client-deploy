@@ -128,7 +128,8 @@ export default function NestedView({
             </summary>
             <div className="px-6 pb-4">
               {/* Render All Sub Sections Within a Section */}
-              {section.subSection.map((data: SubSection) => (
+              {section.subSection && Array.isArray(section.subSection) && section.subSection.length > 0 ? (
+                section.subSection.map((data: SubSection) => (
                 <div
                   key={data?._id}
                   onClick={() => setViewSubSection(data)}
@@ -168,7 +169,10 @@ export default function NestedView({
                     </button>
                   </div>
                 </div>
-              ))}
+              ))
+              ) : (
+                <p className="text-richblack-400 text-sm py-2">No lectures in this section</p>
+              )}
               {/* Add New Lecture to Section */}
               <button
                 onClick={() => setAddSubsection(section._id)}

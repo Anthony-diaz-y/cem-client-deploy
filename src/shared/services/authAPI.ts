@@ -93,13 +93,53 @@ export function signUp(
 
 
 // ================ Login ================
-export function login(email: string, password: string, navigate: NavigateFunction) {
+// ========== TEMPORAL: Agregar accountType como parámetro opcional ==========
+// TODO: ELIMINAR ESTE CÓDIGO TEMPORAL DESPUÉS
+export function login(email: string, password: string, navigate: NavigateFunction, accountType?: "Student" | "Instructor" | "Admin") {
   return async (dispatch: AppDispatch) => {
 
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
 
     try {
+      // ========== TEMPORAL: Login rápido con cualquier correo ==========
+      // TODO: ELIMINAR ESTE CÓDIGO TEMPORAL DESPUÉS
+      if (accountType) {
+        // Extraer nombre del email (parte antes del @)
+        const emailName = email.split("@")[0] || "User";
+        const firstName = emailName.charAt(0).toUpperCase() + emailName.slice(1);
+        
+        // Determinar lastName según el tipo de cuenta
+        let lastName = "User";
+        if (accountType === "Student") {
+          lastName = "Student";
+        } else if (accountType === "Instructor") {
+          lastName = "Instructor";
+        } else if (accountType === "Admin") {
+          lastName = "Admin";
+        }
+        
+        const mockUser = {
+          _id: `temp_${accountType.toLowerCase()}_${Date.now()}`,
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          accountType: accountType,
+          image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${accountType}`
+        };
+        
+        toast.success(`Login Successful (Temporal ${accountType})`);
+        dispatch(setToken(`temp_token_${Date.now()}`));
+        dispatch(setUser(mockUser));
+        localStorage.setItem("token", JSON.stringify(`temp_token_${Date.now()}`));
+        localStorage.setItem("user", JSON.stringify(mockUser));
+        navigate("/dashboard/my-profile");
+        dispatch(setLoading(false));
+        toast.dismiss(toastId);
+        return;
+      }
+      // ============================================================
+
       if (email === "admin@test.com" && password === "123456") {
         // Mock Admin Login
         toast.success("Login Successful (Demo Admin)")
