@@ -13,3 +13,4 @@ export const revalidate = 0;
 export default function UpdatePassword() {
   return <UpdatePasswordContainer />;
 }
+

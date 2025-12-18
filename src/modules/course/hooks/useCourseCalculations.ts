@@ -23,13 +23,38 @@ export const useCourseCalculations = (
     const courseContent = response.data.courseDetails.courseContent;
     if (!Array.isArray(courseContent)) return 0;
     
+    // Log para depuración
+    if (process.env.NODE_ENV === 'development') {
+      console.log('useCourseCalculations - CourseContent:', courseContent);
+      courseContent.forEach((sec, index) => {
+        console.log(`Section ${index}:`, {
+          sectionName: sec?.sectionName,
+          subSection: sec?.subSection,
+          subSections: (sec as any)?.subSections,
+          subSectionLength: sec?.subSection?.length,
+          subSectionsLength: (sec as any)?.subSections?.length,
+        });
+      });
+    }
+    
     let lectures = 0;
     courseContent.forEach((sec) => {
-      // Verificar que subSection existe y es un array antes de acceder a length
+      // Manejar tanto subSection como subSections (del backend)
+      let subSectionsArray: any[] = [];
+      
       if (sec?.subSection && Array.isArray(sec.subSection)) {
-        lectures += sec.subSection.length;
+        subSectionsArray = sec.subSection;
+      } else if ((sec as any)?.subSections && Array.isArray((sec as any).subSections)) {
+        subSectionsArray = (sec as any).subSections;
       }
+      
+      lectures += subSectionsArray.length;
     });
+    
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Total lectures calculated:', lectures);
+    }
+    
     return lectures;
   }, [response?.data?.courseDetails?.courseContent]);
 

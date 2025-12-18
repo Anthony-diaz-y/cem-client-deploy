@@ -21,6 +21,8 @@ export const studentEndpoints = {
   COURSE_PAYMENT_API: BASE_URL + "/payment/capturePayment",
   COURSE_VERIFY_API: BASE_URL + "/payment/verifyPayment",
   SEND_PAYMENT_SUCCESS_EMAIL_API: BASE_URL + "/payment/sendPaymentSuccessEmail",
+  // ⚠️ TEMPORAL: Endpoint para comprar cursos sin pasarela de pago - REMOVER cuando se implemente la pasarela
+  BUY_NOW_TEMPORARY_API: BASE_URL + "/payment/buyNowTemporary",
 }
 
 // COURSE ENDPOINTS
@@ -68,4 +70,13 @@ export const settingsEndpoints = {
   UPDATE_PROFILE_API: BASE_URL + "/profile/updateProfile",
   CHANGE_PASSWORD_API: BASE_URL + "/auth/changepassword",
   DELETE_PROFILE_API: BASE_URL + "/profile/deleteProfile",
+}
+
+// ADMIN ENDPOINTS
+export const adminEndpoints = {
+  ADMIN_DASHBOARD_API: BASE_URL + "/admin/dashboard",
+  PENDING_INSTRUCTORS_API: BASE_URL + "/admin/pending-instructors",
+  ALL_INSTRUCTORS_API: BASE_URL + "/admin/all-instructors",
+  APPROVE_INSTRUCTOR_API: BASE_URL + "/admin/approve-instructor",
+  REJECT_INSTRUCTOR_API: BASE_URL + "/admin/reject-instructor",
 }

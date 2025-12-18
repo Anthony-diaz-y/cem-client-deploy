@@ -5,7 +5,7 @@ import { useAppSelector } from "@shared/store/hooks";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaCheck } from "react-icons/fa";
 import { FiEdit2 } from "react-icons/fi";
 import { HiClock } from "react-icons/hi";
@@ -14,6 +14,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { useRouter } from "next/navigation";
 
 import { formatDate } from "@shared/utils/formatDate";
+import { formatTotalDuration } from "@shared/utils/durationHelper";
 import {
   deleteCourse,
   fetchInstructorCourses,
@@ -26,6 +27,8 @@ import { Course, CoursesTableProps, ConfirmationModalData } from "../types";
 
 export type { Course };
 
+const MIN_LOADING_TIME = 300; // Tiempo mínimo en ms antes de mostrar skeleton
+
 export default function CoursesTable({
   courses,
   setCourses,
@@ -37,7 +40,35 @@ export default function CoursesTable({
 
   const [confirmationModal, setConfirmationModal] =
     useState<ConfirmationModalData | null>(null);
+  const [showSkeleton, setShowSkeleton] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const TRUNCATE_LENGTH = 25;
+
+  // Controlar cuándo mostrar skeleton con delay mínimo
+  useEffect(() => {
+    if (loading && (!courses || courses.length === 0)) {
+      // Solo mostrar skeleton si está cargando y no hay cursos
+      timeoutRef.current = setTimeout(() => {
+        // Solo mostrar skeleton si todavía está cargando después del delay mínimo
+        if (loading && (!courses || courses.length === 0)) {
+          setShowSkeleton(true);
+        }
+      }, MIN_LOADING_TIME);
+    } else {
+      // Si terminó de cargar o hay cursos, ocultar skeleton inmediatamente
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      setShowSkeleton(false);
+    }
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [loading, courses]);
 
   // delete course
   const handleCourseDelete = async (courseId: string) => {
@@ -107,8 +138,8 @@ export default function CoursesTable({
         </Thead>
 
         <Tbody>
-          {/* loading Skeleton */}
-          {loading ? (
+          {/* Mostrar skeleton solo si la carga toma más de 300ms (evita parpadeo rápido) */}
+          {showSkeleton ? (
             <>
               <Tr>
                 <Td colSpan={5}>{skItem()}</Td>
@@ -190,11 +221,14 @@ export default function CoursesTable({
 
                 {/* course duration */}
                 <Td className="text-sm font-medium text-richblack-100">
-                  {course.totalDuration && course.totalDuration !== '0h 0m' && course.totalDuration !== '0m 0s' ? (
-                    <span className="text-richblack-5">{course.totalDuration}</span>
-                  ) : (
-                    <span className="text-richblack-400">N/A</span>
-                  )}
+                  {(() => {
+                    const formatted = formatTotalDuration(course.totalDuration);
+                    return formatted !== 'N/A' ? (
+                      <span className="text-richblack-5">{formatted}</span>
+                    ) : (
+                      <span className="text-richblack-400">N/A</span>
+                    );
+                  })()}
                 </Td>
                 
                 {/* course lectures */}

@@ -141,6 +141,17 @@ async function verifyPayment(
         if (!response.data.success) {
             throw new Error(response.data.message);
         }
+        
+        // Invalidar cache del instructor para que se actualicen los datos de estudiantes
+        // Importar dinámicamente para evitar dependencias circulares
+        const { invalidateInstructorCache } = await import("@modules/instructor/hooks/useInstructorData");
+        invalidateInstructorCache();
+        
+        // Disparar evento personalizado para refrescar datos del instructor
+        if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("instructorDataRefresh"));
+        }
+        
         toast.success("payment Successful, you are addded to the course");
         navigate("/dashboard/enrolled-courses");
         dispatch(resetCart());

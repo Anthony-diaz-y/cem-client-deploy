@@ -1,5 +1,5 @@
 'use client'
-import React from "react"
+import React, { lazy, Suspense } from "react"
 
 import FoundingStory from "@shared/assets/Images/FoundingStory.png"
 import BannerImage1 from "@shared/assets/Images/aboutus1.webp"
@@ -13,7 +13,9 @@ import Quote from "../components/Quote"
 import StatsComponenet from "../components/Stats"
 import HighlightText from "@modules/home/components/HighlightText"
 import Img from "@shared/components/Img"
-import ReviewSlider from "@shared/components/ReviewSlider"
+
+// Lazy load componentes pesados para mejorar el rendimiento inicial
+const ReviewSlider = lazy(() => import("@shared/components/ReviewSlider"))
 
 import { motion } from 'framer-motion'
 import { fadeIn } from "@shared/utils/motionFrameVarients"
@@ -152,7 +154,9 @@ const AboutContainer = () => {
         <h1 className="text-center text-4xl font-semibold mt-8">
           Reviews from other learners
         </h1>
-        <ReviewSlider />
+        <Suspense fallback={<div className="h-64 bg-richblack-800 rounded animate-pulse"></div>}>
+          <ReviewSlider />
+        </Suspense>
       </div>
 
       {/* Footer */}

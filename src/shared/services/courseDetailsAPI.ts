@@ -156,6 +156,17 @@ export const addCourseDetails = async (data: Record<string, unknown>, token: str
     }
 
     result = response?.data?.data
+    
+    // Invalidar cache del instructor después de crear curso (según recomendación del backend)
+    if (typeof window !== "undefined") {
+      // Importar dinámicamente para evitar dependencias circulares
+      const { invalidateInstructorCache } = await import("@modules/instructor/hooks/useInstructorData");
+      invalidateInstructorCache();
+      
+      // Disparar evento para refrescar datos
+      window.dispatchEvent(new CustomEvent("instructorDataRefresh"));
+    }
+    
     toast.success("Course Details Added Successfully")
   } catch (error) {
     const apiError = error as ApiError;
@@ -538,6 +549,40 @@ export const markLectureAsComplete = async (data: Record<string, unknown>, token
   }
   toast.dismiss(toastId)
   return result
+}
+
+// ================ toggle Lecture Completion ================
+// El backend ahora funciona como toggle automático: si está completada la desmarca, si no está la marca
+export const toggleLectureCompletion = async (
+  data: Record<string, unknown>, 
+  token: string
+): Promise<{ success: boolean; isCompleted: boolean } | null> => {
+  const toastId = toast.loading("Actualizando progreso...")
+  try {
+    const response = await apiConnector("POST", LECTURE_COMPLETION_API, data, {
+      Authorization: `Bearer ${token} `,
+    })
+    console.log("TOGGLE_LECTURE_COMPLETION_API API RESPONSE............", response)
+
+    if (!response.data.success && !response.data.message) {
+      throw new Error(response.data.error || "Error al actualizar el progreso")
+    }
+
+    // El backend retorna isCompleted en la respuesta
+    const isCompleted = response.data.isCompleted ?? response.data.data?.isCompleted ?? true
+    
+    toast.success(response.data.message || (isCompleted ? "Lecture marcada como completada" : "Lecture desmarcada"))
+    
+    toast.dismiss(toastId)
+    return { success: true, isCompleted }
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.log("TOGGLE_LECTURE_COMPLETION_API API ERROR............", apiError)
+    const errorMessage = apiError.response?.data?.message || apiError.message || "No se pudo actualizar el estado de la lecture"
+    toast.error(errorMessage)
+    toast.dismiss(toastId)
+    return { success: false, isCompleted: false }
+  }
 }
 
 

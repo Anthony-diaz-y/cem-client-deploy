@@ -37,11 +37,7 @@ export interface CoursesTableProps {
 }
 
 export interface InstructorChartProps {
-  courses: {
-    courseName: string;
-    totalStudentsEnrolled: number;
-    totalAmountGenerated: number;
-  }[];
+  courses: Course[];
 }
 
 export type ConfirmationModalData = {

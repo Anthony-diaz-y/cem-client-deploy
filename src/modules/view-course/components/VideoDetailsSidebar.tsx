@@ -33,22 +33,26 @@ export default function VideoDetailsSidebar({
 
   return (
     <div className="flex h-[calc(100vh-3.5rem)] w-[320px] max-w-[350px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800">
-      <SidebarHeader
-        courseName={courseEntireData?.courseName}
-        completedLectures={completedLectures}
-        totalNoOfLectures={totalNoOfLectures}
-        onReviewClick={() => setReviewModal(true)}
-      />
+      <div className="flex-shrink-0 border-b border-richblack-700">
+        <SidebarHeader
+          courseName={courseEntireData?.courseName}
+          completedLectures={completedLectures}
+          totalNoOfLectures={totalNoOfLectures}
+          onReviewClick={() => setReviewModal(true)}
+        />
+      </div>
 
-      <SidebarSectionList
-        courseSectionData={courseSectionData}
-        courseId={courseEntireData?._id || courseId}
-        activeStatus={activeStatus}
-        videoBarActive={videoBarActive}
-        completedLectures={completedLectures}
-        onSectionClick={setActiveStatus}
-        onSubSectionClick={handleSubSectionClick}
-      />
+      <div className="flex-1 min-h-0 overflow-y-auto">
+        <SidebarSectionList
+          courseSectionData={courseSectionData}
+          courseId={courseEntireData?._id || courseId}
+          activeStatus={activeStatus}
+          videoBarActive={videoBarActive}
+          completedLectures={completedLectures}
+          onSectionClick={setActiveStatus}
+          onSubSectionClick={handleSubSectionClick}
+        />
+      </div>
     </div>
   );
 }

@@ -17,6 +17,28 @@ export default function CourseAccordionBar({
     [isActive, course._id]
   );
 
+  // Manejar tanto subSection como subSections (del backend)
+  const subSectionsArray = useMemo(() => {
+    // Log para depuración
+    if (process.env.NODE_ENV === 'development') {
+      console.log('CourseAccordionBar - Section data:', {
+        sectionName: course?.sectionName,
+        subSection: course?.subSection,
+        subSections: (course as any)?.subSections,
+        hasSubSection: !!course?.subSection,
+        hasSubSections: !!(course as any)?.subSections,
+      });
+    }
+    
+    if (course.subSection && Array.isArray(course.subSection)) {
+      return course.subSection;
+    }
+    if ((course as any).subSections && Array.isArray((course as any).subSections)) {
+      return (course as any).subSections;
+    }
+    return [];
+  }, [course]);
+
   useEffect(() => {
     // Use a callback to measure height after render
     const updateHeight = () => {
@@ -29,7 +51,7 @@ export default function CourseAccordionBar({
     const timeoutId = setTimeout(updateHeight, 0);
 
     return () => clearTimeout(timeoutId);
-  }, [active, course.subSection]);
+  }, [active, subSectionsArray]);
 
   return (
     <div className="overflow-hidden border border-solid border-richblack-600 bg-richblack-700 hover:bg-richblack-600 text-richblack-5 last:mb-0 duration-200 ">
@@ -54,7 +76,7 @@ export default function CourseAccordionBar({
           </div>
           <div className="space-x-4">
             <span className="text-yellow-25">
-              {`${course?.subSection && Array.isArray(course.subSection) ? course.subSection.length : 0} lecture(s)`}
+              {`${subSectionsArray.length} lecture(s)`}
             </span>
           </div>
         </div>
@@ -66,11 +88,15 @@ export default function CourseAccordionBar({
         style={{ height: sectionHeight }}
       >
         <div className="text-textHead flex flex-col gap-2 px-7 py-6 font-semibold">
-          {course?.subSection && Array.isArray(course.subSection) 
-            ? course.subSection.map((subSec, i) => {
+          {subSectionsArray.length > 0 
+            ? subSectionsArray.map((subSec, i) => {
                 return <CourseSubSectionAccordion subSec={subSec} key={i} />;
               })
-            : null}
+            : (
+              <div className="text-richblack-400 text-sm">
+                No hay lectures disponibles en esta sección
+              </div>
+            )}
         </div>
       </div>
     </div>
