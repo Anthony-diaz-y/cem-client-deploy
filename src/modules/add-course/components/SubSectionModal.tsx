@@ -66,42 +66,141 @@ export default function SubSectionModal({
 
   // handle the editing of subsection
   const handleEditSubsection = async () => {
-    if (!modalData || typeof modalData === "string" || !token || !course)
+    if (!modalData || typeof modalData === "string" || !token || !course) {
+      console.error("Missing required data for editing subsection:", { modalData, token, course });
       return;
+    }
     const currentValues = getValues();
-    const subSectionData = modalData as SubSection & { sectionId: string };
+    const subSectionData = modalData as SubSection & { sectionId?: string };
     const courseData = course as Course;
+    
+    console.log("Editing subsection - modalData:", modalData);
+    console.log("Editing subsection - subSectionData:", subSectionData);
+    
+    // Validar que sectionId existe y es un string válido
+    const sectionId = subSectionData.sectionId;
+    if (!sectionId || typeof sectionId !== 'string' || sectionId === 'undefined' || sectionId === 'null') {
+      console.error("Invalid sectionId:", sectionId);
+      toast.error("ID de sección no encontrado o inválido");
+      return;
+    }
+    
+    // Validar formato UUID para sectionId
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(sectionId)) {
+      console.error("Invalid sectionId format:", sectionId);
+      toast.error("ID de sección inválido");
+      return;
+    }
+    
+    // Obtener el ID de la subsección (priorizar 'id' sobre '_id')
+    const subSectionId = (subSectionData as any)?.id || subSectionData?._id;
+    if (!subSectionId || typeof subSectionId !== 'string' || subSectionId === 'undefined' || subSectionId === 'null') {
+      console.error("Invalid subSectionId:", subSectionId, "subSectionData:", subSectionData);
+      toast.error("ID de subsección no encontrado o inválido");
+      return;
+    }
+    
+    // Validar formato UUID para subSectionId
+    if (!uuidRegex.test(subSectionId)) {
+      console.error("Invalid subSectionId format:", subSectionId);
+      toast.error("ID de subsección inválido");
+      return;
+    }
+    
+    console.log("Valid IDs - sectionId:", sectionId, "subSectionId:", subSectionId);
+    
     // console.log("changes after editing form values:", currentValues)
     const formData = new FormData();
     // console.log("Values After Editing form values:", currentValues)
-    formData.append("sectionId", subSectionData.sectionId);
-    formData.append("subSectionId", subSectionData._id);
-    if (currentValues.lectureTitle !== subSectionData.title) {
-      formData.append("title", currentValues.lectureTitle);
+    
+    // Siempre incluir sectionId y subSectionId (requeridos) - asegurar que son strings válidos
+    formData.append("sectionId", String(sectionId));
+    formData.append("subSectionId", String(subSectionId));
+    
+    // Incluir title y description siempre (usar valores actuales del form)
+    const title = currentValues.lectureTitle?.trim() || subSectionData.title || '';
+    const description = currentValues.lectureDesc?.trim() || subSectionData.description || '';
+    
+    if (title) {
+      formData.append("title", title);
     }
-    if (currentValues.lectureDesc !== subSectionData.description) {
-      formData.append("description", currentValues.lectureDesc);
+    if (description) {
+      formData.append("description", description);
     }
-    if (currentValues.lectureVideo !== subSectionData.videoUrl) {
-      formData.append("video", currentValues.lectureVideo);
+    
+    // Para el video, solo incluir si ha cambiado (es un File object o URL diferente)
+    if (currentValues.lectureVideo && currentValues.lectureVideo !== subSectionData.videoUrl) {
+      // Si es un archivo (File object), agregarlo directamente
+      if (currentValues.lectureVideo instanceof File) {
+        formData.append("video", currentValues.lectureVideo);
+      } else if (typeof currentValues.lectureVideo === 'string' && currentValues.lectureVideo.trim()) {
+        // Si es una URL string diferente, agregarla
+        formData.append("video", currentValues.lectureVideo.trim());
+      }
     }
     setLoading(true);
-    const result = await updateSubSection(formData, token);
-    if (result) {
-      // console.log("result", result)
-      // update the structure of course
-      const updatedCourseContent = courseData.courseContent.map(
-        (section: Section) =>
-          section._id === subSectionData.sectionId ? result : section
-      );
-      const updatedCourse: Course = {
-        ...courseData,
-        courseContent: updatedCourseContent,
-      };
-      dispatch(setCourse(updatedCourse));
+    try {
+      const result = await updateSubSection(formData, token);
+      if (result) {
+        console.log("UPDATE SUB-SECTION RESULT:", result);
+        
+        // El backend devuelve la sección actualizada con las subsecciones
+        const updatedCourseContent = courseData.courseContent.map(
+          (section: Section) => {
+            // Obtener el ID de la sección (priorizar 'id' sobre '_id')
+            const currentSectionId = (section as any)?.id || section?._id;
+            if (currentSectionId === subSectionData.sectionId) {
+              // El backend devuelve la sección actualizada con las subsecciones
+              // Necesitamos asegurarnos de que preserve todas las propiedades de la sección original
+              
+              // Verificar si result tiene subSection como array
+              // El backend puede devolver 'subSections' (con S mayúscula) o 'subSection'
+              let subSectionArray: any[] = [];
+              if ((result as any).subSections && Array.isArray((result as any).subSections)) {
+                // Backend devuelve 'subSections' con S mayúscula
+                subSectionArray = (result as any).subSections;
+              } else if (result.subSection && Array.isArray(result.subSection)) {
+                subSectionArray = result.subSection;
+              } else if (section.subSection && Array.isArray(section.subSection)) {
+                // Si el resultado no tiene subSection, mantener el original
+                subSectionArray = section.subSection;
+              } else if ((section as any).subSections && Array.isArray((section as any).subSections)) {
+                // También verificar subSections en la sección original
+                subSectionArray = (section as any).subSections;
+              }
+              
+              // Crear la sección actualizada preservando todas las propiedades
+              const updatedSection: Section = {
+                ...section, // Preservar propiedades originales (sectionName, _id, id, etc.)
+                ...result,  // Sobrescribir con las del resultado (subSection actualizado)
+                subSection: subSectionArray, // Asegurar que subSection sea un array válido
+              };
+              
+              console.log("Updated section (edit):", updatedSection);
+              console.log("SubSection array length (edit):", updatedSection.subSection.length);
+              
+              return updatedSection;
+            }
+            return section;
+          }
+        );
+        
+        const updatedCourse: Course = {
+          ...courseData,
+          courseContent: updatedCourseContent,
+        };
+        
+        console.log("UPDATED COURSE (edit):", updatedCourse);
+        dispatch(setCourse(updatedCourse));
+      }
+    } catch (error) {
+      console.error("Error updating subsection:", error);
+      // El error ya se maneja en updateSubSection
+    } finally {
+      setModalData(null);
+      setLoading(false);
     }
-    setModalData(null);
-    setLoading(false);
   };
 
   const onSubmit = async (data: SubSectionModalFormData) => {
@@ -119,6 +218,14 @@ export default function SubSectionModal({
 
     if (!modalData || typeof modalData !== "string" || !token || !course)
       return;
+    
+    // Validar que el sectionId es un UUID válido
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(modalData)) {
+      toast.error("ID de sección inválido");
+      return;
+    }
+    
     const courseData = course as Course;
     const formData = new FormData();
     formData.append("sectionId", modalData);
@@ -126,20 +233,85 @@ export default function SubSectionModal({
     formData.append("description", data.lectureDesc);
     formData.append("video", data.lectureVideo);
     setLoading(true);
-    const result = await createSubSection(formData, token);
-    if (result) {
-      // update the structure of course
-      const updatedCourseContent = courseData.courseContent.map(
-        (section: Section) => (section._id === modalData ? result : section)
-      );
-      const updatedCourse: Course = {
-        ...courseData,
-        courseContent: updatedCourseContent,
-      };
-      dispatch(setCourse(updatedCourse));
+    try {
+      const result = await createSubSection(formData, token);
+      if (result) {
+        console.log("CREATE SUB-SECTION RESULT:", result);
+        
+        // El backend devuelve la sección actualizada con las subsecciones
+        // Necesitamos actualizar solo la sección correspondiente en el curso
+        console.log("Current courseContent before update:", courseData.courseContent.map((s: Section) => ({
+          sectionName: s.sectionName,
+          sectionId: (s as any)?.id || s?._id,
+          subSectionCount: s.subSection?.length || 0
+        })));
+        
+        const updatedCourseContent = courseData.courseContent.map(
+          (section: Section) => {
+            // Obtener el ID de la sección (priorizar 'id' sobre '_id')
+            const currentSectionId = (section as any)?.id || section?._id;
+            console.log(`Comparing section ${currentSectionId} with modalData ${modalData}`);
+            
+            if (currentSectionId === modalData) {
+              // El backend devuelve la sección actualizada con las subsecciones
+              // Necesitamos asegurarnos de que preserve todas las propiedades de la sección original
+              // y que el array de subSection esté correctamente formado
+              
+              // Verificar si result tiene subSection como array
+              // El backend puede devolver 'subSections' (con S mayúscula) o 'subSection'
+              let subSectionArray: any[] = [];
+              if ((result as any).subSections && Array.isArray((result as any).subSections)) {
+                // Backend devuelve 'subSections' con S mayúscula
+                subSectionArray = (result as any).subSections;
+              } else if (result.subSection && Array.isArray(result.subSection)) {
+                subSectionArray = result.subSection;
+              } else if (section.subSection && Array.isArray(section.subSection)) {
+                // Si el resultado no tiene subSection, mantener el original
+                subSectionArray = section.subSection;
+              } else if ((section as any).subSections && Array.isArray((section as any).subSections)) {
+                // También verificar subSections en la sección original
+                subSectionArray = (section as any).subSections;
+              }
+              
+              // Crear la sección actualizada preservando todas las propiedades
+              const updatedSection: Section = {
+                ...section, // Preservar propiedades originales (sectionName, _id, id, etc.)
+                ...result,  // Sobrescribir con las del resultado (subSection actualizado)
+                subSection: subSectionArray, // Asegurar que subSection sea un array válido
+              };
+              
+              console.log("Updated section:", updatedSection);
+              console.log("SubSection array length:", updatedSection.subSection.length);
+              
+              return updatedSection;
+            }
+            // IMPORTANTE: Retornar la sección original sin cambios si no es la que estamos actualizando
+            console.log(`Keeping section ${currentSectionId} unchanged (${section.subSection?.length || 0} subSections)`);
+            return section;
+          }
+        );
+        
+        // Crear el curso actualizado preservando todas las propiedades
+        const updatedCourse: Course = {
+          ...courseData, // Preservar todas las propiedades del curso original
+          courseContent: updatedCourseContent, // Actualizar solo el courseContent
+        };
+        
+        console.log("UPDATED COURSE:", updatedCourse);
+        console.log("Total sections:", updatedCourseContent.length);
+        updatedCourseContent.forEach((sec, idx) => {
+          console.log(`Section ${idx}: ${sec.sectionName}, subSections: ${sec.subSection?.length || 0}`);
+        });
+        
+        dispatch(setCourse(updatedCourse));
+      }
+    } catch (error) {
+      console.error("Error creating subsection:", error);
+      // El error ya se maneja en createSubSection, pero no queremos cerrar el modal si falla
+    } finally {
+      setModalData(null);
+      setLoading(false);
     }
-    setModalData(null);
-    setLoading(false);
   };
 
   return (

@@ -19,6 +19,34 @@ import { NestedViewProps } from "../types/index";
 import ConfirmationModal from "@shared/components/ConfirmationModal";
 import SubSectionModal from "./SubSectionModal";
 
+// Función para normalizar la estructura del curso (subSections -> subSection)
+const normalizeCourseStructure = (course: any): Course => {
+  if (!course || !course.courseContent) return course;
+  
+  const normalizedContent = course.courseContent.map((section: any) => {
+    // Si tiene subSections (con S mayúscula), convertir a subSection
+    if (section.subSections && Array.isArray(section.subSections)) {
+      return {
+        ...section,
+        subSection: section.subSections,
+      };
+    }
+    // Si no tiene subSection, asegurar que sea un array vacío
+    if (!section.subSection) {
+      return {
+        ...section,
+        subSection: [],
+      };
+    }
+    return section;
+  });
+  
+  return {
+    ...course,
+    courseContent: normalizedContent,
+  };
+};
+
 export default function NestedView({
   handleChangeEditSectionName,
 }: NestedViewProps) {
@@ -40,12 +68,22 @@ export default function NestedView({
   const handleDeleleSection = async (sectionId: string) => {
     if (!course || !token) return;
     const courseData = course as Course;
+    // Obtener el ID del curso (priorizar 'id' sobre '_id' ya que PostgreSQL usa UUIDs con campo 'id')
+    const courseId = (courseData as any)?.id || courseData?._id;
+    
+    if (!courseId) {
+      console.error('Course ID is missing');
+      return;
+    }
+    
     const result = await deleteSection(
-      { sectionId, courseId: courseData._id },
+      { sectionId, courseId: courseId },
       token
     );
     if (result) {
-      dispatch(setCourse(result));
+      // Normalizar la estructura del curso (subSections -> subSection)
+      const normalizedResult = normalizeCourseStructure(result);
+      dispatch(setCourse(normalizedResult));
     }
     setConfirmationModal(null);
   };
@@ -61,7 +99,19 @@ export default function NestedView({
     if (result && courseData) {
       // update the structure of course - As we have got only updated section details
       const updatedCourseContent = courseData.courseContent.map(
-        (section: Section) => (section._id === sectionId ? result : section)
+        (section: Section) => {
+          const currentSectionId = (section as any)?.id || section?._id;
+          if (currentSectionId === sectionId) {
+            // Normalizar la sección actualizada (subSections -> subSection)
+            const normalizedSection = {
+              ...section,
+              ...result,
+              subSection: (result as any).subSections || result.subSection || [],
+            };
+            return normalizedSection;
+          }
+          return section;
+        }
       );
       const updatedCourse: Course = {
         ...courseData,
@@ -81,9 +131,19 @@ export default function NestedView({
         className="rounded-2xl bg-richblack-700 p-6 px-8"
         id="nestedViewContainer"
       >
-        {courseData.courseContent.map((section: Section) => (
-          // Section Dropdown
-          <details key={section._id} open>
+        {courseData.courseContent.map((section: Section, sectionIndex: number) => {
+          // Obtener el ID de la sección (priorizar 'id' sobre '_id' ya que PostgreSQL usa UUIDs con campo 'id')
+          const sectionId = (section as any)?.id || section?._id;
+          
+          // Validar que sectionId existe y es un string válido
+          if (!sectionId || typeof sectionId !== 'string') {
+            console.error(`Invalid sectionId at index ${sectionIndex}:`, sectionId, section);
+            return null;
+          }
+          
+          return (
+            // Section Dropdown
+            <details key={sectionId} open>
             {/* Section Dropdown Content */}
             <summary className="flex cursor-pointer items-center justify-between border-b-2 border-b-richblack-600 py-2">
               {/* sectionName */}
@@ -99,7 +159,7 @@ export default function NestedView({
                 <button
                   onClick={() =>
                     handleChangeEditSectionName(
-                      section._id,
+                      sectionId,
                       section.sectionName
                     )
                   }
@@ -114,7 +174,7 @@ export default function NestedView({
                       text2: "All the lectures in this section will be deleted",
                       btn1Text: "Delete",
                       btn2Text: "Cancel",
-                      btn1Handler: () => handleDeleleSection(section._id),
+                      btn1Handler: () => handleDeleleSection(sectionId),
                       btn2Handler: () => setConfirmationModal(null),
                     })
                   }
@@ -128,62 +188,85 @@ export default function NestedView({
             </summary>
             <div className="px-6 pb-4">
               {/* Render All Sub Sections Within a Section */}
-              {section.subSection && Array.isArray(section.subSection) && section.subSection.length > 0 ? (
-                section.subSection.map((data: SubSection) => (
-                <div
-                  key={data?._id}
-                  onClick={() => setViewSubSection(data)}
-                  className="flex cursor-pointer items-center justify-between gap-x-3 border-b-2 border-b-richblack-600 py-2"
-                >
-                  <div className="flex items-center gap-x-3 py-2 ">
-                    <RxDropdownMenu className="text-2xl text-richblack-50" />
-                    <p className="font-semibold text-richblack-50">
-                      {data.title}
-                    </p>
-                  </div>
-                  <div
-                    onClick={(e) => e.stopPropagation()}
-                    className="flex items-center gap-x-3"
-                  >
-                    <button
-                      onClick={() =>
-                        setEditSubSection({ ...data, sectionId: section._id })
-                      }
-                    >
-                      <MdEdit className="text-xl text-richblack-300" />
-                    </button>
-                    <button
-                      onClick={() =>
-                        setConfirmationModal({
-                          text1: "Delete this Sub-Section?",
-                          text2: "This lecture will be deleted",
-                          btn1Text: "Delete",
-                          btn2Text: "Cancel",
-                          btn1Handler: () =>
-                            handleDeleteSubSection(data._id, section._id),
-                          btn2Handler: () => setConfirmationModal(null),
-                        })
-                      }
-                    >
-                      <RiDeleteBin6Line className="text-xl text-richblack-300" />
-                    </button>
-                  </div>
-                </div>
-              ))
-              ) : (
-                <p className="text-richblack-400 text-sm py-2">No lectures in this section</p>
-              )}
+              {/* Manejar tanto subSection como subSections (del backend) */}
+              {(() => {
+                // Obtener las subsecciones (manejar ambos formatos)
+                const subSectionsArray = (section.subSection && Array.isArray(section.subSection)) 
+                  ? section.subSection 
+                  : ((section as any).subSections && Array.isArray((section as any).subSections))
+                    ? (section as any).subSections
+                    : [];
+                
+                // Renderizar si hay subsecciones
+                if (subSectionsArray.length > 0) {
+                  return subSectionsArray.map((data: SubSection, subSectionIndex: number) => {
+                    // Obtener el ID de la subsección (priorizar 'id' sobre '_id')
+                    const subSectionId = (data as any)?.id || data?._id || `subsection-${sectionIndex}-${subSectionIndex}`;
+                    
+                    return (
+                      <div
+                        key={subSectionId}
+                        onClick={() => setViewSubSection(data)}
+                        className="flex cursor-pointer items-center justify-between gap-x-3 border-b-2 border-b-richblack-600 py-2"
+                      >
+                        <div className="flex items-center gap-x-3 py-2 ">
+                          <RxDropdownMenu className="text-2xl text-richblack-50" />
+                          <p className="font-semibold text-richblack-50">
+                            {data.title}
+                          </p>
+                        </div>
+                        <div
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex items-center gap-x-3"
+                        >
+                        <button
+                          onClick={() => {
+                            // Asegurar que sectionId es un string válido antes de establecer el estado
+                            if (!sectionId || typeof sectionId !== 'string') {
+                              console.error("Invalid sectionId when editing subsection:", sectionId);
+                              return;
+                            }
+                            console.log("Setting edit subsection with sectionId:", sectionId, "data:", data);
+                            setEditSubSection({ ...data, sectionId: sectionId });
+                          }}
+                        >
+                          <MdEdit className="text-xl text-richblack-300" />
+                        </button>
+                          <button
+                            onClick={() =>
+                              setConfirmationModal({
+                                text1: "Delete this Sub-Section?",
+                                text2: "This lecture will be deleted",
+                                btn1Text: "Delete",
+                                btn2Text: "Cancel",
+                                btn1Handler: () =>
+                                  handleDeleteSubSection(subSectionId, sectionId),
+                                btn2Handler: () => setConfirmationModal(null),
+                              })
+                            }
+                          >
+                            <RiDeleteBin6Line className="text-xl text-richblack-300" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  });
+                } else {
+                  return <p className="text-richblack-400 text-sm py-2">No lectures in this section</p>;
+                }
+              })()}
               {/* Add New Lecture to Section */}
               <button
-                onClick={() => setAddSubsection(section._id)}
+                onClick={() => setAddSubsection(sectionId)}
                 className="mt-3 flex items-center gap-x-1 text-yellow-50"
               >
                 <FaPlus className="text-lg" />
                 <p>Add Lecture</p>
               </button>
             </div>
-          </details>
-        ))}
+            </details>
+          );
+        })}
       </div>
 
       {/* Modal Display */}

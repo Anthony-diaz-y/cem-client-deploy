@@ -1,7 +1,8 @@
 // Catalog Module Types
 
 export interface Course {
-  _id: string;
+  id?: string;  // UUID del backend PostgreSQL
+  _id?: string; // Mantener compatibilidad si se usa
   courseName: string;
   price: number;
   thumbnail: string;
@@ -14,7 +15,8 @@ export interface Course {
 }
 
 export interface Category {
-  _id: string;
+  id?: string;  // UUID del backend PostgreSQL
+  _id?: string; // Mantener compatibilidad si se usa
   name: string;
 }
 

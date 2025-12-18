@@ -25,7 +25,7 @@ export interface CourseInformationFormData {
   coursePrice: number;
   courseTags: string[];
   courseBenefits: string;
-  courseCategory: { _id: string; name: string };
+  courseCategory: string; // El select guarda directamente el ID como string
   courseRequirements: string[];
   courseImage: string;
 }
@@ -43,7 +43,7 @@ export interface CourseFormFieldsProps {
   register: UseFormRegister<CourseInformationFormData>;
   setValue: UseFormSetValue<CourseInformationFormData>;
   errors: FieldErrors<CourseInformationFormData>;
-  courseCategories: Array<{ _id: string; name: string }>;
+  courseCategories: Array<{ id?: string; _id?: string; name: string }>;
   loading: boolean;
   editCourse: boolean;
   course?: Course | null;

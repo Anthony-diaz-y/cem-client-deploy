@@ -37,22 +37,37 @@ interface Review {
 
 function ReviewSlider() {
   const [reviews, setReviews] = useState<Review[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const truncateWords = 15;
 
   useEffect(() => {
     (async () => {
-      const { data } = await apiConnector(
-        "GET",
-        ratingsEndpoints.REVIEWS_DETAILS_API
-      );
-      if (data?.success) {
-        setReviews(data?.data);
+      try {
+        const response = await apiConnector(
+          "GET",
+          ratingsEndpoints.REVIEWS_DETAILS_API
+        );
+        
+        if (response?.data?.success) {
+          setReviews(response.data.data || []);
+          setError(null);
+        } else {
+          // Si no hay éxito, establecer reviews como array vacío para evitar errores
+          setReviews([]);
+          setError(response?.data?.message || "No se pudieron cargar las reseñas");
+        }
+      } catch (err: any) {
+        console.error("Error fetching reviews:", err);
+        // En caso de error, establecer reviews como array vacío para evitar errores de renderizado
+        setReviews([]);
+        setError(err?.response?.data?.message || err?.message || "Error al cargar las reseñas");
       }
     })();
   }, []);
 
   // console.log('reviews= ', reviews)
-  if (!reviews) return;
+  // Si no hay reviews o hay un error, no mostrar nada (o mostrar un mensaje de error si lo prefieres)
+  if (!reviews || reviews.length === 0) return null;
 
   return (
     <div className="text-white">

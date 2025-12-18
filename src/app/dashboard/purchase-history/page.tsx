@@ -24,59 +24,53 @@ function PurchaseHistory() {
   const [purchases, setPurchases] = useState<PurchaseItem[] | null>(null);
 
   useEffect(() => {
-    // ========== TEMPORAL: Datos falsos para Purchase History ==========
-    // TODO: ELIMINAR ESTE CÓDIGO TEMPORAL DESPUÉS - Reemplazar con llamada a API
     const getPurchaseHistory = async () => {
       try {
-        // Mock Data - Datos falsos simples para testing
-        const mockPurchases: PurchaseItem[] = [
-          {
-            _id: "purchase1",
-            courseName: "Full Stack Web Development",
-            courseDescription: "Become a full-stack developer with MERN stack.",
-            thumbnail:
-              "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/webdev_thumb.jpg",
-            price: 2999,
-            purchaseDate: "2024-01-15",
-            status: "Completed",
-            transactionId: "TXN-2024-001",
-            courseContent: [{ _id: "sec1", subSection: [{ _id: "sub1" }] }],
-          },
-          {
-            _id: "purchase2",
-            courseName: "Machine Learning A-Z",
-            courseDescription: "Learn Python for Data Science and Machine Learning.",
-            thumbnail:
-              "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/ml_thumb.jpg",
-            price: 3999,
-            purchaseDate: "2024-02-20",
-            status: "Completed",
-            transactionId: "TXN-2024-002",
-            courseContent: [{ _id: "sec2", subSection: [{ _id: "sub2" }] }],
-          },
-          {
-            _id: "purchase3",
-            courseName: "Digital Marketing Masterclass",
-            courseDescription: "Complete Digital Marketing course for beginners.",
-            thumbnail:
-              "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/marketing_thumb.jpg",
-            price: 1999,
-            purchaseDate: "2024-03-10",
-            status: "Completed",
-            transactionId: "TXN-2024-003",
-            courseContent: [{ _id: "sec3", subSection: [{ _id: "sub3" }] }],
-          },
-        ];
-        // TODO: Reemplazar con llamada real a API cuando se conecte con la BD
-        // const res = await getPurchaseHistory(token);
-        setPurchases(mockPurchases);
-      } catch {
-        console.log("Could not fetch purchase history.");
+        // Obtener token del localStorage
+        let token: string | null = null;
+        if (typeof window !== 'undefined') {
+          const tokenStr = localStorage.getItem('token');
+          if (tokenStr) {
+            try {
+              token = JSON.parse(tokenStr);
+            } catch {
+              token = tokenStr;
+            }
+          }
+        }
+
+        if (!token) {
+          console.error("No token found");
+          return;
+        }
+
+        // Nota: El backend no tiene un endpoint específico para purchase history
+        // Por ahora, usamos los cursos inscritos como historial de compras
+        // TODO: Implementar endpoint específico para purchase history en el backend
+        const { getUserEnrolledCourses } = await import("@shared/services/profileAPI");
+        const enrolledCourses = await getUserEnrolledCourses(token);
+        
+        // Adaptar los datos de cursos inscritos a la estructura de PurchaseItem
+        if (enrolledCourses && Array.isArray(enrolledCourses)) {
+          const purchases: PurchaseItem[] = enrolledCourses.map((course: any) => ({
+            _id: course._id || course.courseId || '',
+            courseName: course.courseName || '',
+            courseDescription: course.courseDescription || '',
+            thumbnail: course.thumbnail || '',
+            price: course.price || 0,
+            purchaseDate: course.createdAt || course.purchaseDate || new Date().toISOString().split('T')[0],
+            status: "Completed" as const,
+            transactionId: course.transactionId || `TXN-${course._id || 'N/A'}`,
+            courseContent: course.courseContent || [],
+          }));
+          setPurchases(purchases);
+        }
+      } catch (error) {
+        console.error("Could not fetch purchase history:", error);
       }
     };
 
     getPurchaseHistory();
-    // ============================================================
   }, []);
 
   const formatDate = (dateString: string) => {

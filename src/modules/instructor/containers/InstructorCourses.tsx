@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { fetchInstructorCourses } from "../services/InstructorDashboardAPI";
@@ -14,18 +14,25 @@ export default function InstructorCourses() {
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(false);
+  const hasEverLoadedRef = useRef(false);
+  const isInitialMountRef = useRef(true);
 
   useEffect(() => {
     const fetchCourses = async () => {
-      setLoading(true);
+      // SOLO mostrar loading en la carga inicial real, NUNCA durante navegación
+      if (isInitialMountRef.current && !hasEverLoadedRef.current) {
+        setLoading(true);
+      }
       const result = await fetchInstructorCourses(token);
       if (result) {
         setCourses(result);
+        hasEverLoadedRef.current = true;
       }
       setLoading(false);
+      isInitialMountRef.current = false;
     };
     fetchCourses();
-  }, [token]);
+  }, [token]); // Remover hasEverLoaded de dependencias para evitar loops
 
   return (
     <div>

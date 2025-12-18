@@ -1,66 +1,50 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import ProgressBar from "@ramonak/react-progress-bar";
 import { useRouter } from "next/navigation";
 
 import Img from "@shared/components/Img";
 import { Course } from "../types";
+import { RootState } from "@shared/store/store";
+import { getUserEnrolledCourses } from "@shared/services/profileAPI";
+import { getFullDetailsOfCourse } from "@shared/services/courseDetailsAPI";
+import { formatTotalDuration } from "@shared/utils/durationHelper";
 
 export default function EnrolledCourses() {
   const router = useRouter();
-
+  const { token } = useSelector((state: RootState) => state.auth);
   const [enrolledCourses, setEnrolledCourses] = useState<Course[] | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // fetch all users enrolled courses
     const getEnrolledCourses = async () => {
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
       try {
-        // Mock Data for Demo
-        const mockData: Course[] = [
-          {
-            _id: "mock1",
-            courseName: "Full Stack Web Development",
-            courseDescription: "Become a full-stack developer with MERN stack.",
-            thumbnail:
-              "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/webdev_thumb.jpg",
-            totalDuration: "12h 30m",
-            progressPercentage: 45,
-            courseContent: [{ _id: "sec1", subSection: [{ _id: "sub1" }] }],
-          },
-          {
-            _id: "mock2",
-            courseName: "Machine Learning A-Z",
-            courseDescription:
-              "Learn Python for Data Science and Machine Learning.",
-            thumbnail:
-              "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/ml_thumb.jpg",
-            totalDuration: "25h 10m",
-            progressPercentage: 10,
-            courseContent: [{ _id: "sec2", subSection: [{ _id: "sub2" }] }],
-          },
-          {
-            _id: "mock3",
-            courseName: "Digital Marketing Masterclass",
-            courseDescription:
-              "Complete Digital Marketing course for beginners.",
-            thumbnail:
-              "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/marketing_thumb.jpg",
-            totalDuration: "8h 45m",
-            progressPercentage: 100,
-            courseContent: [{ _id: "sec3", subSection: [{ _id: "sub3" }] }],
-          },
-        ];
-        // TODO: Uncomment when API is ready
-        // const res = await getUserEnrolledCourses(token);
-        setEnrolledCourses(mockData);
-      } catch {
-        console.log("Could not fetch enrolled courses.");
+        setLoading(true);
+        const res = await getUserEnrolledCourses(token);
+        
+        if (res && Array.isArray(res)) {
+          setEnrolledCourses(res);
+        } else {
+          setEnrolledCourses([]);
+        }
+      } catch (error) {
+        console.log("Could not fetch enrolled courses.", error);
+        setEnrolledCourses([]);
+      } finally {
+        setLoading(false);
       }
     };
 
     getEnrolledCourses();
-  }, []);
+  }, [token]);
 
   // Loading Skeleton
   const sklItem = () => {
@@ -107,7 +91,7 @@ export default function EnrolledCourses() {
           </div>
 
           {/* loading Skeleton */}
-          {!enrolledCourses && (
+          {loading && (
             <div>
               {sklItem()}
               {sklItem()}
@@ -126,11 +110,69 @@ export default function EnrolledCourses() {
               key={i}
             >
               <div
-                className="flex sm:w-[45%] cursor-pointer items-center gap-4 px-5 py-3"
-                onClick={() => {
-                  router.push(
-                    `/view-course/${course?._id}/section/${course.courseContent?.[0]?._id}/sub-section/${course.courseContent?.[0]?.subSection?.[0]?._id}`
-                  );
+                className="flex sm:w-[45%] cursor-pointer items-center gap-4 px-5 py-3 hover:bg-richblack-700 transition-colors rounded"
+                onClick={async () => {
+                  // Obtener el ID del curso (priorizar 'id' sobre '_id' ya que PostgreSQL usa UUIDs con campo 'id')
+                  const courseId = (course as any)?.id || course?._id;
+                  
+                  if (!courseId) {
+                    console.error("Missing course ID:", course);
+                    return;
+                  }
+
+                  // Intentar obtener la primera sección y subsección de los datos disponibles
+                  const firstSection = course.courseContent?.[0];
+                  const sectionId = firstSection?._id || (firstSection as any)?.id;
+                  
+                  // Manejar tanto subSection como subSections (del backend)
+                  const subSections = firstSection?.subSection || (firstSection as any)?.subSections;
+                  const firstSubSection = Array.isArray(subSections) && subSections.length > 0 ? subSections[0] : null;
+                  const subSectionId = firstSubSection?._id || (firstSubSection as any)?.id;
+
+                  // Si tenemos todos los IDs, navegar directamente al video
+                  if (courseId && sectionId && subSectionId) {
+                    router.push(
+                      `/view-course/${courseId}/section/${sectionId}/sub-section/${subSectionId}`
+                    );
+                  } else {
+                    // Si no tenemos los IDs completos, cargar los datos del curso primero
+                    // y luego navegar a la primera lección
+                    if (!token) {
+                      console.error("Token is required to load course details");
+                      return;
+                    }
+                    
+                    try {
+                      const courseData = await getFullDetailsOfCourse(courseId, token);
+                      
+                      if (courseData?.courseDetails?.courseContent) {
+                        const courseContent = courseData.courseDetails.courseContent;
+                        const firstSec = courseContent[0];
+                        const secId = firstSec?._id || (firstSec as any)?.id;
+                        
+                        // Manejar tanto subSection como subSections
+                        const subs = firstSec?.subSection || (firstSec as any)?.subSections;
+                        const firstSub = Array.isArray(subs) && subs.length > 0 ? subs[0] : null;
+                        const subSecId = firstSub?._id || (firstSub as any)?.id;
+                        
+                        if (secId && subSecId) {
+                          router.push(
+                            `/view-course/${courseId}/section/${secId}/sub-section/${subSecId}`
+                          );
+                        } else {
+                          // Si no hay lecciones, navegar al curso de todas formas
+                          router.push(`/view-course/${courseId}`);
+                        }
+                      } else {
+                        // Si no hay contenido, navegar al curso de todas formas
+                        router.push(`/view-course/${courseId}`);
+                      }
+                    } catch (error) {
+                      console.error("Error loading course details:", error);
+                      // En caso de error, intentar navegar de todas formas
+                      router.push(`/view-course/${courseId}`);
+                    }
+                  }
                 }}
               >
                 <Img
@@ -152,7 +194,7 @@ export default function EnrolledCourses() {
               {/* only for smaller devices */}
               {/* duration -  progress */}
               <div className="sm:hidden">
-                <div className=" px-2 py-3">{course?.totalDuration}</div>
+                <div className=" px-2 py-3">{formatTotalDuration(course?.totalDuration)}</div>
 
                 <div className="flex sm:w-2/5 flex-col gap-2 px-2 py-3">
                   {/* {console.log('Course ============== ', course.progressPercentage)} */}
@@ -169,7 +211,7 @@ export default function EnrolledCourses() {
               {/* only for larger devices */}
               {/* duration -  progress */}
               <div className="hidden w-1/5 sm:flex px-2 py-3">
-                {course?.totalDuration}
+                {formatTotalDuration(course?.totalDuration)}
               </div>
               <div className="hidden sm:flex w-1/5 flex-col gap-2 px-2 py-3">
                 <p>Progress: {course.progressPercentage || 0}%</p>

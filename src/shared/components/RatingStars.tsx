@@ -18,11 +18,15 @@ function RatingStars({ Review_Count, Star_Size = 20 }: RatingStarsProps) {
   });
 
   useEffect(() => {
-    const wholeStars = Math.floor(Review_Count) || 0;
+    // Limitar el valor a un rango válido entre 0 y 5
+    const clampedRating = Math.max(0, Math.min(5, Review_Count || 0));
+    const wholeStars = Math.floor(clampedRating);
+    const hasHalfStar = clampedRating - wholeStars >= 0.5;
+    
     SetStarCount({
       full: wholeStars,
-      half: Number.isInteger(Review_Count) ? 0 : 1,
-      empty: Number.isInteger(Review_Count) ? 5 - wholeStars : 4 - wholeStars,
+      half: hasHalfStar ? 1 : 0,
+      empty: hasHalfStar ? 5 - wholeStars - 1 : 5 - wholeStars,
     });
   }, [Review_Count]);
 
@@ -40,20 +44,25 @@ function RatingStars({ Review_Count, Star_Size = 20 }: RatingStarsProps) {
   //   </div>
   // )
 
+  // Asegurar que siempre tengamos exactamente 5 estrellas
+  const totalStars = starCount.full + starCount.half + starCount.empty;
+  const finalStarCount = {
+    full: Math.max(0, Math.min(5, starCount.full)),
+    half: Math.max(0, Math.min(1, starCount.half)),
+    empty: Math.max(0, Math.min(5, 5 - starCount.full - starCount.half)),
+  };
+
   return (
     <div className="flex gap-1 text-yellow-100">
-      {starCount.full >= 0 &&
-        [...new Array(starCount.full)].map((_, i) => (
-          <TiStarFullOutline key={i} size={Star_Size || 20} />
-        ))}
-      {starCount.half >= 0 &&
-        [...new Array(starCount.half)].map((_, i) => (
-          <TiStarHalfOutline key={i} size={Star_Size || 20} />
-        ))}
-      {starCount.empty >= 0 &&
-        [...new Array(starCount.empty)].map((_, i) => (
-          <TiStarOutline key={i} size={Star_Size || 20} />
-        ))}
+      {[...new Array(finalStarCount.full)].map((_, i) => (
+        <TiStarFullOutline key={`full-${i}`} size={Star_Size || 20} />
+      ))}
+      {[...new Array(finalStarCount.half)].map((_, i) => (
+        <TiStarHalfOutline key={`half-${i}`} size={Star_Size || 20} />
+      ))}
+      {[...new Array(finalStarCount.empty)].map((_, i) => (
+        <TiStarOutline key={`empty-${i}`} size={Star_Size || 20} />
+      ))}
     </div>
   );
 }

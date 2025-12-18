@@ -52,6 +52,12 @@ const CourseDetailsContainer = () => {
     return <CourseLoadingSkeleton />
   }
 
+  // Verificar estructura de respuesta antes de desestructurar
+  if (!response.data || !response.data.courseDetails) {
+    console.error("Invalid response structure: courseDetails not found");
+    return <CourseLoadingSkeleton />
+  }
+
   const { courseDetails } = response.data
   const { whatYouWillLearn, tag, instructor } = courseDetails
 

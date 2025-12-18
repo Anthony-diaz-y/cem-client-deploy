@@ -31,12 +31,25 @@ function ForgotPasswordContainer() {
             </h1>
             <div className="my-4 text-[1.125rem] leading-[1.625rem] text-richblack-100">
               {!emailSent ? (
-                "Have no fear. We'll email you instructions to reset your password. If you dont have access to your email we can try account recovery"
+                <div>
+                  <p className="mb-2">
+                    Te enviaremos un email con instrucciones para restablecer tu contraseña.
+                  </p>
+                  <p className="text-sm text-richblack-400">
+                    ⚠️ El link expira en 5 minutos. Por favor, revisa tu correo (y la carpeta de spam) después de enviar.
+                  </p>
+                </div>
               ) : (
-                <p>
-                  We have sent the reset email to{" "}
-                  <span className="text-yellow-200">{email}</span>
-                </p>
+                <div>
+                  <p className="mb-2">
+                    Hemos enviado el email de reset a{" "}
+                    <span className="text-yellow-200 font-semibold">{email}</span>
+                  </p>
+                  <p className="text-sm text-richblack-400">
+                    Por favor, revisa tu correo y haz clic en el link para restablecer tu contraseña.
+                    Si no lo encuentras, revisa la carpeta de spam.
+                  </p>
+                </div>
               )}
             </div>
 

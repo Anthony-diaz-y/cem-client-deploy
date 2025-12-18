@@ -1,6 +1,7 @@
 "use client";
 
 import { useSelector } from "react-redux";
+import { useState, useEffect, useRef } from "react";
 import InstructorChart from "../components/InstructorChart";
 import InstructorStats from "../components/InstructorStats";
 import InstructorCoursesGrid from "../components/InstructorCoursesGrid";
@@ -13,7 +14,10 @@ import { RootState } from "@shared/store/store";
 /**
  * Instructor - Main component for instructor dashboard
  * Orchestrates instructor data and statistics through custom hooks
+ * Muestra skeleton solo si la carga toma más de 300ms (evita parpadeo rápido)
  */
+const MIN_LOADING_TIME = 300; // Tiempo mínimo en ms antes de mostrar skeleton
+
 export default function Instructor() {
   const { user } = useSelector((state: RootState) => state.profile);
   const { loading, instructorData, courses } = useInstructorData();
@@ -22,6 +26,44 @@ export default function Instructor() {
     courses
   );
 
+  const [showSkeleton, setShowSkeleton] = useState(false);
+  const loadingStartTimeRef = useRef<number | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hasEverLoadedRef = useRef(courses.length > 0 || instructorData !== null);
+
+  // Controlar cuándo mostrar skeleton con delay mínimo
+  useEffect(() => {
+    if (loading && !hasEverLoadedRef.current) {
+      // Iniciar timer solo si nunca se han cargado datos
+      loadingStartTimeRef.current = Date.now();
+      timeoutRef.current = setTimeout(() => {
+        // Solo mostrar skeleton si todavía está cargando después del delay mínimo
+        if (loading) {
+          setShowSkeleton(true);
+        }
+      }, MIN_LOADING_TIME);
+    } else {
+      // Si terminó de cargar o ya hay datos, ocultar skeleton inmediatamente
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      setShowSkeleton(false);
+      
+      if (courses.length > 0 || instructorData) {
+        hasEverLoadedRef.current = true;
+      }
+    }
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [loading, courses, instructorData]);
+
+  // Renderizar siempre el contenido, incluso si está vacío inicialmente
+  // Esto evita el parpadeo durante navegación
   return (
     <div>
       <div className="space-y-2">
@@ -33,13 +75,14 @@ export default function Instructor() {
         </p>
       </div>
 
-      {loading ? (
+      {/* Mostrar skeleton solo si la carga toma más de 300ms (evita parpadeo rápido) */}
+      {showSkeleton ? (
         <InstructorLoadingSkeleton />
       ) : courses.length > 0 ? (
         <div>
           <div className="my-4 flex h-[450px] space-x-4">
-            {totalAmount > 0 || totalStudents > 0 ? (
-              <InstructorChart courses={instructorData || []} />
+            {courses.length > 0 ? (
+              <InstructorChart courses={courses} />
             ) : (
               <div className="flex-1 rounded-md bg-richblack-800 p-6">
                 <p className="text-lg font-bold text-richblack-5">Visualize</p>

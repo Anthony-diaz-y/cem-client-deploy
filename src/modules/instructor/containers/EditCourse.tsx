@@ -10,6 +10,35 @@ import { setCourse, setEditCourse } from "@modules/course/store/courseSlice";
 import RenderSteps from "@modules/add-course/components/RenderSteps";
 import Loading from "@shared/components/Loading";
 import { AppDispatch } from "@shared/store/store";
+import { Course } from "@modules/course/types";
+
+// Función para normalizar la estructura del curso (subSections -> subSection)
+const normalizeCourseStructure = (course: any): Course => {
+  if (!course || !course.courseContent) return course;
+  
+  const normalizedContent = course.courseContent.map((section: any) => {
+    // Si tiene subSections (con S mayúscula), convertir a subSection
+    if (section.subSections && Array.isArray(section.subSections)) {
+      return {
+        ...section,
+        subSection: section.subSections,
+      };
+    }
+    // Si no tiene subSection, asegurar que sea un array vacío
+    if (!section.subSection) {
+      return {
+        ...section,
+        subSection: [],
+      };
+    }
+    return section;
+  });
+  
+  return {
+    ...course,
+    courseContent: normalizedContent,
+  };
+};
 
 export default function EditCourse() {
   const { courseId } = useParams();
@@ -30,8 +59,10 @@ export default function EditCourse() {
         const result = await getFullDetailsOfCourse(courseIdString, token);
         // console.log('Data from edit course file = ', result)
         if (result?.courseDetails) {
+          // Normalizar la estructura del curso (subSections -> subSection)
+          const normalizedCourse = normalizeCourseStructure(result.courseDetails);
           dispatch(setEditCourse(true));
-          dispatch(setCourse(result.courseDetails));
+          dispatch(setCourse(normalizedCourse));
         }
       } catch (error) {
         console.error("Error fetching course details:", error);

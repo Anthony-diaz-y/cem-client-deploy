@@ -46,6 +46,15 @@ export const getAllCourses = async () => {
 }
 
 
+// Función para validar UUID
+const isValidUUID = (id: string): boolean => {
+  if (!id || typeof id !== 'string') {
+    return false;
+  }
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(id);
+};
+
 // ================ fetch Course Details ================
 export const fetchCourseDetails = async (courseId: string) => {
   // const toastId = toast.loading('Loading')
@@ -53,17 +62,56 @@ export const fetchCourseDetails = async (courseId: string) => {
   let result = null;
 
   try {
+    // Validar que courseId existe y es un UUID válido antes de hacer la petición
+    if (!courseId || typeof courseId !== 'string') {
+      console.error("Course ID is required and must be a string");
+      return null;
+    }
+
+    // Validar formato UUID
+    if (!isValidUUID(courseId)) {
+      console.error(
+        "Invalid course ID format (expected UUID):",
+        courseId,
+        "\nThe course ID must be a valid UUID format (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)"
+      );
+      return null;
+    }
+
     const response = await apiConnector("POST", COURSE_DETAILS_API, { courseId, })
     console.log("COURSE_DETAILS_API API RESPONSE............", response)
 
-    if (!response.data.success) {
-      throw new Error(response.data.message)
+    // Verificar estructura de respuesta antes de desestructurar
+    if (!response?.data) {
+      console.error("Invalid response structure: response.data is undefined");
+      return null;
     }
-    result = response.data
+
+    if (!response.data.success) {
+      const errorMessage = response.data.message || "Could not fetch course details";
+      console.error("API returned success: false", errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    // Verificar que la estructura esperada existe
+    if (response.data.data && response.data.data.courseDetails) {
+      result = response.data;
+    } else {
+      console.error("Invalid data structure: courseDetails not found in response");
+      return null;
+    }
   } catch (error) {
     const apiError = error as ApiError;
-    console.log("COURSE_DETAILS_API API ERROR............", apiError)
-    result = apiError.response?.data || null
+    console.error("COURSE_DETAILS_API API ERROR............", apiError);
+    
+    // Manejo específico de errores 500
+    if (apiError.response?.status === 500) {
+      console.error('Error del servidor (500):', apiError.response.data);
+      // No retornar datos en caso de error 500
+      return null;
+    }
+    
+    result = apiError.response?.data || null;
     // toast.error(apiError.response?.data?.message);
   }
   // toast.dismiss(toastId)
@@ -108,6 +156,17 @@ export const addCourseDetails = async (data: Record<string, unknown>, token: str
     }
 
     result = response?.data?.data
+    
+    // Invalidar cache del instructor después de crear curso (según recomendación del backend)
+    if (typeof window !== "undefined") {
+      // Importar dinámicamente para evitar dependencias circulares
+      const { invalidateInstructorCache } = await import("@modules/instructor/hooks/useInstructorData");
+      invalidateInstructorCache();
+      
+      // Disparar evento para refrescar datos
+      window.dispatchEvent(new CustomEvent("instructorDataRefresh"));
+    }
+    
     toast.success("Course Details Added Successfully")
   } catch (error) {
     const apiError = error as ApiError;
@@ -180,13 +239,15 @@ export const createSubSection = async (data: Record<string, unknown>, token: str
   const toastId = toast.loading("Loading...")
 
   try {
+    // No establecer Content-Type manualmente cuando se envía FormData
+    // El navegador lo establecerá automáticamente con el boundary correcto
     const response = await apiConnector("POST", CREATE_SUBSECTION_API, data, {
       Authorization: `Bearer ${token} `,
     })
     console.log("CREATE SUB-SECTION API RESPONSE............", response)
 
     if (!response?.data?.success) {
-      throw new Error("Could Not Add Lecture")
+      throw new Error(response?.data?.message || "Could Not Add Lecture")
     }
 
     result = response?.data?.data
@@ -194,7 +255,17 @@ export const createSubSection = async (data: Record<string, unknown>, token: str
   } catch (error) {
     const apiError = error as ApiError;
     console.log("CREATE SUB-SECTION API ERROR............", apiError)
-    toast.error(apiError.message || "Could Not Add Lecture")
+    
+    // Manejar errores específicos del backend
+    if (apiError.response?.status === 400) {
+      toast.error(apiError.response?.data?.message || "Datos inválidos. Verifica que todos los campos estén completos.")
+    } else if (apiError.response?.status === 401) {
+      toast.error("Sesión expirada. Por favor, inicia sesión nuevamente.")
+    } else if (apiError.response?.status === 403) {
+      toast.error("No tienes permisos para agregar lecciones. Debes ser instructor.")
+    } else {
+      toast.error(apiError.response?.data?.message || apiError.message || "Could Not Add Lecture")
+    }
   }
   toast.dismiss(toastId)
   return result
@@ -234,13 +305,15 @@ export const updateSubSection = async (data: Record<string, unknown>, token: str
   const toastId = toast.loading("Loading...")
 
   try {
+    // No establecer Content-Type manualmente cuando se envía FormData
+    // El navegador lo establecerá automáticamente con el boundary correcto
     const response = await apiConnector("POST", UPDATE_SUBSECTION_API, data, {
       Authorization: `Bearer ${token} `,
     })
     console.log("UPDATE SUB-SECTION API RESPONSE............", response)
 
     if (!response?.data?.success) {
-      throw new Error("Could Not Update Lecture")
+      throw new Error(response?.data?.message || "Could Not Update Lecture")
     }
 
     result = response?.data?.data
@@ -248,7 +321,19 @@ export const updateSubSection = async (data: Record<string, unknown>, token: str
   } catch (error) {
     const apiError = error as ApiError;
     console.log("UPDATE SUB-SECTION API ERROR............", apiError)
-    toast.error(apiError.message || "Could Not Update Lecture")
+    
+    // Manejo específico de errores
+    if (apiError.response?.status === 400) {
+      toast.error(apiError.response?.data?.message || "Invalid data. Please check all fields.")
+    } else if (apiError.response?.status === 401) {
+      toast.error("Session expired. Please login again.")
+    } else if (apiError.response?.status === 403) {
+      toast.error("You don't have permission to update lectures. You must be an instructor.")
+    } else if (apiError.response?.status === 500) {
+      toast.error(apiError.response?.data?.message || "Server error. Please try again later.")
+    } else {
+      toast.error(apiError.response?.data?.message || apiError.message || "Could Not Update Lecture")
+    }
   }
   toast.dismiss(toastId)
   return result
@@ -322,7 +407,27 @@ export const fetchInstructorCourses = async (token: string) => {
     if (!response?.data?.success) {
       throw new Error("Could Not Fetch Instructor Courses")
     }
-    result = response?.data?.data
+    
+    const coursesData = response?.data?.data || [];
+    
+    // Eliminar duplicados basándose en el ID (priorizar 'id' sobre '_id')
+    const uniqueCourses = coursesData.reduce((acc: any[], course: any) => {
+      const courseId = course?.id || course?._id;
+      if (!courseId) return acc;
+      
+      // Verificar si ya existe un curso con este ID
+      const existingIndex = acc.findIndex((c: any) => {
+        const cId = c?.id || c?._id;
+        return cId === courseId;
+      });
+      
+      if (existingIndex === -1) {
+        acc.push(course);
+      }
+      return acc;
+    }, []);
+    
+    result = uniqueCourses;
   } catch (error) {
     const apiError = error as ApiError;
     console.log("INSTRUCTOR COURSES API ERROR............", apiError)
@@ -334,22 +439,55 @@ export const fetchInstructorCourses = async (token: string) => {
 
 // ================ delete Course ================
 export const deleteCourse = async (data: Record<string, unknown>, token: string) => {
-  // const toastId = toast.loading("Loading...")
+  const toastId = toast.loading("Deleting course...")
   try {
-    const response = await apiConnector("DELETE", DELETE_COURSE_API, data, {
-      Authorization: `Bearer ${token} `,
-    })
+    // Validar que courseId existe y es válido
+    const courseId = data.courseId;
+    if (!courseId || typeof courseId !== 'string') {
+      throw new Error("Course ID is required");
+    }
+    
+    // Validar formato UUID
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(courseId)) {
+      throw new Error("Invalid course ID format");
+    }
+    
+    // Para DELETE, enviar courseId como query param
+    const response = await apiConnector(
+      "DELETE", 
+      DELETE_COURSE_API, 
+      data, // También en el body por si el backend lo requiere
+      {
+        Authorization: `Bearer ${token} `,
+      },
+      { courseId: courseId as string } // Query params
+    )
     console.log("DELETE COURSE API RESPONSE............", response)
     if (!response?.data?.success) {
-      throw new Error("Could Not Delete Course")
+      throw new Error(response?.data?.message || "Could Not Delete Course")
     }
     toast.success("Course Deleted")
   } catch (error) {
     const apiError = error as ApiError;
     console.log("DELETE COURSE API ERROR............", apiError)
-    toast.error(apiError.message || "Could Not Delete Course")
+    
+    // Manejo específico de errores
+    if (apiError.response?.status === 400) {
+      toast.error(apiError.response?.data?.message || "Invalid course ID")
+    } else if (apiError.response?.status === 401) {
+      toast.error("Session expired. Please login again.")
+    } else if (apiError.response?.status === 403) {
+      toast.error("You don't have permission to delete this course")
+    } else if (apiError.response?.status === 404) {
+      toast.error("Course not found")
+    } else if (apiError.response?.status === 500) {
+      toast.error(apiError.response?.data?.message || "Server error. Please try again later.")
+    } else {
+      toast.error(apiError.response?.data?.message || apiError.message || "Could Not Delete Course")
+    }
   }
-  // toast.dismiss(toastId)
+  toast.dismiss(toastId)
 }
 
 
@@ -411,6 +549,40 @@ export const markLectureAsComplete = async (data: Record<string, unknown>, token
   }
   toast.dismiss(toastId)
   return result
+}
+
+// ================ toggle Lecture Completion ================
+// El backend ahora funciona como toggle automático: si está completada la desmarca, si no está la marca
+export const toggleLectureCompletion = async (
+  data: Record<string, unknown>, 
+  token: string
+): Promise<{ success: boolean; isCompleted: boolean } | null> => {
+  const toastId = toast.loading("Actualizando progreso...")
+  try {
+    const response = await apiConnector("POST", LECTURE_COMPLETION_API, data, {
+      Authorization: `Bearer ${token} `,
+    })
+    console.log("TOGGLE_LECTURE_COMPLETION_API API RESPONSE............", response)
+
+    if (!response.data.success && !response.data.message) {
+      throw new Error(response.data.error || "Error al actualizar el progreso")
+    }
+
+    // El backend retorna isCompleted en la respuesta
+    const isCompleted = response.data.isCompleted ?? response.data.data?.isCompleted ?? true
+    
+    toast.success(response.data.message || (isCompleted ? "Lecture marcada como completada" : "Lecture desmarcada"))
+    
+    toast.dismiss(toastId)
+    return { success: true, isCompleted }
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.log("TOGGLE_LECTURE_COMPLETION_API API ERROR............", apiError)
+    const errorMessage = apiError.response?.data?.message || apiError.message || "No se pudo actualizar el estado de la lecture"
+    toast.error(errorMessage)
+    toast.dismiss(toastId)
+    return { success: false, isCompleted: false }
+  }
 }
 
 

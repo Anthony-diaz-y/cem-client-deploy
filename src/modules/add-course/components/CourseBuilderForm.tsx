@@ -39,7 +39,10 @@ export default function CourseBuilderForm() {
         onCancelEdit={cancelEdit}
       />
 
-      {course && (course as Course).courseContent.length > 0 && (
+      {course && 
+       (course as Course).courseContent && 
+       Array.isArray((course as Course).courseContent) && 
+       (course as Course).courseContent.length > 0 && (
         <NestedView handleChangeEditSectionName={handleChangeEditSectionName} />
       )}
 

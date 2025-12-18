@@ -14,6 +14,7 @@ import {
   setTotalNoOfLectures,
 } from "@modules/view-course/store/viewCourseSlice";
 import { setCourseViewSidebar } from "@modules/dashboard/store/sidebarSlice";
+import { getFullDetailsOfCourse } from "@shared/services/courseDetailsAPI";
 
 export default function ViewCourseLayout({
   children,
@@ -22,6 +23,7 @@ export default function ViewCourseLayout({
 }) {
   const { courseId } = useParams();
   const dispatch = useDispatch();
+  const { token } = useAppSelector((state) => state.auth);
   const [reviewModal, setReviewModal] = useState(false);
 
   // get Full Details Of Course
@@ -30,79 +32,118 @@ export default function ViewCourseLayout({
       // Normalize courseId to string
       const courseIdString = Array.isArray(courseId)
         ? courseId[0]
-        : courseId || "mock_course_1";
+        : courseId;
 
-      // Mock Data for Video Demo
-      const mockCourseData = {
-        completedVideos: ["sub1", "sub2", "sub3"],
-        courseDetails: {
-          _id: courseIdString,
-          courseName: "MERN Stack Bootcamp 2024",
-          courseDescription:
-            "Master the MERN stack with this comprehensive bootcamp covering MongoDB, Express, React, and Node.js.",
-          instructor: {
-            _id: "instructor_1",
-            firstName: "John",
-            lastName: "Doe",
-          },
-          thumbnail:
-            "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/webdev_thumb.jpg",
-          price: 4999,
-          courseContent: [
-            {
-              _id: "sec1",
-              sectionName: "Introduction",
-              subSection: [
-                {
-                  _id: "sub1",
-                  title: "Welcome to the Course",
-                  description: "Introduction to what you will learn.",
-                  videoUrl:
-                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-                  timeDuration: "10:34",
-                },
-                {
-                  _id: "sub2",
-                  title: "Course Structure",
-                  description: "How the course is organized.",
-                  videoUrl:
-                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-                  timeDuration: "10:53",
-                },
-              ],
-            },
-            {
-              _id: "sec2",
-              sectionName: "React Basics",
-              subSection: [
-                {
-                  _id: "sub3",
-                  title: "Hello World in React",
-                  description: "Your first React component.",
-                  videoUrl:
-                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-                  timeDuration: "05:20",
-                },
-              ],
-            },
-          ],
-        },
-      };
+      if (!courseIdString || !token) {
+        console.error("Course ID and token are required");
+        return;
+      }
 
-      // const courseData = await getFullDetailsOfCourse(courseId, token)
-      const courseData = mockCourseData;
+      try {
+        // Fetch full course details from backend
+        const courseData = await getFullDetailsOfCourse(courseIdString, token);
 
-      // console.log("Course Data here... ", courseData.courseDetails)
-      dispatch(setCourseSectionData(courseData.courseDetails.courseContent));
-      dispatch(setEntireCourseData(courseData.courseDetails));
-      dispatch(setCompletedLectures(courseData.completedVideos));
-      let lectures = 0;
-      courseData?.courseDetails?.courseContent?.forEach((sec) => {
-        lectures += sec.subSection.length;
-      });
-      dispatch(setTotalNoOfLectures(lectures));
+        if (courseData?.courseDetails) {
+          console.log("Raw course data from backend:", {
+            courseName: courseData.courseDetails.courseName,
+            courseContentLength: courseData.courseDetails.courseContent?.length,
+            firstSection: courseData.courseDetails.courseContent?.[0],
+          });
+
+          // Normalizar la estructura del curso (subSections -> subSection) y normalizar IDs
+          // Ordenar secciones por fecha de creación (más antiguas primero)
+          const rawContent = courseData.courseDetails.courseContent || [];
+          const sortedContent = [...rawContent].sort((a: any, b: any) => {
+            const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+            const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+            return dateA - dateB; // Orden ascendente (más antiguas primero)
+          });
+          
+          const normalizedContent = sortedContent.map((section: any) => {
+            // Normalizar el ID de la sección
+            const normalizedSectionId = (section._id || section.id)?.toString().trim();
+            
+            // Normalizar subsecciones
+            let normalizedSubSections = section.subSection || section.subSections || [];
+            
+            // Si tiene subSections (con S mayúscula), convertir a subSection
+            if (section.subSections && Array.isArray(section.subSections)) {
+              normalizedSubSections = section.subSections;
+            }
+            
+            // Normalizar IDs de subsecciones
+            const normalizedSubSectionsWithIds = normalizedSubSections.map((subSection: any) => {
+              const normalizedSubSectionId = (subSection._id || subSection.id)?.toString().trim();
+              return {
+                ...subSection,
+                _id: normalizedSubSectionId,
+                id: normalizedSubSectionId,
+              };
+            });
+
+            // Log para depuración
+            if (process.env.NODE_ENV === 'development') {
+              console.log("Processing section:", {
+                sectionName: section.sectionName,
+                sectionId: normalizedSectionId,
+                subSectionCount: normalizedSubSectionsWithIds.length,
+                subSectionIds: normalizedSubSectionsWithIds.map((s: any) => s._id || s.id),
+              });
+            }
+
+            return {
+              ...section,
+              _id: normalizedSectionId,
+              id: normalizedSectionId,
+              subSection: normalizedSubSectionsWithIds.sort((a: any, b: any) => {
+                // Ordenar subsecciones también por fecha de creación
+                const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                return dateA - dateB; // Orden ascendente (más antiguas primero)
+              }),
+            };
+          });
+
+          // Log de las subsecciones normalizadas
+          if (process.env.NODE_ENV === 'development') {
+            normalizedContent.forEach((sec: any, idx: number) => {
+              console.log(`Section ${idx} (${sec.sectionName}):`, {
+                subSectionCount: sec.subSection?.length,
+                subSections: sec.subSection?.map((sub: any) => ({
+                  title: sub.title,
+                  videoUrl: sub.videoUrl,
+                  hasVideoUrl: !!sub.videoUrl,
+                })),
+              });
+            });
+          }
+
+          dispatch(setCourseSectionData(normalizedContent));
+          dispatch(setEntireCourseData({
+            ...courseData.courseDetails,
+            courseContent: normalizedContent,
+          }));
+          dispatch(setCompletedLectures(courseData.completedVideos || []));
+          
+          // Contar las lectures correctamente
+          let lectures = 0;
+          normalizedContent.forEach((sec: any) => {
+            const subSections = sec.subSection || sec.subSections || [];
+            lectures += Array.isArray(subSections) ? subSections.length : 0;
+          });
+          dispatch(setTotalNoOfLectures(lectures));
+          
+          console.log("Course data loaded:", {
+            sections: normalizedContent.length,
+            lectures,
+            courseName: courseData.courseDetails.courseName,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching course details:", error);
+      }
     })();
-  }, [courseId, dispatch]);
+  }, [courseId, token, dispatch]);
 
   // handle sidebar for small devices
   const { courseViewSidebar } = useAppSelector((state) => state.sidebar);
@@ -128,14 +169,14 @@ export default function ViewCourseLayout({
 
   return (
     <>
-      <div className="relative flex min-h-[calc(100vh-3.5rem)] ">
+      <div className="relative flex h-[calc(100vh-3.5rem)] overflow-hidden">
         {/* view course side bar */}
         {courseViewSidebar && (
           <VideoDetailsSidebar setReviewModal={setReviewModal} />
         )}
 
-        <div className="h-[calc(100vh-3.5rem)] flex-1 overflow-auto mt-14">
-          <div className="mx-6">{children}</div>
+        <div className="h-full flex-1 overflow-y-auto mt-14">
+          <div className="mx-6 py-6">{children}</div>
         </div>
       </div>
 

@@ -32,7 +32,7 @@ export const useCourseInformationForm = () => {
   );
   const [loading, setLoading] = useState(false);
   const [courseCategories, setCourseCategories] = useState<
-    Array<{ _id: string; name: string }>
+    Array<{ id?: string; _id?: string; name: string }>
   >([]);
 
   useEffect(() => {
@@ -57,7 +57,9 @@ export const useCourseInformationForm = () => {
       setValue("coursePrice", courseData.price);
       setValue("courseTags", courseData.tag);
       setValue("courseBenefits", courseData.whatYouWillLearn);
-      setValue("courseCategory", courseData.category);
+      // courseCategory es un string (ID), obtener el ID del objeto category
+      const categoryId = (courseData.category as any)?.id || courseData.category?._id || '';
+      setValue("courseCategory", categoryId);
       setValue("courseRequirements", courseData.instructions);
       setValue("courseImage", courseData.thumbnail);
     }
@@ -76,7 +78,7 @@ export const useCourseInformationForm = () => {
       currentValues.coursePrice !== courseData.price ||
       currentValues.courseTags.toString() !== courseData.tag.toString() ||
       currentValues.courseBenefits !== courseData.whatYouWillLearn ||
-      currentValues.courseCategory._id !== courseData.category._id ||
+      currentValues.courseCategory !== ((courseData.category as any)?.id || courseData.category?._id) ||
       currentValues.courseRequirements.toString() !==
         courseData.instructions.toString() ||
       currentValues.courseImage !== courseData.thumbnail
@@ -90,8 +92,17 @@ export const useCourseInformationForm = () => {
       if (isFormUpdated() && course) {
         const courseData = course as Course;
         const currentValues = getValues();
+        
+        // Obtener el ID del curso (priorizar 'id' sobre '_id' ya que PostgreSQL usa UUIDs con campo 'id')
+        const courseId = (courseData as any)?.id || courseData?._id;
+        
+        if (!courseId) {
+          toast.error("ID de curso no encontrado");
+          return;
+        }
+        
         const formData = new FormData();
-        formData.append("courseId", courseData._id);
+        formData.append("courseId", courseId);
 
         if (currentValues.courseTitle !== courseData.courseName) {
           formData.append("courseName", data.courseTitle);
@@ -108,8 +119,17 @@ export const useCourseInformationForm = () => {
         if (currentValues.courseBenefits !== courseData.whatYouWillLearn) {
           formData.append("whatYouWillLearn", data.courseBenefits);
         }
-        if (currentValues.courseCategory._id !== courseData.category._id) {
-          formData.append("category", data.courseCategory._id);
+        const courseCategoryId = (courseData.category as any)?.id || courseData.category?._id;
+        const newCategoryId = data.courseCategory; // Ya es un string
+        
+        if (currentValues.courseCategory !== courseCategoryId && newCategoryId) {
+          // Validar formato UUID
+          const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+          if (uuidRegex.test(newCategoryId)) {
+            formData.append("categoryId", newCategoryId); // Cambiado de "category" a "categoryId"
+          } else {
+            console.error("Invalid category ID format when editing course:", newCategoryId);
+          }
         }
         if (
           currentValues.courseRequirements.toString() !==
@@ -143,13 +163,32 @@ export const useCourseInformationForm = () => {
       return;
     }
 
+    // courseCategory es un string (el ID) desde el select
+    const categoryId = data.courseCategory;
+    
+    // Validar que categoryId existe y es válido
+    if (!categoryId || categoryId === '' || categoryId === 'undefined' || categoryId === 'null') {
+      console.error('Category ID is required and must be a valid UUID');
+      console.error('Received categoryId:', categoryId, 'Type:', typeof categoryId);
+      toast.error('Por favor, selecciona una categoría válida');
+      return;
+    }
+
+    // Validar formato UUID
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(categoryId)) {
+      console.error('Invalid category ID format (expected UUID):', categoryId);
+      toast.error('ID de categoría inválido. Por favor, selecciona una categoría válida');
+      return;
+    }
+
     const formData = new FormData();
     formData.append("courseName", data.courseTitle);
     formData.append("courseDescription", data.courseShortDesc);
     formData.append("price", data.coursePrice.toString());
     formData.append("tag", JSON.stringify(data.courseTags));
     formData.append("whatYouWillLearn", data.courseBenefits);
-    formData.append("category", data.courseCategory._id);
+    formData.append("categoryId", categoryId); // Cambiado de "category" a "categoryId" y usando id/_id correctamente
     formData.append("status", COURSE_STATUS.DRAFT);
     formData.append("instructions", JSON.stringify(data.courseRequirements));
     formData.append("thumbnailImage", data.courseImage);
