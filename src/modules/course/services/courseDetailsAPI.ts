@@ -58,6 +58,15 @@ export const getAllCourses = async () => {
   return result;
 };
 
+// Función para validar UUID
+const isValidUUID = (id: string): boolean => {
+  if (!id || typeof id !== 'string') {
+    return false;
+  }
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(id);
+};
+
 // ================ fetch Course Details ================
 export const fetchCourseDetails = async (courseId: string) => {
   // const toastId = toast.loading('Loading')
@@ -65,18 +74,57 @@ export const fetchCourseDetails = async (courseId: string) => {
   let result = null;
 
   try {
+    // Validar que courseId existe y es un UUID válido antes de hacer la petición
+    if (!courseId || typeof courseId !== 'string') {
+      console.error("Course ID is required and must be a string");
+      return null;
+    }
+
+    // Validar formato UUID
+    if (!isValidUUID(courseId)) {
+      console.error(
+        "Invalid course ID format (expected UUID):",
+        courseId,
+        "\nThe course ID must be a valid UUID format (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)"
+      );
+      return null;
+    }
+
     const response = await apiConnector("POST", COURSE_DETAILS_API, {
       courseId,
     });
     console.log("COURSE_DETAILS_API API RESPONSE............", response);
 
-    if (!response.data.success) {
-      throw new Error(response.data.message);
+    // Verificar estructura de respuesta antes de desestructurar
+    if (!response?.data) {
+      console.error("Invalid response structure: response.data is undefined");
+      return null;
     }
-    result = response.data;
+
+    if (!response.data.success) {
+      const errorMessage = response.data.message || "Could not fetch course details";
+      console.error("API returned success: false", errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    // Verificar que la estructura esperada existe
+    if (response.data.data && response.data.data.courseDetails) {
+      result = response.data;
+    } else {
+      console.error("Invalid data structure: courseDetails not found in response");
+      return null;
+    }
   } catch (error) {
     const apiError = error as ApiError;
-    console.log("COURSE_DETAILS_API API ERROR............", apiError);
+    console.error("COURSE_DETAILS_API API ERROR............", apiError);
+    
+    // Manejo específico de errores 500
+    if (apiError.response?.status === 500) {
+      console.error('Error del servidor (500):', apiError.response.data);
+      // No retornar datos en caso de error 500
+      return null;
+    }
+    
     result = apiError.response?.data || null;
     // toast.error(apiError.response?.data?.message);
   }
@@ -422,6 +470,22 @@ export const getFullDetailsOfCourse = async (
   //   dispatch(setLoading(true));
   let result = null;
   try {
+    // Validar que courseId existe y es un UUID válido antes de hacer la petición
+    if (!courseId || typeof courseId !== 'string') {
+      console.error("Course ID is required and must be a string");
+      return null;
+    }
+
+    // Validar formato UUID
+    if (!isValidUUID(courseId)) {
+      console.error(
+        "Invalid course ID format (expected UUID):",
+        courseId,
+        "\nThe course ID must be a valid UUID format (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)"
+      );
+      return null;
+    }
+
     const response = await apiConnector(
       "POST",
       GET_FULL_COURSE_DETAILS_AUTHENTICATED,
@@ -434,13 +498,36 @@ export const getFullDetailsOfCourse = async (
     );
     console.log("COURSE_FULL_DETAILS_API API RESPONSE............", response);
 
-    if (!response.data.success) {
-      throw new Error(response.data.message);
+    // Verificar estructura de respuesta antes de desestructurar
+    if (!response?.data) {
+      console.error("Invalid response structure: response.data is undefined");
+      return null;
     }
-    result = response?.data?.data;
+
+    if (!response.data.success) {
+      const errorMessage = response.data.message || "Could not fetch full course details";
+      console.error("API returned success: false", errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    // Verificar que la estructura esperada existe
+    if (response.data.data && response.data.data.courseDetails) {
+      result = response.data.data;
+    } else {
+      console.error("Invalid data structure: courseDetails not found in response.data.data");
+      return null;
+    }
   } catch (error) {
     const apiError = error as ApiError;
-    console.log("COURSE_FULL_DETAILS_API API ERROR............", apiError);
+    console.error("COURSE_FULL_DETAILS_API API ERROR............", apiError);
+    
+    // Manejo específico de errores 500
+    if (apiError.response?.status === 500) {
+      console.error('Error del servidor (500):', apiError.response.data);
+      // No retornar datos en caso de error 500
+      return null;
+    }
+    
     result = apiError.response?.data || null;
     // toast.error(apiError.response?.data?.message);
   }

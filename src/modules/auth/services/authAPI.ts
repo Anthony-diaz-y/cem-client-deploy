@@ -100,27 +100,6 @@ export function login(
     dispatch(setLoading(true));
 
     try {
-      if (email === "admin@test.com" && password === "123456") {
-        // Mock Admin Login
-        toast.success("Login Successful (Demo Admin)");
-        const mockAdmin = {
-          _id: "admin_id_123",
-          firstName: "Admin",
-          lastName: "User",
-          email: "admin@test.com",
-          accountType: "Admin",
-          image: "https://api.dicebear.com/5.x/initials/svg?seed=Admin%20User",
-        };
-        dispatch(setToken("mock_admin_token"));
-        dispatch(setUser(mockAdmin));
-        localStorage.setItem("token", JSON.stringify("mock_admin_token"));
-        localStorage.setItem("user", JSON.stringify(mockAdmin));
-        navigate("/dashboard/my-profile");
-        dispatch(setLoading(false));
-        toast.dismiss(toastId);
-        return;
-      }
-
       const response = await apiConnector("POST", LOGIN_API, {
         email,
         password,
@@ -140,9 +119,8 @@ export function login(
         : `https://api.dicebear.com/5.x/initials/svg?seed=${response.data.user.firstName} ${response.data.user.lastName}`;
 
       dispatch(setUser({ ...response.data.user, image: userImage }));
-      // console.log('User data - ', response.data.user);/
+      // Guardar token y usuario en localStorage
       localStorage.setItem("token", JSON.stringify(response.data?.token));
-
       localStorage.setItem(
         "user",
         JSON.stringify({ ...response.data.user, image: userImage })

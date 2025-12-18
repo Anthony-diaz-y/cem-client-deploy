@@ -79,6 +79,11 @@ export interface VideoPlayerProps {
   isCompleted: boolean;
   isFirst: boolean;
   isLast: boolean;
+  nextVideoInfo?: { 
+    nextSectionName?: string; 
+    nextLectureTitle?: string; 
+    isNextSection: boolean;
+  } | null;
 }
 
 export interface ReviewFormData {

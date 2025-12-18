@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { fetchCourseCategories } from "@shared/services/courseDetailsAPI";
+import { getCatalogPageData } from "@shared/services/pageAndComponentData";
 import { Category, CatalogPageData } from "../types";
 
 /**
@@ -14,22 +15,74 @@ export const useCatalogData = () => {
   const [categoryId, setCategoryId] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Función para validar UUID
+  const isValidUUID = (id: string): boolean => {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(id);
+  };
+
   // Fetch All Categories
   useEffect(() => {
     (async () => {
       try {
         const res = (await fetchCourseCategories()) as Category[];
-        const catalogNameStr = Array.isArray(catalogName)
+        const catalogNameRaw = Array.isArray(catalogName)
           ? catalogName[0]
           : catalogName;
+        
+        if (!catalogNameRaw) return;
+        
+        // Decodificar el catalogName de URL encoding (ej: programaci%C3%B3n -> programación)
+        let catalogNameStr: string;
+        try {
+          catalogNameStr = decodeURIComponent(catalogNameRaw);
+        } catch (error) {
+          // Si falla la decodificación, usar el valor original
+          console.warn("Failed to decode catalogName, using raw value:", catalogNameRaw);
+          catalogNameStr = catalogNameRaw;
+        }
+        
         if (catalogNameStr) {
-          const category_id = res.filter(
-            (ct: Category) =>
-              ct.name.split(" ").join("-").toLowerCase() ===
-              catalogNameStr.toLowerCase()
-          )[0]?._id;
+          // Normalizar el nombre para comparar: convertir espacios a guiones y a minúsculas
+          const normalizedCatalogName = catalogNameStr.toLowerCase().trim();
+          
+          const category = res.find((ct: Category) => {
+            // Normalizar el nombre de la categoría de la misma manera
+            const normalizedCategoryName = ct.name
+              .split(" ")
+              .join("-")
+              .toLowerCase()
+              .trim();
+            
+            return normalizedCategoryName === normalizedCatalogName;
+          });
+          
+          if (!category) {
+            console.error("Category not found for catalogName:", catalogNameStr);
+            return;
+          }
+
+          // El backend PostgreSQL usa 'id' (UUID), pero mantenemos compatibilidad con '_id'
+          // Priorizar 'id' sobre '_id' ya que el backend usa UUIDs
+          const category_id = (category as any)?.id || category?._id;
+          
           if (category_id) {
+            // Validar que sea un UUID válido
+            if (!isValidUUID(category_id)) {
+              console.error(
+                "Invalid category ID format (expected UUID):", 
+                category_id, 
+                "for category:",
+                category.name
+              );
+              console.error("This looks like a MongoDB ObjectId. Make sure you're using IDs from the backend.");
+              return;
+            }
+            
+            console.log("Category ID found (UUID):", category_id, "for category:", category?.name);
             setCategoryId(category_id);
+          } else {
+            console.error("Category ID not found for catalogName:", catalogNameStr, "Category:", category);
           }
         }
       } catch (error) {
@@ -38,93 +91,38 @@ export const useCatalogData = () => {
     })();
   }, [catalogName]);
 
+  // Función para validar UUID (duplicada para uso en useEffect)
+  const isValidUUIDInEffect = (id: string): boolean => {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(id);
+  };
+
   // Fetch Catalog Page Data
   useEffect(() => {
     if (categoryId) {
+      // Validar formato UUID antes de hacer la petición
+      if (!isValidUUIDInEffect(categoryId)) {
+        console.error("Invalid category ID format (expected UUID):", categoryId);
+        setCatalogPageData(null);
+        setLoading(false);
+        return;
+      }
+
       (async () => {
         setLoading(true);
         try {
-          // Mock Data for Catalog
-          const mockCatalogData: CatalogPageData = {
-            selectedCategory: {
-              name: "Web Development",
-              description:
-                "Master the art of web development with our comprehensive courses.",
-              courses: [
-                {
-                  _id: "c1",
-                  courseName: "MERN Stack Bootcamp",
-                  price: 4999,
-                  thumbnail:
-                    "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/webdev_thumb.jpg",
-                  instructor: { firstName: "John", lastName: "Doe" },
-                  ratingAndReviews: [],
-                  studentsEnrolled: [],
-                },
-                {
-                  _id: "c2",
-                  courseName: "React Zero to Hero",
-                  price: 2999,
-                  thumbnail:
-                    "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/react_thumb.jpg",
-                  instructor: { firstName: "Jane", lastName: "Smith" },
-                  ratingAndReviews: [],
-                  studentsEnrolled: [],
-                },
-                {
-                  _id: "c3",
-                  courseName: "Node.js Advanced",
-                  price: 3499,
-                  thumbnail:
-                    "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/node_thumb.jpg",
-                  instructor: { firstName: "Mike", lastName: "Johnson" },
-                  ratingAndReviews: [],
-                  studentsEnrolled: [],
-                },
-              ],
-            },
-            differentCategory: {
-              name: "Python",
-              courses: [
-                {
-                  _id: "c4",
-                  courseName: "Python Masterclass",
-                  price: 1999,
-                  thumbnail:
-                    "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/python_thumb.jpg",
-                  instructor: { firstName: "Sarah", lastName: "Lee" },
-                  ratingAndReviews: [],
-                  studentsEnrolled: [],
-                },
-              ],
-            },
-            mostSellingCourses: [
-              {
-                _id: "c1",
-                courseName: "MERN Stack Bootcamp",
-                price: 4999,
-                thumbnail:
-                  "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/webdev_thumb.jpg",
-                instructor: { firstName: "John", lastName: "Doe" },
-                ratingAndReviews: [],
-                studentsEnrolled: [],
-              },
-              {
-                _id: "c5",
-                courseName: "Java DSA Upgrade",
-                price: 5999,
-                thumbnail:
-                  "https://res.cloudinary.com/ddxe5fa6y/image/upload/v1709405230/thumbnails/java_thumb.jpg",
-                instructor: { firstName: "David", lastName: "Brown" },
-                ratingAndReviews: [],
-                studentsEnrolled: [],
-              },
-            ],
-          };
-          // const res = await getCatalogPageData(categoryId)
-          setCatalogPageData(mockCatalogData);
+          const res = await getCatalogPageData(categoryId);
+          // Si res es null, significa que no hay cursos para esta categoría
+          // pero aún así queremos mostrar el estado vacío, así que no establecemos catalogPageData
+          if (res && typeof res === 'object' && 'selectedCategory' in res) {
+            setCatalogPageData(res as CatalogPageData);
+          } else {
+            // No hay datos, establecer a null para mostrar el estado vacío
+            setCatalogPageData(null);
+          }
         } catch (error) {
           console.error("Error fetching catalog page data:", error);
+          setCatalogPageData(null);
         }
         setLoading(false);
       })();

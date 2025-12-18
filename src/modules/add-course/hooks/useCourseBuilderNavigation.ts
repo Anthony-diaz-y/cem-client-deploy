@@ -16,16 +16,30 @@ export const useCourseBuilderNavigation = () => {
     if (!course) return;
 
     const courseData = course as Course;
-    if (courseData.courseContent.length === 0) {
+    
+    // Validar que courseContent existe y es un array
+    if (!courseData.courseContent || !Array.isArray(courseData.courseContent) || courseData.courseContent.length === 0) {
       toast.error("Please add atleast one section");
       return;
     }
-    if (
-      courseData.courseContent.some(
-        (section) => section.subSection.length === 0
-      )
-    ) {
-      toast.error("Please add atleast one lecture in each section");
+    
+    // Validar que cada sección tenga al menos una subsección
+    const sectionsWithoutLectures = courseData.courseContent.filter(
+      (section) => {
+        // Verificar que subSection existe, es un array y tiene al menos un elemento
+        const hasSubSections = section.subSection && 
+                              Array.isArray(section.subSection) && 
+                              section.subSection.length > 0;
+        if (!hasSubSections) {
+          console.log(`Section "${section.sectionName}" (ID: ${(section as any)?.id || section?._id}) has no lectures`);
+        }
+        return !hasSubSections;
+      }
+    );
+    
+    if (sectionsWithoutLectures.length > 0) {
+      console.log("Sections without lectures:", sectionsWithoutLectures);
+      toast.error(`Please add atleast one lecture in each section. ${sectionsWithoutLectures.length} section(s) without lectures.`);
       return;
     }
 

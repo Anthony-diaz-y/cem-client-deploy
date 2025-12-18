@@ -12,6 +12,7 @@ import { RootState } from "@shared/store/store";
 import { Course } from "../../course/types";
 import { PublishCourseFormData } from "../types";
 import IconBtn from "@shared/components/IconBtn";
+import toast from "react-hot-toast";
 
 export default function PublishCourse() {
   const { register, handleSubmit, setValue, getValues } =
@@ -58,7 +59,16 @@ export default function PublishCourse() {
       return;
     }
     const formData = new FormData();
-    formData.append("courseId", courseData._id);
+    // Obtener el ID del curso (priorizar 'id' sobre '_id' ya que PostgreSQL usa UUIDs con campo 'id')
+    const courseId = (courseData as any)?.id || courseData?._id;
+    
+    if (!courseId) {
+      toast.error("ID de curso no encontrado");
+      setLoading(false);
+      return;
+    }
+    
+    formData.append("courseId", courseId);
     const courseStatus = getValues("public")
       ? COURSE_STATUS.PUBLISHED
       : COURSE_STATUS.DRAFT;

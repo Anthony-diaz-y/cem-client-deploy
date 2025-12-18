@@ -62,7 +62,9 @@ const CourseHero: React.FC<CourseHeroProps> = ({
           </p>
           <p className="text-richblack-200">{courseDescription}</p>
           <div className="text-md flex flex-wrap items-center gap-2">
-            <span className="text-yellow-25">{avgReviewCount}</span>
+            <span className="text-yellow-25">
+              {avgReviewCount > 0 ? Math.max(0, Math.min(5, avgReviewCount)).toFixed(1) : "0"}
+            </span>
             <RatingStars Review_Count={avgReviewCount} Star_Size={24} />
             <span>{`(${ratingAndReviews.length} reviews)`}</span>
             <span>{`${studentsEnrolled.length} students enrolled`}</span>

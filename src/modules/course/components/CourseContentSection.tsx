@@ -3,6 +3,7 @@
 import React from "react";
 import CourseAccordionBar from "./CourseAccordionBar";
 import { CourseContentSectionProps } from "../types";
+import { formatTotalDuration } from "@shared/utils/durationHelper";
 
 /**
  * CourseContentSection - Section component for course content
@@ -29,7 +30,7 @@ const CourseContentSection: React.FC<CourseContentSectionProps> = ({
             <span>
               {totalNoOfLectures} {`lecture(s)`}
             </span>
-            <span>{response.data?.totalDuration} Total Time</span>
+            <span>{formatTotalDuration(response.data?.totalDuration)} Total Time</span>
           </div>
           <button className="text-yellow-25" onClick={onCollapseAll}>
             Collapse All Sections
