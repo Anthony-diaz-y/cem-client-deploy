@@ -14,6 +14,7 @@ export interface InstructorDataType {
 
 export interface Course {
   _id: string;
+  id?: string; // PostgreSQL UUID
   thumbnail: string;
   courseName: string;
   courseDescription: string;
@@ -24,6 +25,8 @@ export interface Course {
   totalStudentsEnrolled?: number;
   totalAmountGenerated?: number;
   studentsEnrolled?: string[]; // Array of student IDs
+  totalDuration?: string; // Duración total del curso (ej: "2h 30m" o "45m 30s")
+  totalLectures?: number; // Número total de lectures (subsecciones/videos)
 }
 
 export interface CoursesTableProps {

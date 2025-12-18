@@ -1,6 +1,7 @@
 // Demo mode helper - Auto-setup user data for demo purposes
+// NOTA: Este archivo solo se usa cuando MOCK_MODE está activado
+// Cuando MOCK_MODE = false, estas funciones no se ejecutan
 import { MOCK_MODE } from "../services/apiConnector";
-import { mockUserData } from "./mockData";
 
 /**
  * Initialize demo user data in localStorage
@@ -8,17 +9,9 @@ import { mockUserData } from "./mockData";
  */
 export const initializeDemoUser = (userType = "Student") => {
   if (!MOCK_MODE || typeof window === "undefined") return;
-
-  const userData =
-    userType === "Instructor" ? mockUserData.instructor : mockUserData.student;
-
-  // Set token
-  localStorage.setItem("token", JSON.stringify("demo-token-" + Date.now()));
-
-  // Set user data
-  localStorage.setItem("user", JSON.stringify(userData));
-
-  console.log(`🎭 Demo mode initialized as ${userType}:`, userData);
+  // Esta función solo funciona en modo demo/MOCK
+  // Cuando MOCK_MODE = false, no hace nada
+  console.log(`🎭 Demo mode disabled - use real backend login instead`);
 };
 
 /**

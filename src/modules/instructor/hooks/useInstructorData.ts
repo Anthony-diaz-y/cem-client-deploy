@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { InstructorDataType, Course } from "../types";
+import { getInstructorData } from "@shared/services/profileAPI";
+import { fetchInstructorCourses } from "@shared/services/courseDetailsAPI";
 
 /**
  * Custom hook to fetch and manage instructor data
@@ -15,83 +17,41 @@ export const useInstructorData = () => {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      // const instructorApiData = await getInstructorData(token)
-      // const result = await fetchInstructorCourses(token)
+      try {
+        // Obtener token del localStorage
+        let token: string | null = null;
+        if (typeof window !== 'undefined') {
+          const tokenStr = localStorage.getItem('token');
+          if (tokenStr) {
+            try {
+              token = JSON.parse(tokenStr);
+            } catch {
+              token = tokenStr;
+            }
+          }
+        }
 
-      // --- MOCK DATA FOR DEMO PURPOSES ---
-      const mockInstructorData: InstructorDataType[] = [
-        {
-          _id: "1",
-          courseName: "Curso Profesional de React",
-          courseDescription: "Domina React desde cero hasta experto",
-          totalStudentsEnrolled: 120,
-          totalAmountGenerated: 12000,
-        },
-        {
-          _id: "2",
-          courseName: "Backend con Node.js",
-          courseDescription: "Construye APIs escalables",
-          totalStudentsEnrolled: 85,
-          totalAmountGenerated: 8500,
-        },
-        {
-          _id: "3",
-          courseName: "Diseño UX/UI Moderno",
-          courseDescription: "Principios de diseño para desarrolladores",
-          totalStudentsEnrolled: 200,
-          totalAmountGenerated: 5000,
-        },
-      ];
+        if (!token) {
+          console.error("No token found");
+          setLoading(false);
+          return;
+        }
 
-      const mockCourses: Course[] = [
-        {
-          _id: "1",
-          courseName: "Curso Profesional de React",
-          courseDescription: "Domina React desde cero hasta experto",
-          thumbnail:
-            "https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg",
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          studentsEnrolled: Array.from(
-            { length: 120 },
-            (_, i) => `student${i}`
-          ),
-          price: 100,
-          status: "Published",
-        },
-        {
-          _id: "2",
-          courseName: "Backend con Node.js",
-          courseDescription: "Construye APIs escalables",
-          thumbnail:
-            "https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg",
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          studentsEnrolled: Array.from({ length: 85 }, (_, i) => `student${i}`),
-          price: 100,
-          status: "Published",
-        },
-        {
-          _id: "3",
-          courseName: "Diseño UX/UI Moderno",
-          courseDescription: "Principios de diseño para desarrolladores",
-          thumbnail:
-            "https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg",
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          studentsEnrolled: Array.from(
-            { length: 200 },
-            (_, i) => `student${i}`
-          ),
-          price: 25,
-          status: "Draft",
-        },
-      ];
-      // -----------------------------------
+        // Obtener datos del instructor y cursos
+        const [instructorApiData, instructorCourses] = await Promise.all([
+          getInstructorData(token),
+          fetchInstructorCourses(token),
+        ]);
 
-      if (mockInstructorData?.length) setInstructorData(mockInstructorData);
-      if (mockCourses) {
-        setCourses(mockCourses);
+        if (instructorApiData && Array.isArray(instructorApiData) && instructorApiData.length > 0) {
+          setInstructorData(instructorApiData as InstructorDataType[]);
+        }
+
+        if (instructorCourses && Array.isArray(instructorCourses)) {
+          setCourses(instructorCourses as Course[]);
+        }
+      } catch (error) {
+        console.error("Error fetching instructor data:", error);
       }
       setLoading(false);
     })();

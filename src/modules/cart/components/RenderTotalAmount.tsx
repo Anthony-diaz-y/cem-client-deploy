@@ -15,7 +15,7 @@ export default function RenderTotalAmount() {
   const dispatch = useDispatch();
 
   const handleBuyCourse = async () => {
-    const courses = cart.map((course) => course._id);
+    const courses = cart.map((course) => (course as any)?.id || course._id).filter(Boolean);
     await buyCourse(token, courses, user, router.push, dispatch);
   };
 

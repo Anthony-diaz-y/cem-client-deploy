@@ -99,7 +99,8 @@ export interface Category {
 
 // Cart Types
 export interface CartItem {
-  _id: string;
+  id?: string;  // UUID del backend PostgreSQL
+  _id?: string; // Mantener compatibilidad si se usa
   courseName: string;
   price: number;
   thumbnail: string;

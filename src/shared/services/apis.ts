@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:4000/api/v1';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
 // AUTH ENDPOINTS
 export const endpoints = {
@@ -28,7 +28,7 @@ export const courseEndpoints = {
   GET_ALL_COURSE_API: BASE_URL + "/course/getAllCourses",
   COURSE_DETAILS_API: BASE_URL + "/course/getCourseDetails",
   EDIT_COURSE_API: BASE_URL + "/course/editCourse",
-  COURSE_CATEGORIES_API: BASE_URL + "/course/showAllCategories",
+  COURSE_CATEGORIES_API: BASE_URL + "/category/showAllCategories",
   CREATE_COURSE_API: BASE_URL + "/course/createCourse",
   CREATE_SECTION_API: BASE_URL + "/course/addSection",
   CREATE_SUBSECTION_API: BASE_URL + "/course/addSubSection",
@@ -50,12 +50,12 @@ export const ratingsEndpoints = {
 
 // CATAGORIES API
 export const categories = {
-  CATEGORIES_API: BASE_URL + "/course/showAllCategories",
+  CATEGORIES_API: BASE_URL + "/category/showAllCategories",
 }
 
 // CATALOG PAGE DATA
 export const catalogData = {
-  CATALOGPAGEDATA_API: BASE_URL + "/course/getCategoryPageDetails",
+  CATALOGPAGEDATA_API: BASE_URL + "/category/getCategoryPageDetails",
 }
 // CONTACT-US API
 export const contactusEndpoint = {

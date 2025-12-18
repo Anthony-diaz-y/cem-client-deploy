@@ -41,17 +41,26 @@ export default function CoursesTable({
 
   // delete course
   const handleCourseDelete = async (courseId: string) => {
-    setLoading(true);
-    const toastId = toast.loading("Deleting...");
-    await deleteCourse({ courseId: courseId }, token);
-    const result = await fetchInstructorCourses(token);
-    if (result) {
-      setCourses(result);
+    if (!courseId) {
+      toast.error("Course ID is missing");
+      return;
     }
-    setConfirmationModal(null);
-    setLoading(false);
-    toast.dismiss(toastId);
-    // console.log("All Course ", courses)
+    
+    setLoading(true);
+    try {
+      await deleteCourse({ courseId: courseId }, token);
+      // Solo refrescar la lista si la eliminación fue exitosa
+      const result = await fetchInstructorCourses(token);
+      if (result) {
+        setCourses(result);
+      }
+      setConfirmationModal(null);
+    } catch (error) {
+      console.error("Error deleting course:", error);
+      // El error ya se maneja en deleteCourse con toast
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Loading Skeleton
@@ -86,6 +95,9 @@ export default function CoursesTable({
               Duration
             </Th>
             <Th className="text-left text-sm font-medium uppercase text-richblack-100">
+              Lectures
+            </Th>
+            <Th className="text-left text-sm font-medium uppercase text-richblack-100">
               Price
             </Th>
             <Th className="text-left text-sm font-medium uppercase text-richblack-100">
@@ -99,28 +111,32 @@ export default function CoursesTable({
           {loading ? (
             <>
               <Tr>
-                <Td colSpan={4}>{skItem()}</Td>
+                <Td colSpan={5}>{skItem()}</Td>
               </Tr>
               <Tr>
-                <Td colSpan={4}>{skItem()}</Td>
+                <Td colSpan={5}>{skItem()}</Td>
               </Tr>
               <Tr>
-                <Td colSpan={4}>{skItem()}</Td>
+                <Td colSpan={5}>{skItem()}</Td>
               </Tr>
             </>
           ) : courses?.length === 0 ? (
             <Tr>
               <Td
                 className="py-10 text-center text-2xl font-medium text-richblack-100"
-                colSpan={4}
+                colSpan={5}
               >
                 No courses found
               </Td>
             </Tr>
           ) : (
-            courses?.map((course) => (
+            courses?.map((course, index) => {
+              // Obtener el ID del curso (priorizar 'id' sobre '_id' ya que PostgreSQL usa UUIDs con campo 'id')
+              const courseId = (course as any)?.id || course?._id || `course-${index}`;
+              
+              return (
               <Tr
-                key={course._id}
+                key={courseId}
                 className="flex gap-x-10 border-b border-richblack-800 px-6 py-8"
               >
                 <Td className="flex flex-1 gap-x-4 relative">
@@ -174,8 +190,20 @@ export default function CoursesTable({
 
                 {/* course duration */}
                 <Td className="text-sm font-medium text-richblack-100">
-                  2hr 30min
+                  {course.totalDuration && course.totalDuration !== '0h 0m' && course.totalDuration !== '0m 0s' ? (
+                    <span className="text-richblack-5">{course.totalDuration}</span>
+                  ) : (
+                    <span className="text-richblack-400">N/A</span>
+                  )}
                 </Td>
+                
+                {/* course lectures */}
+                <Td className="text-sm font-medium text-richblack-100">
+                  <span className="text-richblack-5">
+                    {course.totalLectures || 0} {course.totalLectures === 1 ? 'lecture' : 'lectures'}
+                  </span>
+                </Td>
+                
                 <Td className="text-sm font-medium text-richblack-100">
                   ₹{course.price}
                 </Td>
@@ -185,7 +213,7 @@ export default function CoursesTable({
                   <button
                     disabled={loading}
                     onClick={() => {
-                      router.push(`/dashboard/edit-course/${course._id}`);
+                      router.push(`/dashboard/edit-course/${courseId}`);
                     }}
                     title="Edit"
                     className="px-2 transition-all duration-200 hover:scale-110 hover:text-caribbeangreen-300"
@@ -204,7 +232,7 @@ export default function CoursesTable({
                         btn1Text: !loading ? "Delete" : "Loading...  ",
                         btn2Text: "Cancel",
                         btn1Handler: !loading
-                          ? () => handleCourseDelete(course._id)
+                          ? () => handleCourseDelete(courseId)
                           : () => {},
                         btn2Handler: !loading
                           ? () => setConfirmationModal(null)
@@ -218,7 +246,8 @@ export default function CoursesTable({
                   </button>
                 </Td>
               </Tr>
-            ))
+              );
+            })
           )}
         </Tbody>
       </Table>

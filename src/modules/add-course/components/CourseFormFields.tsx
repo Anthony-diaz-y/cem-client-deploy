@@ -101,11 +101,17 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
             Choose a Category
           </option>
           {!loading &&
-            courseCategories?.map((category, indx) => (
-              <option key={indx} value={category?._id}>
-                {category?.name}
-              </option>
-            ))}
+            courseCategories?.map((category, indx) => {
+              // Obtener el ID del curso (priorizar 'id' sobre '_id' ya que PostgreSQL usa UUIDs con campo 'id')
+              const categoryId = (category as any)?.id || category?._id;
+              if (!categoryId) return null; // No renderizar si no hay ID válido
+              
+              return (
+                <option key={indx} value={categoryId}>
+                  {category?.name}
+                </option>
+              );
+            })}
         </select>
         {errors.courseCategory && (
           <span className="ml-2 text-xs tracking-wide text-pink-200">

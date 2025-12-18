@@ -54,7 +54,7 @@ export default function CourseAccordionBar({
           </div>
           <div className="space-x-4">
             <span className="text-yellow-25">
-              {`${course.subSection.length || 0} lecture(s)`}
+              {`${course?.subSection && Array.isArray(course.subSection) ? course.subSection.length : 0} lecture(s)`}
             </span>
           </div>
         </div>
@@ -66,9 +66,11 @@ export default function CourseAccordionBar({
         style={{ height: sectionHeight }}
       >
         <div className="text-textHead flex flex-col gap-2 px-7 py-6 font-semibold">
-          {course?.subSection?.map((subSec, i) => {
-            return <CourseSubSectionAccordion subSec={subSec} key={i} />;
-          })}
+          {course?.subSection && Array.isArray(course.subSection) 
+            ? course.subSection.map((subSec, i) => {
+                return <CourseSubSectionAccordion subSec={subSec} key={i} />;
+              })
+            : null}
         </div>
       </div>
     </div>

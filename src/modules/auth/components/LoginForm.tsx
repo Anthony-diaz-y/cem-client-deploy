@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 
 import { login } from "@shared/services/authAPI";
 import { AppDispatch } from "@shared/store/store";
-import { ACCOUNT_TYPE } from "@shared/utils/constants";
 
 function LoginForm() {
   const router = useRouter();
@@ -20,11 +19,6 @@ function LoginForm() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  
-  // ========== TEMPORAL: Selector de tipo de cuenta para login rápido ==========
-  // TODO: ELIMINAR ESTE CÓDIGO TEMPORAL DESPUÉS
-  const [accountType, setAccountType] = useState<"Student" | "Instructor" | "Admin">(ACCOUNT_TYPE.STUDENT);
-  // ============================================================================
 
   const { email, password } = formData;
 
@@ -37,10 +31,7 @@ function LoginForm() {
 
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // ========== TEMPORAL: Pasar accountType al login ==========
-    // TODO: ELIMINAR ESTE CÓDIGO TEMPORAL DESPUÉS
-    dispatch(login(email, password, router.push as (path: string) => void, accountType));
-    // ============================================================
+    dispatch(login(email, password, router.push as (path: string) => void));
   };
 
   return (
@@ -48,50 +39,6 @@ function LoginForm() {
       onSubmit={handleOnSubmit}
       className="mt-6 flex w-full flex-col gap-y-4"
     >
-      {/* ========== TEMPORAL: Selector de tipo de cuenta ========== */}
-      {/* TODO: ELIMINAR ESTE CÓDIGO TEMPORAL DESPUÉS */}
-      <div className="mb-4 p-3 bg-yellow-900/20 border border-yellow-500/30 rounded-lg">
-        <p className="mb-2 text-[0.875rem] text-yellow-200 font-semibold">
-          🔧 MODO TEMPORAL - Login con cualquier correo
-        </p>
-        <div className="flex gap-4 flex-wrap">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              name="accountType"
-              value={ACCOUNT_TYPE.STUDENT}
-              checked={accountType === ACCOUNT_TYPE.STUDENT}
-              onChange={(e) => setAccountType(e.target.value as "Student" | "Instructor" | "Admin")}
-              className="w-4 h-4"
-            />
-            <span className="text-richblack-5 text-sm">Estudiante</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              name="accountType"
-              value={ACCOUNT_TYPE.INSTRUCTOR}
-              checked={accountType === ACCOUNT_TYPE.INSTRUCTOR}
-              onChange={(e) => setAccountType(e.target.value as "Student" | "Instructor" | "Admin")}
-              className="w-4 h-4"
-            />
-            <span className="text-richblack-5 text-sm">Instructor</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              name="accountType"
-              value={ACCOUNT_TYPE.ADMIN}
-              checked={accountType === ACCOUNT_TYPE.ADMIN}
-              onChange={(e) => setAccountType(e.target.value as "Student" | "Instructor" | "Admin")}
-              className="w-4 h-4"
-            />
-            <span className="text-richblack-5 text-sm">Administrador</span>
-          </label>
-        </div>
-      </div>
-      {/* ============================================================ */}
-
       <label className="w-full">
         <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-richblack-5">
           Email Address <sup className="text-pink-200">*</sup>
