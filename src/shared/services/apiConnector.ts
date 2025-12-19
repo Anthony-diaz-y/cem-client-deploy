@@ -1,9 +1,8 @@
 import axios from "axios";
+import { API_URL } from "@/shared/config/api.config";
 
 // Flag to enable/disable mock mode - DESACTIVADO para usar backend real
 export const MOCK_MODE = false;
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
 export const axiosInstance = axios.create({
   baseURL: API_URL,
