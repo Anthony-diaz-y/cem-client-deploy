@@ -155,7 +155,7 @@ export default function RenderTotalAmount() {
   // Formatear el total correctamente
   const formattedTotal = typeof finalTotal === 'number' 
     ? finalTotal.toFixed(2) 
-    : parseFloat(finalTotal?.toString() || '0').toFixed(2);
+    : (typeof finalTotal === 'string' ? parseFloat(finalTotal).toFixed(2) : '0.00');
 
   return (
     <div className="min-w-[280px] rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-6">

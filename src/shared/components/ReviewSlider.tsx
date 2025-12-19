@@ -132,7 +132,9 @@ function ReviewSlider() {
                       {review.rating}
                     </h3>
                     <StarRating
-                      rating={typeof review.rating === 'number' ? review.rating : parseFloat(review.rating.toString())}
+                      rating={typeof review.rating === 'number' 
+                        ? review.rating 
+                        : (typeof review.rating === 'string' ? parseFloat(review.rating) : 0)}
                       readonly={true}
                       starSize={20}
                     />

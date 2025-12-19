@@ -57,7 +57,7 @@ const cartSlice = createSlice({
       // Asegurar que el precio sea un número válido
       const coursePrice = typeof course.price === 'number' 
         ? course.price 
-        : parseFloat(course.price?.toString() || '0') || 0;
+        : (typeof course.price === 'string' ? parseFloat(course.price) : 0);
       state.total = (state.total || 0) + coursePrice;
       // Update to localstorage
       if (typeof window !== "undefined") {
@@ -82,7 +82,7 @@ const cartSlice = createSlice({
         // Asegurar que el precio sea un número válido
         const coursePrice = typeof state.cart[index].price === 'number'
           ? state.cart[index].price
-          : parseFloat(state.cart[index].price?.toString() || '0') || 0;
+          : (typeof state.cart[index].price === 'string' ? parseFloat(state.cart[index].price) : 0);
         state.total = Math.max(0, (state.total || 0) - coursePrice);
         state.cart.splice(index, 1);
         // Update to localstorage
