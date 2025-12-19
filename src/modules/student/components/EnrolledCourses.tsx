@@ -2,48 +2,99 @@
 
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import ProgressBar from "@ramonak/react-progress-bar";
 import { useRouter } from "next/navigation";
-
-import Img from "@shared/components/Img";
+import { HiBookOpen } from "react-icons/hi2";
+import ProgressBar from "@shared/components/ProgressBar";
 import { Course } from "../types";
 import { RootState } from "@shared/store/store";
 import { getUserEnrolledCourses } from "@shared/services/profileAPI";
 import { getFullDetailsOfCourse } from "@shared/services/courseDetailsAPI";
 import { formatTotalDuration } from "@shared/utils/durationHelper";
 
+// Componente para la imagen pequeña del curso con placeholder
+const CourseThumbnailSmall: React.FC<{ thumbnail?: string; courseName?: string }> = ({ thumbnail, courseName }) => {
+  const [imageError, setImageError] = useState(!thumbnail);
+
+  if (!thumbnail || imageError) {
+    return (
+      <div className="h-14 w-14 rounded-lg overflow-hidden bg-richblack-900 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-richblack-800 to-richblack-900 text-richblack-400">
+        <HiBookOpen size={20} className="opacity-60" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="h-14 w-14 rounded-lg overflow-hidden bg-richblack-900 relative flex-shrink-0">
+      <img
+        src={thumbnail}
+        alt={courseName || "course_img"}
+        className="absolute inset-0 w-full h-full object-cover"
+        onError={() => setImageError(true)}
+      />
+    </div>
+  );
+};
+
 export default function EnrolledCourses() {
   const router = useRouter();
   const { token } = useSelector((state: RootState) => state.auth);
   const [enrolledCourses, setEnrolledCourses] = useState<Course[] | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Función para obtener cursos inscritos
+  const getEnrolledCourses = async () => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await getUserEnrolledCourses(token);
+      
+      console.log("Enrolled courses response:", res);
+      console.log("Number of courses:", res?.length);
+      
+      if (res && Array.isArray(res)) {
+        setEnrolledCourses(res);
+      } else {
+        setEnrolledCourses([]);
+      }
+    } catch (error) {
+      console.error("Could not fetch enrolled courses.", error);
+      setEnrolledCourses([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // fetch all users enrolled courses
-    const getEnrolledCourses = async () => {
-      if (!token) {
-        setLoading(false);
-        return;
-      }
+    getEnrolledCourses();
+  }, [token, refreshKey]);
 
-      try {
-        setLoading(true);
-        const res = await getUserEnrolledCourses(token);
-        
-        if (res && Array.isArray(res)) {
-          setEnrolledCourses(res);
-        } else {
-          setEnrolledCourses([]);
-        }
-      } catch (error) {
-        console.log("Could not fetch enrolled courses.", error);
-        setEnrolledCourses([]);
-      } finally {
-        setLoading(false);
+  // Recargar cursos cuando la página recibe foco (útil después de comprar)
+  useEffect(() => {
+    const handleFocus = () => {
+      if (token) {
+        // Solo recargar si la página ha estado oculta por un tiempo
+        setRefreshKey(prev => prev + 1);
       }
     };
 
-    getEnrolledCourses();
+    // Escuchar evento personalizado para recargar cursos después de compra
+    const handleCoursePurchased = () => {
+      console.log("Evento de compra detectado, recargando cursos...");
+      setRefreshKey(prev => prev + 1);
+    };
+
+    window.addEventListener('focus', handleFocus);
+    window.addEventListener('coursePurchased', handleCoursePurchased as EventListener);
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('coursePurchased', handleCoursePurchased as EventListener);
+    };
   }, [token]);
 
   // Loading Skeleton
@@ -175,11 +226,8 @@ export default function EnrolledCourses() {
                   }
                 }}
               >
-                <Img
-                  src={course.thumbnail}
-                  alt="course_img"
-                  className="h-14 w-14 rounded-lg object-cover"
-                />
+                {/* Imagen del curso - tamaño fijo y consistente */}
+                <CourseThumbnailSmall thumbnail={course.thumbnail} courseName={course.courseName} />
 
                 <div className="flex max-w-xs flex-col gap-2">
                   <p className="font-semibold">{course.courseName}</p>

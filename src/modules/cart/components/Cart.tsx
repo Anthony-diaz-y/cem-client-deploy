@@ -5,7 +5,10 @@ import RenderTotalAmount from "./RenderTotalAmount";
 import { RootState } from "@shared/store/store";
 
 export default function Cart() {
-  const { total, totalItems } = useSelector((state: RootState) => state.cart);
+  const { total, totalItems, cart } = useSelector((state: RootState) => state.cart);
+
+  // Verificar si hay cursos en el carrito basándose en el array cart, no solo en total
+  const hasCourses = cart && cart.length > 0;
 
   return (
     <>
@@ -13,9 +16,9 @@ export default function Cart() {
         Cart
       </h1>
       <p className="border-b border-b-richblack-400 pb-2 font-semibold text-richblack-400">
-        {totalItems} Courses in Cart
+        {totalItems} {totalItems === 1 ? 'Course' : 'Courses'} in Cart
       </p>
-      {total > 0 ? (
+      {hasCourses ? (
         <div className="mt-8 flex flex-col-reverse items-start gap-x-10 gap-y-6 lg:flex-row">
           <RenderCartCourses />
           <RenderTotalAmount />

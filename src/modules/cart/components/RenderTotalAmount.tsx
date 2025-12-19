@@ -26,6 +26,8 @@ export default function RenderTotalAmount() {
     dispatch(setPaymentLoading(true));
 
     try {
+      console.log("Enviando cursos al backend:", coursesId);
+      
       const response = await apiConnector(
         "POST",
         studentEndpoints.BUY_NOW_TEMPORARY_API,
@@ -34,6 +36,8 @@ export default function RenderTotalAmount() {
           Authorization: `Bearer ${token}`,
         }
       );
+
+      console.log("Respuesta del backend:", response.data);
 
       if (!response.data.success) {
         throw new Error(response.data.message || "No se pudieron inscribir los cursos");
@@ -55,8 +59,25 @@ export default function RenderTotalAmount() {
         });
       }
 
-      router.push("/dashboard/enrolled-courses");
+      // Limpiar el carrito antes de redirigir
       dispatch(resetCart());
+      
+      // Disparar evento personalizado para notificar que se compraron cursos
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('coursePurchased'));
+      }
+      
+      // Pequeño delay para asegurar que el backend procese la inscripción
+      setTimeout(() => {
+        router.push("/dashboard/enrolled-courses");
+        // Forzar recarga completa después de navegar para asegurar que se carguen los nuevos cursos
+        setTimeout(() => {
+          if (typeof window !== 'undefined') {
+            // Recargar la página para asegurar que se muestren los nuevos cursos
+            window.location.reload();
+          }
+        }, 2000);
+      }, 800);
     } catch (error: any) {
       console.log("ERROR AL INSCRIBIR A LOS CURSOS (TEMPORAL)....", error);
       const errorMessage =
@@ -87,7 +108,14 @@ export default function RenderTotalAmount() {
   };
 
   const handleBuyCourse = async () => {
-    const courses = cart.map((course) => (course as any)?.id || course._id).filter(Boolean);
+    // Normalizar los IDs de los cursos (priorizar 'id' sobre '_id')
+    const courses = cart.map((course) => {
+      const courseId = (course as any)?.id || course?._id;
+      return courseId ? String(courseId) : null;
+    }).filter(Boolean) as string[];
+    
+    console.log("Cursos a comprar:", courses);
+    console.log("Cart completo:", cart);
     
     if (courses.length === 0) {
       toast.error("No hay cursos en el carrito");
@@ -113,10 +141,26 @@ export default function RenderTotalAmount() {
     // await buyCourse(token, courses, user, router.push, dispatch);
   };
 
+  // Calcular el total sumando todos los precios del carrito (más confiable que el estado total)
+  const calculatedTotal = cart.reduce((sum, course) => {
+    const coursePrice = typeof course.price === 'number' 
+      ? course.price 
+      : parseFloat(course.price?.toString() || '0') || 0;
+    return sum + coursePrice;
+  }, 0);
+
+  // Usar el total calculado o el del estado (el calculado tiene prioridad)
+  const finalTotal = calculatedTotal > 0 ? calculatedTotal : (total || 0);
+  
+  // Formatear el total correctamente
+  const formattedTotal = typeof finalTotal === 'number' 
+    ? finalTotal.toFixed(2) 
+    : parseFloat(finalTotal?.toString() || '0').toFixed(2);
+
   return (
     <div className="min-w-[280px] rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-6">
       <p className="mb-1 text-sm font-medium text-richblack-300">Total:</p>
-      <p className="mb-6 text-3xl font-medium text-yellow-100">₹ {total}</p>
+      <p className="mb-6 text-3xl font-medium text-yellow-100">₹ {formattedTotal}</p>
       <IconBtn
         text="Buy Now"
         onclick={handleBuyCourse}

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import ReactStars from "react-rating-stars-component";
 import Img from "./Img";
+import StarRating from "./StarRating";
 
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -11,8 +11,6 @@ import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
 
-// Icons
-import { FaStar } from "react-icons/fa";
 
 // Get apiFunction and the endpoint
 import { apiConnector } from "../services/apiConnector";
@@ -133,14 +131,10 @@ function ReviewSlider() {
                       {/* {isNaN(review.rating) ? "N/A" : review.rating.toFixed(1)} */}
                       {review.rating}
                     </h3>
-                    <ReactStars
-                      count={5}
-                      value={typeof review.rating === 'number' ? review.rating : parseFloat(review.rating.toString())}
-                      size={20}
-                      edit={false}
-                      activeColor="#ffd700"
-                      emptyIcon={<FaStar />}
-                      fullIcon={<FaStar />}
+                    <StarRating
+                      rating={typeof review.rating === 'number' ? review.rating : parseFloat(review.rating.toString())}
+                      readonly={true}
+                      starSize={20}
                     />
                   </div>
                 </div>
