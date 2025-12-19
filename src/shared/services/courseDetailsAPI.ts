@@ -179,7 +179,7 @@ export const addCourseDetails = async (data: Record<string, unknown>, token: str
 
 
 // ================ edit Course Details ================
-export const editCourseDetails = async (data: Record<string, unknown>, token: string) => {
+export const editCourseDetails = async (data: FormData | Record<string, unknown>, token: string) => {
   let result = null
   const toastId = toast.loading("Loading...")
 
