@@ -130,13 +130,14 @@ export default function SubSectionModal({
     }
     
     // Para el video, solo incluir si ha cambiado (es un File object o URL diferente)
-    if (currentValues.lectureVideo && currentValues.lectureVideo !== subSectionData.videoUrl) {
+    const lectureVideo = currentValues.lectureVideo;
+    if (lectureVideo && lectureVideo !== subSectionData.videoUrl) {
       // Si es un archivo (File object), agregarlo directamente
-      if (currentValues.lectureVideo instanceof File) {
-        formData.append("video", currentValues.lectureVideo);
-      } else if (typeof currentValues.lectureVideo === 'string' && currentValues.lectureVideo.trim()) {
+      if (lectureVideo instanceof File) {
+        formData.append("video", lectureVideo);
+      } else if (typeof lectureVideo === 'string' && lectureVideo.trim()) {
         // Si es una URL string diferente, agregarla
-        formData.append("video", currentValues.lectureVideo.trim());
+        formData.append("video", lectureVideo.trim());
       }
     }
     setLoading(true);
