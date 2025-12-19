@@ -101,7 +101,7 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
       ) : (
         <>
           <div className="space-y-5">
-            {reviews.map((review) => (
+            {reviews.map((review: Review) => (
               <div 
                 key={review.id} 
                 className="bg-richblack-800 p-6 rounded-xl border border-richblack-600 hover:border-richblack-500 transition-colors"

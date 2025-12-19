@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { Section } from "../types";
+import { Section, SubSection } from "../types";
 
 /**
  * Custom hook for sidebar state management
@@ -22,7 +22,7 @@ export const useSidebarState = (courseSectionData: Section[]) => {
     );
     const currentSubSectionIndx = courseSectionData?.[
       currentSectionIndx
-    ]?.subSection.findIndex((data) => data._id === subSectionId);
+    ]?.subSection.findIndex((data: SubSection) => data._id === subSectionId);
     const activeSubSectionId =
       courseSectionData[currentSectionIndx]?.subSection?.[currentSubSectionIndx]
         ?._id;

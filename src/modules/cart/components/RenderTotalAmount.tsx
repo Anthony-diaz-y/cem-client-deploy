@@ -11,6 +11,7 @@ import { apiConnector } from "@shared/services/apiConnector";
 import { studentEndpoints } from "@shared/services/apis";
 import { setPaymentLoading } from "@modules/course/store/courseSlice";
 import { resetCart } from "@modules/course/store/cartSlice";
+import { CartItem } from "@modules/course/types";
 
 export default function RenderTotalAmount() {
   const { total, cart } = useSelector((state: RootState) => state.cart);
