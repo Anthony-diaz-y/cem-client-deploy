@@ -66,22 +66,22 @@ const CourseHero: React.FC<CourseHeroProps> = ({
               {avgReviewCount > 0 ? Math.max(0, Math.min(5, avgReviewCount)).toFixed(1) : "0"}
             </span>
             <RatingStars Review_Count={avgReviewCount} Star_Size={24} />
-            <span>{`(${ratingAndReviews.length} reviews)`}</span>
-            <span>{`${studentsEnrolled.length} students enrolled`}</span>
+            <span>{`(${ratingAndReviews.length} ${ratingAndReviews.length === 1 ? 'reseña' : 'reseñas'})`}</span>
+            <span>{`${studentsEnrolled.length} ${studentsEnrolled.length === 1 ? 'estudiante inscrito' : 'estudiantes inscritos'}`}</span>
           </div>
           <p className="capitalize">
             {" "}
-            Created By{" "}
+            Creado por{" "}
             <span className="font-semibold underline">
               {instructor.firstName} {instructor.lastName}
             </span>
           </p>
           <div className="flex flex-wrap gap-5 text-lg">
             <p className="flex items-center gap-2">
-              <BiInfoCircle /> Created at {formatDate(createdAt)}
+              <BiInfoCircle /> Creado el {formatDate(createdAt)}
             </p>
             <p className="flex items-center gap-2">
-              <HiOutlineGlobeAlt /> English
+              <HiOutlineGlobeAlt /> Español
             </p>
           </div>
         </div>
@@ -92,10 +92,10 @@ const CourseHero: React.FC<CourseHeroProps> = ({
             Rs. {price}
           </p>
           <button className="yellowButton" onClick={onBuyCourse}>
-            Buy Now
+            Comprar Ahora
           </button>
           <button onClick={onAddToCart} className="blackButton">
-            Add to Cart
+            Agregar al Carrito
           </button>
         </div>
       </div>

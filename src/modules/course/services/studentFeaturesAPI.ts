@@ -47,7 +47,7 @@ export async function buyCourse(
   navigate: (path: string) => void,
   dispatch: Dispatch
 ) {
-  const toastId = toast.loading("Loading...");
+  const toastId = toast.loading("Cargando...");
 
   try {
     //load the script
@@ -56,7 +56,7 @@ export async function buyCourse(
     );
 
     if (!res) {
-      toast.error("RazorPay SDK failed to load");
+      toast.error("No se pudo cargar el SDK de RazorPay");
       return;
     }
 
@@ -84,7 +84,7 @@ export async function buyCourse(
       amount: orderResponse.data.message.amount,
       order_id: orderResponse.data.message.id,
       name: "StudyNotion",
-      description: "Thank You for Purchasing the Course",
+      description: "Gracias por comprar el curso",
       image: typeof rzpLogo === "string" ? rzpLogo : rzpLogo.src,
       prefill: {
         name: userDetails.firstName,
@@ -105,13 +105,13 @@ export async function buyCourse(
     const paymentObject = new window.Razorpay(options);
     paymentObject.open();
     paymentObject.on("payment.failed", function (response) {
-      toast.error("oops, payment failed");
+      toast.error("Oops, el pago falló");
       console.log("payment failed.... ", response.error);
     });
   } catch (error) {
     const apiError = error as ApiError;
     console.log("PAYMENT API ERROR.....", apiError);
-    toast.error(apiError.response?.data?.message || "Could not make Payment");
+    toast.error(apiError.response?.data?.message || "No se pudo realizar el pago");
   }
   toast.dismiss(toastId);
 }
@@ -148,7 +148,7 @@ async function verifyPayment(
   navigate: (path: string) => void,
   dispatch: Dispatch
 ) {
-  const toastId = toast.loading("Verifying Payment....");
+  const toastId = toast.loading("Verificando pago...");
   dispatch(setPaymentLoading(true));
 
   try {
@@ -159,13 +159,13 @@ async function verifyPayment(
     if (!response.data.success) {
       throw new Error(response.data.message);
     }
-    toast.success("payment Successful, you are addded to the course");
+    toast.success("Pago exitoso, has sido agregado al curso");
     navigate("/dashboard/enrolled-courses");
     dispatch(resetCart());
   } catch (error) {
     const apiError = error as ApiError;
     console.log("PAYMENT VERIFY ERROR....", apiError);
-    toast.error(apiError.response?.data?.message || "Could not verify Payment");
+    toast.error(apiError.response?.data?.message || "No se pudo verificar el pago");
   }
   toast.dismiss(toastId);
   dispatch(setPaymentLoading(false));

@@ -14,11 +14,11 @@ const CourseAuthorSection: React.FC<CourseAuthorSectionProps> = ({
 }) => {
   return (
     <div className="mb-12 py-4">
-      <p className="text-[28px] font-semibold">Author</p>
+      <p className="text-[28px] font-semibold">Autor</p>
       <div className="flex items-center gap-4 py-4">
         <Img
           src={instructor.image || ""}
-          alt="Author"
+          alt="Autor"
           className="h-14 w-14 rounded-full object-cover"
         />
         <div>

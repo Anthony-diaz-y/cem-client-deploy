@@ -20,3 +20,22 @@ export const formatDate = (dateString: string | null | undefined): string | null
   // return `${formattedDate} | ${formattedTime}`
   return `${formattedDate} `;
 };
+
+// Función para formatear fecha con hora y zona horaria de Perú (UTC-5)
+export const formatDateTimeUTC = (dateString: string | null | undefined): string | null => {
+  if (!dateString) return null;
+
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleString("es-PE", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "America/Lima", // Zona horaria de Perú (UTC-5)
+    });
+  } catch (error) {
+    return formatDate(dateString);
+  }
+};

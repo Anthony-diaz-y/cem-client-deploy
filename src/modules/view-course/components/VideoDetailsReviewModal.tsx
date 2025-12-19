@@ -1,11 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useForm } from "react-hook-form";
 import { RxCross2 } from "react-icons/rx";
-import ReactStars from "react-rating-stars-component";
 import { useSelector } from "react-redux";
+import { useParams } from "next/navigation";
+import { toast } from "react-hot-toast";
 
-import { createRating } from "@shared/services/courseDetailsAPI";
+import { createRating } from "@modules/course/services/reviewsAPI";
+import StarRating from "@shared/components/StarRating";
 import IconBtn from "@shared/components/IconBtn";
 import Img from "@shared/components/Img";
 import { VideoDetailsReviewModalProps, ReviewFormData } from "../types";
@@ -19,37 +21,98 @@ export default function VideoDetailsReviewModal({
   const { courseEntireData } = useSelector(
     (state: RootState) => state.viewCourse
   );
+  const { courseId } = useParams();
+
+  const [rating, setRating] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
+    watch,
   } = useForm<ReviewFormData>();
 
+  const courseExperience = watch("courseExperience");
+
   useEffect(() => {
-    setValue("courseExperience", "");
-    setValue("courseRating", 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setRating(0);
+    setError(null);
   }, []);
 
-  const ratingChanged = (newRating: number) => {
-    // console.log(newRating)
-    setValue("courseRating", newRating);
-  };
-
   const onSubmit = async (data: ReviewFormData) => {
-    if (!token || !courseEntireData?._id) return;
+    // Obtener courseId de múltiples fuentes posibles
+    const normalizedCourseId = Array.isArray(courseId) ? courseId[0] : courseId;
+    const courseIdToUse = normalizedCourseId || courseEntireData?._id || (courseEntireData as any)?.id;
 
-    await createRating(
-      {
-        courseId: courseEntireData._id,
-        rating: data.courseRating,
-        review: data.courseExperience,
-      },
-      token
-    );
-    setReviewModal(false);
+    if (!token) {
+      toast.error("No estás autenticado. Por favor, inicia sesión.");
+      return;
+    }
+
+    if (!courseIdToUse) {
+      toast.error("No se pudo identificar el curso. Por favor, recarga la página.");
+      console.error("CourseId no disponible:", { courseId, courseEntireData });
+      return;
+    }
+
+    // Validaciones
+    if (rating === 0) {
+      setError("Por favor, selecciona una calificación con estrellas");
+      toast.error("Por favor, selecciona una calificación con estrellas");
+      return;
+    }
+
+    if (!data.courseExperience?.trim()) {
+      setError("Por favor, escribe tu experiencia");
+      toast.error("Por favor, escribe tu experiencia");
+      return;
+    }
+
+    if (data.courseExperience.trim().length < 10) {
+      setError("La reseña debe tener al menos 10 caracteres");
+      toast.error("La reseña debe tener al menos 10 caracteres");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const result = await createRating(
+        {
+          courseId: courseIdToUse,
+          rating,
+          review: data.courseExperience.trim(),
+        },
+        token
+      );
+
+      if (result) {
+        // El servicio ya muestra un toast de éxito, así que solo cerramos el modal
+        // Cerrar el modal después de un breve delay para que el usuario vea el toast
+        setTimeout(() => {
+          setReviewModal(false);
+          // Recargar la página o actualizar las reseñas si es necesario
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("reviewUpdated"));
+          }
+        }, 1500);
+      } else {
+        setError("No se pudo guardar la reseña. Por favor, intenta nuevamente.");
+        // El servicio ya muestra el toast de error, así que no duplicamos
+      }
+    } catch (err: any) {
+      const errorMessage =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Error al guardar la reseña. Por favor, intenta nuevamente.";
+      setError(errorMessage);
+      // El servicio ya muestra el toast de error, así que no duplicamos
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -57,7 +120,7 @@ export default function VideoDetailsReviewModal({
       <div className="my-10 w-11/12 max-w-[700px] rounded-lg border border-richblack-400 bg-richblack-800">
         {/* Modal Header */}
         <div className="flex items-center justify-between rounded-t-lg bg-richblack-700 p-5">
-          <p className="text-xl font-semibold text-richblack-5">Add Review</p>
+          <p className="text-xl font-semibold text-richblack-5">Agregar Reseña</p>
           <button onClick={() => setReviewModal(false)}>
             <RxCross2 className="text-2xl text-richblack-5" />
           </button>
@@ -75,50 +138,93 @@ export default function VideoDetailsReviewModal({
               <p className="font-semibold text-richblack-5 capitalize">
                 {user?.firstName} {user?.lastName}
               </p>
-              <p className="text-sm text-richblack-5">Posting Publicly</p>
+              <p className="text-sm text-richblack-5">Publicando públicamente</p>
             </div>
           </div>
 
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="mt-6 flex flex-col items-center"
+            className="mt-6 flex flex-col"
           >
-            <ReactStars
-              count={5}
-              onChange={ratingChanged}
-              size={24}
-              activeColor="#ffd700"
-            />
+            {/* Calificación con Estrellas */}
+            <div className="mb-6 flex flex-col items-center">
+              <label className="mb-3 text-sm font-medium text-richblack-5">
+                Calificación con estrellas <sup className="text-pink-200">*</sup>
+              </label>
+              <div className="flex items-center gap-4">
+                <StarRating
+                  rating={rating}
+                  onRatingChange={setRating}
+                  readonly={false}
+                  starSize={32}
+                />
+                {rating > 0 && (
+                  <span className="text-richblack-200 text-sm">
+                    {rating} {rating === 1 ? "estrella" : "estrellas"}
+                  </span>
+                )}
+              </div>
+              {error && error.includes("calificación") && (
+                <span className="mt-2 text-xs text-pink-200">{error}</span>
+              )}
+            </div>
 
-            <div className="flex w-11/12 flex-col space-y-2">
+            {/* Textarea para experiencia */}
+            <div className="mb-4 flex w-full flex-col space-y-2">
               <label
                 className="text-sm text-richblack-5"
                 htmlFor="courseExperience"
               >
-                Add Your Experience <sup className="text-pink-200">*</sup>
+                Agrega tu Experiencia <sup className="text-pink-200">*</sup>
               </label>
               <textarea
                 id="courseExperience"
-                placeholder="Add Your Experience"
-                {...register("courseExperience", { required: true })}
-                className="form-style resize-x-none min-h-[130px] w-full"
+                placeholder="Comparte tu experiencia con este curso..."
+                {...register("courseExperience", { 
+                  required: "Por favor, escribe tu experiencia",
+                  minLength: {
+                    value: 10,
+                    message: "La reseña debe tener al menos 10 caracteres"
+                  }
+                })}
+                className="form-style resize-none min-h-[130px] w-full"
               />
+              <small className="text-richblack-400 text-xs">
+                {courseExperience?.length || 0} caracteres (mínimo 10)
+              </small>
               {errors.courseExperience && (
                 <span className="ml-2 text-xs tracking-wide text-pink-200">
-                  Please Add Your Experience
+                  {errors.courseExperience.message || "Por favor, agrega tu experiencia"}
+                </span>
+              )}
+              {error && !error.includes("calificación") && (
+                <span className="ml-2 text-xs tracking-wide text-pink-200">
+                  {error}
                 </span>
               )}
             </div>
 
-            <div className="mt-6 flex w-11/12 justify-end gap-x-2">
+            {/* Botones */}
+            <div className="mt-6 flex w-full justify-end gap-x-2">
               <button
+                type="button"
                 onClick={() => setReviewModal(false)}
+                disabled={loading}
                 className={`flex cursor-pointer items-center gap-x-2 rounded-md bg-richblack-300 py-[8px] px-[20px] font-semibold
-                           text-richblack-900 hover:bg-richblack-900 hover:text-richblack-300 duration-300`}
+                           text-richblack-900 hover:bg-richblack-900 hover:text-richblack-300 duration-300
+                           disabled:opacity-50 disabled:cursor-not-allowed`}
               >
-                Cancel
+                Cancelar
               </button>
-              <IconBtn text="Save" />
+              <button
+                type="submit"
+                disabled={loading || rating === 0 || !courseExperience?.trim()}
+                className={`flex cursor-pointer items-center gap-x-2 rounded-md bg-yellow-50 py-[8px] px-[20px] font-semibold
+                           text-richblack-900 hover:bg-yellow-100 duration-300
+                           disabled:opacity-50 disabled:cursor-not-allowed`}
+              >
+                {loading ? "Guardando..." : "Guardar"}
+              </button>
             </div>
           </form>
         </div>

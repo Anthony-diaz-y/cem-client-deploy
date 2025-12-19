@@ -76,7 +76,7 @@ export default function CourseAccordionBar({
           </div>
           <div className="space-x-4">
             <span className="text-yellow-25">
-              {`${subSectionsArray.length} lecture(s)`}
+              {`${subSectionsArray.length} ${subSectionsArray.length === 1 ? 'lección' : 'lecciones'}`}
             </span>
           </div>
         </div>
@@ -94,7 +94,7 @@ export default function CourseAccordionBar({
               })
             : (
               <div className="text-richblack-400 text-sm">
-                No hay lectures disponibles en esta sección
+                No hay lecciones disponibles en esta sección
               </div>
             )}
         </div>

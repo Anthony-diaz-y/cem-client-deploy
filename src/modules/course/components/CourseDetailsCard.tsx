@@ -31,13 +31,13 @@ function CourseDetailsCard({
   const handleShare = () => {
     if (typeof window !== "undefined") {
       copy(window.location.href);
-      toast.success("Link copied to clipboard");
+      toast.success("Enlace copiado al portapapeles");
     }
   };
 
   const handleAddToCart = () => {
     if (user && user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
-      toast.error("You are an Instructor. You can't buy a course.");
+      toast.error("Eres un Instructor. No puedes comprar un curso.");
       return;
     }
     if (token) {
@@ -45,10 +45,10 @@ function CourseDetailsCard({
       return;
     }
     setConfirmationModal({
-      text1: "You are not logged in!",
-      text2: "Please login to add To Cart",
-      btn1Text: "Login",
-      btn2Text: "Cancel",
+      text1: "¡No estás autenticado!",
+      text2: "Por favor, inicia sesión para agregar al carrito",
+      btn1Text: "Iniciar Sesión",
+      btn2Text: "Cancelar",
       btn1Handler: () => router.push("/auth/login"),
       btn2Handler: () => setConfirmationModal(null),
     });
@@ -82,26 +82,26 @@ function CourseDetailsCard({
               }
             >
               {user && course?.studentsEnrolled.includes(user?._id)
-                ? "Go To Course"
-                : "Buy Now"}
+                ? "Ir al Curso"
+                : "Comprar Ahora"}
             </button>
             {(!user || !course?.studentsEnrolled.includes(user?._id)) && (
               <button
                 onClick={handleAddToCart}
                 className="blackButton outline-none"
               >
-                Add to Cart
+                Agregar al Carrito
               </button>
             )}
           </div>
 
           <p className="pb-3 pt-6 text-center text-sm text-richblack-25">
-            30-Day Money-Back Guarantee
+            Garantía de devolución de dinero de 30 días
           </p>
 
           <div className={``}>
             <p className={`my-2 text-xl font-semibold `}>
-              Course Requirements :
+              Requisitos del Curso:
             </p>
             <div className="flex flex-col gap-3 text-sm text-caribbeangreen-100">
               {course?.instructions?.map((item, i) => {
@@ -120,7 +120,7 @@ function CourseDetailsCard({
               className="mx-auto flex items-center gap-2 py-6 text-yellow-100 "
               onClick={handleShare}
             >
-              <FaShareSquare size={15} /> Share
+              <FaShareSquare size={15} /> Compartir
             </button>
           </div>
         </div>

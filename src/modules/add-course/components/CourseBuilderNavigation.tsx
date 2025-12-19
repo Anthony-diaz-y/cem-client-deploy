@@ -24,9 +24,9 @@ const CourseBuilderNavigation: React.FC<CourseBuilderNavigationProps> = ({
         onClick={onBack}
         className="rounded-md bg-richblack-300 py-[8px] px-[20px] font-semibold text-richblack-900"
       >
-        Back
+        Atrás
       </button>
-      <IconBtn disabled={loading} text="Next" onclick={onNext}>
+      <IconBtn disabled={loading} text="Siguiente" onclick={onNext}>
         <MdNavigateNext />
       </IconBtn>
     </div>
