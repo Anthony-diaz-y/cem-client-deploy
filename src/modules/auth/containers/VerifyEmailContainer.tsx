@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import OtpInput from "react-otp-input";
+import OtpInput from "@shared/components/OtpInput";
 import Link from "next/link";
 import { BiArrowBack } from "react-icons/bi";
 import { RxCountdownTimer } from "react-icons/rx";

@@ -54,7 +54,11 @@ const cartSlice = createSlice({
       state.cart.push(course);
       // Update the total quantity and price
       state.totalItems++;
-      state.total += course.price;
+      // Asegurar que el precio sea un número válido
+      const coursePrice = typeof course.price === 'number' 
+        ? course.price 
+        : parseFloat(course.price?.toString() || '0') || 0;
+      state.total = (state.total || 0) + coursePrice;
       // Update to localstorage
       if (typeof window !== "undefined") {
         localStorage.setItem("cart", JSON.stringify(state.cart));
@@ -75,7 +79,11 @@ const cartSlice = createSlice({
       if (index >= 0) {
         // If the course is found in the cart, remove it
         state.totalItems--;
-        state.total -= state.cart[index].price;
+        // Asegurar que el precio sea un número válido
+        const coursePrice = typeof state.cart[index].price === 'number'
+          ? state.cart[index].price
+          : parseFloat(state.cart[index].price?.toString() || '0') || 0;
+        state.total = Math.max(0, (state.total || 0) - coursePrice);
         state.cart.splice(index, 1);
         // Update to localstorage
         localStorage.setItem("cart", JSON.stringify(state.cart));

@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
+import LazyImage from "./LazyImage";
 import { getImageUrl } from "../utils/imageHelper";
 
 interface ImgProps {
@@ -101,7 +100,7 @@ const Img: React.FC<ImgProps> = ({ src, className, alt, onError }) => {
   };
   
   return (
-    <LazyLoadImage
+    <LazyImage
       className={className || ''}
       alt={alt || "Image"}
       effect="blur"

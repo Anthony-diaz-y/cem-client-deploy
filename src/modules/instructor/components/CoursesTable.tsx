@@ -2,9 +2,6 @@
 
 import { useAppSelector } from "@shared/store/hooks";
 
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
-
 import { useState, useEffect, useRef } from "react";
 import { FaCheck } from "react-icons/fa";
 import { FiEdit2 } from "react-icons/fi";
@@ -115,62 +112,63 @@ export default function CoursesTable({
 
   return (
     <>
-      <Table className="rounded-2xl border border-richblack-800 ">
-        {/* heading */}
-        <Thead>
-          <Tr className="flex gap-x-10 rounded-t-3xl border-b border-b-richblack-800 px-6 py-2">
-            <Th className="flex-1 text-left text-sm font-medium uppercase text-richblack-100">
-              Courses
-            </Th>
-            <Th className="text-left text-sm font-medium uppercase text-richblack-100">
-              Duration
-            </Th>
-            <Th className="text-left text-sm font-medium uppercase text-richblack-100">
-              Lectures
-            </Th>
-            <Th className="text-left text-sm font-medium uppercase text-richblack-100">
-              Price
-            </Th>
-            <Th className="text-left text-sm font-medium uppercase text-richblack-100">
-              Actions
-            </Th>
-          </Tr>
-        </Thead>
+      <div className="rounded-2xl border border-richblack-800 overflow-hidden">
+        <table className="w-full">
+          {/* heading */}
+          <thead>
+            <tr className="flex gap-x-10 rounded-t-3xl border-b border-b-richblack-800 px-6 py-2">
+              <th className="flex-1 text-left text-sm font-medium uppercase text-richblack-100">
+                Courses
+              </th>
+              <th className="text-left text-sm font-medium uppercase text-richblack-100">
+                Duration
+              </th>
+              <th className="text-left text-sm font-medium uppercase text-richblack-100">
+                Lectures
+              </th>
+              <th className="text-left text-sm font-medium uppercase text-richblack-100">
+                Price
+              </th>
+              <th className="text-left text-sm font-medium uppercase text-richblack-100">
+                Actions
+              </th>
+            </tr>
+          </thead>
 
-        <Tbody>
+          <tbody>
           {/* Mostrar skeleton solo si la carga toma más de 300ms (evita parpadeo rápido) */}
           {showSkeleton ? (
             <>
-              <Tr>
-                <Td colSpan={5}>{skItem()}</Td>
-              </Tr>
-              <Tr>
-                <Td colSpan={5}>{skItem()}</Td>
-              </Tr>
-              <Tr>
-                <Td colSpan={5}>{skItem()}</Td>
-              </Tr>
+              <tr>
+                <td colSpan={5}>{skItem()}</td>
+              </tr>
+              <tr>
+                <td colSpan={5}>{skItem()}</td>
+              </tr>
+              <tr>
+                <td colSpan={5}>{skItem()}</td>
+              </tr>
             </>
           ) : courses?.length === 0 ? (
-            <Tr>
-              <Td
+            <tr>
+              <td
                 className="py-10 text-center text-2xl font-medium text-richblack-100"
                 colSpan={5}
               >
                 No courses found
-              </Td>
-            </Tr>
+              </td>
+            </tr>
           ) : (
             courses?.map((course, index) => {
               // Obtener el ID del curso (priorizar 'id' sobre '_id' ya que PostgreSQL usa UUIDs con campo 'id')
               const courseId = (course as any)?.id || course?._id || `course-${index}`;
               
               return (
-              <Tr
+              <tr
                 key={courseId}
                 className="flex gap-x-10 border-b border-richblack-800 px-6 py-8"
               >
-                <Td className="flex flex-1 gap-x-4 relative">
+                <td className="flex flex-1 gap-x-4 relative">
                   {/* course Thumbnail */}
                   <Img
                     src={course?.thumbnail}
@@ -217,10 +215,10 @@ export default function CoursesTable({
                       </div>
                     )}
                   </div>
-                </Td>
+                </td>
 
                 {/* course duration */}
-                <Td className="text-sm font-medium text-richblack-100">
+                <td className="text-sm font-medium text-richblack-100">
                   {(() => {
                     const formatted = formatTotalDuration(course.totalDuration);
                     return formatted !== 'N/A' ? (
@@ -229,20 +227,20 @@ export default function CoursesTable({
                       <span className="text-richblack-400">N/A</span>
                     );
                   })()}
-                </Td>
+                </td>
                 
                 {/* course lectures */}
-                <Td className="text-sm font-medium text-richblack-100">
+                <td className="text-sm font-medium text-richblack-100">
                   <span className="text-richblack-5">
                     {course.totalLectures || 0} {course.totalLectures === 1 ? 'lecture' : 'lectures'}
                   </span>
-                </Td>
+                </td>
                 
-                <Td className="text-sm font-medium text-richblack-100">
+                <td className="text-sm font-medium text-richblack-100">
                   ₹{course.price}
-                </Td>
+                </td>
 
-                <Td className="text-sm font-medium text-richblack-100 ">
+                <td className="text-sm font-medium text-richblack-100 ">
                   {/* Edit button */}
                   <button
                     disabled={loading}
@@ -278,13 +276,14 @@ export default function CoursesTable({
                   >
                     <RiDeleteBin6Line size={20} />
                   </button>
-                </Td>
-              </Tr>
+                </td>
+              </tr>
               );
             })
           )}
-        </Tbody>
-      </Table>
+          </tbody>
+        </table>
+      </div>
 
       {/* Confirmation Modal */}
       {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
