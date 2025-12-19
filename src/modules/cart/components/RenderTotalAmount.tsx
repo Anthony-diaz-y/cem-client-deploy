@@ -145,7 +145,7 @@ export default function RenderTotalAmount() {
   const calculatedTotal = cart.reduce((sum, course) => {
     const coursePrice = typeof course.price === 'number' 
       ? course.price 
-      : parseFloat(course.price?.toString() || '0') || 0;
+      : (typeof course.price === 'string' ? parseFloat(course.price) : 0);
     return sum + coursePrice;
   }, 0);
 
