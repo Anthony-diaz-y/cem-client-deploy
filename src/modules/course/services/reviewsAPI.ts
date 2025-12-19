@@ -57,7 +57,7 @@ export interface RatingStats {
 
 // ================ Create Rating ================
 export const createRating = async (
-  data: CreateRatingData,
+  data: CreateRatingData | Record<string, unknown>,
   token: string
 ): Promise<Review | null> => {
   const toastId = toast.loading("Guardando reseña...");
@@ -93,7 +93,7 @@ export const createRating = async (
 
 // ================ Update Rating ================
 export const updateRating = async (
-  data: UpdateRatingData,
+  data: UpdateRatingData | Record<string, unknown>,
   token: string
 ): Promise<Review | null> => {
   const toastId = toast.loading("Actualizando reseña...");
