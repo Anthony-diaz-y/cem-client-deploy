@@ -157,7 +157,7 @@ export const fetchCourseCategories = async () => {
 };
 
 // ================ add Course Details ================
-export const addCourseDetails = async (data: CourseFormData, token: string) => {
+export const addCourseDetails = async (data: CourseFormData | Record<string, unknown>, token: string) => {
   const toastId = toast.loading("Cargando...");
   let result = null;
 
@@ -222,7 +222,7 @@ export const editCourseDetails = async (
 };
 
 // ================ create Section ================
-export const createSection = async (data: SectionData, token: string) => {
+export const createSection = async (data: SectionData | Record<string, unknown>, token: string) => {
   let result = null;
   const toastId = toast.loading("Cargando...");
 
@@ -285,7 +285,7 @@ export const createSubSection = async (
 };
 
 // ================ Update Section ================
-export const updateSection = async (data: SectionData, token: string) => {
+export const updateSection = async (data: SectionData | Record<string, unknown>, token: string) => {
   let result = null;
   const toastId = toast.loading("Cargando...");
 
@@ -348,7 +348,7 @@ export const updateSubSection = async (
 };
 
 // ================ delete Section ================
-export const deleteSection = async (data: DeleteSectionData, token: string) => {
+export const deleteSection = async (data: DeleteSectionData | Record<string, unknown>, token: string) => {
   let result = null;
   const toastId = toast.loading("Cargando...");
 
@@ -379,7 +379,7 @@ export const deleteSection = async (data: DeleteSectionData, token: string) => {
 
 // ================ delete SubSection ================
 export const deleteSubSection = async (
-  data: DeleteSubSectionData,
+  data: DeleteSubSectionData | Record<string, unknown>,
   token: string
 ) => {
   let result = null;
@@ -438,7 +438,7 @@ export const fetchInstructorCourses = async (token: string) => {
 };
 
 // ================ delete Course ================
-export const deleteCourse = async (data: DeleteCourseData, token: string) => {
+export const deleteCourse = async (data: DeleteCourseData | Record<string, unknown>, token: string) => {
   // const toastId = toast.loading("Loading...")
   try {
     const response = await apiConnector("DELETE", DELETE_COURSE_API, data, {
@@ -573,7 +573,7 @@ export const markLectureAsComplete = async (
 };
 
 // ================ create Course Rating  ================
-export const createRating = async (data: RatingData, token: string) => {
+export const createRating = async (data: RatingData | Record<string, unknown>, token: string) => {
   const toastId = toast.loading("Cargando...");
   let success = false;
   try {

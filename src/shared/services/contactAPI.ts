@@ -21,7 +21,7 @@ export interface ContactFormData {
   message: string;
 }
 
-export const sendContactMessage = async (data: ContactFormData) => {
+export const sendContactMessage = async (data: ContactFormData | Record<string, unknown>) => {
   const toastId = toast.loading("Enviando mensaje...", {
     id: "contact-loading",
   });
