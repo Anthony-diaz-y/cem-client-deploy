@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useMemo } from "react";
 import CourseSubSectionAccordion from "./CourseSubSectionAccordion";
 import { IoMdArrowDropdown } from "react-icons/io";
-import { CourseAccordionBarProps } from "../types";
+import { CourseAccordionBarProps, SubSection } from "../types";
 
 export default function CourseAccordionBar({
   course,
@@ -89,7 +89,7 @@ export default function CourseAccordionBar({
       >
         <div className="text-textHead flex flex-col gap-2 px-7 py-6 font-semibold">
           {subSectionsArray.length > 0 
-            ? subSectionsArray.map((subSec, i) => {
+            ? subSectionsArray.map((subSec: SubSection, i: number) => {
                 return <CourseSubSectionAccordion subSec={subSec} key={i} />;
               })
             : (
