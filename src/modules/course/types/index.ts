@@ -110,6 +110,8 @@ export interface CartItem {
     name: string;
   };
   ratingAndReviews?: Review[];
+  averageRating?: number | string; // Rating promedio del backend
+  totalReviews?: number; // Total de reseñas
 }
 
 export interface CartState {
