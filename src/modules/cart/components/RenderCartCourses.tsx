@@ -196,7 +196,7 @@ export default function RenderCartCourses() {
               ₹ {(() => {
                 const price = typeof course?.price === 'number' 
                   ? course.price 
-                  : parseFloat(course?.price?.toString() || '0');
+                  : (typeof course?.price === 'string' ? parseFloat(course.price) : 0);
                 return price.toFixed(2);
               })()}
             </p>
