@@ -22,18 +22,18 @@ const SectionForm: React.FC<SectionFormProps> = ({
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="flex flex-col space-y-2">
         <label className="text-sm text-richblack-5" htmlFor="sectionName">
-          Section Name <sup className="text-pink-200">*</sup>
+          Nombre de la Sección <sup className="text-pink-200">*</sup>
         </label>
         <input
           id="sectionName"
           disabled={loading}
-          placeholder="Add a section to build your course"
+          placeholder="Agrega una sección para construir tu curso"
           {...register("sectionName", { required: true })}
           className="form-style w-full"
         />
         {errors.sectionName && (
           <span className="ml-2 text-xs tracking-wide text-pink-200">
-            Section name is required
+            El nombre de la sección es requerido
           </span>
         )}
       </div>
@@ -42,7 +42,7 @@ const SectionForm: React.FC<SectionFormProps> = ({
         <IconBtn
           type="submit"
           disabled={loading}
-          text={editSectionName ? "Edit Section Name" : "Create Section"}
+          text={editSectionName ? "Editar Nombre de Sección" : "Crear Sección"}
           outline={true}
         >
           <IoAddCircleOutline size={20} className="text-yellow-50" />
@@ -53,7 +53,7 @@ const SectionForm: React.FC<SectionFormProps> = ({
             onClick={onCancelEdit}
             className="text-sm text-richblack-300 underline"
           >
-            Cancel Edit
+            Cancelar Edición
           </button>
         )}
       </div>

@@ -12,6 +12,8 @@ export interface Course {
   };
   ratingAndReviews: unknown[];
   studentsEnrolled: unknown[];
+  createdAt?: string; // Para filtrar por fecha
+  updatedAt?: string;
 }
 
 export interface Category {

@@ -26,20 +26,31 @@ const InstructorCoursesGrid: React.FC<InstructorCoursesGridProps> = ({
         </Link>
       </div>
 
-      <div className="my-4 flex flex-col sm:flex-row sm:space-x-6 space-y-6 sm:space-y-0">
+      <div className="my-4 grid grid-cols-1 sm:grid-cols-3 gap-6">
         {courses.slice(0, 3).map((course, index) => {
           // Obtener el ID del curso (priorizar 'id' sobre '_id' ya que PostgreSQL usa UUIDs con campo 'id')
           const courseId = (course as any)?.id || course?._id || `course-${index}`;
           return (
           <div
             key={courseId}
-            className="sm:w-1/3 flex flex-col items-center justify-center"
+            className="flex flex-col w-full"
           >
-            <Img
-              src={course.thumbnail}
-              alt={course.courseName}
-              className="h-[201px] w-full rounded-2xl object-cover"
-            />
+            <div className="w-full h-[201px] rounded-2xl overflow-hidden relative bg-richblack-900">
+              <img
+                src={course.thumbnail || ''}
+                alt={course.courseName || "course thumbnail"}
+                className="absolute inset-0 w-full h-full object-cover"
+                onError={(e) => {
+                  // Fallback si la imagen no carga
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  const placeholder = document.createElement('div');
+                  placeholder.className = 'absolute inset-0 bg-gradient-to-br from-richblack-800 to-richblack-900 flex items-center justify-center';
+                  placeholder.innerHTML = '<span class="text-richblack-500 text-sm">Sin imagen</span>';
+                  target.parentElement?.appendChild(placeholder);
+                }}
+              />
+            </div>
 
             <div className="mt-3 w-full">
               <div className="flex items-start justify-between mb-2">

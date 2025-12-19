@@ -21,19 +21,19 @@ const CourseContentSection: React.FC<CourseContentSectionProps> = ({
   return (
     <div className="max-w-[830px] mt-9">
       <div className="flex flex-col gap-3">
-        <p className="text-[28px] font-semibold">Course Content</p>
+        <p className="text-[28px] font-semibold">Contenido del Curso</p>
         <div className="flex flex-wrap justify-between gap-2">
           <div className="flex gap-2">
             <span>
-              {courseContent.length} {`section(s)`}
+              {courseContent.length} {courseContent.length === 1 ? 'sección' : 'secciones'}
             </span>
             <span>
-              {totalNoOfLectures} {`lecture(s)`}
+              {totalNoOfLectures} {totalNoOfLectures === 1 ? 'lección' : 'lecciones'}
             </span>
-            <span>{formatTotalDuration(response.data?.totalDuration)} Total Time</span>
+            <span>{formatTotalDuration(response.data?.totalDuration)} Tiempo Total</span>
           </div>
           <button className="text-yellow-25" onClick={onCollapseAll}>
-            Collapse All Sections
+            Colapsar Todas las Secciones
           </button>
         </div>
       </div>

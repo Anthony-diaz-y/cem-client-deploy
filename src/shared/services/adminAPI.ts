@@ -17,6 +17,7 @@ export interface AdminDashboardStats {
   approvedInstructors: number;
   pendingInstructors: number;
   totalStudents: number;
+  unreadMessages?: number; // Nuevo campo del backend
 }
 
 export interface Instructor {

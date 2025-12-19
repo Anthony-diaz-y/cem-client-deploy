@@ -13,10 +13,14 @@ import CourseInfoSection from "../components/CourseInfoSection"
 import CourseContentSection from "../components/CourseContentSection"
 import CourseAuthorSection from "../components/CourseAuthorSection"
 import CourseLoadingSkeleton from "../components/CourseLoadingSkeleton"
+import RatingStats from "../components/RatingStats"
+import ReviewForm from "../components/ReviewForm"
+import CourseReviews from "../components/CourseReviews"
 
 import { useCourseDetails } from "../hooks/useCourseDetails"
 import { useCourseCalculations } from "../hooks/useCourseCalculations"
 import { useCourseActions } from "../hooks/useCourseActions"
+import { useCourseReviews } from "../hooks/useCourseReviews"
 
 /**
  * CourseDetailsContainer - Container component for Course Details page
@@ -26,6 +30,7 @@ const CourseDetailsContainer = () => {
   const { courseId } = useParams()
   const { loading } = useSelector((state: RootState) => state.profile)
   const { paymentLoading } = useSelector((state: RootState) => state.course)
+  const { token } = useSelector((state: RootState) => state.auth)
 
   // Custom hooks for data fetching, calculations, and actions
   const { response, loading: courseLoading } = useCourseDetails()
@@ -39,6 +44,16 @@ const CourseDetailsContainer = () => {
     handleAddToCart,
     handleCollapseAll,
   } = useCourseActions(courseId, response?.data?.courseDetails)
+
+  // Hook para manejar reseñas
+  const {
+    userReview,
+    canReview,
+    handleReviewSuccess,
+  } = useCourseReviews(courseId, response?.data?.courseDetails)
+
+  // Normalizar courseId para los componentes de reseñas
+  const normalizedCourseId = Array.isArray(courseId) ? courseId[0] : courseId
 
   // Scroll to top on mount
   useEffect(() => {
@@ -97,10 +112,38 @@ const CourseDetailsContainer = () => {
           />
 
           <CourseAuthorSection instructor={instructor} />
+
+          {/* Sección de Reseñas y Calificaciones */}
+          <div className="mt-12 space-y-8 mb-20">
+            {/* Estadísticas de Calificación */}
+            {normalizedCourseId && (
+              <RatingStats courseId={normalizedCourseId} />
+            )}
+
+            {/* Formulario de Reseña (solo para estudiantes inscritos) */}
+            {canReview && token && normalizedCourseId && (
+              <div className="review-section">
+                <ReviewForm
+                  courseId={normalizedCourseId}
+                  existingReview={userReview}
+                  onSuccess={handleReviewSuccess}
+                  token={token}
+                />
+              </div>
+            )}
+
+            {/* Lista de Reseñas */}
+            {normalizedCourseId && (
+              <CourseReviews courseId={normalizedCourseId} />
+            )}
+          </div>
         </div>
       </div>
 
-      <Footer />
+      {/* Footer con espacio adicional */}
+      <div className="mt-20">
+        <Footer />
+      </div>
       {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
     </>
   )
