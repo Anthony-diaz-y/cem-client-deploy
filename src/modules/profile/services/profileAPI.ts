@@ -20,7 +20,7 @@ export function getUserDetails(token: string, navigate: NavigateFunction) {
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
     try {
-      const response = await apiConnector("GET", GET_USER_DETAILS_API, null, {
+      const response = await apiConnector("GET", GET_USER_DETAILS_API, undefined, {
         Authorization: `Bearer ${token}`,
       });
       console.log("GET_USER_DETAILS API RESPONSE............", response);
@@ -76,7 +76,7 @@ export async function getInstructorData(token: string) {
   // const toastId = toast.loading("Loading...")
   let result = [];
   try {
-    const response = await apiConnector("GET", GET_INSTRUCTOR_DATA_API, null, {
+    const response = await apiConnector("GET", GET_INSTRUCTOR_DATA_API, undefined, {
       Authorization: `Bearer ${token}`,
     });
     console.log("GET_INSTRUCTOR_DATA_API API RESPONSE............", response);
