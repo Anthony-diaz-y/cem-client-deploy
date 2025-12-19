@@ -415,7 +415,7 @@ export const fetchInstructorCourses = async (token: string) => {
     const response = await apiConnector(
       "GET",
       GET_ALL_INSTRUCTOR_COURSES_API,
-      null,
+      undefined,
       {
         Authorization: `Bearer ${token}`,
       }

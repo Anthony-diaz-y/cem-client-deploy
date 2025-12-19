@@ -126,7 +126,7 @@ export function deleteProfile(token: string, navigate: NavigateFunction) {
   return async (dispatch: AppDispatch) => {
     const toastId = toast.loading("Loading...");
     try {
-      const response = await apiConnector("DELETE", DELETE_PROFILE_API, null, {
+      const response = await apiConnector("DELETE", DELETE_PROFILE_API, undefined, {
         Authorization: `Bearer ${token}`,
       });
       console.log("DELETE_PROFILE_API API RESPONSE............", response);
