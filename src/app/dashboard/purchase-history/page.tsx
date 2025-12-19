@@ -52,17 +52,21 @@ function PurchaseHistory() {
         
         // Adaptar los datos de cursos inscritos a la estructura de PurchaseItem
         if (enrolledCourses && Array.isArray(enrolledCourses)) {
-          const purchases: PurchaseItem[] = enrolledCourses.map((course: any) => ({
-            _id: course._id || course.courseId || '',
-            courseName: course.courseName || '',
-            courseDescription: course.courseDescription || '',
-            thumbnail: course.thumbnail || '',
-            price: course.price || 0,
-            purchaseDate: course.createdAt || course.purchaseDate || new Date().toISOString().split('T')[0],
-            status: "Completed" as const,
-            transactionId: course.transactionId || `TXN-${course._id || 'N/A'}`,
-            courseContent: course.courseContent || [],
-          }));
+          const purchases: PurchaseItem[] = enrolledCourses.map((course: any, index: number) => {
+            // Asegurar que siempre haya un ID único para evitar keys duplicadas
+            const courseId = course._id || course.courseId || course.id || `course-${index}-${Date.now()}`;
+            return {
+              _id: courseId,
+              courseName: course.courseName || '',
+              courseDescription: course.courseDescription || '',
+              thumbnail: course.thumbnail || '',
+              price: course.price || 0,
+              purchaseDate: course.createdAt || course.purchaseDate || new Date().toISOString().split('T')[0],
+              status: "Completed" as const,
+              transactionId: course.transactionId || `TXN-${courseId}`,
+              courseContent: course.courseContent || [],
+            };
+          });
           setPurchases(purchases);
         }
       } catch (error) {

@@ -32,7 +32,9 @@ export default function SidebarLink({ link, iconName }: SidebarLinkProps) {
       const regex = new RegExp(`^${routePattern}$`);
       return regex.test(pathname);
     }
-    return pathname === route || pathname.startsWith(route + "/");
+    // Comparación exacta: solo activar si la ruta coincide exactamente
+    // Esto evita que rutas padre se activen cuando estás en rutas hijas
+    return pathname === route;
   };
 
   const handleClick = () => {

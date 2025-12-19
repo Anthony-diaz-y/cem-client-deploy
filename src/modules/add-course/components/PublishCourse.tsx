@@ -88,7 +88,7 @@ export default function PublishCourse() {
   return (
     <div className="rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-6">
       <p className="text-2xl font-semibold text-richblack-5">
-        Publish Settings
+        Configuración de Publicación
       </p>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Checkbox */}
@@ -101,7 +101,7 @@ export default function PublishCourse() {
               className="border-gray-300 h-4 w-4 rounded bg-richblack-500 text-richblack-400 focus:ring-2 focus:ring-richblack-5"
             />
             <span className="ml-2 text-richblack-400">
-              Make this course as public
+              Hacer este curso público
             </span>
           </label>
         </div>
@@ -114,9 +114,9 @@ export default function PublishCourse() {
             onClick={goBack}
             className="flex cursor-pointer items-center gap-x-2 rounded-md bg-richblack-300 py-[8px] px-[20px] font-semibold text-richblack-900"
           >
-            Back
+            Atrás
           </button>
-          <IconBtn disabled={loading} text="Save Changes" />
+          <IconBtn disabled={loading} text="Guardar Cambios" />
         </div>
       </form>
     </div>

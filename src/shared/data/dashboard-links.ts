@@ -48,4 +48,11 @@ export const sidebarLinks = [
     type: ACCOUNT_TYPE.ADMIN,
     icon: "VscDashboard",
   },
+  {
+    id: 8,
+    name: "Contact Messages",
+    path: "/dashboard/admin/contact-messages",
+    type: ACCOUNT_TYPE.ADMIN,
+    icon: "VscMail",
+  },
 ];

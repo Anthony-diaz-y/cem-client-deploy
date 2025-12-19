@@ -24,10 +24,10 @@ const CourseFormActions: React.FC<CourseFormActionsProps> = ({
           disabled={loading}
           className="flex cursor-pointer items-center gap-x-2 rounded-md py-[8px] px-[20px] font-semibold text-richblack-900 bg-richblack-300 hover:bg-richblack-900 hover:text-richblack-300 duration-300"
         >
-          Continue Wihout Saving
+          Continuar Sin Guardar
         </button>
       )}
-      <IconBtn disabled={loading} text={!editCourse ? "Next" : "Save Changes"}>
+      <IconBtn disabled={loading} text={!editCourse ? "Siguiente" : "Guardar Cambios"}>
         <MdNavigateNext />
       </IconBtn>
     </div>

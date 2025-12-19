@@ -10,13 +10,16 @@ import CourseCard from "./CourseCard";
 import { CourseSliderProps } from "../types";
 
 function CourseSlider({ Courses }: CourseSliderProps) {
+  // Desactivar loop si no hay suficientes slides para evitar advertencias
+  const shouldLoop = Courses && Courses.length > 3;
+  
   return (
     <>
       {Courses?.length ? (
         <Swiper
           slidesPerView={1}
           spaceBetween={25}
-          loop={true}
+          loop={shouldLoop}
           // modules={[ Pagination]}
 
           breakpoints={{
@@ -27,8 +30,8 @@ function CourseSlider({ Courses }: CourseSliderProps) {
           className="max-h-[30rem] pt-8 px-2"
         >
           {Courses?.map((course, i) => (
-            <SwiperSlide key={i}>
-              <CourseCard course={course} Height={"h-[250px]"} />
+            <SwiperSlide key={i} className="h-auto flex">
+              <CourseCard course={course} Height={"h-[280px]"} />
             </SwiperSlide>
           ))}
         </Swiper>

@@ -57,6 +57,76 @@ export const getCatalogPageData = async (categoryId: string) => {
     // Si success es true, verificar que data existe antes de retornar
     if (response.data.data && typeof response.data.data === 'object') {
       result = response.data.data;
+      
+      // Normalizar los cursos para asegurar que tengan los campos necesarios
+      const normalizeCourse = (course: any) => {
+        if (!course) return course;
+        
+        // Asegurar que ratingAndReviews sea un array (no null/undefined)
+        if (course.ratingAndReviews === null || course.ratingAndReviews === undefined) {
+          course.ratingAndReviews = [];
+        } else if (!Array.isArray(course.ratingAndReviews)) {
+          course.ratingAndReviews = [];
+        }
+        
+        // Calcular averageRating si no existe pero hay reseñas
+        if ((course.averageRating === undefined || course.averageRating === null) && 
+            Array.isArray(course.ratingAndReviews) && course.ratingAndReviews.length > 0) {
+          const validRatings = course.ratingAndReviews
+            .filter((r: any) => r && (r.rating !== undefined && r.rating !== null))
+            .map((r: any) => r.rating);
+          
+          if (validRatings.length > 0) {
+            const sum = validRatings.reduce((acc: number, val: number) => acc + val, 0);
+            course.averageRating = Math.round((sum / validRatings.length) * 10) / 10;
+          } else {
+            course.averageRating = 0;
+          }
+        } else if (course.averageRating === undefined || course.averageRating === null) {
+          course.averageRating = 0;
+        }
+        
+        // Calcular totalReviews si no existe
+        if (course.totalReviews === undefined || course.totalReviews === null) {
+          course.totalReviews = Array.isArray(course.ratingAndReviews) ? course.ratingAndReviews.length : 0;
+        }
+        
+        return course;
+      };
+      
+      // Normalizar todos los cursos en la respuesta
+      if (result.selectedCategory?.courses) {
+        result.selectedCategory.courses = result.selectedCategory.courses.map(normalizeCourse);
+      }
+      if (result.mostSellingCourses) {
+        result.mostSellingCourses = result.mostSellingCourses.map(normalizeCourse);
+      }
+      if (result.differentCategory?.courses) {
+        result.differentCategory.courses = result.differentCategory.courses.map(normalizeCourse);
+      }
+      
+      // Debug: Verificar estructura de los cursos devueltos
+      if (process.env.NODE_ENV === 'development') {
+        const courses = [
+          ...(result.selectedCategory?.courses || []),
+          ...(result.mostSellingCourses || []),
+          ...(result.differentCategory?.courses || [])
+        ];
+        
+        if (courses.length > 0) {
+          console.log('Catalog Page Data - Sample course structure (after normalization):', {
+            courseName: courses[0]?.courseName,
+            hasAverageRating: courses[0]?.averageRating !== undefined,
+            averageRating: courses[0]?.averageRating,
+            hasTotalReviews: courses[0]?.totalReviews !== undefined,
+            totalReviews: courses[0]?.totalReviews,
+            hasRatingAndReviews: courses[0]?.ratingAndReviews !== undefined,
+            ratingAndReviewsType: typeof courses[0]?.ratingAndReviews,
+            ratingAndReviewsIsArray: Array.isArray(courses[0]?.ratingAndReviews),
+            ratingAndReviewsLength: Array.isArray(courses[0]?.ratingAndReviews) ? courses[0]?.ratingAndReviews.length : 'N/A'
+          });
+        }
+      }
     } else {
       console.error("Invalid data structure in response");
       return null;
