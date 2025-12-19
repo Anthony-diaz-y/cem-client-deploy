@@ -79,7 +79,7 @@ const RatingStats: React.FC<RatingStatsProps> = ({ courseId }) => {
         </h4>
         <div className="space-y-3">
           {[5, 4, 3, 2, 1].map((star) => {
-            const count = stats.ratingDistribution[star as keyof typeof stats.ratingDistribution];
+            const count = stats.ratingDistribution[star.toString() as keyof typeof stats.ratingDistribution];
             const percentage = getPercentage(count);
             return (
               <div key={star} className="flex items-center gap-4">
