@@ -28,7 +28,7 @@ export const sendContactMessage = async (data: ContactFormData | Record<string, 
   let result = null;
 
   try {
-    const response = await apiConnector("POST", CONTACT_US_API, data);
+    const response = await apiConnector("POST", CONTACT_US_API, data as Record<string, unknown>);
     
     if (!response?.data?.success) {
       throw new Error(response?.data?.message || "No se pudo enviar el mensaje");
