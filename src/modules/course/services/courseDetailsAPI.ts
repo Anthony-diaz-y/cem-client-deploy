@@ -227,7 +227,7 @@ export const createSection = async (data: SectionData | Record<string, unknown>,
   const toastId = toast.loading("Cargando...");
 
   try {
-    const response = await apiConnector("POST", CREATE_SECTION_API, data as Record<string, unknown>, {
+    const response = await apiConnector("POST", CREATE_SECTION_API, data as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     });
     console.log("CREATE SECTION API RESPONSE............", response);
@@ -290,7 +290,7 @@ export const updateSection = async (data: SectionData | Record<string, unknown>,
   const toastId = toast.loading("Cargando...");
 
   try {
-    const response = await apiConnector("POST", UPDATE_SECTION_API, data as Record<string, unknown>, {
+    const response = await apiConnector("POST", UPDATE_SECTION_API, data as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     });
     console.log("UPDATE SECTION API RESPONSE............", response);
@@ -353,7 +353,7 @@ export const deleteSection = async (data: DeleteSectionData | Record<string, unk
   const toastId = toast.loading("Cargando...");
 
   try {
-    const response = await apiConnector("POST", DELETE_SECTION_API, data as Record<string, unknown>, {
+    const response = await apiConnector("POST", DELETE_SECTION_API, data as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     });
     console.log("DELETE SECTION API RESPONSE............", response);
@@ -385,7 +385,7 @@ export const deleteSubSection = async (
   let result = null;
   const toastId = toast.loading("Cargando...");
   try {
-    const response = await apiConnector("POST", DELETE_SUBSECTION_API, data as Record<string, unknown>, {
+    const response = await apiConnector("POST", DELETE_SUBSECTION_API, data as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     });
     console.log("DELETE SUB-SECTION API RESPONSE............", response);
@@ -441,7 +441,7 @@ export const fetchInstructorCourses = async (token: string) => {
 export const deleteCourse = async (data: DeleteCourseData | Record<string, unknown>, token: string) => {
   // const toastId = toast.loading("Loading...")
   try {
-    const response = await apiConnector("DELETE", DELETE_COURSE_API, data as Record<string, unknown>, {
+    const response = await apiConnector("DELETE", DELETE_COURSE_API, data as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     });
     console.log("DELETE COURSE API RESPONSE............", response);
@@ -545,7 +545,7 @@ export const markLectureAsComplete = async (
   // console.log("mark complete data", data)
   const toastId = toast.loading("Cargando...");
   try {
-    const response = await apiConnector("POST", LECTURE_COMPLETION_API, data as Record<string, unknown>, {
+    const response = await apiConnector("POST", LECTURE_COMPLETION_API, data as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     });
     console.log(
@@ -577,7 +577,7 @@ export const createRating = async (data: RatingData | Record<string, unknown>, t
   const toastId = toast.loading("Cargando...");
   let success = false;
   try {
-    const response = await apiConnector("POST", CREATE_RATING_API, data as Record<string, unknown>, {
+    const response = await apiConnector("POST", CREATE_RATING_API, data as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     });
     console.log("CREATE RATING API RESPONSE............", response);

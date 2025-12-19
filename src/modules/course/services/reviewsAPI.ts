@@ -64,7 +64,7 @@ export const createRating = async (
   let result: Review | null = null;
 
   try {
-    const response = await apiConnector("POST", ratingsEndpoints.CREATE_RATING_API, data as Record<string, unknown>, {
+    const response = await apiConnector("POST", ratingsEndpoints.CREATE_RATING_API, data as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     });
 
@@ -100,7 +100,7 @@ export const updateRating = async (
   let result: Review | null = null;
 
   try {
-    const response = await apiConnector("PATCH", ratingsEndpoints.UPDATE_RATING_API, data as Record<string, unknown>, {
+    const response = await apiConnector("PATCH", ratingsEndpoints.UPDATE_RATING_API, data as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     });
 
