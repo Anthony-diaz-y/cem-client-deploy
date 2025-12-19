@@ -25,17 +25,17 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
       {/* Course Title */}
       <div className="flex flex-col space-y-2">
         <label className="text-sm text-richblack-5" htmlFor="courseTitle">
-          Course Title <sup className="text-pink-200">*</sup>
+          Título del Curso <sup className="text-pink-200">*</sup>
         </label>
         <input
           id="courseTitle"
-          placeholder="Enter Course Title"
+          placeholder="Ingresa el título del curso"
           {...register("courseTitle", { required: true })}
           className="form-style w-full"
         />
         {errors.courseTitle && (
           <span className="ml-2 text-xs tracking-wide text-pink-200">
-            Course title is required
+            El título del curso es requerido
           </span>
         )}
       </div>
@@ -43,17 +43,17 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
       {/* Course Short Description */}
       <div className="flex flex-col space-y-2">
         <label className="text-sm text-richblack-5" htmlFor="courseShortDesc">
-          Course Short Description <sup className="text-pink-200">*</sup>
+          Descripción Corta del Curso <sup className="text-pink-200">*</sup>
         </label>
         <textarea
           id="courseShortDesc"
-          placeholder="Enter Description"
+          placeholder="Ingresa la descripción"
           {...register("courseShortDesc", { required: true })}
           className="form-style resize-x-none min-h-[130px] w-full"
         />
         {errors.courseShortDesc && (
           <span className="ml-2 text-xs tracking-wide text-pink-200">
-            Course Description is required
+            La descripción del curso es requerida
           </span>
         )}
       </div>
@@ -61,18 +61,18 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
       {/* Course Price */}
       <div className="flex flex-col space-y-2">
         <label className="text-sm text-richblack-5" htmlFor="coursePrice">
-          Course Price <sup className="text-pink-200">*</sup>
+          Precio del Curso <sup className="text-pink-200">*</sup>
         </label>
         <div className="relative">
           <input
             id="coursePrice"
-            placeholder="Enter Course Price"
+            placeholder="Ingresa el precio del curso"
             {...register("coursePrice", {
               required: true,
               valueAsNumber: true,
               min: {
                 value: 0,
-                message: "Price must be greater than or equal to 0",
+                message: "El precio debe ser mayor o igual a 0",
               },
             })}
             className="form-style w-full !pl-12"
@@ -81,7 +81,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         </div>
         {errors.coursePrice && (
           <span className="ml-2 text-xs tracking-wide text-pink-200">
-            Course Price is required
+            El precio del curso es requerido
           </span>
         )}
       </div>
@@ -89,7 +89,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
       {/* Course Category */}
       <div className="flex flex-col space-y-2">
         <label className="text-sm text-richblack-5" htmlFor="courseCategory">
-          Course Category <sup className="text-pink-200">*</sup>
+          Categoría del Curso <sup className="text-pink-200">*</sup>
         </label>
         <select
           {...register("courseCategory", { required: true })}
@@ -98,7 +98,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
           className="form-style w-full cursor-pointer"
         >
           <option value="" disabled>
-            Choose a Category
+            Elige una Categoría
           </option>
           {!loading &&
             courseCategories?.map((category, indx) => {
@@ -115,16 +115,16 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         </select>
         {errors.courseCategory && (
           <span className="ml-2 text-xs tracking-wide text-pink-200">
-            Course Category is required
+            La categoría del curso es requerida
           </span>
         )}
       </div>
 
       {/* Course Tags */}
       <ChipInput
-        label="Tags"
+        label="Etiquetas"
         name="courseTags"
-        placeholder="Enter Tags and press Enter or Comma"
+        placeholder="Ingresa etiquetas y presiona Enter o Coma"
         register={
           register as unknown as Parameters<typeof ChipInput>[0]["register"]
         }
@@ -137,7 +137,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
       {/* Course Thumbnail Image */}
       <Upload
         name="courseImage"
-        label="Course Thumbnail"
+        label="Miniatura del Curso"
         register={
           register as unknown as Parameters<typeof Upload>[0]["register"]
         }
@@ -151,17 +151,17 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
       {/* Benefits of the course */}
       <div className="flex flex-col space-y-2">
         <label className="text-sm text-richblack-5" htmlFor="courseBenefits">
-          Benefits of the course <sup className="text-pink-200">*</sup>
+          Beneficios del Curso <sup className="text-pink-200">*</sup>
         </label>
         <textarea
           id="courseBenefits"
-          placeholder="Enter benefits of the course"
+          placeholder="Ingresa los beneficios del curso"
           {...register("courseBenefits", { required: true })}
           className="form-style resize-x-none min-h-[130px] w-full"
         />
         {errors.courseBenefits && (
           <span className="ml-2 text-xs tracking-wide text-pink-200">
-            Benefits of the course is required
+            Los beneficios del curso son requeridos
           </span>
         )}
       </div>
@@ -169,7 +169,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
       {/* Requirements/Instructions */}
       <RequirementsField
         name="courseRequirements"
-        label="Requirements/Instructions"
+        label="Requisitos/Instrucciones"
         register={register}
         setValue={setValue}
         errors={errors}

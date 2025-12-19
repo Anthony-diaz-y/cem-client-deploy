@@ -48,6 +48,11 @@ export const courseEndpoints = {
 // RATINGS AND REVIEWS
 export const ratingsEndpoints = {
   REVIEWS_DETAILS_API: BASE_URL + "/course/getReviews",
+  CREATE_RATING_API: BASE_URL + "/course/createRating",
+  UPDATE_RATING_API: BASE_URL + "/course/updateRating",
+  GET_REVIEWS_API: BASE_URL + "/course/reviews",
+  GET_USER_REVIEW_API: BASE_URL + "/course/review",
+  GET_RATING_STATS_API: BASE_URL + "/course/rating",
 }
 
 // CATAGORIES API
@@ -61,7 +66,14 @@ export const catalogData = {
 }
 // CONTACT-US API
 export const contactusEndpoint = {
-  CONTACT_US_API: BASE_URL + "/reach/contact",
+  CONTACT_US_API: BASE_URL + "/contact",
+  GET_CONTACT_MESSAGES_API: BASE_URL + "/contact/messages",
+  GET_CONTACT_MESSAGE_API: BASE_URL + "/contact/messages",
+  GET_CONTACT_STATS_API: BASE_URL + "/contact/stats",
+  MARK_MESSAGE_READ_API: BASE_URL + "/contact/messages",
+  ARCHIVE_MESSAGE_API: BASE_URL + "/contact/messages",
+  DELETE_MESSAGE_API: BASE_URL + "/contact/messages",
+  REPLY_MESSAGE_API: BASE_URL + "/contact/messages",
 }
 
 // SETTINGS PAGE API

@@ -156,10 +156,10 @@ export const useCourseActions = (
       // return;
     }
     setConfirmationModal({
-      text1: "You are not logged in!",
-      text2: "Please login to Purchase Course.",
-      btn1Text: "Login",
-      btn2Text: "Cancel",
+      text1: "¡No estás autenticado!",
+      text2: "Por favor, inicia sesión para comprar el curso.",
+      btn1Text: "Iniciar Sesión",
+      btn2Text: "Cancelar",
       btn1Handler: () => router.push("/auth/login"),
       btn2Handler: () => setConfirmationModal(null),
     });
@@ -167,7 +167,7 @@ export const useCourseActions = (
 
   const handleAddToCart = () => {
     if (user && user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
-      toast.error("You are an Instructor. You can't buy a course.");
+      toast.error("Eres un Instructor. No puedes comprar un curso.");
       return;
     }
     if (token && course) {
@@ -175,10 +175,10 @@ export const useCourseActions = (
       return;
     }
     setConfirmationModal({
-      text1: "You are not logged in!",
-      text2: "Please login to add To Cart",
-      btn1Text: "Login",
-      btn2Text: "Cancel",
+      text1: "¡No estás autenticado!",
+      text2: "Por favor, inicia sesión para agregar al carrito",
+      btn1Text: "Iniciar Sesión",
+      btn2Text: "Cancelar",
       btn1Handler: () => router.push("/auth/login"),
       btn2Handler: () => setConfirmationModal(null),
     });

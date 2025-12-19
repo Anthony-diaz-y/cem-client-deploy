@@ -2,10 +2,11 @@
 
 export interface ContactFormData {
   firstname: string;
-  lastname: string;
+  lastname?: string;
   email: string;
-  countrycode: string;
-  phoneNo: string;
+  countrycode?: string;
+  phoneNo?: string;
+  subject?: string;
   message: string;
 }
 

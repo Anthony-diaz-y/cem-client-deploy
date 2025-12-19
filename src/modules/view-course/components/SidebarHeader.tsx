@@ -50,7 +50,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
           <IoIosArrowBack size={24} />
         </button>
 
-        <IconBtn text="Add Review" onclick={onReviewClick} />
+        <IconBtn text="Agregar Reseña" onclick={onReviewClick} />
       </div>
 
       <div className="flex flex-col w-full px-1">

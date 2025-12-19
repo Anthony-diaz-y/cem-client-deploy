@@ -1,38 +1,129 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 
 import CountryCode from "@shared/data/countrycode.json";
 import { ContactFormData } from "../types";
-// import { apiConnector } from "../../../services/apiConnector"
-// import { contactusEndpoint } from "../../../services/apis"
+import { sendContactMessage } from "@shared/services/contactAPI";
+import { FaChevronDown } from "react-icons/fa";
 
 const ContactUsForm = () => {
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [countryCodeSearch, setCountryCodeSearch] = useState("");
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [selectedCountryCode, setSelectedCountryCode] = useState("+51"); // Default: Perú
+  const countryDropdownRef = useRef<HTMLDivElement>(null);
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors, isSubmitSuccessful },
-  } = useForm<ContactFormData>();
+  } = useForm<ContactFormData>({
+    defaultValues: {
+      countrycode: "+51",
+    },
+  });
 
   const submitContactForm = async (data: ContactFormData) => {
-    // console.log("Form Data - ", data)
     try {
       setLoading(true);
-      // TODO: Uncomment when API is ready
-      // const res = await apiConnector(
-      //   "POST",
-      //   contactusEndpoint.CONTACT_US_API,
-      //   data
-      // )
-      // console.log("Email Res - ", res)
-      console.log("Contact form data:", data); // Temporary: Remove when API is uncommented
-      setLoading(false);
+      setSuccess(false);
+      
+      // Validar campos requeridos
+      if (!data.firstname || !data.email || !data.message) {
+        setLoading(false);
+        return;
+      }
+      
+      // Combinar firstname y lastname en name para el backend
+      const name = `${data.firstname}${data.lastname ? ` ${data.lastname}` : ''}`.trim();
+      
+      // Preparar teléfono combinando código de país y número
+      let phone: string | undefined = undefined;
+      if (data.phoneNo && selectedCountryCode) {
+        // Limpiar el número de teléfono (quitar espacios y caracteres especiales)
+        const cleanPhone = data.phoneNo.replace(/\s+/g, "").trim();
+        if (cleanPhone) {
+          phone = `${selectedCountryCode} ${cleanPhone}`;
+        }
+      }
+
+      // Preparar datos para el backend
+      const contactData = {
+        name,
+        email: data.email,
+        phone: phone || undefined, // Opcional
+        subject: data.subject || undefined, // Opcional
+        message: data.message,
+      };
+
+      const result = await sendContactMessage(contactData);
+      
+      // Si el resultado existe, el mensaje se envió exitosamente
+      if (result) {
+        setSuccess(true);
+        // Limpiar formulario después de éxito
+        setTimeout(() => {
+          reset({
+            email: "",
+            firstname: "",
+            lastname: "",
+            message: "",
+            phoneNo: "",
+            countrycode: "+51",
+            subject: "",
+          });
+          setSelectedCountryCode("+51");
+          setCountryCodeSearch("");
+          setSuccess(false); // Ocultar mensaje de éxito después de limpiar
+        }, 3000); // Limpiar después de 3 segundos
+      }
     } catch (error: unknown) {
-      console.log("ERROR WHILE CONATACT US  - ", (error as Error).message);
+      setSuccess(false);
+      // El error ya se maneja en sendContactMessage con toast
+    } finally {
       setLoading(false);
     }
+  };
+
+  // Filtrar códigos de país basado en la búsqueda
+  const filteredCountryCodes = CountryCode.filter((country) => {
+    const searchLower = countryCodeSearch.toLowerCase();
+    return (
+      country.code.toLowerCase().includes(searchLower) ||
+      country.country.toLowerCase().includes(searchLower)
+    );
+  });
+
+  // Cerrar dropdown al hacer click fuera
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        countryDropdownRef.current &&
+        !countryDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowCountryDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Sincronizar selectedCountryCode con el formulario
+  useEffect(() => {
+    setValue("countrycode", selectedCountryCode);
+  }, [selectedCountryCode, setValue]);
+
+  const handleCountryCodeSelect = (code: string) => {
+    setSelectedCountryCode(code);
+    setShowCountryDropdown(false);
+    setCountryCodeSearch("");
   };
 
   useEffect(() => {
@@ -43,7 +134,11 @@ const ContactUsForm = () => {
         lastname: "",
         message: "",
         phoneNo: "",
+        countrycode: "+51",
+        subject: "",
       });
+      setSelectedCountryCode("+51");
+      setCountryCodeSearch("");
     }
   }, [reset, isSubmitSuccessful]);
 
@@ -87,7 +182,7 @@ const ContactUsForm = () => {
 
       <div className="flex flex-col gap-2">
         <label htmlFor="email" className="lable-style">
-          Email Address
+          Email Address <span className="text-pink-200">*</span>
         </label>
         <input
           type="email"
@@ -104,54 +199,95 @@ const ContactUsForm = () => {
       </div>
 
       <div className="flex flex-col gap-2">
+        <label htmlFor="subject" className="lable-style">
+          Subject (Optional)
+        </label>
+        <input
+          type="text"
+          id="subject"
+          placeholder="Enter subject"
+          className="form-style"
+          {...register("subject")}
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
         <label htmlFor="phonenumber" className="lable-style">
-          Phone Number
+          Phone Number (Optional)
         </label>
 
         <div className="flex gap-5">
-          <div className="flex w-[81px] flex-col gap-2">
-            <select
-              id="countrycode"
-              className="form-style"
-              {...register("countrycode", { required: true })}
+          <div className="flex w-[200px] flex-col gap-2 relative" ref={countryDropdownRef}>
+            <div
+              className="form-style cursor-pointer flex items-center justify-between"
+              onClick={() => setShowCountryDropdown(!showCountryDropdown)}
             >
-              {CountryCode.map((ele, i) => {
-                return (
-                  <option key={i} value={ele.code}>
-                    {ele.code} -{ele.country}
-                  </option>
-                );
-              })}
-            </select>
+              <span className="text-richblack-200">
+                {selectedCountryCode || "Seleccionar"}
+              </span>
+              <FaChevronDown
+                className={`text-richblack-400 transition-transform ${
+                  showCountryDropdown ? "rotate-180" : ""
+                }`}
+                size={12}
+              />
+            </div>
+            {showCountryDropdown && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-richblack-800 border border-richblack-700 rounded-lg shadow-lg z-50 max-h-60 overflow-hidden flex flex-col">
+                <input
+                  type="text"
+                  placeholder="Buscar código o país..."
+                  value={countryCodeSearch}
+                  onChange={(e) => setCountryCodeSearch(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                  className="px-3 py-2 bg-richblack-900 text-richblack-200 border-b border-richblack-700 focus:outline-none focus:ring-2 focus:ring-yellow-50"
+                />
+                <div className="overflow-y-auto max-h-48 custom-scrollbar">
+                  {filteredCountryCodes.length > 0 ? (
+                    filteredCountryCodes.map((country, i) => (
+                      <div
+                        key={i}
+                        onClick={() => handleCountryCodeSelect(country.code)}
+                        className={`px-3 py-2 cursor-pointer hover:bg-richblack-700 text-richblack-200 text-sm ${
+                          selectedCountryCode === country.code
+                            ? "bg-richblack-700 text-yellow-50"
+                            : ""
+                        }`}
+                      >
+                        <span className="font-medium">{country.code}</span> -{" "}
+                        {country.country}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="px-3 py-2 text-richblack-400 text-sm text-center">
+                      No se encontraron resultados
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            <input
+              type="hidden"
+              {...register("countrycode")}
+              value={selectedCountryCode}
+            />
           </div>
 
-          <div className="flex w-[calc(100%-90px)] flex-col gap-2">
+          <div className="flex flex-1 flex-col gap-2">
             <input
-              type="number"
+              type="tel"
               id="phonenumber"
               placeholder="12345 67890"
               className="form-style"
-              {...register("phoneNo", {
-                required: {
-                  value: true,
-                  message: "Please enter your Phone Number.",
-                },
-                maxLength: { value: 12, message: "Invalid Phone Number" },
-                minLength: { value: 10, message: "Invalid Phone Number" },
-              })}
+              {...register("phoneNo")}
             />
           </div>
         </div>
-        {errors.phoneNo && (
-          <span className="-mt-1 text-[12px] text-yellow-100">
-            {errors.phoneNo.message as string}
-          </span>
-        )}
       </div>
 
       <div className="flex flex-col gap-2">
         <label htmlFor="message" className="lable-style">
-          Message
+          Message <span className="text-pink-200">*</span>
         </label>
         <textarea
           id="message"
@@ -168,6 +304,12 @@ const ContactUsForm = () => {
         )}
       </div>
 
+      {success && (
+        <div className="rounded-md bg-caribbeangreen-500/20 border border-caribbeangreen-500 px-4 py-3 text-sm text-caribbeangreen-200">
+          ¡Mensaje enviado exitosamente! Nos pondremos en contacto contigo pronto.
+        </div>
+      )}
+
       <button
         disabled={loading}
         type="submit"
@@ -177,7 +319,7 @@ const ContactUsForm = () => {
            "transition-all duration-200 hover:scale-95 hover:shadow-none"
          }  disabled:bg-richblack-500 sm:text-[16px] `}
       >
-        Send Message
+        {loading ? "Enviando..." : "Send Message"}
       </button>
     </form>
   );

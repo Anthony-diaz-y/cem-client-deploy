@@ -103,7 +103,7 @@ export default function Upload({
                 }}
                 className="mt-3 text-richblack-400 underline"
               >
-                Cancel
+                Cancelar
               </button>
             )}
           </div>
@@ -117,13 +117,13 @@ export default function Upload({
               <FiUploadCloud className="text-2xl text-yellow-50" />
             </div>
             <p className="mt-2 max-w-[200px] text-center text-sm text-richblack-200">
-              Drag and drop an {!video ? "image" : "video"}, or click to{" "}
-              <span className="font-semibold text-yellow-50">Browse</span> a
-              file
+              Arrastra y suelta una {!video ? "imagen" : "video"}, o haz clic para{" "}
+              <span className="font-semibold text-yellow-50">Explorar</span> un
+              archivo
             </p>
             <ul className="mt-10 flex list-disc justify-between space-x-12 text-center  text-xs text-richblack-200">
-              <li>Aspect ratio 16:9</li>
-              <li>Recommended size 1024x576</li>
+              <li>Relación de aspecto 16:9</li>
+              <li>Tamaño recomendado 1024x576</li>
             </ul>
           </div>
         )}

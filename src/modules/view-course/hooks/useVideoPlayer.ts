@@ -58,30 +58,26 @@ export const useVideoPlayer = (
       });
 
       if (!filteredData || filteredData.length === 0) {
-        console.error("Section not found:", sectionId, "Available sections:", courseSectionData.map((s: Section) => s._id || (s as any)?.id));
-        
-        // Si no se encuentra la sección, intentar redirigir a la primera sección disponible
-        if (courseSectionData.length > 0) {
-          const firstSection = courseSectionData[0];
-          const firstSectionId = (firstSection._id || (firstSection as any)?.id)?.toString();
-          const firstSubSections = firstSection.subSection || (firstSection as any)?.subSections || [];
-          
-          if (firstSubSections.length > 0) {
-            const firstSubSection = firstSubSections[0];
-            const firstSubSectionId = (firstSubSection._id || (firstSubSection as any)?.id)?.toString();
-            
-            console.log("Redirecting to first available section:", {
-              sectionId: firstSectionId,
-              subSectionId: firstSubSectionId
-            });
-            
-            router.push(
-              `/view-course/${courseId}/section/${firstSectionId}/sub-section/${firstSubSectionId}`
-            );
-            return;
-          }
+        // Solo mostrar warning en desarrollo, no error
+        if (process.env.NODE_ENV === 'development') {
+          console.warn("Section not found in current data:", {
+            requestedSectionId: sectionId,
+            normalizedRequestedId: normalizedSectionId,
+            availableSections: courseSectionData.map((s: Section) => {
+              const sectionIdValue = (s._id || (s as any)?.id)?.toString().trim();
+              return {
+                _id: s._id,
+                id: (s as any)?.id,
+                normalizedId: sectionIdValue,
+                sectionName: (s as any)?.sectionName || (s as any)?.section_name
+              };
+            })
+          });
         }
         
+        // No redirigir automáticamente - puede ser que los datos aún se estén cargando
+        // O que la URL tenga un ID diferente pero válido
+        // El usuario puede navegar manualmente si es necesario
         return;
       }
 
@@ -127,14 +123,52 @@ export const useVideoPlayer = (
 
       const video = filteredVideoData[0];
       
+      // Validar y corregir videoUrl si es necesario
+      const validateVideoUrl = (url: string | null | undefined): string | null => {
+        if (!url) return null;
+        
+        const trimmedUrl = url.trim();
+        
+        // Verificar que no sea 'null', 'undefined' o vacío
+        if (trimmedUrl === '' || 
+            trimmedUrl === 'null' || 
+            trimmedUrl === 'undefined' ||
+            trimmedUrl.toLowerCase() === 'null' ||
+            trimmedUrl.toLowerCase() === 'undefined') {
+          return null;
+        }
+        
+        // Verificar que sea una URL válida
+        try {
+          const urlObj = new URL(trimmedUrl);
+          if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
+            return null;
+          }
+          return trimmedUrl;
+        } catch (e) {
+          return null;
+        }
+      };
+      
+      // Validar videoUrl y usar fallback si es necesario
+      const validatedUrl = validateVideoUrl(video.videoUrl);
+      const fallbackUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+      
+      const videoWithValidatedUrl = {
+        ...video,
+        videoUrl: validatedUrl || fallbackUrl,
+      };
+      
       console.log("Video data found:", {
         title: video.title,
-        videoUrl: video.videoUrl,
+        originalVideoUrl: video.videoUrl,
+        validatedVideoUrl: validatedUrl,
+        usingFallback: !validatedUrl,
         hasVideoUrl: !!video.videoUrl,
       });
 
       if (video) {
-        setVideoData(video);
+        setVideoData(videoWithValidatedUrl);
       }
       
       if (courseEntireData) {
