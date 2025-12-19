@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { BsChevronDown } from "react-icons/bs";
 import { setCourseViewSidebar } from "@modules/dashboard/store/sidebarSlice";
 import { RootState, AppDispatch } from "@shared/store/store";
-import { Section, SidebarSectionListProps } from "../types";
+import { Section, SubSection, SidebarSectionListProps } from "../types";
 import { toggleLectureCompletion } from "@shared/services/courseDetailsAPI";
 import { updateCompletedLectures, removeCompletedLecture } from "../store/viewCourseSlice";
 
@@ -181,7 +181,7 @@ const SidebarSectionList: React.FC<SidebarSectionListProps> = ({
                   <div className="transition-all duration-300 ease-in-out bg-richblack-800 border-t border-richblack-700">
                     {subSectionsArray.length > 0 ? (
                       <div className="py-2">
-                        {subSectionsArray.map((topic, i: number) => {
+                        {subSectionsArray.map((topic: SubSection, i: number) => {
                           const topicId = topic?._id || (topic as any)?.id;
                           const isActive = videoBarActive === topicId;
                           const isCompleted = completedLectures.includes(topicId);

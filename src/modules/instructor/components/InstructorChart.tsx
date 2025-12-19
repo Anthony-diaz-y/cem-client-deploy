@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Chart, registerables } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { InstructorChartProps } from "../types";
+import { InstructorChartProps, Course } from "../types";
 
 Chart.register(...registerables);
 
@@ -29,7 +29,7 @@ export default function InstructorChart({ courses }: InstructorChartProps) {
   // Data for the chart displaying student information (Bar Chart)
   const chartDataStudents = useMemo(
     () => {
-      const studentsData = courses.map((course) => {
+      const studentsData = courses.map((course: Course) => {
         // Calcular estudiantes desde el array si está disponible, sino usar totalStudentsEnrolled
         const studentsCount = Array.isArray(course.studentsEnrolled)
           ? course.studentsEnrolled.length
@@ -39,7 +39,7 @@ export default function InstructorChart({ courses }: InstructorChartProps) {
       });
       
       return {
-        labels: courses.map((course) => course.courseName),
+        labels: courses.map((course: Course) => course.courseName),
         datasets: [
           {
             label: 'Estudiantes Inscritos',
@@ -57,7 +57,7 @@ export default function InstructorChart({ courses }: InstructorChartProps) {
   // Data for the chart displaying income information (Bar Chart con colores diferentes)
   const chartIncomeData = useMemo(
     () => {
-      const incomeData = courses.map((course) => {
+      const incomeData = courses.map((course: Course) => {
         // Usar totalAmountGenerated del backend si está disponible, sino calcular
         if (typeof course.totalAmountGenerated === 'number' && course.totalAmountGenerated >= 0) {
           return course.totalAmountGenerated;
@@ -71,15 +71,15 @@ export default function InstructorChart({ courses }: InstructorChartProps) {
       });
       
       return {
-        labels: courses.map((course) => course.courseName),
+        labels: courses.map((course: Course) => course.courseName),
         datasets: [
           {
             label: 'Ingresos Generados',
             data: incomeData,
-            backgroundColor: incomeData.map(income => 
+            backgroundColor: incomeData.map((income: number) => 
               income > 0 ? 'rgba(16, 185, 129, 0.6)' : 'rgba(239, 68, 68, 0.6)'
             ), // Verde para ingresos positivos, rojo para cero
-            borderColor: incomeData.map(income => 
+            borderColor: incomeData.map((income: number) => 
               income > 0 ? 'rgba(16, 185, 129, 1)' : 'rgba(239, 68, 68, 1)'
             ),
             borderWidth: 1,

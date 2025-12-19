@@ -159,7 +159,7 @@ export default function CoursesTable({
               </td>
             </tr>
           ) : (
-            courses?.map((course, index) => {
+            courses?.map((course: Course, index: number) => {
               // Obtener el ID del curso (priorizar 'id' sobre '_id' ya que PostgreSQL usa UUIDs con campo 'id')
               const courseId = (course as any)?.id || course?._id || `course-${index}`;
               

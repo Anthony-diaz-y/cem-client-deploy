@@ -109,7 +109,7 @@ export default function RenderTotalAmount() {
 
   const handleBuyCourse = async () => {
     // Normalizar los IDs de los cursos (priorizar 'id' sobre '_id')
-    const courses = cart.map((course) => {
+    const courses = cart.map((course: CartItem) => {
       const courseId = (course as any)?.id || course?._id;
       return courseId ? String(courseId) : null;
     }).filter(Boolean) as string[];
@@ -142,7 +142,7 @@ export default function RenderTotalAmount() {
   };
 
   // Calcular el total sumando todos los precios del carrito (más confiable que el estado total)
-  const calculatedTotal = cart.reduce((sum, course) => {
+  const calculatedTotal = cart.reduce((sum: number, course: CartItem) => {
     const coursePrice = typeof course.price === 'number' 
       ? course.price 
       : (typeof course.price === 'string' ? parseFloat(course.price) : 0);

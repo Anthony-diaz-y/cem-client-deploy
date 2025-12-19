@@ -68,6 +68,7 @@ export type NavigateFunction = (url: string) => void;
 
 export interface ApiError {
   response?: {
+    status?: number;
     data?: {
       message?: string;
     };
