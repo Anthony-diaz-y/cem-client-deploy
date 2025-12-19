@@ -300,7 +300,7 @@ export default function SubSectionModal({
         
         console.log("UPDATED COURSE:", updatedCourse);
         console.log("Total sections:", updatedCourseContent.length);
-        updatedCourseContent.forEach((sec, idx) => {
+        updatedCourseContent.forEach((sec: Section, idx: number) => {
           console.log(`Section ${idx}: ${sec.sectionName}, subSections: ${sec.subSection?.length || 0}`);
         });
         

@@ -12,7 +12,7 @@ export const useInstructorStats = (
 ) => {
   // Calcular totalAmount: usar totalAmountGenerated del backend si está disponible, sino calcular
   const totalAmount = useMemo(() => {
-    return courses.reduce((acc, course) => {
+    return courses.reduce((acc: number, course: Course) => {
       // Priorizar totalAmountGenerated del backend (según recomendación del backend)
       if (typeof course.totalAmountGenerated === 'number' && course.totalAmountGenerated >= 0) {
         return acc + course.totalAmountGenerated;
@@ -29,7 +29,7 @@ export const useInstructorStats = (
 
   // Calcular totalStudents desde courses
   const totalStudents = useMemo(() => {
-    return courses.reduce((acc, course) => {
+    return courses.reduce((acc: number, course: Course) => {
       // Calcular estudiantes: usar array si está disponible, sino usar totalStudentsEnrolled
       const studentsCount = Array.isArray(course.studentsEnrolled)
         ? course.studentsEnrolled.length
