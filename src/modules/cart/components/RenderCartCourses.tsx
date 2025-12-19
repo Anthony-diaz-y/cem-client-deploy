@@ -84,7 +84,9 @@ export default function RenderCartCourses() {
               {(() => {
                 // Calcular rating promedio: priorizar averageRating del backend
                 const avgRating = course?.averageRating 
-                  ? parseFloat(course.averageRating.toString())
+                  ? (typeof course.averageRating === 'number' 
+                      ? course.averageRating 
+                      : (typeof course.averageRating === 'string' ? parseFloat(course.averageRating) : 0))
                   : (course?.ratingAndReviews && Array.isArray(course.ratingAndReviews) && course.ratingAndReviews.length > 0
                     ? course.ratingAndReviews
                         .filter((r: any) => r?.rating && typeof r.rating === 'number')
