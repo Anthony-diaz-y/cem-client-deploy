@@ -140,7 +140,7 @@ export const fetchCourseCategories = async () => {
 
 
 // ================ add Course Details ================
-export const addCourseDetails = async (data: Record<string, unknown>, token: string) => {
+export const addCourseDetails = async (data: FormData | Record<string, unknown>, token: string) => {
   const toastId = toast.loading("Loading...")
   let result = null;
 
@@ -234,7 +234,7 @@ export const createSection = async (data: Record<string, unknown>, token: string
 
 
 // ================ create SubSection ================
-export const createSubSection = async (data: Record<string, unknown>, token: string) => {
+export const createSubSection = async (data: FormData | Record<string, unknown>, token: string) => {
   let result = null
   const toastId = toast.loading("Loading...")
 
@@ -300,7 +300,7 @@ export const updateSection = async (data: Record<string, unknown>, token: string
 
 
 // ================ Update SubSection ================
-export const updateSubSection = async (data: Record<string, unknown>, token: string) => {
+export const updateSubSection = async (data: FormData | Record<string, unknown>, token: string) => {
   let result = null
   const toastId = toast.loading("Loading...")
 
