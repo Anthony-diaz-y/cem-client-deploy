@@ -162,7 +162,7 @@ export const addCourseDetails = async (data: CourseFormData | Record<string, unk
   let result = null;
 
   try {
-    const response = await apiConnector("POST", CREATE_COURSE_API, data as Record<string, unknown> | FormData, {
+    const response = await apiConnector("POST", CREATE_COURSE_API, data as unknown as (Record<string, unknown> | FormData), {
       "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${token}`,
     });
@@ -196,7 +196,7 @@ export const editCourseDetails = async (
   const toastId = toast.loading("Cargando...");
 
   try {
-    const response = await apiConnector("POST", EDIT_COURSE_API, data as Record<string, unknown> | FormData, {
+    const response = await apiConnector("POST", EDIT_COURSE_API, data as unknown as (Record<string, unknown> | FormData), {
       "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${token}`,
     });
@@ -260,7 +260,7 @@ export const createSubSection = async (
   const toastId = toast.loading("Cargando...");
 
   try {
-    const response = await apiConnector("POST", CREATE_SUBSECTION_API, data as Record<string, unknown> | FormData, {
+    const response = await apiConnector("POST", CREATE_SUBSECTION_API, data as unknown as (Record<string, unknown> | FormData), {
       Authorization: `Bearer ${token}`,
     });
     console.log("CREATE SUB-SECTION API RESPONSE............", response);
@@ -323,7 +323,7 @@ export const updateSubSection = async (
   const toastId = toast.loading("Cargando...");
 
   try {
-    const response = await apiConnector("POST", UPDATE_SUBSECTION_API, data as Record<string, unknown> | FormData, {
+    const response = await apiConnector("POST", UPDATE_SUBSECTION_API, data as unknown as (Record<string, unknown> | FormData), {
       Authorization: `Bearer ${token}`,
     });
     console.log("UPDATE SUB-SECTION API RESPONSE............", response);

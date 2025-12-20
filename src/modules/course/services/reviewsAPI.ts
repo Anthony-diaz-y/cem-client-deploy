@@ -168,7 +168,7 @@ export const getUserReview = async (
     const response = await apiConnector(
       "GET",
       `${ratingsEndpoints.GET_USER_REVIEW_API}/${courseId}`,
-      null,
+      undefined,
       {
         Authorization: `Bearer ${token}`,
       }

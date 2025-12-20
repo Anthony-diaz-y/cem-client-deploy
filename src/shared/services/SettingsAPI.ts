@@ -25,7 +25,7 @@ export function updateUserProfileImage(token: string, formData: FormData | Recor
       const response = await apiConnector(
         "PUT",
         UPDATE_DISPLAY_PICTURE_API,
-        formData as Record<string, unknown>,
+        formData as unknown as Record<string, unknown>,
         {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
