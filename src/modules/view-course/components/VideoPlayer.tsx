@@ -226,7 +226,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     // Capturar información del error de manera más robusta
     if (error) {
       errorCode = error.code;
-      errorName = error.name || null;
+      // MediaError no tiene propiedad 'name', solo 'code' y 'message'
+      errorName = null;
       
       switch (error.code) {
         case error.MEDIA_ERR_ABORTED:
