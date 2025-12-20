@@ -188,14 +188,14 @@ export const useVideoPlayer = (
   ]);
 
   const handleLectureCompletion = async () => {
-    if (!token) return;
+    if (!token || !subSectionId) return;
     setLoading(true);
     try {
       const res = await markLectureAsComplete(
         { courseId: courseId, subsectionId: subSectionId },
         token
       );
-      if (res) {
+      if (res && subSectionId) {
         dispatch(updateCompletedLectures(subSectionId));
       }
     } catch (error) {
