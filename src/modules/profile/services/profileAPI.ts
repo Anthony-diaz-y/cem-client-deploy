@@ -1,5 +1,5 @@
 import { toast } from "react-hot-toast";
-import { NavigateFunction } from "react-router-dom";
+import { NavigateFunction } from "@modules/auth/types";
 
 import { setLoading, setUser } from "@modules/auth/store/profileSlice";
 import { apiConnector } from "@shared/services/apiConnector";
