@@ -6,13 +6,13 @@ export default function GetAvgRating(ratingArr: RatingItem[] | unknown[] | null 
   if (!ratingArr || !Array.isArray(ratingArr) || ratingArr.length === 0) return 0
   
   // Normalizar los datos: filtrar elementos válidos con campo 'rating'
-  const validRatings = ratingArr
-    .filter((item): item is RatingItem => {
-      if (!item || typeof item !== 'object') return false;
-      const rating = (item as any).rating;
-      return typeof rating === 'number' && !isNaN(rating);
-    })
-    .map(item => item.rating);
+  const validRatingItems = ratingArr.filter((item): item is RatingItem => {
+    if (!item || typeof item !== 'object') return false;
+    const rating = (item as Record<string, unknown>).rating;
+    return typeof rating === 'number' && !isNaN(rating);
+  }) as RatingItem[];
+  
+  const validRatings = validRatingItems.map((item: RatingItem) => item.rating);
   
   if (validRatings.length === 0) return 0;
   
