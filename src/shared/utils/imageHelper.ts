@@ -21,23 +21,27 @@ export const getImageUrl = (image: string | { default?: string; src?: string } |
   
   // If it's an object with default property (common in Next.js)
   if (image && typeof image === 'object') {
+    const imageObj = image as Record<string, unknown>;
     // Check for default property
-    if (image.default !== undefined) {
-      const defaultValue = image.default;
+    if (imageObj.default !== undefined) {
+      const defaultValue = imageObj.default;
       if (typeof defaultValue === 'string') {
         return defaultValue;
       }
-      if (defaultValue && typeof defaultValue === 'object' && defaultValue.src) {
-        return defaultValue.src;
+      if (defaultValue && typeof defaultValue === 'object') {
+        const defaultValueObj = defaultValue as Record<string, unknown>;
+        if (defaultValueObj.src && typeof defaultValueObj.src === 'string') {
+          return defaultValueObj.src;
+        }
       }
     }
     // Check for src property
-    if (image.src && typeof image.src === 'string') {
-      return image.src;
+    if (imageObj.src && typeof imageObj.src === 'string') {
+      return imageObj.src;
     }
     // Check if it's a URL object
-    if (image.href && typeof image.href === 'string') {
-      return image.href;
+    if (imageObj.href && typeof imageObj.href === 'string') {
+      return imageObj.href;
     }
   }
   

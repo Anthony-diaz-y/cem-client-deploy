@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { API_URL } from "@/shared/config/api.config";
 
 // Flag to enable/disable mock mode - DESACTIVADO para usar backend real
@@ -72,13 +72,13 @@ const getToken = (): string | null => {
 
 // apiConnector principal - ahora usa el backend real
 // Las URLs de apis.ts ya incluyen el BASE_URL completo, así que usamos axios directamente
-const realApiConnector = (
+const realApiConnector = <T = any>(
     method: string,
     url: string,
     bodyData?: Record<string, unknown> | FormData,
     headers?: Record<string, string>,
     params?: Record<string, string | number>
-) => {
+): Promise<AxiosResponse<T>> => {
     const token = getToken();
     
     // Si bodyData es FormData, no establecer Content-Type (el navegador lo hará automáticamente)
@@ -105,13 +105,23 @@ const realApiConnector = (
 
     // Para métodos DELETE, algunos backends esperan los parámetros en query params
     // Si hay bodyData y el método es DELETE, intentar usar params también
-    let finalParams = params;
+    let finalParams: Record<string, string | number> | undefined = params;
     if (method.toUpperCase() === 'DELETE' && bodyData && !(bodyData instanceof FormData)) {
       // Para DELETE, agregar los datos del body a los params también
-      finalParams = { ...params, ...bodyData };
+      // Convertir los valores a string o number para query params
+      const convertedBodyData: Record<string, string | number> = {};
+      for (const [key, value] of Object.entries(bodyData)) {
+        if (typeof value === 'string' || typeof value === 'number') {
+          convertedBodyData[key] = value;
+        } else if (value != null) {
+          // Convertir otros tipos a string
+          convertedBodyData[key] = String(value);
+        }
+      }
+      finalParams = { ...params, ...convertedBodyData };
     }
 
-    return axios({
+    return axios<T>({
         method: `${method}`,
         url: url,
         data: bodyData ?? undefined,
@@ -122,12 +132,13 @@ const realApiConnector = (
 };
 
 // Export the apiConnector - ahora siempre usa el backend real
-export const apiConnector = (
+// Soporta tipos genéricos para type safety
+export const apiConnector = <T = any>(
     method: string,
     url: string,
     bodyData?: Record<string, unknown> | FormData,
     headers?: Record<string, string>,
     params?: Record<string, string | number>
-) => {
-    return realApiConnector(method, url, bodyData, headers, params);
+): Promise<AxiosResponse<T>> => {
+    return realApiConnector<T>(method, url, bodyData, headers, params);
 };
