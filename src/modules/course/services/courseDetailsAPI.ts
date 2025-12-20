@@ -92,7 +92,7 @@ export const fetchCourseDetails = async (courseId: string) => {
 
     const response = await apiConnector("POST", COURSE_DETAILS_API, {
       courseId,
-    });
+    } as Record<string, unknown>);
     console.log("COURSE_DETAILS_API API RESPONSE............", response);
 
     // Verificar estructura de respuesta antes de desestructurar

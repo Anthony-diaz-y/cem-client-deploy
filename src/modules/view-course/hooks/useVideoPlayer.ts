@@ -221,6 +221,6 @@ export const useVideoPlayer = (
     setVideoEnded,
     handleLectureCompletion,
     handleRewatch,
-    isCompleted: completedLectures.includes(subSectionId),
+    isCompleted: subSectionId ? completedLectures.includes(subSectionId) : false,
   };
 };
