@@ -152,7 +152,7 @@ async function verifyPayment(
   dispatch(setPaymentLoading(true));
 
   try {
-    const response = await apiConnector("POST", COURSE_VERIFY_API, bodyData, {
+    const response = await apiConnector("POST", COURSE_VERIFY_API, bodyData as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     });
 

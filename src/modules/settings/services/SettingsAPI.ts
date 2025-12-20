@@ -24,7 +24,7 @@ export function updateUserProfileImage(token: string, formData: FormData) {
       const response = await apiConnector(
         "PUT",
         UPDATE_DISPLAY_PICTURE_API,
-        formData,
+        formData as unknown as (Record<string, unknown> | FormData),
         {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token} `,
@@ -61,7 +61,7 @@ export function updateProfile(token: string, formData: ProfileFormData) {
     // console.log('This is formData for updated profile -> ', formData)
     const toastId = toast.loading("Loading...");
     try {
-      const response = await apiConnector("PUT", UPDATE_PROFILE_API, formData, {
+      const response = await apiConnector("PUT", UPDATE_PROFILE_API, formData as unknown as (Record<string, unknown> | FormData), {
         Authorization: `Bearer ${token} `,
       });
       console.log("UPDATE_PROFILE_API API RESPONSE............", response);
@@ -104,7 +104,7 @@ export async function changePassword(
 ) {
   const toastId = toast.loading("Loading...");
   try {
-    const response = await apiConnector("POST", CHANGE_PASSWORD_API, formData, {
+    const response = await apiConnector("POST", CHANGE_PASSWORD_API, formData as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     });
     console.log("CHANGE_PASSWORD_API API RESPONSE............", response);

@@ -57,7 +57,7 @@ export function updateProfile(token: string, formData: Record<string, unknown>) 
     // console.log('This is formData for updated profile -> ', formData)
     const toastId = toast.loading("Loading...")
     try {
-      const response = await apiConnector("PUT", UPDATE_PROFILE_API, formData, {
+      const response = await apiConnector("PUT", UPDATE_PROFILE_API, formData as unknown as (Record<string, unknown> | FormData), {
         Authorization: `Bearer ${token}`,
       })
       console.log("UPDATE_PROFILE_API API RESPONSE............", response)
@@ -89,7 +89,7 @@ export function updateProfile(token: string, formData: Record<string, unknown>) 
 export async function changePassword(token: string, formData: Record<string, unknown>) {
   const toastId = toast.loading("Loading...")
   try {
-    const response = await apiConnector("POST", CHANGE_PASSWORD_API, formData, {
+    const response = await apiConnector("POST", CHANGE_PASSWORD_API, formData as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     })
     console.log("CHANGE_PASSWORD_API API RESPONSE............", response)
