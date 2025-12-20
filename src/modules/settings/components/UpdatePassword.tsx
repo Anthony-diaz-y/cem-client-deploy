@@ -29,7 +29,7 @@ export default function UpdatePassword() {
     // console.log("password Data - ", data)
     if (!token) return;
     try {
-      await changePassword(token, data);
+      await changePassword(token, data as unknown as Record<string, unknown>);
     } catch (error) {
       console.log("ERROR MESSAGE - ", (error as Error).message);
     }
