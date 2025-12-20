@@ -33,7 +33,7 @@ export const getCatalogPageData = async (categoryId: string) => {
 
     console.log("Fetching catalog page data for categoryId (UUID):", categoryId);
     const response = await apiConnector("POST", catalogData.CATALOGPAGEDATA_API,
-      { categoryId: categoryId });
+      { categoryId: categoryId } as Record<string, unknown>);
 
     console.log("CATALOG PAGE DATA API RESPONSE............", response);
 

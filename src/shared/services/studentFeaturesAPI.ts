@@ -52,7 +52,7 @@ export async function buyCourse(
 
         // initiate the order
         const orderResponse = await apiConnector("POST", COURSE_PAYMENT_API,
-            { coursesId },
+            { coursesId } as Record<string, unknown>,
             {
                 Authorization: `Bearer ${token}`,
             })
@@ -113,7 +113,7 @@ async function sendPaymentSuccessEmail(
             orderId: response.razorpay_order_id,
             paymentId: response.razorpay_payment_id,
             amount,
-        }, {
+        } as Record<string, unknown>, {
             Authorization: `Bearer ${token}`
         })
     }
