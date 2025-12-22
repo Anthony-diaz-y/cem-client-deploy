@@ -264,10 +264,17 @@ export const replyToMessage = async (messageId: string, replyMessage: string, to
   });
 
   try {
+    const requestBody = { replyMessage };
+    console.log("Reply to message request:", {
+      messageId,
+      url: `${GET_CONTACT_MESSAGES_API}/${messageId}/reply`,
+      body: requestBody,
+    });
+
     const response = await apiConnector(
       "POST",
       `${GET_CONTACT_MESSAGES_API}/${messageId}/reply`,
-      { replyMessage },
+      requestBody as unknown as Record<string, unknown>,
       {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -286,9 +293,28 @@ export const replyToMessage = async (messageId: string, replyMessage: string, to
         );
       }, 100);
       result = true;
+    } else {
+      console.error("Reply failed - Response:", response?.data);
+      toast.dismiss(`reply-loading-${messageId}`);
+      setTimeout(() => {
+        toast.error(
+          response?.data?.message || "No se pudo enviar la respuesta",
+          {
+            duration: 5000,
+            id: `reply-error-${messageId}`,
+          }
+        );
+      }, 100);
     }
   } catch (error) {
     const apiError = error as ApiError;
+    console.error("Reply to message error:", {
+      messageId,
+      status: apiError?.response?.status,
+      statusText: apiError?.response?.statusText,
+      data: apiError?.response?.data,
+      error: apiError,
+    });
     toast.dismiss(`reply-loading-${messageId}`);
     setTimeout(() => {
       toast.error(
