@@ -140,6 +140,7 @@ export interface VerifyPaymentData extends PaymentResponse {
 export interface ApiError {
   response?: {
     status?: number;
+    statusText?: string;
     data?: {
       message?: string;
     };
