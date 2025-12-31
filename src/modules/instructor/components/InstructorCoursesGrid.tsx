@@ -36,20 +36,34 @@ const InstructorCoursesGrid: React.FC<InstructorCoursesGridProps> = ({
             className="flex flex-col w-full"
           >
             <div className="w-full h-[201px] rounded-2xl overflow-hidden relative bg-richblack-900">
-              <img
-                src={course.thumbnail || ''}
-                alt={course.courseName || "course thumbnail"}
-                className="absolute inset-0 w-full h-full object-cover"
-                onError={(e) => {
-                  // Fallback si la imagen no carga
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  const placeholder = document.createElement('div');
-                  placeholder.className = 'absolute inset-0 bg-gradient-to-br from-richblack-800 to-richblack-900 flex items-center justify-center';
-                  placeholder.innerHTML = '<span class="text-richblack-500 text-sm">Sin imagen</span>';
-                  target.parentElement?.appendChild(placeholder);
-                }}
-              />
+              {course.thumbnail ? (
+                <img
+                  src={course.thumbnail}
+                  alt={course.courseName || "course thumbnail"}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  onError={(e) => {
+                    // Fallback si la imagen no carga
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'absolute inset-0 bg-gradient-to-br from-richblack-800 to-richblack-900 flex flex-col items-center justify-center';
+                    placeholder.innerHTML = `
+                      <svg class="w-12 h-12 text-richblack-500 opacity-60 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      </svg>
+                      <span class="text-richblack-400 text-xs">Sin imagen</span>
+                    `;
+                    target.parentElement?.appendChild(placeholder);
+                  }}
+                />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-richblack-800 to-richblack-900 flex flex-col items-center justify-center">
+                  <svg className="w-12 h-12 text-richblack-500 opacity-60 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  <span className="text-richblack-400 text-xs">Sin imagen</span>
+                </div>
+              )}
             </div>
 
             <div className="mt-3 w-full">

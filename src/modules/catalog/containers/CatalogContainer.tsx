@@ -23,12 +23,13 @@ const CatalogContainer = () => {
     return <CatalogLoadingState />;
   }
 
-  // No data state
+  // No data state - solo si realmente no hay datos del backend
   if (!loading && !catalogPageData) {
     return <CatalogEmptyState />;
   }
 
   // Render presentational components with data
+  // Incluso si no hay cursos, mostramos la información de la categoría
   return (
     <>
       <CatalogHero catalogPageData={catalogPageData!} />
