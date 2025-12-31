@@ -195,7 +195,7 @@ export default function RenderCartCourses() {
               </button>
             </div>
             <p className="text-xl sm:text-2xl font-semibold text-yellow-100 whitespace-nowrap">
-              ₹ {(() => {
+              $ {(() => {
                 const price = typeof course?.price === 'number' 
                   ? course.price 
                   : (typeof course?.price === 'string' ? parseFloat(course.price) : 0);
