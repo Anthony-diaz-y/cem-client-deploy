@@ -38,7 +38,7 @@ export default function DashboardLayout({
   return (
     <div className="relative flex min-h-[calc(100vh-3.5rem)] ">
       <Sidebar />
-      <div className="h-[calc(100vh-3.5rem)] overflow-auto w-full">
+      <div className="min-h-[calc(100vh-3.5rem)] overflow-auto w-full">
         {showLoading ? (
           <div className="mt-10">
             <Loading />
