@@ -237,7 +237,7 @@ export default function CoursesTable({
                 </td>
                 
                 <td className="text-sm font-medium text-richblack-100">
-                  ₹{course.price}
+                  $ {course.price}
                 </td>
 
                 <td className="text-sm font-medium text-richblack-100 ">
