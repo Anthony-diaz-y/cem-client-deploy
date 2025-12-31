@@ -78,13 +78,23 @@ export default function Sidebar() {
         </div>
       )}
 
+      {/* Sidebar móvil: overlay cuando está abierto */}
+      {mounted && screenSize && screenSize <= 640 && openSideMenu && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 sm:hidden"
+          onClick={() => dispatch(setOpenSideMenu(false))}
+        />
+      )}
+
       {/* Sidebar: visible en pantallas grandes siempre, en móviles solo si openSideMenu es true (después de montar) */}
       <div
-        className={`hidden sm:flex ${
-          mounted && screenSize && screenSize <= 640 && !openSideMenu
-            ? "hidden"
-            : ""
-        } h-[calc(100vh-3.5rem)] min-w-[220px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800 py-10`}
+        className={`${
+          mounted && screenSize && screenSize <= 640
+            ? openSideMenu
+              ? "flex fixed left-0 top-[3.5rem] z-50"
+              : "hidden"
+            : "hidden sm:flex"
+        } h-[calc(100vh-3.5rem)] min-w-[220px] max-w-[220px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800 py-10 flex-shrink-0`}
       >
         <div className="flex flex-col mt-6">
           {sidebarLinks.map((link) => {
