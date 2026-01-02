@@ -9,7 +9,8 @@ export default function AddCoursePage() {
   const { user } = useAppSelector((state) => state.profile);
   const [mounted] = useState(() => typeof window !== "undefined");
 
-  if (!mounted || user?.accountType !== ACCOUNT_TYPE.INSTRUCTOR) {
+  // Permitir tanto instructores como administradores
+  if (!mounted || (user?.accountType !== ACCOUNT_TYPE.INSTRUCTOR && user?.accountType !== ACCOUNT_TYPE.ADMIN)) {
     return null;
   }
 

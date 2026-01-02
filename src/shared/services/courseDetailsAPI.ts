@@ -21,6 +21,9 @@ const {
   GET_FULL_COURSE_DETAILS_AUTHENTICATED,
   CREATE_RATING_API,
   LECTURE_COMPLETION_API,
+  REORDER_SECTIONS_API,
+  REORDER_SUBSECTIONS_API,
+  MOVE_SUBSECTION_API,
 } = courseEndpoints
 
 
@@ -147,7 +150,7 @@ export const addCourseDetails = async (data: FormData | Record<string, unknown>,
   try {
     const response = await apiConnector("POST", CREATE_COURSE_API, data, {
       "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token} `,
+      Authorization: `Bearer ${token}`,
     })
     console.log("CREATE COURSE API RESPONSE............", response)
 
@@ -181,12 +184,12 @@ export const addCourseDetails = async (data: FormData | Record<string, unknown>,
 // ================ edit Course Details ================
 export const editCourseDetails = async (data: FormData | Record<string, unknown>, token: string) => {
   let result = null
-  const toastId = toast.loading("Loading...")
+  const toastId = toast.loading("Cargando...")
 
   try {
     const response = await apiConnector("POST", EDIT_COURSE_API, data, {
       "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token} `,
+      Authorization: `Bearer ${token}`,
     })
     console.log("EDIT COURSE API RESPONSE............", response)
 
@@ -195,11 +198,11 @@ export const editCourseDetails = async (data: FormData | Record<string, unknown>
     }
 
     result = response?.data?.data
-    toast.success("Course Details Updated Successfully")
+    toast.success("Curso editado exitosamente")
   } catch (error) {
     const apiError = error as ApiError;
     console.log("EDIT COURSE API ERROR............", apiError)
-    toast.error(apiError.message || "Could Not Update Course Details")
+    toast.error("Error al editar el curso")
   }
   toast.dismiss(toastId)
   return result
@@ -213,7 +216,7 @@ export const createSection = async (data: Record<string, unknown>, token: string
 
   try {
     const response = await apiConnector("POST", CREATE_SECTION_API, data, {
-      Authorization: `Bearer ${token} `,
+      Authorization: `Bearer ${token}`,
     })
     console.log("CREATE SECTION API RESPONSE............", response)
 
@@ -222,7 +225,6 @@ export const createSection = async (data: Record<string, unknown>, token: string
     }
 
     result = response?.data?.updatedCourseDetails
-    toast.success("Course Section Created")
   } catch (error) {
     const apiError = error as ApiError;
     console.log("CREATE SECTION API ERROR............", apiError)
@@ -242,7 +244,7 @@ export const createSubSection = async (data: FormData | Record<string, unknown>,
     // No establecer Content-Type manualmente cuando se envía FormData
     // El navegador lo establecerá automáticamente con el boundary correcto
     const response = await apiConnector("POST", CREATE_SUBSECTION_API, data, {
-      Authorization: `Bearer ${token} `,
+      Authorization: `Bearer ${token}`,
     })
     console.log("CREATE SUB-SECTION API RESPONSE............", response)
 
@@ -279,7 +281,7 @@ export const updateSection = async (data: Record<string, unknown>, token: string
 
   try {
     const response = await apiConnector("POST", UPDATE_SECTION_API, data, {
-      Authorization: `Bearer ${token} `,
+      Authorization: `Bearer ${token}`,
     })
     console.log("UPDATE SECTION API RESPONSE............", response)
 
@@ -288,7 +290,6 @@ export const updateSection = async (data: Record<string, unknown>, token: string
     }
 
     result = response?.data?.data
-    toast.success("Course Section Updated")
   } catch (error) {
     const apiError = error as ApiError;
     console.log("UPDATE SECTION API ERROR............", apiError)
@@ -308,7 +309,7 @@ export const updateSubSection = async (data: FormData | Record<string, unknown>,
     // No establecer Content-Type manualmente cuando se envía FormData
     // El navegador lo establecerá automáticamente con el boundary correcto
     const response = await apiConnector("POST", UPDATE_SUBSECTION_API, data, {
-      Authorization: `Bearer ${token} `,
+      Authorization: `Bearer ${token}`,
     })
     console.log("UPDATE SUB-SECTION API RESPONSE............", response)
 
@@ -347,7 +348,7 @@ export const deleteSection = async (data: Record<string, unknown>, token: string
 
   try {
     const response = await apiConnector("POST", DELETE_SECTION_API, data, {
-      Authorization: `Bearer ${token} `,
+      Authorization: `Bearer ${token}`,
     })
     console.log("DELETE SECTION API RESPONSE............", response)
 
@@ -373,7 +374,7 @@ export const deleteSubSection = async (data: Record<string, unknown>, token: str
   const toastId = toast.loading("Loading...")
   try {
     const response = await apiConnector("POST", DELETE_SUBSECTION_API, data, {
-      Authorization: `Bearer ${token} `,
+      Authorization: `Bearer ${token}`,
     })
     console.log("DELETE SUB-SECTION API RESPONSE............", response)
     if (!response?.data?.success) {
@@ -400,7 +401,7 @@ export const fetchInstructorCourses = async (token: string) => {
       GET_ALL_INSTRUCTOR_COURSES_API,
       undefined,
       {
-        Authorization: `Bearer ${token} `,
+        Authorization: `Bearer ${token}`,
       }
     )
     console.log("INSTRUCTOR COURSES API RESPONSE", response)
@@ -459,7 +460,7 @@ export const deleteCourse = async (data: Record<string, unknown>, token: string)
       DELETE_COURSE_API, 
       data, // También en el body por si el backend lo requiere
       {
-        Authorization: `Bearer ${token} `,
+        Authorization: `Bearer ${token}`,
       },
       { courseId: courseId as string } // Query params
     )
@@ -504,7 +505,7 @@ export const getFullDetailsOfCourse = async (courseId: string, token: string) =>
         courseId,
       },
       {
-        Authorization: `Bearer ${token} `,
+        Authorization: `Bearer ${token}`,
       }
     )
     console.log("COURSE_FULL_DETAILS_API API RESPONSE............", response)
@@ -532,7 +533,7 @@ export const markLectureAsComplete = async (data: Record<string, unknown>, token
   const toastId = toast.loading("Loading...")
   try {
     const response = await apiConnector("POST", LECTURE_COMPLETION_API, data, {
-      Authorization: `Bearer ${token} `,
+      Authorization: `Bearer ${token}`,
     })
     console.log("MARK_LECTURE_AS_COMPLETE_API API RESPONSE............", response)
 
@@ -560,7 +561,7 @@ export const toggleLectureCompletion = async (
   const toastId = toast.loading("Actualizando progreso...")
   try {
     const response = await apiConnector("POST", LECTURE_COMPLETION_API, data, {
-      Authorization: `Bearer ${token} `,
+      Authorization: `Bearer ${token}`,
     })
     console.log("TOGGLE_LECTURE_COMPLETION_API API RESPONSE............", response)
 
@@ -592,7 +593,7 @@ export const createRating = async (data: Record<string, unknown>, token: string)
   let success = false
   try {
     const response = await apiConnector("POST", CREATE_RATING_API, data, {
-      Authorization: `Bearer ${token} `,
+      Authorization: `Bearer ${token}`,
     })
     console.log("CREATE RATING API RESPONSE............", response)
     if (!response?.data?.success) {
@@ -608,4 +609,91 @@ export const createRating = async (data: Record<string, unknown>, token: string)
   }
   toast.dismiss(toastId)
   return success
+}
+
+// ================ Reorder Sections ================
+export const reorderSections = async (data: Record<string, unknown>, token: string, showToast: boolean = false) => {
+  let result = null
+  
+  try {
+    const response = await apiConnector("POST", REORDER_SECTIONS_API, data, {
+      Authorization: `Bearer ${token}`,
+    })
+    console.log("REORDER SECTIONS API RESPONSE............", response)
+
+    if (!response?.data?.success) {
+      throw new Error(response?.data?.message || "Could Not Reorder Sections")
+    }
+
+    result = response?.data?.data
+    if (showToast) {
+      toast.success("Secciones reordenadas exitosamente")
+    }
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.log("REORDER SECTIONS API ERROR............", apiError)
+    if (showToast) {
+      toast.error(apiError.response?.data?.message || apiError.message || "Error al reordenar secciones")
+    }
+    throw error; // Re-lanzar el error para que el llamador pueda manejarlo
+  }
+  
+  return result
+}
+
+// ================ Reorder SubSections ================
+export const reorderSubSections = async (data: Record<string, unknown>, token: string, showToast: boolean = false) => {
+  let result = null
+  
+  try {
+    const response = await apiConnector("POST", REORDER_SUBSECTIONS_API, data, {
+      Authorization: `Bearer ${token}`,
+    })
+    console.log("REORDER SUBSECTIONS API RESPONSE............", response)
+
+    if (!response?.data?.success) {
+      throw new Error(response?.data?.message || "Could Not Reorder SubSections")
+    }
+
+    result = response?.data?.data
+    if (showToast) {
+      toast.success("Lecciones reordenadas exitosamente")
+    }
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.log("REORDER SUBSECTIONS API ERROR............", apiError)
+    if (showToast) {
+      toast.error(apiError.response?.data?.message || apiError.message || "Error al reordenar lecciones")
+    }
+    throw error; // Re-lanzar el error para que el llamador pueda manejarlo
+  }
+  
+  return result
+}
+
+// ================ Move SubSection ================
+export const moveSubSection = async (data: Record<string, unknown>, token: string) => {
+  let result = null
+  const toastId = toast.loading("Moviendo lección...")
+  
+  try {
+    const response = await apiConnector("POST", MOVE_SUBSECTION_API, data, {
+      Authorization: `Bearer ${token}`,
+    })
+    console.log("MOVE SUBSECTION API RESPONSE............", response)
+
+    if (!response?.data?.success) {
+      throw new Error(response?.data?.message || "Could Not Move SubSection")
+    }
+
+    result = response?.data?.data
+    toast.success("Lección movida exitosamente")
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.log("MOVE SUBSECTION API ERROR............", apiError)
+    toast.error(apiError.response?.data?.message || apiError.message || "Error al mover lección")
+  }
+  
+  toast.dismiss(toastId)
+  return result
 }

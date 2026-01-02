@@ -36,9 +36,9 @@ export default function DashboardLayout({
   // Renderizar siempre la misma estructura inicial para evitar errores de hidratación
   // En el servidor y en el primer render del cliente, siempre mostrar contenido (no loading)
   return (
-    <div className="relative flex min-h-[calc(100vh-3.5rem)] ">
+    <div className="relative flex h-[calc(100vh-3.5rem)] overflow-hidden">
       <Sidebar />
-      <div className="h-[calc(100vh-3.5rem)] overflow-auto w-full">
+      <div className="flex-1 h-full overflow-y-auto overflow-x-hidden">
         {showLoading ? (
           <div className="mt-10">
             <Loading />

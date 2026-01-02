@@ -18,6 +18,9 @@ import { NestedViewProps } from "../types/index";
 
 import ConfirmationModal from "@shared/components/ConfirmationModal";
 import SubSectionModal from "./SubSectionModal";
+import MoveLectureWarningModal from "./MoveLectureWarningModal";
+import { useDragAndDrop } from "../hooks/useDragAndDrop";
+import { HiMenu } from "react-icons/hi";
 
 // Función para normalizar la estructura del curso (subSections -> subSection)
 const normalizeCourseStructure = (course: any): Course => {
@@ -63,6 +66,23 @@ export default function NestedView({
   // to keep track of confirmation modal
   const [confirmationModal, setConfirmationModal] =
     useState<ConfirmationModalData | null>(null);
+
+  // Drag and Drop hook
+  const {
+    draggedItem,
+    dragOverSection,
+    showMoveWarning,
+    pendingMove,
+    handleDragStart,
+    handleDragEnd,
+    handleDragOver,
+    handleDrop,
+    confirmMoveLecture,
+    cancelMoveLecture,
+  } = useDragAndDrop();
+
+  // Estado para rastrear si se acaba de hacer un drag (para prevenir onClick)
+  const [wasJustDragged, setWasJustDragged] = useState(false);
 
   // Delele Section
   const handleDeleleSection = async (sectionId: string) => {
@@ -141,18 +161,68 @@ export default function NestedView({
             return null;
           }
           
+          const isSectionDragged =
+            draggedItem?.type === "section" &&
+            draggedItem?.sectionId === sectionId;
+          const isSectionDragOver =
+            draggedItem?.type === "section" &&
+            dragOverSection === sectionId &&
+            draggedItem?.sectionId !== sectionId;
+
           return (
             // Section Dropdown
-            <details key={sectionId} open>
-            {/* Section Dropdown Content */}
-            <summary className="flex cursor-pointer items-center justify-between border-b-2 border-b-richblack-600 py-2">
-              {/* sectionName */}
-              <div className="flex items-center gap-x-3">
-                <RxDropdownMenu className="text-2xl text-richblack-50" />
-                <p className="font-semibold text-richblack-50">
-                  {section.sectionName}
-                </p>
-              </div>
+            <details
+              key={sectionId}
+              open
+              draggable
+              onDragStart={(e) => {
+                // Solo iniciar drag de sección si no se está arrastrando desde una lección
+                // Verificar si el evento viene de un elemento hijo (lección)
+                const target = e.target as HTMLElement;
+                const isFromLecture = target.closest('[data-lecture-draggable]');
+                
+                if (!isFromLecture) {
+                  console.log("🚀 DRAG START - Section:", sectionId);
+                  handleDragStart("section", sectionId);
+                } else {
+                  // Si viene de una lección, cancelar el drag de la sección
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+              }}
+              onDragEnd={handleDragEnd}
+              onDragOver={(e) => {
+                // Solo permitir drag over si es una sección o una lección de otra sección
+                if (draggedItem?.type === "section" || 
+                    (draggedItem?.type === "lecture" && draggedItem?.sourceSectionId !== sectionId)) {
+                  e.preventDefault();
+                  handleDragOver(e, sectionId);
+                }
+              }}
+              onDrop={(e) => {
+                // Prevenir el comportamiento por defecto del details
+                e.preventDefault();
+                e.stopPropagation();
+                handleDrop(e, sectionId);
+              }}
+              className={`transition-all duration-200 ${
+                isSectionDragged
+                  ? "opacity-50 scale-95"
+                  : isSectionDragOver
+                  ? "border-l-4 border-l-yellow-500 bg-yellow-500/10"
+                  : ""
+              }`}
+            >
+              {/* Section Dropdown Content */}
+              <summary className="flex cursor-pointer items-center justify-between border-b-2 border-b-richblack-600 py-2">
+                {/* sectionName */}
+                <div className="flex items-center gap-x-3">
+                  <HiMenu className="text-xl text-richblack-400 cursor-grab active:cursor-grabbing" />
+                  <RxDropdownMenu className="text-2xl text-richblack-50" />
+                  <p className="font-semibold text-richblack-50">
+                    {section.sectionName}
+                  </p>
+                </div>
 
               <div className="flex items-center gap-x-3">
                 {/* Change Edit SectionName button */}
@@ -186,7 +256,27 @@ export default function NestedView({
                 <AiFillCaretDown className={`text-xl text-richblack-300`} />
               </div>
             </summary>
-            <div className="px-6 pb-4">
+            <div
+              className="px-6 pb-4 min-h-[50px]"
+              onDragOver={(e) => {
+                // Permitir drop de lecciones o secciones
+                e.preventDefault();
+                e.stopPropagation();
+                handleDragOver(e, sectionId);
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log("📦 DROP on section container:", {
+                  sectionId,
+                  draggedItemType: draggedItem?.type,
+                  draggedItemSourceSectionId: draggedItem?.sourceSectionId,
+                  draggedItemLectureId: draggedItem?.lectureId
+                });
+                // Si se suelta en el contenedor (no en una subsección específica), agregar al final
+                handleDrop(e, sectionId, undefined);
+              }}
+            >
               {/* Render All Sub Sections Within a Section */}
               {/* Manejar tanto subSection como subSections (del backend) */}
               {(() => {
@@ -203,13 +293,73 @@ export default function NestedView({
                     // Obtener el ID de la subsección (priorizar 'id' sobre '_id')
                     const subSectionId = (data as any)?.id || data?._id || `subsection-${sectionIndex}-${subSectionIndex}`;
                     
+                    const isLectureDragged =
+                      draggedItem?.type === "lecture" &&
+                      draggedItem?.lectureId === subSectionId;
+                    const isDragOver =
+                      dragOverSection === sectionId &&
+                      draggedItem?.type === "lecture" &&
+                      draggedItem?.sourceSectionId !== sectionId;
+
                     return (
                       <div
                         key={subSectionId}
-                        onClick={() => setViewSubSection(data)}
-                        className="flex cursor-pointer items-center justify-between gap-x-3 border-b-2 border-b-richblack-600 py-2"
+                        data-lecture-draggable="true"
+                        draggable={true}
+                        onDragStart={(e) => {
+                          console.log("🚀 DRAG START - Lecture:", subSectionId, "from section:", sectionId);
+                          // CRÍTICO: Detener la propagación para evitar que el <details> padre capture el evento
+                          e.stopPropagation();
+                          setWasJustDragged(true);
+                          handleDragStart("lecture", sectionId, subSectionId);
+                          e.dataTransfer.effectAllowed = "move";
+                          e.dataTransfer.setData("text/plain", subSectionId);
+                          e.dataTransfer.setData("sectionId", sectionId);
+                          e.dataTransfer.setData("type", "lecture");
+                          console.log("✅ Lecture drag started, state should be:", { type: "lecture", sectionId, lectureId: subSectionId });
+                        }}
+                        onDragOver={(e) => {
+                          // Permitir drop en cualquier subsección
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleDragOver(e, sectionId);
+                        }}
+                        onDragEnd={(e) => {
+                          console.log("🏁 DRAG END - Lecture");
+                          handleDragEnd();
+                          setTimeout(() => {
+                            setWasJustDragged(false);
+                          }, 200);
+                        }}
+                        onDrop={(e) => {
+                          console.log("📦 DROP on lecture element:", {
+                            sectionId,
+                            subSectionIndex,
+                            draggedItemType: draggedItem?.type
+                          });
+                          e.preventDefault();
+                          e.stopPropagation();
+                          // Si se suelta en una subsección específica, usar su índice
+                          handleDrop(e, sectionId, subSectionIndex);
+                        }}
+                        onClick={(e) => {
+                          if (wasJustDragged) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            return;
+                          }
+                          setViewSubSection(data);
+                        }}
+                        className={`flex cursor-grab active:cursor-grabbing items-center justify-between gap-x-3 border-b-2 border-b-richblack-600 py-2 transition-all duration-200 ${
+                          isLectureDragged
+                            ? "opacity-50 scale-95 bg-richblack-700"
+                            : isDragOver
+                            ? "bg-yellow-500/20 border-yellow-500"
+                            : "hover:bg-richblack-600/30"
+                        }`}
                       >
-                        <div className="flex items-center gap-x-3 py-2 ">
+                        <div className="flex items-center gap-x-3 py-2">
+                          <HiMenu className="text-lg text-richblack-400 cursor-grab active:cursor-grabbing flex-shrink-0 pointer-events-none" />
                           <RxDropdownMenu className="text-2xl text-richblack-50" />
                           <p className="font-semibold text-richblack-50">
                             {data.title}
@@ -353,6 +503,18 @@ export default function NestedView({
         <ConfirmationModal modalData={confirmationModal} />
       ) : (
         <></>
+      )}
+
+      {/* Move Lecture Warning Modal */}
+      {pendingMove && (
+        <MoveLectureWarningModal
+          isOpen={showMoveWarning}
+          lecture={pendingMove.lecture}
+          fromSectionName={pendingMove.fromSectionName}
+          toSectionName={pendingMove.toSectionName}
+          onConfirm={confirmMoveLecture}
+          onCancel={cancelMoveLecture}
+        />
       )}
     </>
   );

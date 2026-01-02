@@ -45,8 +45,8 @@ const CatalogSections: React.FC<CatalogSectionsProps> = ({
     <>
       {/* Section 2 - Top Rated Courses in Selected Category */}
       {topRatedCourses.length > 0 && (
-        <div className=" mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent">
-          <div className="section_heading">
+        <div className="mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent mt-8">
+          <div className="section_heading mb-6">
             Cursos Mejor Valorados en {catalogPageData?.selectedCategory?.name}
           </div>
           <div>
@@ -54,21 +54,31 @@ const CatalogSections: React.FC<CatalogSectionsProps> = ({
           </div>
         </div>
       )}
+      
+      {/* Mensaje cuando no hay cursos en la categoría seleccionada */}
+      {topRatedCourses.length === 0 && catalogPageData?.selectedCategory?.name && (
+        <div className="mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent">
+          <div className="text-center text-richblack-300 text-lg">
+            No hay cursos disponibles en la categoría "{catalogPageData.selectedCategory.name}"
+          </div>
+        </div>
+      )}
 
       {/* Section 3 - Most Selling / Frequently Bought */}
       {mostSellingInCategory.length > 0 && (
-        <div className=" mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent">
-          <div className="section_heading">Frecuentemente Comprados</div>
+        <div className="mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent">
+          <div className="section_heading mb-6">Frecuentemente Comprados</div>
           <div className="py-8">
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 w-full">
               {mostSellingInCategory.map((course: Course, i: number) => {
                 const courseId = (course as any)?.id || course?._id || i;
                 return (
-                  <CourseCard
-                    course={course}
-                    key={courseId}
-                    Height={"h-[320px]"}
-                  />
+                  <div key={courseId} className="w-full min-w-0">
+                    <CourseCard
+                      course={course}
+                      Height={"h-[320px]"}
+                    />
+                  </div>
                 );
               })}
             </div>

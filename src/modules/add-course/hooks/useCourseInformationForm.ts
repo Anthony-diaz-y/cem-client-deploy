@@ -158,7 +158,8 @@ export const useCourseInformationForm = () => {
           setLoading(false);
         }
       } else {
-        toast.error("No changes made to the form");
+        // Si no hay cambios, simplemente avanzar al siguiente paso
+        dispatch(setStep(2));
       }
       return;
     }
@@ -189,7 +190,7 @@ export const useCourseInformationForm = () => {
     formData.append("tag", JSON.stringify(data.courseTags));
     formData.append("whatYouWillLearn", data.courseBenefits);
     formData.append("categoryId", categoryId); // Cambiado de "category" a "categoryId" y usando id/_id correctamente
-    formData.append("status", COURSE_STATUS.DRAFT);
+    // El campo status ya no es necesario - el backend siempre crea el curso como Draft
     formData.append("instructions", JSON.stringify(data.courseRequirements));
     formData.append("thumbnailImage", data.courseImage);
 
