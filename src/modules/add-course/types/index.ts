@@ -36,7 +36,6 @@ export interface CourseBuilderFormData {
 
 export interface CourseFormActionsProps {
   loading: boolean;
-  editCourse: boolean;
 }
 
 export interface CourseFormFieldsProps {

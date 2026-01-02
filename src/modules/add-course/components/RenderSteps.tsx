@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 
 import CourseBuilderForm from "./CourseBuilderForm";
 import CourseInformationForm from "./CourseInformationForm";
-import PublishCourse from "./PublishCourse";
 import { RootState } from "@shared/store/store";
 
 export default function RenderSteps() {
@@ -18,10 +17,6 @@ export default function RenderSteps() {
     {
       id: 2,
       title: "Constructor de Curso",
-    },
-    {
-      id: 3,
-      title: "Publicar",
     },
   ];
 
@@ -85,7 +80,6 @@ export default function RenderSteps() {
       {/* Render specific component based on current step */}
       {step === 1 && <CourseInformationForm />}
       {step === 2 && <CourseBuilderForm />}
-      {step === 3 && <PublishCourse />}
     </>
   );
 }
