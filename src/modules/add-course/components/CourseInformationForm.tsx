@@ -36,7 +36,7 @@ export default function CourseInformationForm() {
         course={course}
       />
 
-      <CourseFormActions loading={loading} editCourse={isEditMode} />
+      <CourseFormActions loading={loading} />
     </form>
   );
 }

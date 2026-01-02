@@ -45,6 +45,9 @@ export const courseEndpoints = {
   GET_FULL_COURSE_DETAILS_AUTHENTICATED: BASE_URL + "/course/getFullCourseDetails",
   LECTURE_COMPLETION_API: BASE_URL + "/course/updateCourseProgress",
   CREATE_RATING_API: BASE_URL + "/course/createRating",
+  REORDER_SECTIONS_API: BASE_URL + "/course/reorderSections",
+  REORDER_SUBSECTIONS_API: BASE_URL + "/course/reorderSubSections",
+  MOVE_SUBSECTION_API: BASE_URL + "/course/moveSubSection",
 }
 
 // RATINGS AND REVIEWS
@@ -60,6 +63,7 @@ export const ratingsEndpoints = {
 // CATAGORIES API
 export const categories = {
   CATEGORIES_API: BASE_URL + "/category/showAllCategories",
+  CREATE_CATEGORY_API: BASE_URL + "/category/createCategory",
 }
 
 // CATALOG PAGE DATA
@@ -93,4 +97,9 @@ export const adminEndpoints = {
   ALL_INSTRUCTORS_API: BASE_URL + "/admin/all-instructors",
   APPROVE_INSTRUCTOR_API: BASE_URL + "/admin/approve-instructor",
   REJECT_INSTRUCTOR_API: BASE_URL + "/admin/reject-instructor",
+  PENDING_COURSES_API: BASE_URL + "/admin/pending-courses",
+  ALL_COURSES_API: BASE_URL + "/admin/all-courses",
+  PUBLISH_COURSE_API: BASE_URL + "/admin/publish-course",
+  EDIT_COURSE_ADMIN_API: BASE_URL + "/admin/edit-course",
+  DELETE_COURSE_ADMIN_API: BASE_URL + "/admin/delete-course",
 }

@@ -171,11 +171,54 @@ export default function SubSectionModal({
                 subSectionArray = (section as any).subSections;
               }
               
-              // Crear la sección actualizada preservando todas las propiedades
+              // AL EDITAR: Preservar el orden original de las subsecciones
+              // El backend puede devolver las subsecciones en un orden diferente
+              // Necesitamos mantener el orden original y solo actualizar la subsección editada
+              const originalSubSections = section.subSection || (section as any).subSections || [];
+              const originalSubSectionIds = originalSubSections.map((sub: SubSection) => 
+                ((sub as any)?.id || sub?._id)?.toString()
+              );
+              
+              // Crear un mapa de las nuevas subsecciones por ID (del resultado del backend)
+              const newSubSectionsMap = new Map<string, SubSection>();
+              subSectionArray.forEach((sub: SubSection) => {
+                const subId = ((sub as any)?.id || sub?._id)?.toString();
+                if (subId) {
+                  newSubSectionsMap.set(subId, sub);
+                }
+              });
+              
+              // Preservar el orden original: para cada ID original, usar la nueva versión si existe
+              // Esto asegura que la subsección editada mantenga su posición original
+              const preservedOrderSubSections: SubSection[] = [];
+              
+              originalSubSectionIds.forEach((originalId: string) => {
+                const updatedSub = newSubSectionsMap.get(originalId);
+                if (updatedSub) {
+                  // Usar la versión actualizada del backend
+                  preservedOrderSubSections.push(updatedSub);
+                  newSubSectionsMap.delete(originalId); // Ya lo usamos
+                } else {
+                  // Si no está en las nuevas, buscar en las originales (no debería pasar, pero por seguridad)
+                  const originalSub = originalSubSections.find((sub: SubSection) => 
+                    ((sub as any)?.id || sub?._id)?.toString() === originalId
+                  );
+                  if (originalSub) {
+                    preservedOrderSubSections.push(originalSub);
+                  }
+                }
+              });
+              
+              // Agregar cualquier subsección nueva que no estaba en el original (no debería pasar al editar, pero por si acaso)
+              newSubSectionsMap.forEach((sub: SubSection) => {
+                preservedOrderSubSections.push(sub);
+              });
+              
+              // Crear la sección actualizada preservando todas las propiedades y el orden
               const updatedSection: Section = {
                 ...section, // Preservar propiedades originales (sectionName, _id, id, etc.)
-                ...result,  // Sobrescribir con las del resultado (subSection actualizado)
-                subSection: subSectionArray, // Asegurar que subSection sea un array válido
+                ...result,  // Sobrescribir con las del resultado (otras propiedades actualizadas)
+                subSection: preservedOrderSubSections, // Usar el orden preservado
               };
               
               console.log("Updated section (edit):", updatedSection);
@@ -274,14 +317,51 @@ export default function SubSectionModal({
                 subSectionArray = (section as any).subSections;
               }
               
+              // AL CREAR: Asegurar que la nueva subsección esté al final
+              // El backend debería devolver las subsecciones en el orden correcto,
+              // pero si no, debemos asegurarnos de que la nueva esté al final
+              const originalSubSections = section.subSection || [];
+              const originalSubSectionIds = originalSubSections.map((sub: SubSection) => 
+                ((sub as any)?.id || sub?._id)?.toString()
+              );
+              
+              // Crear un mapa de las nuevas subsecciones por ID
+              const newSubSectionsMap = new Map();
+              subSectionArray.forEach((sub: SubSection) => {
+                const subId = ((sub as any)?.id || sub?._id)?.toString();
+                if (subId) {
+                  newSubSectionsMap.set(subId, sub);
+                }
+              });
+              
+              // Primero agregar todas las subsecciones originales en su orden (con sus versiones actualizadas si existen)
+              const orderedSubSections: SubSection[] = originalSubSectionIds
+                .map((originalId: string) => {
+                  const updatedSub = newSubSectionsMap.get(originalId);
+                  if (updatedSub) {
+                    newSubSectionsMap.delete(originalId); // Ya lo usamos
+                    return updatedSub;
+                  }
+                  // Si no está en las nuevas, buscar en las originales
+                  return originalSubSections.find((sub: SubSection) => 
+                    ((sub as any)?.id || sub?._id)?.toString() === originalId
+                  );
+                })
+                .filter(Boolean) as SubSection[]; // Eliminar undefined y hacer type assertion
+              
+              // Agregar cualquier subsección nueva (la que acaba de crearse) al final
+              newSubSectionsMap.forEach((sub: SubSection) => {
+                orderedSubSections.push(sub);
+              });
+              
               // Crear la sección actualizada preservando todas las propiedades
               const updatedSection: Section = {
                 ...section, // Preservar propiedades originales (sectionName, _id, id, etc.)
-                ...result,  // Sobrescribir con las del resultado (subSection actualizado)
-                subSection: subSectionArray, // Asegurar que subSection sea un array válido
+                ...result,  // Sobrescribir con las del resultado (otras propiedades actualizadas)
+                subSection: orderedSubSections, // Usar el orden correcto (originales + nueva al final)
               };
               
-              console.log("Updated section:", updatedSection);
+              console.log("Updated section (create):", updatedSection);
               console.log("SubSection array length:", updatedSection.subSection.length);
               
               return updatedSection;
