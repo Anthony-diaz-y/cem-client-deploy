@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAppSelector } from "@shared/store/hooks";
 import { getAdminDashboard, getPendingInstructors, Instructor } from "@shared/services/adminAPI";
 import AdminStats from "../components/AdminStats";
 import PendingInstructorsTable from "../components/PendingInstructorsTable";
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const { token } = useAppSelector((state) => state.auth);
   const [stats, setStats] = useState<any>(null);
   const [pendingInstructors, setPendingInstructors] = useState<Instructor[]>([]);
@@ -39,13 +41,15 @@ export default function AdminDashboard() {
 
   return (
     <div className="text-richblack-5">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-richblack-5 mb-2">
-          Dashboard de Administrador
-        </h1>
-        <p className="text-richblack-400">
-          Gestiona instructores y visualiza estadísticas de la plataforma
-        </p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-richblack-5 mb-2">
+            Dashboard de Administrador
+          </h1>
+          <p className="text-richblack-400">
+            Gestiona instructores y visualiza estadísticas de la plataforma
+          </p>
+        </div>
       </div>
 
       <AdminStats stats={stats} loading={loading} />

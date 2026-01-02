@@ -55,4 +55,11 @@ export const sidebarLinks = [
     type: ACCOUNT_TYPE.ADMIN,
     icon: "VscMail",
   },
+  {
+    id: 9,
+    name: "Todos los Cursos",
+    path: "/dashboard/admin/all-courses",
+    type: ACCOUNT_TYPE.ADMIN,
+    icon: "VscVm",
+  },
 ];
