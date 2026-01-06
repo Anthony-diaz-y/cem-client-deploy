@@ -12,6 +12,7 @@ import { RootState, AppDispatch } from "@shared/store/store";
 import { apiConnector } from "@shared/services/apiConnector";
 import { studentEndpoints } from "@shared/services/apis";
 import { setPaymentLoading } from "@modules/course/store/courseSlice";
+import type { BuyNowTemporaryResponse } from "@modules/course/types";
 
 // Componente para la imagen del curso con placeholder
 const CourseThumbnail: React.FC<{ thumbnail?: string; courseName?: string }> = ({ thumbnail, courseName }) => {
@@ -143,10 +144,10 @@ export default function RenderCartCourses() {
                   dispatch(setPaymentLoading(true));
 
                   try {
-                    const response = await apiConnector(
+                    const response = await apiConnector<BuyNowTemporaryResponse>(
                       "POST",
                       studentEndpoints.BUY_NOW_TEMPORARY_API,
-                      { coursesId: [courseIdToBuy] },
+                      { coursesId: [courseIdToBuy] } as Record<string, unknown>,
                       {
                         Authorization: `Bearer ${token}`,
                       }

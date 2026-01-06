@@ -3,6 +3,13 @@ import { apiConnector } from './apiConnector';
 import { catalogData } from './apis';
 import type { ApiError } from '@modules/auth/types';
 
+// API Response Types
+interface ApiResponse<T = unknown> {
+  success: boolean;
+  message: string;
+  data?: T;
+}
+
 
 // Función para validar UUID
 const isValidUUID = (id: string): boolean => {
@@ -32,7 +39,7 @@ export const getCatalogPageData = async (categoryId: string) => {
     }
 
     console.log("Fetching catalog page data for categoryId (UUID):", categoryId);
-    const response = await apiConnector("POST", catalogData.CATALOGPAGEDATA_API,
+    const response = await apiConnector<ApiResponse>("POST", catalogData.CATALOGPAGEDATA_API,
       { categoryId: categoryId } as Record<string, unknown>);
 
     console.log("CATALOG PAGE DATA API RESPONSE............", response);
@@ -56,7 +63,7 @@ export const getCatalogPageData = async (categoryId: string) => {
 
     // Si success es true, verificar que data existe antes de retornar
     if (response.data.data && typeof response.data.data === 'object') {
-      result = response.data.data;
+      result = response.data.data as any;
       
       // Normalizar los cursos para asegurar que tengan los campos necesarios
       const normalizeCourse = (course: any) => {

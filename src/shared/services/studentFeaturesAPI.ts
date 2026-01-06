@@ -7,6 +7,13 @@ import { resetCart } from "@modules/course/store/cartSlice";
 import type { AppDispatch } from "@shared/store/store";
 import type { NavigateFunction, ApiError } from "@modules/auth/types";
 
+// API Response Types
+interface ApiResponse<T = unknown> {
+  success: boolean;
+  message: string | T;
+  data?: T;
+}
+
 
 const { COURSE_PAYMENT_API, COURSE_VERIFY_API, SEND_PAYMENT_SUCCESS_EMAIL_API } = studentEndpoints;
 
@@ -51,25 +58,34 @@ export async function buyCourse(
         }
 
         // initiate the order
-        const orderResponse = await apiConnector("POST", COURSE_PAYMENT_API,
+        const orderResponse = await apiConnector<ApiResponse<{ currency: string; amount: number; id: string }>>("POST", COURSE_PAYMENT_API,
             { coursesId } as Record<string, unknown>,
             {
                 Authorization: `Bearer ${token}`,
             })
         // console.log("orderResponse... ", orderResponse);
         if (!orderResponse.data.success) {
-            throw new Error(orderResponse.data.message);
+            throw new Error(typeof orderResponse.data.message === 'string' ? orderResponse.data.message : 'Payment failed');
         }
 
         const RAZORPAY_KEY = process.env.NEXT_PUBLIC_RAZORPAY_KEY || '';
         // console.log("RAZORPAY_KEY...", RAZORPAY_KEY);
 
+        // Obtener los datos del mensaje (puede ser string o objeto)
+        const orderData = typeof orderResponse.data.message === 'object' && orderResponse.data.message !== null
+            ? orderResponse.data.message
+            : orderResponse.data.data;
+
+        if (!orderData || typeof orderData !== 'object') {
+            throw new Error('Invalid order response format');
+        }
+
         // options
         const options = {
             key: RAZORPAY_KEY,
-            currency: orderResponse.data.message.currency,
-            amount: orderResponse.data.message.amount,
-            order_id: orderResponse.data.message.id,
+            currency: (orderData as any).currency,
+            amount: (orderData as any).amount,
+            order_id: (orderData as any).id,
             name: "StudyNotion",
             description: "Thank You for Purchasing the Course",
             image: rzpLogo.src,
@@ -79,7 +95,7 @@ export async function buyCourse(
             },
             handler: function (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) {
                 //send successful mail
-                sendPaymentSuccessEmail(response, orderResponse.data.message.amount, token);
+                sendPaymentSuccessEmail(response, (orderData as any).amount, token);
                 //verifyPayment
                 verifyPayment({ ...response, coursesId }, token, navigate, dispatch);
             }
@@ -134,12 +150,12 @@ async function verifyPayment(
     dispatch(setPaymentLoading(true));
 
     try {
-        const response = await apiConnector("POST", COURSE_VERIFY_API, bodyData as unknown as Record<string, unknown>, {
+        const response = await apiConnector<ApiResponse>("POST", COURSE_VERIFY_API, bodyData as unknown as Record<string, unknown>, {
             Authorization: `Bearer ${token}`,
         })
 
         if (!response.data.success) {
-            throw new Error(response.data.message);
+            throw new Error(typeof response.data.message === 'string' ? response.data.message : 'Payment verification failed');
         }
         
         // Invalidar cache del instructor para que se actualicen los datos de estudiantes
