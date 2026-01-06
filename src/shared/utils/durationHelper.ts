@@ -30,6 +30,14 @@ export const formatTotalDuration = (duration: string | number | undefined | null
         // Calcular total en segundos para validar
         const totalSeconds = hours * 3600 + minutes * 60 + seconds;
         
+        // Detectar errores comunes de formato:
+        // 1. Si hay horas pero son menores a 60 y hay minutos menores a 60, probablemente las "horas" son minutos y los "minutos" son segundos
+        // 2. Ejemplo: "3h 8m" donde 3 son minutos y 8 son segundos (debería ser "3m 8s")
+        if (hours > 0 && hours < 60 && minutes > 0 && minutes < 60 && seconds === 0) {
+          // Las "horas" son en realidad minutos, y los "minutos" son en realidad segundos
+          return formatDurationFromSeconds(hours * 60 + minutes);
+        }
+        
         // Si hay más de 24 horas, probablemente es un error de conversión
         // O si las horas son muy grandes pero los minutos son pequeños, podría ser un error
         // Caso común: "49h 33m" donde 49 son minutos y 33 son segundos
@@ -74,8 +82,9 @@ export const formatTotalDuration = (duration: string | number | undefined | null
         // Probablemente está en minutos
         return formatDurationFromMinutes(Math.round(parsed));
       } else {
-        // Probablemente está en horas (poco probable pero posible)
-        return formatDurationFromHours(parsed);
+        // Si es menor a 60, asumir que está en segundos (no en horas)
+        // Esto evita confundir minutos/segundos con horas
+        return formatDurationFromSeconds(Math.round(parsed));
       }
     }
   }
@@ -92,8 +101,9 @@ export const formatTotalDuration = (duration: string | number | undefined | null
       // Probablemente está en minutos
       return formatDurationFromMinutes(Math.round(duration));
     } else {
-      // Probablemente está en horas
-      return formatDurationFromHours(duration);
+      // Si es menor a 60, asumir que está en segundos (no en horas)
+      // Esto evita confundir minutos/segundos con horas
+      return formatDurationFromSeconds(Math.round(duration));
     }
   }
   
