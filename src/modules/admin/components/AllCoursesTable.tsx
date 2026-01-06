@@ -300,7 +300,7 @@ export default function AllCoursesTable({
                 className="bg-richblack-800 rounded-xl border border-richblack-700 overflow-hidden hover:border-yellow-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/10 flex flex-col"
               >
                 {/* Thumbnail con badge de estado */}
-                <div className="relative w-full aspect-video bg-richblack-900">
+                <div className="relative w-full h-48 bg-richblack-900 overflow-hidden">
                   {course.thumbnail ? (
                     <Img
                       src={course.thumbnail}
