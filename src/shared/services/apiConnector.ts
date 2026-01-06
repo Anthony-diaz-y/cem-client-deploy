@@ -121,14 +121,62 @@ const realApiConnector = <T = any>(
       finalParams = { ...params, ...convertedBodyData };
     }
 
-    return axios<T>({
+    // Logging para debug en desarrollo
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🌐 API Request:', {
+        method: method.toUpperCase(),
+        url,
+        hasBody: !!bodyData,
+        hasToken: !!token,
+      });
+    }
+
+    try {
+      const response = await axios<T>({
         method: `${method}`,
         url: url,
         data: bodyData ?? undefined,
         headers: requestHeaders,
         params: finalParams ?? undefined,
         withCredentials: true,
-    });
+        timeout: 30000, // 30 segundos de timeout
+      });
+      
+      return response;
+    } catch (error: any) {
+      // Mejor logging de errores
+      if (error.response) {
+        // El servidor respondió con un código de estado fuera del rango 2xx
+        console.error('❌ API Error Response:', {
+          status: error.response.status,
+          statusText: error.response.statusText,
+          url,
+          method: method.toUpperCase(),
+          data: error.response.data,
+        });
+      } else if (error.request) {
+        // La petición fue hecha pero no se recibió respuesta
+        console.error('❌ API Error - No response received:', {
+          url,
+          method: method.toUpperCase(),
+          message: error.message,
+          code: error.code,
+        });
+        
+        // Si es un error de red, mostrar mensaje más claro
+        if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK') {
+          console.error('🔴 Error de conexión: No se pudo conectar al servidor. Verifica que:');
+          console.error('   1. La URL del backend esté correcta:', url);
+          console.error('   2. El servidor esté ejecutándose');
+          console.error('   3. No haya problemas de CORS');
+        }
+      } else {
+        // Algo pasó al configurar la petición
+        console.error('❌ API Error - Request setup failed:', error.message);
+      }
+      
+      throw error;
+    }
 };
 
 // Export the apiConnector - ahora siempre usa el backend real
