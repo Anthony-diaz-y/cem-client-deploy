@@ -33,6 +33,13 @@ interface Review {
   rating: string | number;
 }
 
+// API Response Type
+interface ApiResponse<T = unknown> {
+  success: boolean;
+  message?: string;
+  data?: T;
+}
+
 function ReviewSlider() {
   const [reviews, setReviews] = useState<Review[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +48,7 @@ function ReviewSlider() {
   useEffect(() => {
     (async () => {
       try {
-        const response = await apiConnector(
+        const response = await apiConnector<ApiResponse<Review[]>>(
           "GET",
           ratingsEndpoints.REVIEWS_DETAILS_API
         );

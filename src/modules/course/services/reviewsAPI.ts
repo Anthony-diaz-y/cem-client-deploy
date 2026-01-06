@@ -3,6 +3,13 @@ import { apiConnector } from "@shared/services/apiConnector";
 import { ratingsEndpoints } from "@shared/services/apis";
 import type { ApiError } from "../types";
 
+// API Response Type
+interface ApiResponse<T = unknown> {
+  success: boolean;
+  message?: string;
+  data?: T;
+}
+
 // Types for reviews
 export interface CreateRatingData {
   courseId: string;
@@ -64,7 +71,7 @@ export const createRating = async (
   let result: Review | null = null;
 
   try {
-    const response = await apiConnector("POST", ratingsEndpoints.CREATE_RATING_API, data as unknown as Record<string, unknown>, {
+    const response = await apiConnector<ApiResponse<Review>>("POST", ratingsEndpoints.CREATE_RATING_API, data as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     });
 
@@ -74,7 +81,7 @@ export const createRating = async (
       throw new Error(response?.data?.message || "No se pudo crear la reseña");
     }
 
-    result = response.data.data;
+    result = response.data.data || null;
     toast.success("Reseña creada exitosamente");
   } catch (error) {
     const apiError = error as ApiError;
@@ -100,7 +107,7 @@ export const updateRating = async (
   let result: Review | null = null;
 
   try {
-    const response = await apiConnector("PATCH", ratingsEndpoints.UPDATE_RATING_API, data as unknown as Record<string, unknown>, {
+    const response = await apiConnector<ApiResponse<Review>>("PATCH", ratingsEndpoints.UPDATE_RATING_API, data as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     });
 
@@ -110,7 +117,7 @@ export const updateRating = async (
       throw new Error(response?.data?.message || "No se pudo actualizar la reseña");
     }
 
-    result = response.data.data;
+    result = response.data.data || null;
     toast.success("Reseña actualizada exitosamente");
   } catch (error) {
     const apiError = error as ApiError;
@@ -136,7 +143,7 @@ export const getReviews = async (
   let result: ReviewsResponse | null = null;
 
   try {
-    const response = await apiConnector(
+    const response = await apiConnector<ApiResponse<ReviewsResponse>>(
       "GET",
       `${ratingsEndpoints.GET_REVIEWS_API}/${courseId}?page=${page}&limit=${limit}`
     );
@@ -147,7 +154,7 @@ export const getReviews = async (
       throw new Error(response?.data?.message || "No se pudieron obtener las reseñas");
     }
 
-    result = response.data.data;
+    result = response.data.data || null;
   } catch (error) {
     const apiError = error as ApiError;
     console.log("GET REVIEWS API ERROR............", apiError);
@@ -165,7 +172,7 @@ export const getUserReview = async (
   let result: Review | null = null;
 
   try {
-    const response = await apiConnector(
+    const response = await apiConnector<ApiResponse<Review>>(
       "GET",
       `${ratingsEndpoints.GET_USER_REVIEW_API}/${courseId}`,
       undefined,
@@ -193,7 +200,7 @@ export const getRatingStats = async (courseId: string): Promise<RatingStats | nu
   let result: RatingStats | null = null;
 
   try {
-    const response = await apiConnector(
+    const response = await apiConnector<ApiResponse<RatingStats>>(
       "GET",
       `${ratingsEndpoints.GET_RATING_STATS_API}/${courseId}`
     );
@@ -204,7 +211,7 @@ export const getRatingStats = async (courseId: string): Promise<RatingStats | nu
       throw new Error(response?.data?.message || "No se pudieron obtener las estadísticas");
     }
 
-    result = response.data.data;
+    result = response.data.data || null;
   } catch (error) {
     const apiError = error as ApiError;
     console.log("GET RATING STATS API ERROR............", apiError);

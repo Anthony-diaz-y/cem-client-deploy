@@ -16,6 +16,32 @@ const {
   RESETPASSWORD_API,
 } = endpoints
 
+// API Response Types
+interface ApiResponse<T = unknown> {
+  success: boolean;
+  message?: string;
+  data?: T;
+  warning?: string;
+  resetUrl?: string;
+}
+
+interface UserData {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  image?: string;
+  accountType?: string;
+  [key: string]: unknown;
+}
+
+interface LoginResponse {
+  success: boolean;
+  message?: string;
+  token: string;
+  user: UserData;
+}
+
 // ================ send Otp ================
 export function sendOtp(email: string, navigate: NavigateFunction) {
   return async (dispatch: AppDispatch) => {
@@ -24,7 +50,7 @@ export function sendOtp(email: string, navigate: NavigateFunction) {
     dispatch(setLoading(true));
 
     try {
-      const response = await apiConnector("POST", SENDOTP_API, {
+      const response = await apiConnector<ApiResponse>("POST", SENDOTP_API, {
         email,
         checkUserPresent: true,
       })
@@ -32,7 +58,7 @@ export function sendOtp(email: string, navigate: NavigateFunction) {
 
       // console.log(response.data.success)
       if (!response.data.success) {
-        throw new Error(response.data.message);
+        throw new Error(response.data.message || "Could not send OTP");
       }
 
       navigate("/auth/verify-email");
@@ -63,7 +89,7 @@ export function signUp(
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
     try {
-      const response = await apiConnector("POST", SIGNUP_API, {
+      const response = await apiConnector<ApiResponse>("POST", SIGNUP_API, {
         accountType,
         firstName,
         lastName,
@@ -75,8 +101,9 @@ export function signUp(
 
       // console.log("SIGNUP API RESPONSE --> ", response);
       if (!response.data.success) {
-        toast.error(response.data.message);
-        throw new Error(response.data.message);
+        const errorMsg = response.data.message || "Signup failed";
+        toast.error(errorMsg);
+        throw new Error(errorMsg);
       }
 
       toast.success("Signup Successful");
@@ -100,7 +127,7 @@ export function login(email: string, password: string, navigate: NavigateFunctio
     dispatch(setLoading(true));
 
     try {
-      const response = await apiConnector("POST", LOGIN_API, {
+      const response = await apiConnector<LoginResponse>("POST", LOGIN_API, {
         email,
         password,
       })
@@ -108,19 +135,19 @@ export function login(email: string, password: string, navigate: NavigateFunctio
       console.log("LOGIN API RESPONSE............", response);
 
       if (!response.data.success) {
-        throw new Error(response.data.message)
+        throw new Error(response.data.message || "Login failed")
       }
 
       toast.success("Login Successful")
       dispatch(setToken(response.data.token))
 
-      const userImage = response.data?.user?.image
+      const userImage = response.data.user?.image
         ? response.data.user.image
         : `https://api.dicebear.com/5.x/initials/svg?seed=${response.data.user.firstName} ${response.data.user.lastName}`
 
       dispatch(setUser({ ...response.data.user, image: userImage }));
       // console.log('User data - ', response.data.user);/
-      localStorage.setItem("token", JSON.stringify(response.data?.token));
+      localStorage.setItem("token", JSON.stringify(response.data.token));
 
       localStorage.setItem("user", JSON.stringify({ ...response.data.user, image: userImage }));
 
@@ -156,7 +183,7 @@ export function getPasswordResetToken(email: string, setEmailSent: (sent: boolea
       // Obtener la URL del frontend (window.location.origin)
       const frontendUrl = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
 
-      const response = await apiConnector("POST", RESETPASSTOKEN_API, {
+      const response = await apiConnector<ApiResponse>("POST", RESETPASSTOKEN_API, {
         email,
         frontendUrl, // Enviar la URL del frontend
       })
@@ -164,7 +191,7 @@ export function getPasswordResetToken(email: string, setEmailSent: (sent: boolea
       console.log("RESET PASS TOKEN RESPONSE............", response)
 
       if (!response.data.success) {
-        throw new Error(response.data.message)
+        throw new Error(response.data.message || "Could not send reset token")
       }
 
       // Si hay un warning (desarrollo sin correo configurado), mostrarlo
@@ -219,7 +246,7 @@ export function resetPassword(password: string, confirmPassword: string, token: 
     dispatch(setLoading(true))
 
     try {
-      const response = await apiConnector("POST", RESETPASSWORD_API, {
+      const response = await apiConnector<ApiResponse>("POST", RESETPASSWORD_API, {
         password,
         confirmPassword,
         token,
@@ -228,7 +255,7 @@ export function resetPassword(password: string, confirmPassword: string, token: 
       console.log("RESETPASSWORD RESPONSE............", response)
 
       if (!response.data.success) {
-        throw new Error(response.data.message)
+        throw new Error(response.data.message || "Could not reset password")
       }
 
       toast.success(response.data.message || "Contraseña actualizada exitosamente")

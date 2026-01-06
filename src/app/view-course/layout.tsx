@@ -14,7 +14,8 @@ import {
   setTotalNoOfLectures,
 } from "@modules/view-course/store/viewCourseSlice";
 import { setCourseViewSidebar } from "@modules/dashboard/store/sidebarSlice";
-import { getFullDetailsOfCourse } from "@shared/services/courseDetailsAPI";
+import { getFullDetailsOfCourse, type FullCourseDetailsResponse } from "@shared/services/courseDetailsAPI";
+import type { Course } from "@modules/view-course/types";
 
 export default function ViewCourseLayout({
   children,
@@ -41,7 +42,7 @@ export default function ViewCourseLayout({
 
       try {
         // Fetch full course details from backend
-        const courseData = await getFullDetailsOfCourse(courseIdString, token);
+        const courseData: FullCourseDetailsResponse | null = await getFullDetailsOfCourse(courseIdString, token);
 
         if (courseData?.courseDetails) {
           console.log("Raw course data from backend:", {
@@ -122,7 +123,7 @@ export default function ViewCourseLayout({
           dispatch(setEntireCourseData({
             ...courseData.courseDetails,
             courseContent: normalizedContent,
-          }));
+          } as Course));
           dispatch(setCompletedLectures(courseData.completedVideos || []));
           
           // Contar las lectures correctamente

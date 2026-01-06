@@ -57,7 +57,7 @@ export default function EnrolledCourses() {
       console.log("Number of courses:", res?.length);
       
       if (res && Array.isArray(res)) {
-        setEnrolledCourses(res);
+        setEnrolledCourses(res as Course[]);
       } else {
         setEnrolledCourses([]);
       }
