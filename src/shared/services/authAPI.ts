@@ -43,10 +43,16 @@ interface LoginResponse {
 }
 
 // ================ send Otp ================
+/**
+ * Envía un código OTP al email del usuario usando Brevo
+ * 
+ * NOTA: El envío real del email se hace en el backend usando Brevo.
+ * Este frontend solo hace la petición HTTP al backend.
+ */
 export function sendOtp(email: string, navigate: NavigateFunction) {
   return async (dispatch: AppDispatch) => {
 
-    const toastId = toast.loading("Loading...");
+    const toastId = toast.loading("Enviando código de verificación...");
     dispatch(setLoading(true));
 
     try {
@@ -62,11 +68,21 @@ export function sendOtp(email: string, navigate: NavigateFunction) {
       }
 
       navigate("/auth/verify-email");
-      toast.success("OTP Sent Successfully");
+      toast.success("Código de verificación enviado exitosamente");
     } catch (error) {
       console.log("SENDOTP API ERROR --> ", error);
       const apiError = error as ApiError;
-      toast.error(apiError.response?.data?.message || "Could Not Send OTP");
+      
+      // Mensajes de error más específicos
+      const errorMessage = apiError.response?.data?.message || "";
+      
+      if (errorMessage.includes("email service") || errorMessage.includes("servicio de correo")) {
+        toast.error("Error en el servicio de correo. Por favor, intenta más tarde.");
+      } else if (errorMessage.includes("not registered") || errorMessage.includes("no registrado")) {
+        toast.error("Este email no está registrado en nuestro sistema");
+      } else {
+        toast.error(errorMessage || "No se pudo enviar el código de verificación");
+      }
     }
     dispatch(setLoading(false));
     toast.dismiss(toastId);
