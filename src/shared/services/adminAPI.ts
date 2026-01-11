@@ -503,7 +503,7 @@ export async function createCategory(
     const response = await apiConnector<CreateCategoryResponse>(
       "POST",
       categories.CREATE_CATEGORY_API,
-      data,
+      data as unknown as Record<string, unknown>,
       {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",

@@ -14,24 +14,42 @@ const {
 
 import { AppDispatch } from "@shared/store/store";
 
+// API Response Types
+interface ApiResponse<T = unknown> {
+  success: boolean;
+  message?: string;
+  data?: T;
+}
+
+interface UserData {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  image?: string;
+  accountType?: string;
+  [key: string]: unknown;
+}
+
 // ================ get User Details  ================
 export function getUserDetails(token: string, navigate: NavigateFunction) {
   return async (dispatch: AppDispatch) => {
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
     try {
-      const response = await apiConnector("GET", GET_USER_DETAILS_API, undefined, {
+      const response = await apiConnector<ApiResponse<UserData>>("GET", GET_USER_DETAILS_API, undefined, {
         Authorization: `Bearer ${token}`,
       });
       console.log("GET_USER_DETAILS API RESPONSE............", response);
 
-      if (!response.data.success) {
-        throw new Error(response.data.message);
+      if (!response.data.success || !response.data.data) {
+        throw new Error(response.data.message || "Could not get user details");
       }
-      const userImage = response.data.data.image
-        ? response.data.data.image
-        : `https://api.dicebear.com/5.x/initials/svg?seed=${response.data.data.firstName} ${response.data.data.lastName}`;
-      dispatch(setUser({ ...response.data.data, image: userImage }));
+      const userData = response.data.data;
+      const userImage = userData.image
+        ? userData.image
+        : `https://api.dicebear.com/5.x/initials/svg?seed=${userData.firstName} ${userData.lastName}`;
+      dispatch(setUser({ ...userData, image: userImage }));
     } catch (error) {
       dispatch(logout(navigate));
       console.log("GET_USER_DETAILS API ERROR............", error);
@@ -45,9 +63,9 @@ export function getUserDetails(token: string, navigate: NavigateFunction) {
 // ================ get User Enrolled Courses  ================
 export async function getUserEnrolledCourses(token: string) {
   // const toastId = toast.loading("Loading...")
-  let result = [];
+  let result: unknown[] = [];
   try {
-    const response = await apiConnector(
+    const response = await apiConnector<ApiResponse<unknown[]>>(
       "GET",
       GET_USER_ENROLLED_COURSES_API,
       { token } as Record<string, unknown>,
@@ -60,9 +78,9 @@ export async function getUserEnrolledCourses(token: string) {
     );
 
     if (!response.data.success) {
-      throw new Error(response.data.message);
+      throw new Error(response.data.message || "Could not get enrolled courses");
     }
-    result = response.data.data;
+    result = response.data.data || [];
   } catch (error) {
     console.log("GET_USER_ENROLLED_COURSES_API API ERROR............", error);
     toast.error("Could Not Get Enrolled Courses");
@@ -74,14 +92,18 @@ export async function getUserEnrolledCourses(token: string) {
 // ================ get Instructor Data  ================
 export async function getInstructorData(token: string) {
   // const toastId = toast.loading("Loading...")
-  let result = [];
+  let result: unknown[] = [];
   try {
-    const response = await apiConnector("GET", GET_INSTRUCTOR_DATA_API, undefined, {
+    interface InstructorDataResponse {
+      courses?: unknown[];
+      [key: string]: unknown;
+    }
+    const response = await apiConnector<InstructorDataResponse>("GET", GET_INSTRUCTOR_DATA_API, undefined, {
       Authorization: `Bearer ${token}`,
     });
     console.log("GET_INSTRUCTOR_DATA_API API RESPONSE............", response);
     if (response?.data?.courses) {
-      result = response?.data?.courses;
+      result = response.data.courses;
     }
   } catch (error) {
     console.log("GET_INSTRUCTOR_DATA_API API ERROR............", error);

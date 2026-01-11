@@ -161,8 +161,8 @@ export default function SubSectionModal({
               if ((result as any).subSections && Array.isArray((result as any).subSections)) {
                 // Backend devuelve 'subSections' con S mayúscula
                 subSectionArray = (result as any).subSections;
-              } else if (result.subSection && Array.isArray(result.subSection)) {
-                subSectionArray = result.subSection;
+              } else if ((result as any).subSection && Array.isArray((result as any).subSection)) {
+                subSectionArray = (result as any).subSection;
               } else if (section.subSection && Array.isArray(section.subSection)) {
                 // Si el resultado no tiene subSection, mantener el original
                 subSectionArray = section.subSection;
@@ -307,8 +307,8 @@ export default function SubSectionModal({
               if ((result as any).subSections && Array.isArray((result as any).subSections)) {
                 // Backend devuelve 'subSections' con S mayúscula
                 subSectionArray = (result as any).subSections;
-              } else if (result.subSection && Array.isArray(result.subSection)) {
-                subSectionArray = result.subSection;
+              } else if ((result as any).subSection && Array.isArray((result as any).subSection)) {
+                subSectionArray = (result as any).subSection;
               } else if (section.subSection && Array.isArray(section.subSection)) {
                 // Si el resultado no tiene subSection, mantener el original
                 subSectionArray = section.subSection;

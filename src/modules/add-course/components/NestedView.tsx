@@ -126,7 +126,7 @@ export default function NestedView({
             const normalizedSection = {
               ...section,
               ...result,
-              subSection: (result as any).subSections || result.subSection || [],
+              subSection: (result as any).subSections || (result as any).subSection || [],
             };
             return normalizedSection;
           }

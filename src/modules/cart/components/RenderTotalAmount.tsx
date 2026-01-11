@@ -11,7 +11,7 @@ import { apiConnector } from "@shared/services/apiConnector";
 import { studentEndpoints } from "@shared/services/apis";
 import { setPaymentLoading } from "@modules/course/store/courseSlice";
 import { resetCart } from "@modules/course/store/cartSlice";
-import { CartItem } from "@modules/course/types";
+import { CartItem, BuyNowTemporaryResponse } from "@modules/course/types";
 
 export default function RenderTotalAmount() {
   const { total, cart } = useSelector((state: RootState) => state.cart);
@@ -29,10 +29,10 @@ export default function RenderTotalAmount() {
     try {
       console.log("Enviando cursos al backend:", coursesId);
       
-      const response = await apiConnector(
+      const response = await apiConnector<BuyNowTemporaryResponse>(
         "POST",
         studentEndpoints.BUY_NOW_TEMPORARY_API,
-        { coursesId },
+        { coursesId } as Record<string, unknown>,
         {
           Authorization: `Bearer ${token}`,
         }

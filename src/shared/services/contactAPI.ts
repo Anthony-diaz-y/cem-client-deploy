@@ -3,6 +3,13 @@ import { apiConnector } from "./apiConnector";
 import { contactusEndpoint } from "./apis";
 import type { ApiError } from "@modules/auth/types";
 
+// API Response Types
+interface ApiResponse<T = unknown> {
+  success: boolean;
+  message: string;
+  data?: T;
+}
+
 const {
   CONTACT_US_API,
   GET_CONTACT_MESSAGES_API,
@@ -28,7 +35,7 @@ export const sendContactMessage = async (data: ContactFormData | Record<string, 
   let result = null;
 
   try {
-    const response = await apiConnector("POST", CONTACT_US_API, data as unknown as Record<string, unknown>);
+    const response = await apiConnector<ApiResponse<unknown>>("POST", CONTACT_US_API, data as unknown as Record<string, unknown>);
     
     if (!response?.data?.success) {
       throw new Error(response?.data?.message || "No se pudo enviar el mensaje");
@@ -118,7 +125,7 @@ export const getContactMessages = async (token: string, params?: GetMessagesPara
       ? `${GET_CONTACT_MESSAGES_API}?${queryParams.toString()}`
       : GET_CONTACT_MESSAGES_API;
 
-    const response = await apiConnector("GET", url, undefined, {
+    const response = await apiConnector<ApiResponse<ContactMessage[]>>("GET", url, undefined, {
       Authorization: `Bearer ${token}`,
     });
 
@@ -138,12 +145,12 @@ export const getContactMessage = async (messageId: string, token: string) => {
   let result: ContactMessage | null = null;
 
   try {
-    const response = await apiConnector("GET", `${GET_CONTACT_MESSAGES_API}/${messageId}`, undefined, {
+    const response = await apiConnector<ApiResponse<ContactMessage>>("GET", `${GET_CONTACT_MESSAGES_API}/${messageId}`, undefined, {
       Authorization: `Bearer ${token}`,
     });
 
     if (response?.data?.success) {
-      result = response.data.data;
+      result = response.data.data || null;
     }
   } catch (error) {
     const apiError = error as ApiError;
@@ -165,12 +172,12 @@ export const getContactStats = async (token: string) => {
   let result: ContactStats | null = null;
 
   try {
-    const response = await apiConnector("GET", GET_CONTACT_STATS_API, undefined, {
+    const response = await apiConnector<ApiResponse<ContactStats>>("GET", GET_CONTACT_STATS_API, undefined, {
       Authorization: `Bearer ${token}`,
     });
 
     if (response?.data?.success) {
-      result = response.data.data;
+      result = response.data.data || null;
     }
   } catch (error) {
     const apiError = error as ApiError;
@@ -186,7 +193,7 @@ export const markMessageAsRead = async (messageId: string, token: string) => {
   const toastId = toast.loading("Marcando como leído...");
 
   try {
-    const response = await apiConnector("PATCH", `${MARK_MESSAGE_READ_API}/${messageId}/read`, {}, {
+    const response = await apiConnector<ApiResponse>("PATCH", `${MARK_MESSAGE_READ_API}/${messageId}/read`, {}, {
       Authorization: `Bearer ${token}`,
     });
 
@@ -210,7 +217,7 @@ export const archiveMessage = async (messageId: string, token: string) => {
   const toastId = toast.loading("Archivando mensaje...");
 
   try {
-    const response = await apiConnector("PATCH", `${ARCHIVE_MESSAGE_API}/${messageId}/archive`, {}, {
+    const response = await apiConnector<ApiResponse>("PATCH", `${ARCHIVE_MESSAGE_API}/${messageId}/archive`, {}, {
       Authorization: `Bearer ${token}`,
     });
 
@@ -234,7 +241,7 @@ export const deleteContactMessage = async (messageId: string, token: string) => 
   const toastId = toast.loading("Eliminando mensaje...");
 
   try {
-    const response = await apiConnector("DELETE", `${DELETE_MESSAGE_API}/${messageId}`, undefined, {
+    const response = await apiConnector<ApiResponse>("DELETE", `${DELETE_MESSAGE_API}/${messageId}`, undefined, {
       Authorization: `Bearer ${token}`,
     });
 
@@ -271,7 +278,7 @@ export const replyToMessage = async (messageId: string, replyMessage: string, to
       body: requestBody,
     });
 
-    const response = await apiConnector(
+    const response = await apiConnector<ApiResponse>(
       "POST",
       `${GET_CONTACT_MESSAGES_API}/${messageId}/reply`,
       requestBody as unknown as Record<string, unknown>,
@@ -336,7 +343,7 @@ export const unarchiveMessage = async (messageId: string, token: string) => {
   const toastId = toast.loading("Desarchivando mensaje...");
 
   try {
-    const response = await apiConnector("PATCH", `${ARCHIVE_MESSAGE_API}/${messageId}/unarchive`, {}, {
+    const response = await apiConnector<ApiResponse>("PATCH", `${ARCHIVE_MESSAGE_API}/${messageId}/unarchive`, {}, {
       Authorization: `Bearer ${token}`,
     });
 
