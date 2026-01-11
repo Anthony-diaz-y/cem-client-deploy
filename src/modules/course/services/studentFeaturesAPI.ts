@@ -12,6 +12,13 @@ import {
   ApiError,
 } from "../types";
 
+// API Response Type
+interface ApiResponse<T = unknown> {
+  success: boolean;
+  message?: T | string;
+  data?: T;
+}
+
 const {
   COURSE_PAYMENT_API,
   COURSE_VERIFY_API,
@@ -61,7 +68,16 @@ export async function buyCourse(
     }
 
     // initiate the order
-    const orderResponse = await apiConnector(
+    interface PaymentOrderData {
+      id: string;
+      currency: string;
+      amount: number;
+    }
+    interface PaymentOrderResponse {
+      success: boolean;
+      message: PaymentOrderData;
+    }
+    const orderResponse = await apiConnector<PaymentOrderResponse>(
       "POST",
       COURSE_PAYMENT_API,
       { coursesId },
@@ -71,18 +87,19 @@ export async function buyCourse(
     );
     // console.log("orderResponse... ", orderResponse);
     if (!orderResponse.data.success) {
-      throw new Error(orderResponse.data.message);
+      throw new Error('Error al crear la orden');
     }
 
     const RAZORPAY_KEY = process.env.NEXT_PUBLIC_RAZORPAY_KEY || "";
     // console.log("RAZORPAY_KEY...", RAZORPAY_KEY);
 
     // options
+    const orderData = orderResponse.data.message;
     const options = {
       key: RAZORPAY_KEY,
-      currency: orderResponse.data.message.currency,
-      amount: orderResponse.data.message.amount,
-      order_id: orderResponse.data.message.id,
+      currency: orderData.currency,
+      amount: orderData.amount,
+      order_id: orderData.id,
       name: "StudyNotion",
       description: "Gracias por comprar el curso",
       image: typeof rzpLogo === "string" ? rzpLogo : rzpLogo.src,
@@ -94,7 +111,7 @@ export async function buyCourse(
         //send successful mail
         sendPaymentSuccessEmail(
           response,
-          orderResponse.data.message.amount,
+          orderData.amount,
           token
         );
         //verifyPayment
@@ -123,7 +140,7 @@ async function sendPaymentSuccessEmail(
   token: string
 ) {
   try {
-    await apiConnector(
+    await apiConnector<ApiResponse>(
       "POST",
       SEND_PAYMENT_SUCCESS_EMAIL_API,
       {
@@ -152,12 +169,12 @@ async function verifyPayment(
   dispatch(setPaymentLoading(true));
 
   try {
-    const response = await apiConnector("POST", COURSE_VERIFY_API, bodyData as unknown as Record<string, unknown>, {
+    const response = await apiConnector<ApiResponse>("POST", COURSE_VERIFY_API, bodyData as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     });
 
     if (!response.data.success) {
-      throw new Error(response.data.message);
+      throw new Error(typeof response.data.message === 'string' ? response.data.message : 'Error al verificar el pago');
     }
     toast.success("Pago exitoso, has sido agregado al curso");
     navigate("/dashboard/enrolled-courses");

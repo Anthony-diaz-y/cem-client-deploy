@@ -136,6 +136,12 @@ export interface VerifyPaymentData extends PaymentResponse {
   coursesId: string[];
 }
 
+export interface BuyNowTemporaryResponse {
+  success: boolean;
+  message: string;
+  warning?: string;
+}
+
 // API Error Types
 export interface ApiError {
   response?: {
@@ -218,6 +224,7 @@ export interface CourseAccordionBarProps {
 // Course Details Response Type
 export interface CourseDetailsResponse {
   success: boolean;
+  message?: string;
   data: {
     courseDetails: Course & {
       _id: string | string[];

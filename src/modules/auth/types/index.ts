@@ -76,3 +76,37 @@ export interface ApiError {
   };
   message?: string;
 }
+
+// API Response Types
+export interface ApiResponse<T = unknown> {
+  success: boolean;
+  message: string;
+  data?: T;
+}
+
+export interface SendOtpResponse extends ApiResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface SignupResponse extends ApiResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface LoginResponse {
+  success: boolean;
+  message: string;
+  token: string;
+  user: User;
+}
+
+export interface ResetPasswordTokenResponse extends ApiResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface ResetPasswordResponse extends ApiResponse {
+  success: boolean;
+  message: string;
+}

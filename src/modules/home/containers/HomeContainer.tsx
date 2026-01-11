@@ -97,7 +97,7 @@ const HomeContainer = () => {
         // Obtener datos de la categoría
         const result = await getCatalogPageData(categoryId);
         if (result) {
-          setCatalogPageData(result);
+          setCatalogPageData(result as CatalogPageData);
         }
       } catch (error) {
         console.error("Error fetching catalog page data for home:", error);

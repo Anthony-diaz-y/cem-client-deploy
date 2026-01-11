@@ -4,6 +4,39 @@ import { apiConnector } from "./apiConnector"
 import { courseEndpoints } from "./apis"
 import type { ApiError } from "@modules/auth/types"
 
+// API Response Types
+interface ApiResponse<T = unknown> {
+  success: boolean;
+  message: string;
+  data?: T;
+}
+
+// Course Category Type
+export interface CourseCategory {
+  id?: string;
+  _id?: string;
+  name: string;
+}
+
+// Full Course Details Response Type
+export interface FullCourseDetailsResponse {
+  courseDetails: {
+    courseName: string;
+    courseContent?: Array<{
+      _id?: string;
+      id?: string;
+      sectionName: string;
+      subSection?: Array<unknown>;
+      subSections?: Array<unknown>;
+      createdAt?: string;
+      [key: string]: unknown;
+    }>;
+    [key: string]: unknown;
+  };
+  completedVideos?: string[];
+  [key: string]: unknown;
+}
+
 const {
   COURSE_DETAILS_API,
   COURSE_CATEGORIES_API,
@@ -31,14 +64,14 @@ const {
 // ================ get All Courses ================
 export const getAllCourses = async () => {
   const toastId = toast.loading("Loading...")
-  let result = []
+  let result: unknown[] = []
 
   try {
-    const response = await apiConnector("GET", GET_ALL_COURSE_API)
+    const response = await apiConnector<ApiResponse<unknown[]>>("GET", GET_ALL_COURSE_API)
     if (!response?.data?.success) {
       throw new Error("Could Not Fetch Course Categories")
     }
-    result = response?.data?.data
+    result = response?.data?.data || []
   } catch (error) {
     const apiError = error as ApiError;
     console.log("GET_ALL_COURSE_API API ERROR............", apiError)
@@ -81,7 +114,11 @@ export const fetchCourseDetails = async (courseId: string) => {
       return null;
     }
 
-    const response = await apiConnector("POST", COURSE_DETAILS_API, { courseId } as Record<string, unknown>)
+    interface CourseDetailsData {
+      courseDetails: unknown;
+      [key: string]: unknown;
+    }
+    const response = await apiConnector<ApiResponse<CourseDetailsData>>("POST", COURSE_DETAILS_API, { courseId } as Record<string, unknown>)
     console.log("COURSE_DETAILS_API API RESPONSE............", response)
 
     // Verificar estructura de respuesta antes de desestructurar
@@ -123,16 +160,16 @@ export const fetchCourseDetails = async (courseId: string) => {
 }
 
 // ================ fetch Course Categories ================
-export const fetchCourseCategories = async () => {
-  let result = []
+export const fetchCourseCategories = async (): Promise<CourseCategory[]> => {
+  let result: CourseCategory[] = []
 
   try {
-    const response = await apiConnector("GET", COURSE_CATEGORIES_API)
+    const response = await apiConnector<ApiResponse<CourseCategory[]>>("GET", COURSE_CATEGORIES_API)
     console.log("COURSE_CATEGORIES_API RESPONSE............", response)
     if (!response?.data?.success) {
       throw new Error("Could Not Fetch Course Categories")
     }
-    result = response?.data?.data
+    result = (response?.data?.data || []) as CourseCategory[]
   } catch (error) {
     const apiError = error as ApiError;
     console.log("COURSE_CATEGORY_API API ERROR............", apiError)
@@ -148,7 +185,7 @@ export const addCourseDetails = async (data: FormData | Record<string, unknown>,
   let result = null;
 
   try {
-    const response = await apiConnector("POST", CREATE_COURSE_API, data, {
+    const response = await apiConnector<ApiResponse>("POST", CREATE_COURSE_API, data, {
       "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${token}`,
     })
@@ -187,7 +224,7 @@ export const editCourseDetails = async (data: FormData | Record<string, unknown>
   const toastId = toast.loading("Cargando...")
 
   try {
-    const response = await apiConnector("POST", EDIT_COURSE_API, data, {
+    const response = await apiConnector<ApiResponse>("POST", EDIT_COURSE_API, data, {
       "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${token}`,
     })
@@ -215,7 +252,7 @@ export const createSection = async (data: Record<string, unknown>, token: string
   const toastId = toast.loading("Loading...")
 
   try {
-    const response = await apiConnector("POST", CREATE_SECTION_API, data, {
+    const response = await apiConnector<ApiResponse<{ updatedCourseDetails?: unknown }>>("POST", CREATE_SECTION_API, data, {
       Authorization: `Bearer ${token}`,
     })
     console.log("CREATE SECTION API RESPONSE............", response)
@@ -224,7 +261,7 @@ export const createSection = async (data: Record<string, unknown>, token: string
       throw new Error("Could Not Create Section")
     }
 
-    result = response?.data?.updatedCourseDetails
+    result = response?.data?.data?.updatedCourseDetails
   } catch (error) {
     const apiError = error as ApiError;
     console.log("CREATE SECTION API ERROR............", apiError)
@@ -243,7 +280,7 @@ export const createSubSection = async (data: FormData | Record<string, unknown>,
   try {
     // No establecer Content-Type manualmente cuando se envía FormData
     // El navegador lo establecerá automáticamente con el boundary correcto
-    const response = await apiConnector("POST", CREATE_SUBSECTION_API, data, {
+    const response = await apiConnector<ApiResponse>("POST", CREATE_SUBSECTION_API, data, {
       Authorization: `Bearer ${token}`,
     })
     console.log("CREATE SUB-SECTION API RESPONSE............", response)
@@ -280,7 +317,7 @@ export const updateSection = async (data: Record<string, unknown>, token: string
   const toastId = toast.loading("Loading...")
 
   try {
-    const response = await apiConnector("POST", UPDATE_SECTION_API, data, {
+    const response = await apiConnector<ApiResponse>("POST", UPDATE_SECTION_API, data, {
       Authorization: `Bearer ${token}`,
     })
     console.log("UPDATE SECTION API RESPONSE............", response)
@@ -308,7 +345,7 @@ export const updateSubSection = async (data: FormData | Record<string, unknown>,
   try {
     // No establecer Content-Type manualmente cuando se envía FormData
     // El navegador lo establecerá automáticamente con el boundary correcto
-    const response = await apiConnector("POST", UPDATE_SUBSECTION_API, data, {
+    const response = await apiConnector<ApiResponse>("POST", UPDATE_SUBSECTION_API, data, {
       Authorization: `Bearer ${token}`,
     })
     console.log("UPDATE SUB-SECTION API RESPONSE............", response)
@@ -347,7 +384,7 @@ export const deleteSection = async (data: Record<string, unknown>, token: string
   const toastId = toast.loading("Loading...")
 
   try {
-    const response = await apiConnector("POST", DELETE_SECTION_API, data, {
+    const response = await apiConnector<ApiResponse>("POST", DELETE_SECTION_API, data, {
       Authorization: `Bearer ${token}`,
     })
     console.log("DELETE SECTION API RESPONSE............", response)
@@ -373,7 +410,7 @@ export const deleteSubSection = async (data: Record<string, unknown>, token: str
   let result = null
   const toastId = toast.loading("Loading...")
   try {
-    const response = await apiConnector("POST", DELETE_SUBSECTION_API, data, {
+    const response = await apiConnector<ApiResponse>("POST", DELETE_SUBSECTION_API, data, {
       Authorization: `Bearer ${token}`,
     })
     console.log("DELETE SUB-SECTION API RESPONSE............", response)
@@ -393,10 +430,10 @@ export const deleteSubSection = async (data: Record<string, unknown>, token: str
 
 // ================ fetch Instructor Courses ================
 export const fetchInstructorCourses = async (token: string) => {
-  let result = []
+  let result: any[] = []
   // const toastId = toast.loading("Loading...")
   try {
-    const response = await apiConnector(
+    const response = await apiConnector<ApiResponse<any[]>>(
       "GET",
       GET_ALL_INSTRUCTOR_COURSES_API,
       undefined,
@@ -455,7 +492,7 @@ export const deleteCourse = async (data: Record<string, unknown>, token: string)
     }
     
     // Para DELETE, enviar courseId como query param
-    const response = await apiConnector(
+    const response = await apiConnector<ApiResponse>(
       "DELETE", 
       DELETE_COURSE_API, 
       data, // También en el body por si el backend lo requiere
@@ -493,17 +530,20 @@ export const deleteCourse = async (data: Record<string, unknown>, token: string)
 
 
 // ================ get Full Details Of Course ================
-export const getFullDetailsOfCourse = async (courseId: string, token: string) => {
+export const getFullDetailsOfCourse = async (
+  courseId: string, 
+  token: string
+): Promise<FullCourseDetailsResponse | null> => {
   // const toastId = toast.loading("Loading...")
   //   dispatch(setLoading(true));
-  let result = null
+  let result: FullCourseDetailsResponse | null = null
   try {
-    const response = await apiConnector(
+    const response = await apiConnector<ApiResponse<FullCourseDetailsResponse>>(
       "POST",
       GET_FULL_COURSE_DETAILS_AUTHENTICATED,
       {
         courseId,
-      },
+      } as Record<string, unknown>,
       {
         Authorization: `Bearer ${token}`,
       }
@@ -513,11 +553,16 @@ export const getFullDetailsOfCourse = async (courseId: string, token: string) =>
     if (!response.data.success) {
       throw new Error(response.data.message)
     }
-    result = response?.data?.data
+    result = (response?.data?.data as FullCourseDetailsResponse) || null
   } catch (error) {
     const apiError = error as ApiError;
     console.log("COURSE_FULL_DETAILS_API API ERROR............", apiError)
-    result = apiError.response?.data || null
+    // En caso de error, intentar extraer los datos del error si están disponibles
+    if (apiError.response?.data && typeof apiError.response.data === 'object' && 'courseDetails' in apiError.response.data) {
+      result = apiError.response.data as FullCourseDetailsResponse;
+    } else {
+      result = null;
+    }
     // toast.error(apiError.response?.data?.message);
   }
   // toast.dismiss(toastId)
@@ -532,7 +577,7 @@ export const markLectureAsComplete = async (data: Record<string, unknown>, token
   // console.log("mark complete data", data)
   const toastId = toast.loading("Loading...")
   try {
-    const response = await apiConnector("POST", LECTURE_COMPLETION_API, data, {
+    const response = await apiConnector<ApiResponse & { error?: string }>("POST", LECTURE_COMPLETION_API, data as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     })
     console.log("MARK_LECTURE_AS_COMPLETE_API API RESPONSE............", response)
@@ -560,7 +605,7 @@ export const toggleLectureCompletion = async (
 ): Promise<{ success: boolean; isCompleted: boolean } | null> => {
   const toastId = toast.loading("Actualizando progreso...")
   try {
-    const response = await apiConnector("POST", LECTURE_COMPLETION_API, data, {
+    const response = await apiConnector<ApiResponse & { isCompleted?: boolean; error?: string }>("POST", LECTURE_COMPLETION_API, data as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     })
     console.log("TOGGLE_LECTURE_COMPLETION_API API RESPONSE............", response)
@@ -570,7 +615,7 @@ export const toggleLectureCompletion = async (
     }
 
     // El backend retorna isCompleted en la respuesta
-    const isCompleted = response.data.isCompleted ?? response.data.data?.isCompleted ?? true
+    const isCompleted = response.data.isCompleted ?? (response.data.data as any)?.isCompleted ?? true
     
     toast.success(response.data.message || (isCompleted ? "Lecture marcada como completada" : "Lecture desmarcada"))
     
@@ -592,7 +637,7 @@ export const createRating = async (data: Record<string, unknown>, token: string)
   const toastId = toast.loading("Loading...")
   let success = false
   try {
-    const response = await apiConnector("POST", CREATE_RATING_API, data, {
+    const response = await apiConnector<ApiResponse>("POST", CREATE_RATING_API, data, {
       Authorization: `Bearer ${token}`,
     })
     console.log("CREATE RATING API RESPONSE............", response)
@@ -616,7 +661,7 @@ export const reorderSections = async (data: Record<string, unknown>, token: stri
   let result = null
   
   try {
-    const response = await apiConnector("POST", REORDER_SECTIONS_API, data, {
+    const response = await apiConnector<ApiResponse>("POST", REORDER_SECTIONS_API, data, {
       Authorization: `Bearer ${token}`,
     })
     console.log("REORDER SECTIONS API RESPONSE............", response)
@@ -646,7 +691,7 @@ export const reorderSubSections = async (data: Record<string, unknown>, token: s
   let result = null
   
   try {
-    const response = await apiConnector("POST", REORDER_SUBSECTIONS_API, data, {
+    const response = await apiConnector<ApiResponse>("POST", REORDER_SUBSECTIONS_API, data, {
       Authorization: `Bearer ${token}`,
     })
     console.log("REORDER SUBSECTIONS API RESPONSE............", response)
@@ -677,7 +722,7 @@ export const moveSubSection = async (data: Record<string, unknown>, token: strin
   const toastId = toast.loading("Moviendo lección...")
   
   try {
-    const response = await apiConnector("POST", MOVE_SUBSECTION_API, data, {
+    const response = await apiConnector<ApiResponse>("POST", MOVE_SUBSECTION_API, data, {
       Authorization: `Bearer ${token}`,
     })
     console.log("MOVE SUBSECTION API RESPONSE............", response)

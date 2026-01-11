@@ -6,7 +6,15 @@ import { setUser } from "../store/profileSlice";
 import { apiConnector } from "@shared/services/apiConnector";
 import { endpoints } from "@shared/services/apis";
 import { AppDispatch } from "@shared/store/store";
-import { NavigateFunction, ApiError } from "../types";
+import { 
+  NavigateFunction, 
+  ApiError,
+  SendOtpResponse,
+  SignupResponse,
+  LoginResponse,
+  ResetPasswordTokenResponse,
+  ResetPasswordResponse
+} from "../types";
 
 const {
   SENDOTP_API,
@@ -23,10 +31,10 @@ export function sendOtp(email: string, navigate: NavigateFunction) {
     dispatch(setLoading(true));
 
     try {
-      const response = await apiConnector("POST", SENDOTP_API, {
+      const response = await apiConnector<SendOtpResponse>("POST", SENDOTP_API, {
         email,
         checkUserPresent: true,
-      });
+      } as Record<string, unknown>);
       // console.log("SENDOTP API RESPONSE ---> ", response)
 
       // console.log(response.data.success)
@@ -61,7 +69,7 @@ export function signUp(
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
     try {
-      const response = await apiConnector("POST", SIGNUP_API, {
+      const response = await apiConnector<SignupResponse>("POST", SIGNUP_API, {
         accountType,
         firstName,
         lastName,
@@ -69,7 +77,7 @@ export function signUp(
         password,
         confirmPassword,
         otp,
-      });
+      } as Record<string, unknown>);
 
       // console.log("SIGNUP API RESPONSE --> ", response);
       if (!response.data.success) {
@@ -100,10 +108,10 @@ export function login(
     dispatch(setLoading(true));
 
     try {
-      const response = await apiConnector("POST", LOGIN_API, {
+      const response = await apiConnector<LoginResponse>("POST", LOGIN_API, {
         email,
         password,
-      });
+      } as Record<string, unknown>);
 
       console.log("LOGIN API RESPONSE............", response);
 
@@ -146,9 +154,9 @@ export function getPasswordResetToken(
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
     try {
-      const response = await apiConnector("POST", RESETPASSTOKEN_API, {
+      const response = await apiConnector<ResetPasswordTokenResponse>("POST", RESETPASSTOKEN_API, {
         email,
-      });
+      } as Record<string, unknown>);
 
       console.log("RESET PASS TOKEN RESPONSE............", response);
 
@@ -182,11 +190,11 @@ export function resetPassword(
     dispatch(setLoading(true));
 
     try {
-      const response = await apiConnector("POST", RESETPASSWORD_API, {
+      const response = await apiConnector<ResetPasswordResponse>("POST", RESETPASSWORD_API, {
         password,
         confirmPassword,
         token,
-      });
+      } as Record<string, unknown>);
 
       console.log("RESETPASSWORD RESPONSE............", response);
 

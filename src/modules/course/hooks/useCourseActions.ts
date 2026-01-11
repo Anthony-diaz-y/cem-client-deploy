@@ -13,6 +13,7 @@ import { studentEndpoints } from "@shared/services/apis";
 import { setPaymentLoading } from "../store/courseSlice";
 import { resetCart } from "../store/cartSlice";
 import { invalidateInstructorCache } from "@modules/instructor/hooks/useInstructorData";
+import type { BuyNowTemporaryResponse } from "../types";
 
 /**
  * Custom hook for course actions (buy, add to cart, active sections)
@@ -45,10 +46,10 @@ export const useCourseActions = (
     dispatch(setPaymentLoading(true));
 
     try {
-      const response = await apiConnector(
+      const response = await apiConnector<BuyNowTemporaryResponse>(
         "POST",
         studentEndpoints.BUY_NOW_TEMPORARY_API,
-        { coursesId },
+        { coursesId } as Record<string, unknown>,
         {
           Authorization: `Bearer ${token}`,
         }
