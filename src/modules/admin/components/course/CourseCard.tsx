@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { AdminCourse } from "@shared/services/adminAPI";
 import { COURSE_STATUS } from "@shared/utils/constants";
 import Img from "@shared/components/Img";
-import { FiEdit2, FiTrash2, FiCheckCircle, FiStar, FiXCircle } from "react-icons/fi";
+import { FiEdit2, FiTrash2, FiCheckCircle, FiStar, FiXCircle, FiEye } from "react-icons/fi";
 
 interface CourseCardProps {
   course: AdminCourse;
@@ -113,6 +113,17 @@ export default function CourseCard({
 
         {/* Botones de acción */}
         <div className="pt-4 mt-auto space-y-2">
+          {/* Botón Ver Detalles - siempre visible */}
+          <button
+            onClick={() =>
+              router.push(`/dashboard/admin/courses/${course.id}`)
+            }
+            className="w-full px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-purple-500/20"
+          >
+            <FiEye className="text-base" />
+            Ver Detalles
+          </button>
+
           {course.status === COURSE_STATUS.DRAFT ? (
             // Cursos en Borrador: Editar, Publicar, Eliminar
             <>

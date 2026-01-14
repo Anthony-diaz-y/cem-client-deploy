@@ -105,4 +105,8 @@ export const adminEndpoints = {
   PUBLISH_COURSE_API: BASE_URL + "/admin/publish-course",
   EDIT_COURSE_ADMIN_API: BASE_URL + "/admin/edit-course",
   DELETE_COURSE_ADMIN_API: BASE_URL + "/admin/delete-course",
+  GET_COURSE_DETAILS_ADMIN_API: BASE_URL + "/admin/course-details",
+  CREATE_REVIEW_ADMIN_API: BASE_URL + "/admin/review/create",
+  UPDATE_REVIEW_ADMIN_API: BASE_URL + "/admin/review",
+  DELETE_REVIEW_ADMIN_API: BASE_URL + "/admin/review",
 }

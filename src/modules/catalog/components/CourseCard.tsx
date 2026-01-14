@@ -80,65 +80,81 @@ function CourseCard({ course, Height }: CourseCardProps) {
   return (
     <div className="h-full flex w-full">
       <Link href={`/courses/${courseId}`} className="h-full w-full flex flex-col group">
-        <div className="bg-richblack-800 rounded-xl overflow-hidden border border-richblack-700 hover:border-yellow-50/30 transition-all duration-300 h-full flex flex-col shadow-lg hover:shadow-xl w-full">
-          {/* Image Container - Fixed Height - Aumentado para mejor visualización */}
+        <div className="bg-richblack-800 rounded-2xl overflow-hidden border border-richblack-700 hover:border-yellow-50/50 transition-all duration-300 h-full flex flex-col shadow-xl hover:shadow-2xl hover:shadow-yellow-500/10 w-full transform hover:-translate-y-1">
+          {/* Image Container - Fixed Height con mejor diseño */}
           <div className={`${Height} w-full overflow-hidden flex-shrink-0 relative bg-richblack-900`}>
             {course?.thumbnail ? (
-              <img
+              <Img
                 src={course.thumbnail}
                 alt={course?.courseName || "course thumbnail"}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
-                onError={(e) => {
-                  // Fallback si la imagen no carga
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  const placeholder = document.createElement('div');
-                  placeholder.className = 'absolute inset-0 bg-gradient-to-br from-richblack-800 to-richblack-900 flex flex-col items-center justify-center';
-                  placeholder.innerHTML = `
-                    <svg class="w-16 h-16 text-richblack-500 opacity-60 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    <span class="text-richblack-400 text-xs">Sin imagen</span>
-                  `;
-                  target.parentElement?.appendChild(placeholder);
-                }}
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
             ) : (
-              <div className="absolute inset-0 bg-gradient-to-br from-richblack-800 to-richblack-900 flex flex-col items-center justify-center">
-                <svg className="w-16 h-16 text-richblack-500 opacity-60 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              <div className="absolute inset-0 bg-gradient-to-br from-richblack-800 via-richblack-700 to-richblack-900 flex flex-col items-center justify-center">
+                <svg className="w-20 h-20 text-richblack-500 opacity-50 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                 </svg>
-                <span className="text-richblack-400 text-xs">Sin imagen</span>
+                <span className="text-richblack-400 text-xs font-medium">Sin imagen</span>
               </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-richblack-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out pointer-events-none z-10"></div>
+            {/* Overlay gradient mejorado */}
+            <div className="absolute inset-0 bg-gradient-to-t from-richblack-900/80 via-richblack-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out pointer-events-none z-10"></div>
+            
+            {/* Badge de precio en la imagen (opcional, más llamativo) */}
+            <div className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div className="bg-yellow-50/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg">
+                <p className="text-richblack-900 font-bold text-sm">
+                  Rs. {course?.price}
+                </p>
+              </div>
+            </div>
           </div>
           
-          {/* Content Container - Flexible but with min-height - Asegurar altura consistente */}
-          <div className="flex flex-col flex-grow p-4 min-h-[200px] justify-between">
-            <div className="flex flex-col gap-3">
-              {/* Course Title */}
-              <h3 className="text-lg font-semibold text-richblack-5 line-clamp-2 leading-tight group-hover:text-yellow-50 transition-colors duration-200">
+          {/* Content Container - Mejorado con más espacio y estructura */}
+          <div className="flex flex-col flex-grow p-5 min-h-[220px] justify-between">
+            <div className="flex flex-col gap-3.5 flex-grow">
+              {/* Course Title - Mejorado */}
+              <h3 className="text-xl font-bold text-richblack-5 line-clamp-2 leading-snug group-hover:text-yellow-50 transition-colors duration-200 min-h-[3.5rem]">
                 {course?.courseName}
               </h3>
               
-              {/* Instructor */}
-              <p className="text-sm text-richblack-300">
-                {course?.instructor?.firstName} {course?.instructor?.lastName}
-              </p>
+              {/* Instructor - Mejorado */}
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-richblack-700 flex items-center justify-center flex-shrink-0">
+                  <span className="text-richblack-300 text-xs font-semibold">
+                    {course?.instructor?.firstName?.[0] || "I"}
+                    {course?.instructor?.lastName?.[0] || ""}
+                  </span>
+                </div>
+                <p className="text-sm text-richblack-300 font-medium truncate">
+                  {course?.instructor?.firstName} {course?.instructor?.lastName}
+                </p>
+              </div>
               
-              {/* Rating Section */}
-              <div className="flex items-center gap-2 flex-wrap">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-yellow-50 font-medium text-sm">
-                    {avgReviewCount > 0 ? avgReviewCount.toFixed(1) : "0"}
+              {/* Rating Section - Mejorado */}
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <div className="flex items-center gap-2 bg-richblack-700/50 px-3 py-1.5 rounded-lg">
+                  <span className="text-yellow-50 font-bold text-base">
+                    {avgReviewCount > 0 ? avgReviewCount.toFixed(1) : "0.0"}
                   </span>
                   <RatingStars Review_Count={avgReviewCount} />
                 </div>
-                <span className="text-richblack-400 text-xs">
-                  ({(course as any)?.totalReviews ?? (course?.ratingAndReviews?.length || 0)})
+                <span className="text-richblack-400 text-xs font-medium">
+                  ({(course as any)?.totalReviews ?? (course?.ratingAndReviews?.length || 0)} reseñas)
                 </span>
               </div>
+              
+              {/* Estudiantes inscritos (si está disponible) */}
+              {(course as any)?.totalStudentsEnrolled !== undefined && (
+                <div className="flex items-center gap-1.5 text-richblack-400 text-xs">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                  </svg>
+                  <span className="font-medium">
+                    {(course as any).totalStudentsEnrolled} estudiantes
+                  </span>
+                </div>
+              )}
             </div>
             
             {/* Price - Always at bottom */}
