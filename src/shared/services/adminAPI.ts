@@ -17,6 +17,10 @@ const {
   PUBLISH_COURSE_API,
   EDIT_COURSE_ADMIN_API,
   DELETE_COURSE_ADMIN_API,
+  GET_COURSE_DETAILS_ADMIN_API,
+  CREATE_REVIEW_ADMIN_API,
+  UPDATE_REVIEW_ADMIN_API,
+  DELETE_REVIEW_ADMIN_API,
 } = adminEndpoints;
 
 // ================ Types ================
@@ -227,6 +231,126 @@ export interface EditCourseResponse {
 
 export interface DeleteCourseResponse {
   success: boolean;
+  message: string;
+}
+
+// ================ Course Details Types ================
+export interface CourseDetailsCourseInfo {
+  id: string;
+  courseName: string;
+  courseDescription: string;
+  whatYouWillLearn: string;
+  price: number;
+  thumbnail: string;
+  status: "Draft" | "Published";
+  tag: string[];
+  instructions: string[];
+  createdAt: string;
+  updatedAt: string;
+  instructor: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    image: string;
+    accountType: "Instructor";
+  };
+  category: {
+    id: string;
+    name: string;
+    description: string;
+  } | null;
+}
+
+export interface CourseDetailsStatistics {
+  totalStudentsEnrolled: number;
+  totalSubSections: number;
+  totalSections: number;
+  averageProgressPercentage: number;
+  studentsCompleted: number;
+  studentsInProgress: number;
+  studentsNotStarted: number;
+  totalDiscussions: number;
+  totalDiscussionReplies: number;
+  averageRating: number;
+  totalReviews: number;
+}
+
+export interface EnrolledStudent {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  image: string;
+  enrolledAt: string | null;
+  progress: {
+    completedSubSections: number;
+    totalSubSections: number;
+    progressPercentage: number;
+    isCompleted: boolean;
+    completedVideosIds: string[];
+  };
+}
+
+export interface DiscussionReply {
+  id: string;
+  reply: string;
+  userId: string;
+  userName: string;
+  userAccountType: "Admin" | "Instructor" | "Student";
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DiscussionBySubSection {
+  subSectionId: string;
+  subSectionTitle: string;
+  sectionName: string;
+  totalQuestions: number;
+  totalReplies: number;
+  lastActivity: string | null;
+  discussions: Array<{
+    id: string;
+    question: string;
+    userId: string;
+    userName: string;
+    userAccountType: "Admin" | "Instructor" | "Student";
+    repliesCount: number;
+    createdAt: string;
+    updatedAt: string;
+    replies: DiscussionReply[];
+  }>;
+}
+
+export interface CourseReview {
+  id: string;
+  rating: number;
+  review: string;
+  userId: string;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    image: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CourseDetailsData {
+  course: CourseDetailsCourseInfo;
+  statistics: CourseDetailsStatistics;
+  enrolledStudents: EnrolledStudent[];
+  discussionsBySubSection: DiscussionBySubSection[];
+  reviews?: CourseReview[];
+  editCourseEndpoint: string;
+  courseId: string;
+}
+
+export interface CourseDetailsResponse {
+  success: boolean;
+  data: CourseDetailsData;
   message: string;
 }
 
@@ -727,6 +851,36 @@ export async function deleteCourseAdmin(
   }
 }
 
+// ================ Get Course Details (Admin) ================
+export async function getCourseDetailsAdmin(
+  courseId: string,
+  token: string
+): Promise<CourseDetailsData | null> {
+  try {
+    const response = await apiConnector<CourseDetailsResponse>(
+      "GET",
+      `${GET_COURSE_DETAILS_ADMIN_API}/${courseId}`,
+      undefined,
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    );
+
+    console.log("GET_COURSE_DETAILS_ADMIN_API RESPONSE............", response);
+
+    if (!response.data.success) {
+      throw new Error(response.data.message);
+    }
+
+    return response.data.data;
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.log("GET_COURSE_DETAILS_ADMIN_API ERROR............", apiError);
+    toast.error(apiError.response?.data?.message || "Error al cargar detalles del curso");
+    return null;
+  }
+}
+
 // ================ Create Category ================
 export interface CreateCategoryRequest {
   name: string;
@@ -772,6 +926,144 @@ export async function createCategory(
     const apiError = error as ApiError;
     console.log("CREATE_CATEGORY_API ERROR............", apiError);
     toast.error(apiError.response?.data?.message || "Error al crear categoría");
+    toast.dismiss(toastId);
+    return false;
+  }
+}
+
+// ================ Review Management (Admin) ================
+export interface CreateReviewRequest {
+  courseId: string;
+  rating: number;
+  review: string;
+}
+
+export interface UpdateReviewRequest {
+  rating: number;
+  review: string;
+}
+
+export interface ReviewResponse {
+  success: boolean;
+  message: string;
+  data: CourseReview;
+}
+
+export interface DeleteReviewResponse {
+  success: boolean;
+  message: string;
+  data: {
+    id: string;
+    rating: number;
+    review: string;
+    userId: string;
+    courseId: string;
+    user: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+    };
+  };
+}
+
+export async function createReviewAdmin(
+  data: CreateReviewRequest,
+  token: string
+): Promise<CourseReview | null> {
+  const toastId = toast.loading("Creando reseña...");
+  try {
+    const response = await apiConnector<ReviewResponse>(
+      "POST",
+      CREATE_REVIEW_ADMIN_API,
+      data as unknown as Record<string, unknown>,
+      {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    );
+
+    console.log("CREATE_REVIEW_ADMIN_API RESPONSE............", response);
+
+    if (!response.data.success) {
+      throw new Error(response.data.message);
+    }
+
+    toast.success(response.data.message || "Reseña creada exitosamente");
+    toast.dismiss(toastId);
+    return response.data.data;
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.log("CREATE_REVIEW_ADMIN_API ERROR............", apiError);
+    toast.error(apiError.response?.data?.message || "Error al crear reseña");
+    toast.dismiss(toastId);
+    return null;
+  }
+}
+
+export async function updateReviewAdmin(
+  reviewId: string,
+  data: UpdateReviewRequest,
+  token: string
+): Promise<CourseReview | null> {
+  const toastId = toast.loading("Actualizando reseña...");
+  try {
+    const response = await apiConnector<ReviewResponse>(
+      "PUT",
+      `${UPDATE_REVIEW_ADMIN_API}/${reviewId}`,
+      data as unknown as Record<string, unknown>,
+      {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    );
+
+    console.log("UPDATE_REVIEW_ADMIN_API RESPONSE............", response);
+
+    if (!response.data.success) {
+      throw new Error(response.data.message);
+    }
+
+    toast.success(response.data.message || "Reseña actualizada exitosamente");
+    toast.dismiss(toastId);
+    return response.data.data;
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.log("UPDATE_REVIEW_ADMIN_API ERROR............", apiError);
+    toast.error(apiError.response?.data?.message || "Error al actualizar reseña");
+    toast.dismiss(toastId);
+    return null;
+  }
+}
+
+export async function deleteReviewAdmin(
+  reviewId: string,
+  token: string
+): Promise<boolean> {
+  const toastId = toast.loading("Eliminando reseña...");
+  try {
+    const response = await apiConnector<DeleteReviewResponse>(
+      "DELETE",
+      `${DELETE_REVIEW_ADMIN_API}/${reviewId}`,
+      undefined,
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    );
+
+    console.log("DELETE_REVIEW_ADMIN_API RESPONSE............", response);
+
+    if (!response.data.success) {
+      throw new Error(response.data.message);
+    }
+
+    toast.success(response.data.message || "Reseña eliminada exitosamente");
+    toast.dismiss(toastId);
+    return true;
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.log("DELETE_REVIEW_ADMIN_API ERROR............", apiError);
+    toast.error(apiError.response?.data?.message || "Error al eliminar reseña");
     toast.dismiss(toastId);
     return false;
   }
