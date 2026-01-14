@@ -1,13 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { VscSignOut } from "react-icons/vsc";
-
-import { useRouter } from "next/navigation";
 
 import { sidebarLinks } from "@shared/data/dashboard-links";
-import { logout } from "@modules/auth/services/authAPI";
-import ConfirmationModal from "@shared/components/ConfirmationModal";
 import SidebarLink from "./SidebarLink";
 import Loading from "@shared/components/Loading";
 
@@ -16,7 +11,6 @@ import { IoMdClose } from "react-icons/io";
 
 import { setOpenSideMenu, setScreenSize } from "../store/sidebarSlice";
 import { useAppDispatch, useAppSelector } from "@shared/store/hooks";
-import { ConfirmationModalData } from "../types";
 
 export default function Sidebar() {
   const { user, loading: profileLoading } = useAppSelector(
@@ -24,11 +18,6 @@ export default function Sidebar() {
   );
   const { loading: authLoading } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
-  const router = useRouter();
-
-  // to keep track of confirmation modal
-  const [confirmationModal, setConfirmationModal] =
-    useState<ConfirmationModalData | null>(null);
 
   // Evitar errores de hidratación: solo renderizar contenido dependiente del estado después de montar
   // Initialize mounted state lazily to avoid hydration mismatches
@@ -114,33 +103,12 @@ export default function Sidebar() {
 
         <div className="flex flex-col">
           <SidebarLink
-            link={{ name: "Settings", path: "/dashboard/settings" }}
+            link={{ name: "Configuración", path: "/dashboard/settings" }}
             iconName={"VscSettingsGear"}
             setOpenSideMenu={setOpenSideMenu}
           />
-
-          <button
-            onClick={() =>
-              setConfirmationModal({
-                text1: "Are you sure ?",
-                text2: "You will be logged out of your account.",
-                btn1Text: "Logout",
-                btn2Text: "Cancel",
-                btn1Handler: () => dispatch(logout(router.push)),
-                btn2Handler: () => setConfirmationModal(null),
-              })
-            }
-            className=" "
-          >
-            <div className="flex items-center gap-x-2 px-8 py-2 text-sm font-medium text-richblack-300 hover:bg-richblack-700 relative">
-              <VscSignOut className="text-lg" />
-              <span>Logout</span>
-            </div>
-          </button>
         </div>
       </div>
-
-      {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
     </>
   );
 }

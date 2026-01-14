@@ -24,6 +24,10 @@ interface EditCourseFormData {
   thumbnailImage: File | string;
 }
 
+/**
+ * Modal para editar un curso existente
+ * Permite modificar nombre, descripción, precio, categoría y miniatura
+ */
 export default function EditCourseModal({
   course,
   token,
@@ -45,6 +49,7 @@ export default function EditCourseModal({
   >([]);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
 
+  // Carga las categorías disponibles
   useEffect(() => {
     const getCategories = async () => {
       try {
@@ -53,7 +58,7 @@ export default function EditCourseModal({
           setCourseCategories(categories);
         }
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        // Error manejado por el servicio
       }
     };
 
@@ -62,6 +67,7 @@ export default function EditCourseModal({
     }
   }, [isOpen]);
 
+  // Inicializa el formulario con los datos del curso
   useEffect(() => {
     if (course && isOpen) {
       setValue("courseName", course.courseName);
@@ -76,6 +82,7 @@ export default function EditCourseModal({
     }
   }, [course, isOpen, setValue, reset]);
 
+  // Maneja el cambio de imagen y muestra preview
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -88,6 +95,7 @@ export default function EditCourseModal({
     }
   };
 
+  // Envía los cambios del curso
   const onSubmit = async (data: EditCourseFormData) => {
     if (!course) return;
 
@@ -115,7 +123,7 @@ export default function EditCourseModal({
         onClose();
       }
     } catch (error) {
-      console.error("Error editing course:", error);
+      // Error manejado por el servicio
     } finally {
       setLoading(false);
     }

@@ -9,6 +9,10 @@ interface AdminStatsProps {
   loading?: boolean;
 }
 
+/**
+ * Componente que muestra las estadísticas principales del dashboard de administración
+ * Incluye contadores de instructores, estudiantes y mensajes no leídos
+ */
 export default function AdminStats({ stats, loading }: AdminStatsProps) {
   if (loading) {
     return (

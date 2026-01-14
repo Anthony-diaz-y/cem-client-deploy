@@ -16,6 +16,10 @@ interface CustomDropdownProps {
   placeholder?: string;
 }
 
+/**
+ * Componente dropdown personalizado con funcionalidad de selección
+ * y cierre automático al hacer click fuera del componente
+ */
 export default function CustomDropdown({
   label,
   value,
@@ -26,7 +30,7 @@ export default function CustomDropdown({
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Cerrar dropdown al hacer click fuera
+  // Cierra el dropdown cuando se hace click fuera del componente
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -45,6 +49,7 @@ export default function CustomDropdown({
 
   const selectedOption = options.find((opt) => opt.value === value);
 
+  // Maneja la selección de una opción y cierra el dropdown
   const handleSelect = (optionValue: string) => {
     onChange(optionValue);
     setIsOpen(false);

@@ -1,12 +1,6 @@
 import { ACCOUNT_TYPE } from "../utils/constants";
 export const sidebarLinks = [
   {
-    id: 1,
-    name: "My Profile",
-    path: "/dashboard/my-profile",
-    icon: "VscAccount",
-  },
-  {
     id: 2,
     name: "Dashboard",
     path: "/dashboard/instructor",
@@ -15,28 +9,28 @@ export const sidebarLinks = [
   },
   {
     id: 3,
-    name: "My Courses",
+    name: "Mis Cursos",
     path: "/dashboard/my-courses",
     type: ACCOUNT_TYPE.INSTRUCTOR,
     icon: "VscVm",
   },
   {
     id: 4,
-    name: "Add Course",
+    name: "Agregar Curso",
     path: "/dashboard/add-course",
     type: ACCOUNT_TYPE.INSTRUCTOR,
     icon: "VscAdd",
   },
   {
     id: 5,
-    name: "Enrolled Courses",
+    name: "Cursos Inscritos",
     path: "/dashboard/enrolled-courses",
     type: ACCOUNT_TYPE.STUDENT,
     icon: "VscMortarBoard",
   },
   {
     id: 6,
-    name: "Purchase History",
+    name: "Historial de Compras",
     path: "/dashboard/purchase-history",
     type: ACCOUNT_TYPE.STUDENT,
     icon: "VscHistory",
@@ -50,16 +44,23 @@ export const sidebarLinks = [
   },
   {
     id: 8,
-    name: "Contact Messages",
+    name: "Mensajes",
     path: "/dashboard/admin/contact-messages",
     type: ACCOUNT_TYPE.ADMIN,
     icon: "VscMail",
   },
   {
     id: 9,
-    name: "Todos los Cursos",
+    name: "Cursos",
     path: "/dashboard/admin/all-courses",
     type: ACCOUNT_TYPE.ADMIN,
     icon: "VscVm",
+  },
+  {
+    id: 10,
+    name: "Instructores",
+    path: "/dashboard/admin/instructors",
+    type: ACCOUNT_TYPE.ADMIN,
+    icon: "VscAccount",
   },
 ];

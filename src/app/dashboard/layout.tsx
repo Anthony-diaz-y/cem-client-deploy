@@ -1,3 +1,5 @@
+"use client";
+
 import DashboardLayout from "./Dashboard";
 import ProtectedRoute from "@shared/components/ProtectedRoute";
 

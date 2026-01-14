@@ -1,14 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAppSelector } from "@shared/store/hooks";
 import { getAdminDashboard, getPendingInstructors, Instructor } from "@shared/services/adminAPI";
-import AdminStats from "../components/AdminStats";
-import PendingInstructorsTable from "../components/PendingInstructorsTable";
+import AdminStats from "../components/stats/AdminStats";
+import PendingInstructorsTable from "../components/instructor/PendingInstructorsTable";
 
 export default function AdminDashboard() {
-  const router = useRouter();
   const { token } = useAppSelector((state) => state.auth);
   const [stats, setStats] = useState<any>(null);
   const [pendingInstructors, setPendingInstructors] = useState<Instructor[]>([]);
@@ -33,7 +32,7 @@ export default function AdminDashboard() {
       setStats(dashboardData);
       setPendingInstructors(pendingData);
     } catch (error) {
-      console.error("Error fetching admin data:", error);
+      // Error manejado por el servicio
     } finally {
       setLoading(false);
     }
@@ -44,10 +43,10 @@ export default function AdminDashboard() {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-richblack-5 mb-2">
-            Dashboard de Administrador
+            Dashboard de Administración
           </h1>
           <p className="text-richblack-400">
-            Gestiona instructores y visualiza estadísticas de la plataforma
+            Vista general de estadísticas y acciones rápidas de la plataforma
           </p>
         </div>
       </div>
@@ -55,6 +54,24 @@ export default function AdminDashboard() {
       <AdminStats stats={stats} loading={loading} />
 
       <div className="mt-8">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-semibold text-richblack-5">
+              Solicitudes Pendientes
+            </h2>
+            <p className="text-sm text-richblack-400 mt-1">
+              Revisa y aprueba las solicitudes de nuevos instructores. Para gestión completa con filtros, búsqueda y edición, ve a la sección "Instructores".
+            </p>
+          </div>
+          {pendingInstructors.length > 0 && (
+            <Link
+              href="/dashboard/admin/instructors"
+              className="px-4 py-2 bg-yellow-50 text-richblack-900 rounded-lg font-medium hover:bg-yellow-100 transition-colors text-sm inline-block"
+            >
+              Ver Todos los Instructores →
+            </Link>
+          )}
+        </div>
         <PendingInstructorsTable
           instructors={pendingInstructors}
           token={token || ""}

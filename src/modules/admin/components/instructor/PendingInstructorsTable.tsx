@@ -13,6 +13,10 @@ interface PendingInstructorsTableProps {
   onUpdate: () => void;
 }
 
+/**
+ * Tabla para mostrar instructores pendientes de aprobación
+ * Permite aprobar o rechazar solicitudes de instructores
+ */
 export default function PendingInstructorsTable({
   instructors,
   token,
@@ -28,6 +32,7 @@ export default function PendingInstructorsTable({
     instructor: null,
   });
 
+  // Abre el modal de confirmación para aprobar
   const handleApproveClick = (instructor: Instructor) => {
     setConfirmationModal({
       isOpen: true,
@@ -36,6 +41,7 @@ export default function PendingInstructorsTable({
     });
   };
 
+  // Abre el modal de confirmación para rechazar
   const handleRejectClick = (instructor: Instructor) => {
     setConfirmationModal({
       isOpen: true,
@@ -44,6 +50,7 @@ export default function PendingInstructorsTable({
     });
   };
 
+  // Ejecuta la acción confirmada (aprobar o rechazar)
   const handleConfirm = async () => {
     if (!confirmationModal.instructor) return;
 
@@ -149,6 +156,7 @@ export default function PendingInstructorsTable({
         </div>
       </div>
 
+      {/* Modal de confirmación */}
       {confirmationModal.isOpen && confirmationModal.instructor && (
         <ConfirmationModal
           modalData={confirmationModal.instructor ? {

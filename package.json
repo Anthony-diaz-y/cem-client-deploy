@@ -4,10 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
-    "dev:webpack": "next dev",
+    "dev:webpack": "next dev --webpack",
     "build": "next build",
+    "build:webpack": "next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "clean": "rm -rf .next && rm -rf node_modules/.cache",
+    "clean:next": "rm -rf .next",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.6",

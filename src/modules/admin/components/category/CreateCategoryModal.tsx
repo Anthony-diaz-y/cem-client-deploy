@@ -17,6 +17,10 @@ interface CategoryFormData {
   description: string;
 }
 
+/**
+ * Modal para crear una nueva categoría de curso
+ * Incluye validación de formulario y manejo de estados de carga
+ */
 export default function CreateCategoryModal({
   isOpen,
   onClose,
@@ -32,6 +36,7 @@ export default function CreateCategoryModal({
 
   const [loading, setLoading] = useState(false);
 
+  // Maneja el envío del formulario y crea la categoría
   const onSubmit = async (data: CategoryFormData) => {
     setLoading(true);
     try {
@@ -49,7 +54,7 @@ export default function CreateCategoryModal({
         onClose();
       }
     } catch (error) {
-      console.error("Error creating category:", error);
+      // Error manejado por el servicio
     } finally {
       setLoading(false);
     }

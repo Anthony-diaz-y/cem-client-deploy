@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useAppSelector } from "@shared/store/hooks";
 import {
   getContactMessages,
   markMessageAsRead,
@@ -23,29 +22,24 @@ import {
   FaReply,
   FaPhone,
   FaChevronDown,
-  FaChevronUp,
 } from "react-icons/fa";
 
 interface ContactMessagesTableProps {
   token: string;
 }
 
+/**
+ * Componente para gestionar mensajes de contacto
+ * Permite leer, archivar, eliminar y responder mensajes
+ */
 export default function ContactMessagesTable({
   token,
 }: ContactMessagesTableProps) {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<
-    "all" | "unread" | "replied" | "archived"
-  >("all");
-  const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(
-    null
-  );
   const [confirmationModal, setConfirmationModal] =
     useState<ConfirmationModalData | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
-
-  // Nuevos estados para filtros y respuesta
   const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("DESC");
   const [showReplyForm, setShowReplyForm] = useState<string | null>(null);
   const [replyMessage, setReplyMessage] = useState("");
@@ -56,37 +50,28 @@ export default function ContactMessagesTable({
 
   useEffect(() => {
     fetchMessages();
-  }, [filter, token, sortOrder]);
+  }, [token, sortOrder]);
 
+  // Obtiene los mensajes desde la API según el orden seleccionado
   const fetchMessages = async () => {
     if (!token) return;
 
     setLoading(true);
     try {
-      const params: GetMessagesParams = {};
-
-      if (filter === "unread") {
-        params.isRead = false;
-        params.isArchived = false;
-      } else if (filter === "replied") {
-        params.isReplied = true;
-      } else if (filter === "archived") {
-        params.isArchived = true;
-      }
-
-      if (sortOrder) {
-        params.sortOrder = sortOrder;
-      }
+      const params: GetMessagesParams = {
+        sortOrder: sortOrder,
+      };
 
       const result = await getContactMessages(token, params);
       setMessages(result);
     } catch (error) {
-      // El error ya se maneja en getContactMessages
+      // Error manejado por el servicio
     } finally {
       setLoading(false);
     }
   };
 
+  // Marca un mensaje como leído
   const handleMarkAsRead = async (messageId: string) => {
     if (!token) return;
 
@@ -98,6 +83,7 @@ export default function ContactMessagesTable({
     setActionLoading(false);
   };
 
+  // Archiva un mensaje
   const handleArchive = async (messageId: string) => {
     if (!token) return;
 
@@ -109,6 +95,7 @@ export default function ContactMessagesTable({
     setActionLoading(false);
   };
 
+  // Desarchiva un mensaje
   const handleUnarchive = async (messageId: string) => {
     if (!token) return;
 
@@ -120,6 +107,7 @@ export default function ContactMessagesTable({
     setActionLoading(false);
   };
 
+  // Elimina un mensaje
   const handleDelete = async (messageId: string) => {
     if (!token) return;
 
@@ -132,6 +120,7 @@ export default function ContactMessagesTable({
     setConfirmationModal(null);
   };
 
+  // Muestra el modal de confirmación para eliminar
   const handleDeleteClick = (message: ContactMessage) => {
     setConfirmationModal({
       text1: "¿Eliminar este mensaje?",
@@ -143,6 +132,7 @@ export default function ContactMessagesTable({
     });
   };
 
+  // Envía una respuesta a un mensaje
   const handleReply = async (messageId: string) => {
     if (!replyMessage.trim() || !token) {
       return;
@@ -152,17 +142,12 @@ export default function ContactMessagesTable({
     const success = await replyToMessage(messageId, replyMessage, token);
     if (success) {
       setReplyMessage("");
-      // No cerrar el formulario, permitir múltiples respuestas
-      fetchMessages(); // Recargar para obtener la nueva respuesta
+      fetchMessages();
     }
     setReplying(false);
   };
 
-  const clearFilters = () => {
-    setSortOrder("DESC");
-    setFilter("all");
-  };
-
+  // Alterna la visualización de respuestas de un mensaje
   const toggleReplies = (messageId: string) => {
     setExpandedReplies((prev) => {
       const newSet = new Set(prev);
@@ -185,88 +170,27 @@ export default function ContactMessagesTable({
 
   return (
     <div className="space-y-6">
-      {/* Filtros principales */}
-      <div className="flex flex-wrap gap-3">
-        <button
-          onClick={() => setFilter("all")}
-          className={`px-4 py-2 rounded-md font-medium transition-all ${
-            filter === "all"
-              ? "bg-yellow-50 text-richblack-900"
-              : "bg-richblack-700 text-richblack-300 hover:bg-richblack-600"
-          }`}
-        >
-          Todos
-        </button>
-        <button
-          onClick={() => setFilter("unread")}
-          className={`px-4 py-2 rounded-md font-medium transition-all ${
-            filter === "unread"
-              ? "bg-yellow-50 text-richblack-900"
-              : "bg-richblack-700 text-richblack-300 hover:bg-richblack-600"
-          }`}
-        >
-          No Leídos
-        </button>
-        <button
-          onClick={() => setFilter("replied")}
-          className={`px-4 py-2 rounded-md font-medium transition-all ${
-            filter === "replied"
-              ? "bg-yellow-50 text-richblack-900"
-              : "bg-richblack-700 text-richblack-300 hover:bg-richblack-600"
-          }`}
-        >
-          Respondidos
-        </button>
-        <button
-          onClick={() => setFilter("archived")}
-          className={`px-4 py-2 rounded-md font-medium transition-all ${
-            filter === "archived"
-              ? "bg-yellow-50 text-richblack-900"
-              : "bg-richblack-700 text-richblack-300 hover:bg-richblack-600"
-          }`}
-        >
-          Archivados
-        </button>
-      </div>
-
-      {/* Filtros avanzados */}
-      <div className="bg-richblack-800 rounded-lg p-4 border border-richblack-700">
-        <div className="flex flex-wrap gap-4 items-end">
-          <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-richblack-300 mb-2">
-              Ordenar por
-            </label>
-            <select
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value as "ASC" | "DESC")}
-              className="w-full px-3 py-2 bg-richblack-900 border border-richblack-700 rounded-md text-richblack-200 focus:outline-none focus:ring-2 focus:ring-yellow-50"
-            >
-              <option value="DESC">Más recientes primero</option>
-              <option value="ASC">Más antiguos primero</option>
-            </select>
-          </div>
-
-          <div className="flex items-end">
-            <button
-              onClick={clearFilters}
-              className="px-4 py-2 bg-richblack-700 text-richblack-300 rounded-md hover:bg-richblack-600 transition-colors"
-            >
-              Limpiar Filtros
-            </button>
-          </div>
+      {/* Selector de ordenamiento */}
+      <div className="flex items-center justify-end">
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-richblack-400">
+            Ordenar:
+          </label>
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as "ASC" | "DESC")}
+            className="px-3 py-1.5 text-sm bg-richblack-800 border border-richblack-700 rounded-md text-richblack-200 focus:outline-none focus:ring-1 focus:ring-yellow-500/50 transition-all hover:border-richblack-600"
+          >
+            <option value="DESC">Más recientes</option>
+            <option value="ASC">Más antiguos</option>
+          </select>
         </div>
       </div>
 
       {/* Lista de mensajes */}
       {messages.length === 0 ? (
         <div className="text-center text-richblack-300 py-8 bg-richblack-800 rounded-lg">
-          No hay mensajes{" "}
-          {filter === "unread"
-            ? "no leídos"
-            : filter === "archived"
-            ? "archivados"
-            : ""}
-          .
+          No hay mensajes.
         </div>
       ) : (
         <div className="space-y-4">
@@ -434,7 +358,7 @@ export default function ContactMessagesTable({
                 </div>
               )}
 
-              {/* Formulario de respuesta (siempre visible cuando se expande) */}
+              {/* Formulario de respuesta */}
               {showReplyForm === message.id && (
                 <div className="mb-4 p-4 bg-richblack-900 rounded-lg border border-richblack-700">
                   <label className="block text-sm font-medium text-richblack-300 mb-2">
@@ -480,3 +404,4 @@ export default function ContactMessagesTable({
     </div>
   );
 }
+

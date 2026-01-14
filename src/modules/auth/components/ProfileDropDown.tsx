@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { AiOutlineCaretDown } from "react-icons/ai";
-import { VscDashboard, VscSignOut } from "react-icons/vsc";
+import { VscSignOut, VscAccount } from "react-icons/vsc";
 import { useAppDispatch, useAppSelector } from "@shared/store/hooks";
 
 import Link from "next/link";
@@ -40,13 +40,13 @@ export default function ProfileDropdown() {
       {open && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="absolute top-[118%] right-0 z-[1000] divide-y-[1px] divide-richblack-700 overflow-hidden rounded-md border-[1px] border-richblack-700 bg-richblack-800"
+          className="absolute top-[118%] right-0 z-[1000] divide-y-[1px] divide-richblack-700 overflow-hidden rounded-md border-[1px] border-richblack-700 bg-richblack-800 min-w-[160px]"
           ref={ref}
         >
           <Link href="/dashboard/my-profile" onClick={() => setOpen(false)}>
             <div className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100 hover:bg-richblack-700 hover:text-richblack-25">
-              <VscDashboard className="text-lg" />
-              Dashboard
+              <VscAccount className="text-lg" />
+              My Profile
             </div>
           </Link>
 
@@ -58,7 +58,7 @@ export default function ProfileDropdown() {
             className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100 hover:bg-richblack-700 hover:text-richblack-25"
           >
             <VscSignOut className="text-lg" />
-            Logout
+            Cerrar Sesión
           </div>
         </div>
       )}

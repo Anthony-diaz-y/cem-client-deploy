@@ -31,16 +31,11 @@ const nextConfig: NextConfig = {
   },
   
   // Configuración de Turbopack (Next.js 16 usa Turbopack por defecto)
-  // Los path aliases ya están configurados en tsconfig.json y Turbopack los respeta automáticamente
-  turbopack: {
-    // Optimizaciones de Turbopack para desarrollo más rápido
-    resolveAlias: {
-      '@shared': path.resolve(__dirname, './src/shared'),
-      '@modules': path.resolve(__dirname, './src/modules'),
-    },
-  },
+  // Los aliases ya están configurados en tsconfig.json, por lo que no necesitamos duplicarlos aquí
+  // Configuración vacía para silenciar el error cuando se usa Turbopack con configuración de webpack
+  turbopack: {},
   
-  // Configuración de webpack (solo se usa si se ejecuta con --webpack flag)
+  // Configuración de webpack (solo se usa si se ejecuta con --webpack flag explícitamente)
   webpack: (config, { dev, isServer }) => {
     config.resolve.alias = {
       ...config.resolve.alias,
