@@ -90,3 +90,41 @@ export interface ReviewFormData {
   courseExperience: string;
   courseRating: number;
 }
+
+// Subsection Discussion Types
+export interface DiscussionUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  accountType: 'Admin' | 'Instructor' | 'Student';
+  image: string;
+  additionalDetails?: Record<string, unknown>;
+}
+
+export interface SubsectionDiscussionReply {
+  id: string;
+  reply: string;
+  discussionId: string;
+  userId: string;
+  user: DiscussionUser;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
+
+export interface SubsectionDiscussion {
+  id: string;
+  question: string;
+  subSectionId: string;
+  userId: string;
+  user: DiscussionUser;
+  replies: SubsectionDiscussionReply[];
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
+
+export interface DiscussionApiResponse {
+  success: boolean;
+  data: SubsectionDiscussion | SubsectionDiscussion[] | SubsectionDiscussionReply;
+  message: string;
+}
