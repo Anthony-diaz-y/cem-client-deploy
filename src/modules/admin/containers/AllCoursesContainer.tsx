@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAppSelector } from "@shared/store/hooks";
-import AllCoursesTable from "../components/AllCoursesTable";
-import CreateCategoryModal from "../components/CreateCategoryModal";
+import AllCoursesTable from "../components/course/AllCoursesTable";
+import CreateCategoryModal from "../components/category/CreateCategoryModal";
 import { getAllCoursesAdmin, AdminCourse } from "@shared/services/adminAPI";
 import Loading from "@shared/components/Loading";
 
 export default function AllCoursesContainer() {
+  const router = useRouter();
   const { token } = useAppSelector((state) => state.auth);
   const [courses, setCourses] = useState<AdminCourse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -21,8 +23,8 @@ export default function AllCoursesContainer() {
       const data = await getAllCoursesAdmin(token);
       setCourses(data || []);
     } catch (error) {
-      console.error("Error fetching all courses:", error);
-      setCourses([]); // Asegurar que sea un array vacío en caso de error
+      // Error manejado por el servicio
+      setCourses([]);
     } finally {
       setLoading(false);
     }
@@ -48,13 +50,27 @@ export default function AllCoursesContainer() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-richblack-5 mb-2">
+      <div className="space-y-4">
+        <h1 className="text-3xl font-bold text-richblack-5">
           Todos los Cursos
         </h1>
         <p className="text-richblack-400">
           Gestiona todos los cursos del sistema, tanto publicados como en borrador
         </p>
+        <div className="flex items-center gap-3 pt-2">
+          <button
+            onClick={() => router.push("/dashboard/add-course")}
+            className="flex items-center gap-x-2 rounded-lg bg-yellow-50 px-5 py-2.5 font-semibold text-richblack-900 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/20"
+          >
+            <span className="text-lg">+</span> Crear Curso
+          </button>
+          <button
+            onClick={() => setIsCreateCategoryModalOpen(true)}
+            className="flex items-center gap-x-2 rounded-lg bg-richblack-700 px-5 py-2.5 font-semibold text-richblack-5 transition-all duration-200 hover:bg-richblack-600 hover:scale-105 hover:shadow-lg"
+          >
+            <span className="text-lg">+</span> Crear Categoría
+          </button>
+        </div>
       </div>
 
       <AllCoursesTable

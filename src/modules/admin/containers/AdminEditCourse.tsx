@@ -64,7 +64,7 @@ export default function AdminEditCourse() {
           dispatch(setCourse(normalizedCourse));
         }
       } catch (error) {
-        console.error("Error fetching course details:", error);
+        // Error manejado por el servicio
       } finally {
         setLoading(false);
       }

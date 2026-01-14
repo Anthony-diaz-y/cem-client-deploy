@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useAppSelector } from "@shared/store/hooks";
-import ContactMessagesTable from "../components/ContactMessagesTable";
+import ContactMessagesTable from "../components/contact/ContactMessagesTable";
 
 export default function ContactMessagesContainer() {
   const { token } = useAppSelector((state) => state.auth);

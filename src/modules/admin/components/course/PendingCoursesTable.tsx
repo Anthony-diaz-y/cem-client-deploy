@@ -14,6 +14,10 @@ interface PendingCoursesTableProps {
   onEdit: (course: AdminCourse) => void;
 }
 
+/**
+ * Tabla para mostrar cursos pendientes de publicación
+ * Permite editar, publicar o eliminar cursos en estado borrador
+ */
 export default function PendingCoursesTable({
   courses,
   token,
@@ -30,6 +34,7 @@ export default function PendingCoursesTable({
     course: null,
   });
 
+  // Abre el modal de confirmación para publicar
   const handlePublishClick = (course: AdminCourse) => {
     setConfirmationModal({
       isOpen: true,
@@ -38,6 +43,7 @@ export default function PendingCoursesTable({
     });
   };
 
+  // Abre el modal de confirmación para eliminar
   const handleDeleteClick = (course: AdminCourse) => {
     setConfirmationModal({
       isOpen: true,
@@ -46,6 +52,7 @@ export default function PendingCoursesTable({
     });
   };
 
+  // Ejecuta la acción confirmada (publicar o eliminar)
   const handleConfirm = async () => {
     if (!confirmationModal.course) return;
 
@@ -201,6 +208,7 @@ export default function PendingCoursesTable({
         </div>
       </div>
 
+      {/* Modal de confirmación */}
       {confirmationModal.isOpen && confirmationModal.course && (
         <ConfirmationModal
           modalData={{

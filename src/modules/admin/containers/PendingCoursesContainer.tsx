@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useAppSelector } from "@shared/store/hooks";
-import PendingCoursesTable from "../components/PendingCoursesTable";
-import EditCourseModal from "../components/EditCourseModal";
+import PendingCoursesTable from "../components/course/PendingCoursesTable";
+import EditCourseModal from "../components/course/EditCourseModal";
 import { getPendingCourses, AdminCourse } from "@shared/services/adminAPI";
 import Loading from "@shared/components/Loading";
 
@@ -21,7 +21,7 @@ export default function PendingCoursesContainer() {
       const data = await getPendingCourses(token);
       setCourses(data);
     } catch (error) {
-      console.error("Error fetching pending courses:", error);
+      // Error manejado por el servicio
     } finally {
       setLoading(false);
     }

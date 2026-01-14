@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAppSelector } from "../store/hooks";
+import { ACCOUNT_TYPE } from "../utils/constants";
 
 export default function OpenRoute({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const { token } = useAppSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.profile);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -20,10 +22,14 @@ export default function OpenRoute({ children }: { children: React.ReactNode }) {
       const isAuthPage =
         pathname === "/auth/login" || pathname === "/auth/signup";
       if (isAuthPage) {
-        router.push("/dashboard/my-profile");
+        if (user?.accountType === ACCOUNT_TYPE.ADMIN) {
+          router.push("/dashboard/admin");
+        } else {
+          router.push("/dashboard/my-profile");
+        }
       }
     }
-  }, [mounted, token, pathname, router]);
+  }, [mounted, token, pathname, router, user]);
 
   // If component is not mounted yet, render nothing to avoid flash
   if (!mounted) {

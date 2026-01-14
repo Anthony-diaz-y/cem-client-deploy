@@ -9,6 +9,9 @@ const {
   ALL_INSTRUCTORS_API,
   APPROVE_INSTRUCTOR_API,
   REJECT_INSTRUCTOR_API,
+  GET_INSTRUCTOR_DETAILS_API,
+  TOGGLE_INSTRUCTOR_STATUS_API,
+  UPDATE_INSTRUCTOR_API,
   PENDING_COURSES_API,
   ALL_COURSES_API,
   PUBLISH_COURSE_API,
@@ -32,13 +35,22 @@ export interface Instructor {
   email: string;
   accountType: string;
   approved: boolean;
+  active?: boolean;
   image?: string;
   createdAt: string;
+  updatedAt?: string;
   additionalDetails?: {
     gender?: string | null;
     dateOfBirth?: string | null;
     about?: string | null;
     contactNumber?: string | null;
+  };
+  profile?: {
+    id: string;
+    gender?: string | null;
+    dateOfBirth?: string | null;
+    about?: string | null;
+    contactNumber?: number | null;
   };
 }
 
@@ -55,18 +67,90 @@ export interface PendingInstructorsResponse {
   count: number;
 }
 
+export interface InstructorFilters {
+  status?: "approved" | "pending" | "all";
+  active?: boolean;
+  search?: string;
+}
+
 export interface AllInstructorsResponse {
   success: boolean;
   data: {
     all: Instructor[];
     approved: Instructor[];
     pending: Instructor[];
+    active?: Instructor[];
+    inactive?: Instructor[];
   };
   message: string;
   counts: {
     total: number;
     approved: number;
     pending: number;
+    active?: number;
+    inactive?: number;
+  };
+}
+
+export interface InstructorStatistics {
+  totalCourses: number;
+  publishedCourses: number;
+  draftCourses: number;
+  totalStudents: number;
+  totalRevenue: number;
+  averageRating: number;
+  totalReviews: number;
+}
+
+export interface InstructorCourse {
+  id: string;
+  courseName: string;
+  status: "Published" | "Draft";
+  price: number;
+  totalStudents: number;
+  revenue: number;
+  averageRating: number;
+  totalReviews: number;
+  category: {
+    id: string;
+    name: string;
+  } | null;
+  createdAt: string;
+}
+
+export interface InstructorDetailsResponse {
+  success: boolean;
+  data: {
+    instructor: Instructor;
+    statistics: InstructorStatistics;
+    courses: InstructorCourse[];
+  };
+  message: string;
+}
+
+export interface UpdateInstructorData {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  approved?: boolean;
+  contactNumber?: number | string | null; // El backend acepta number, string (se convierte a number) o null
+}
+
+export interface UpdateInstructorResponse {
+  success: boolean;
+  message: string;
+  data: Instructor;
+}
+
+export interface ToggleInstructorStatusResponse {
+  success: boolean;
+  message: string;
+  data: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    active: boolean;
   };
 }
 
@@ -200,13 +284,39 @@ export async function getPendingInstructors(token: string): Promise<Instructor[]
   }
 }
 
-// ================ Get All Instructors ================
-export async function getAllInstructors(token: string): Promise<AllInstructorsResponse["data"] | null> {
-  const toastId = toast.loading("Cargando instructores...");
+// ================ Get All Instructors (con filtros) ================
+export async function getAllInstructors(
+  token: string,
+  filters?: InstructorFilters,
+  silent = false // Si es true, no muestra toast de carga
+): Promise<AllInstructorsResponse | null> {
+  const toastId = silent ? null : toast.loading("Cargando instructores...");
   try {
+    // Construir query parameters según la especificación del backend
+    const params = new URLSearchParams();
+    
+    // Filtro por estado de aprobación (solo si no es 'all')
+    if (filters?.status && filters.status !== "all") {
+      params.append("status", filters.status);
+    }
+    
+    // Filtro por estado activo (debe ser string 'true' o 'false')
+    if (filters?.active !== undefined) {
+      params.append("active", filters.active ? "true" : "false");
+    }
+    
+    // Búsqueda (trimmeado para evitar espacios extra)
+    if (filters?.search && filters.search.trim()) {
+      params.append("search", filters.search.trim());
+    }
+
+    const url = params.toString()
+      ? `${ALL_INSTRUCTORS_API}?${params.toString()}`
+      : ALL_INSTRUCTORS_API;
+
     const response = await apiConnector<AllInstructorsResponse>(
       "GET",
-      ALL_INSTRUCTORS_API,
+      url,
       undefined,
       {
         Authorization: `Bearer ${token}`,
@@ -219,13 +329,13 @@ export async function getAllInstructors(token: string): Promise<AllInstructorsRe
       throw new Error(response.data.message);
     }
 
-    toast.dismiss(toastId);
-    return response.data.data;
+    if (toastId) toast.dismiss(toastId);
+    return response.data;
   } catch (error) {
     const apiError = error as ApiError;
     console.log("ALL_INSTRUCTORS_API ERROR............", apiError);
     toast.error(apiError.response?.data?.message || "Error al cargar instructores");
-    toast.dismiss(toastId);
+    if (toastId) toast.dismiss(toastId);
     return null;
   }
 }
@@ -297,6 +407,145 @@ export async function rejectInstructor(
     toast.error(apiError.response?.data?.message || "Error al rechazar instructor");
     toast.dismiss(toastId);
     return false;
+  }
+}
+
+// ================ Get Instructor Details ================
+export async function getInstructorDetails(
+  instructorId: string,
+  token: string
+): Promise<InstructorDetailsResponse["data"] | null> {
+  const toastId = toast.loading("Cargando detalles del instructor...");
+  try {
+    const response = await apiConnector<InstructorDetailsResponse>(
+      "GET",
+      `${GET_INSTRUCTOR_DETAILS_API}/${instructorId}`,
+      undefined,
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    );
+
+    console.log("GET_INSTRUCTOR_DETAILS_API RESPONSE............", response);
+
+    if (!response.data.success) {
+      throw new Error(response.data.message);
+    }
+
+    toast.dismiss(toastId);
+    return response.data.data;
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.log("GET_INSTRUCTOR_DETAILS_API ERROR............", apiError);
+    toast.error(apiError.response?.data?.message || "Error al cargar detalles del instructor");
+    toast.dismiss(toastId);
+    return null;
+  }
+}
+
+// ================ Toggle Instructor Status ================
+export async function toggleInstructorStatus(
+  instructorId: string,
+  active: boolean,
+  token: string
+): Promise<boolean> {
+  const toastId = toast.loading(active ? "Activando instructor..." : "Desactivando instructor...");
+  try {
+    const response = await apiConnector<ToggleInstructorStatusResponse>(
+      "PUT",
+      `${TOGGLE_INSTRUCTOR_STATUS_API}/${instructorId}/toggle-status`,
+      { active },
+      {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    );
+
+    console.log("TOGGLE_INSTRUCTOR_STATUS_API RESPONSE............", response);
+
+    if (!response.data.success) {
+      throw new Error(response.data.message);
+    }
+
+    toast.success(response.data.message || (active ? "Instructor activado exitosamente" : "Instructor desactivado exitosamente"));
+    toast.dismiss(toastId);
+    return true;
+  } catch (error) {
+    const apiError = error as ApiError;
+    console.log("TOGGLE_INSTRUCTOR_STATUS_API ERROR............", apiError);
+    toast.error(apiError.response?.data?.message || "Error al cambiar estado del instructor");
+    toast.dismiss(toastId);
+    return false;
+  }
+}
+
+// ================ Update Instructor ================
+export async function updateInstructor(
+  instructorId: string,
+  updates: UpdateInstructorData,
+  token: string
+): Promise<Instructor | null> {
+  const toastId = toast.loading("Actualizando instructor...");
+  try {
+    // ✅ CRÍTICO: Construir el body explícitamente para asegurar que contactNumber esté presente
+    const body: UpdateInstructorData = {};
+    
+    // Solo incluir campos que están definidos
+    if (updates.firstName !== undefined) {
+      body.firstName = updates.firstName;
+    }
+    if (updates.lastName !== undefined) {
+      body.lastName = updates.lastName;
+    }
+    if (updates.email !== undefined) {
+      body.email = updates.email;
+    }
+    if (updates.approved !== undefined) {
+      body.approved = updates.approved;
+    }
+    
+    // ✅ CRÍTICO: Incluir contactNumber si está definido (incluso si es null)
+    // El backend necesita recibir null explícitamente para eliminar el número
+    if (updates.contactNumber !== undefined) {
+      // Convertir string vacío a null, o mantener number/null
+      if (typeof updates.contactNumber === 'string') {
+        body.contactNumber = updates.contactNumber.trim() === '' 
+          ? null 
+          : (parseInt(updates.contactNumber.trim(), 10) || null);
+      } else {
+        // Ya es number o null
+        body.contactNumber = updates.contactNumber;
+      }
+    }
+    
+    // Verificar que contactNumber esté presente si fue proporcionado
+    if (updates.contactNumber !== undefined && !('contactNumber' in body)) {
+      // Error manejado silenciosamente - el backend validará
+    }
+    
+    const response = await apiConnector<UpdateInstructorResponse>(
+      "PUT",
+      `${UPDATE_INSTRUCTOR_API}/${instructorId}`,
+      body as Record<string, unknown>, // Convertir a Record para compatibilidad con apiConnector
+      {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    );
+
+
+    if (!response.data.success) {
+      throw new Error(response.data.message);
+    }
+
+    toast.success(response.data.message || "Instructor actualizado exitosamente");
+    toast.dismiss(toastId);
+    return response.data.data;
+  } catch (error) {
+    const apiError = error as ApiError;
+    toast.error(apiError.response?.data?.message || "Error al actualizar instructor");
+    toast.dismiss(toastId);
+    return null;
   }
 }
 
