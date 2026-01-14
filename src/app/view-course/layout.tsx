@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "next/navigation";
 import { useAppSelector } from "@shared/store/hooks";
+import { motion, AnimatePresence } from "framer-motion";
 
 import VideoDetailsReviewModal from "@modules/view-course/components/VideoDetailsReviewModal";
 import VideoDetailsSidebar from "@modules/view-course/components/VideoDetailsSidebar";
+import DiscussionSidebar from "@modules/view-course/components/discussions/DiscussionSidebar";
 import {
   setCompletedLectures,
   setCourseSectionData,
@@ -22,10 +24,14 @@ export default function ViewCourseLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { courseId } = useParams();
+  const params = useParams();
+  const courseId = Array.isArray(params?.courseId) ? params.courseId[0] : params?.courseId;
+  const subSectionId = Array.isArray(params?.subSectionId) ? params.subSectionId[0] : params?.subSectionId;
   const dispatch = useDispatch();
   const { token } = useAppSelector((state) => state.auth);
+  const { courseViewSidebar, discussionSidebarOpen } = useAppSelector((state) => state.sidebar);
   const [reviewModal, setReviewModal] = useState(false);
+  const [screenSize, setScreenSize] = useState<number | undefined>(undefined);
 
   // get Full Details Of Course
   useEffect(() => {
@@ -146,10 +152,6 @@ export default function ViewCourseLayout({
     })();
   }, [courseId, token, dispatch]);
 
-  // handle sidebar for small devices
-  const { courseViewSidebar } = useAppSelector((state) => state.sidebar);
-  const [screenSize, setScreenSize] = useState<number | undefined>(undefined);
-
   // set curr screen Size
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -172,13 +174,43 @@ export default function ViewCourseLayout({
     <>
       <div className="relative flex h-[calc(100vh-3.5rem)] overflow-hidden">
         {/* view course side bar */}
-        {courseViewSidebar && (
-          <VideoDetailsSidebar setReviewModal={setReviewModal} />
-        )}
+        <AnimatePresence mode="wait">
+          {courseViewSidebar && (
+            <motion.div
+              initial={{ x: -320, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -320, opacity: 0 }}
+              transition={{ type: "tween", duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+            >
+              <VideoDetailsSidebar setReviewModal={setReviewModal} />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        <div className="h-full flex-1 overflow-y-auto mt-14">
-          <div className="mx-6 py-6">{children}</div>
-        </div>
+        <motion.div
+          className="h-full flex-1 overflow-y-auto mt-14"
+          animate={{
+            marginLeft: courseViewSidebar ? 0 : 0,
+            marginRight: discussionSidebarOpen ? 0 : 0,
+          }}
+          transition={{ type: "tween", duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+        >
+          <div className="mx-6 pt-3 pb-32">{children}</div>
+        </motion.div>
+
+        {/* Discussion sidebar - ocupa espacio real */}
+        <AnimatePresence mode="wait">
+          {discussionSidebarOpen && subSectionId && (
+            <motion.div
+              initial={{ x: 400, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 400, opacity: 0 }}
+              transition={{ type: "tween", duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+            >
+              <DiscussionSidebar subSectionId={subSectionId as string} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {reviewModal && (

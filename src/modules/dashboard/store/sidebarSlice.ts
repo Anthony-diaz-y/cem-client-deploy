@@ -6,6 +6,9 @@ const initialState = {
 
   // course view side bar
   courseViewSidebar: false,
+  
+  // discussion sidebar
+  discussionSidebarOpen: false,
 };
 
 const sidebarSlice = createSlice({
@@ -22,10 +25,13 @@ const sidebarSlice = createSlice({
     setCourseViewSidebar: (state, action) => {
       state.courseViewSidebar = action.payload;
     },
+    setDiscussionSidebarOpen: (state, action) => {
+      state.discussionSidebarOpen = action.payload;
+    },
   },
 });
 
-export const { setOpenSideMenu, setScreenSize, setCourseViewSidebar } =
+export const { setOpenSideMenu, setScreenSize, setCourseViewSidebar, setDiscussionSidebarOpen } =
   sidebarSlice.actions;
 
 export default sidebarSlice.reducer;
