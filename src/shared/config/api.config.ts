@@ -1,9 +1,9 @@
 /**
  * Configuración centralizada de la API
- * 
+ *
  * Esta configuración permite cambiar fácilmente la URL del backend
  * usando variables de entorno para diferentes ambientes (desarrollo, producción).
- * 
+ *
  * Para Next.js, las variables de entorno deben comenzar con NEXT_PUBLIC_
  * para que sean accesibles en el cliente.
  */
@@ -12,18 +12,25 @@
 // En desarrollo: http://localhost:5000/api/v1
 // En producción: https://cem-backend-production.up.railway.app/api/v1
 const getApiUrl = (): string => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
-  
+  const apiUrl =
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+
   // Log en desarrollo para debug
-  if (process.env.NODE_ENV === 'development') {
-    console.log('🔧 API_URL configurada:', apiUrl);
+  if (process.env.NODE_ENV === "development") {
+    console.log("🔧 API_URL configurada:", apiUrl);
   }
-  
+
   // Advertencia si estamos en producción y usando localhost
-  if (typeof window !== 'undefined' && apiUrl.includes('localhost') && window.location.hostname !== 'localhost') {
-    console.error('⚠️ ADVERTENCIA: Estás usando localhost en producción. Configura NEXT_PUBLIC_API_URL en Vercel.');
+  if (
+    typeof window !== "undefined" &&
+    apiUrl.includes("localhost") &&
+    window.location.hostname !== "localhost"
+  ) {
+    console.error(
+      "⚠️ ADVERTENCIA: Estás usando localhost en producción. Configura NEXT_PUBLIC_API_URL en Vercel."
+    );
   }
-  
+
   return apiUrl;
 };
 
@@ -116,8 +123,18 @@ export const API_ENDPOINTS = {
     APPROVE_INSTRUCTOR: `${API_URL}/admin/approve-instructor`,
     REJECT_INSTRUCTOR: `${API_URL}/admin/reject-instructor`,
   },
+
+  // SUBSECTION DISCUSSIONS ENDPOINTS
+  SUBSECTION_DISCUSSIONS: {
+    CREATE_DISCUSSION: `${API_URL}/discussion/subsection-discussion/create`,
+    GET_DISCUSSIONS: `${API_URL}/discussion/subsection-discussion`,
+    UPDATE_DISCUSSION: `${API_URL}/discussion/subsection-discussion`,
+    DELETE_DISCUSSION: `${API_URL}/discussion/subsection-discussion`,
+    CREATE_REPLY: `${API_URL}/discussion/subsection-discussion/reply/create`,
+    UPDATE_REPLY: `${API_URL}/discussion/subsection-discussion/reply`,
+    DELETE_REPLY: `${API_URL}/discussion/subsection-discussion/reply`,
+  },
 };
 
 // Exportar también la URL base para uso directo si es necesario
 export default API_URL;
-

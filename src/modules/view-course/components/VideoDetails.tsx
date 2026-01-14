@@ -2,12 +2,15 @@
 
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "next/navigation";
 import { HiMenuAlt1 } from "react-icons/hi";
-import { setCourseViewSidebar } from "@modules/dashboard/store/sidebarSlice";
+import { setCourseViewSidebar, setDiscussionSidebarOpen } from "@modules/dashboard/store/sidebarSlice";
 import { RootState } from "@shared/store/store";
 import VideoPlayer from "./VideoPlayer";
 import { useVideoNavigation } from "../hooks/useVideoNavigation";
 import { useVideoPlayer } from "../hooks/useVideoPlayer";
+import DiscussionButton from "./discussions/DiscussionButton";
+import { getDiscussions } from "../services/discussionAPI";
 
 /**
  * VideoDetails - Main component for video details page
@@ -15,12 +18,18 @@ import { useVideoPlayer } from "../hooks/useVideoPlayer";
  */
 const VideoDetails = () => {
   const dispatch = useDispatch();
+  const params = useParams();
   const { courseSectionData, courseEntireData } = useSelector(
     (state: RootState) => state.viewCourse
   );
-  const { courseViewSidebar } = useSelector(
+  const { courseViewSidebar, discussionSidebarOpen } = useSelector(
     (state: RootState) => state.sidebar
   );
+
+  // Obtener subSectionId de los parámetros
+  const subSectionId = Array.isArray(params?.subSectionId) 
+    ? params.subSectionId[0] 
+    : params?.subSectionId as string;
 
   const { isFirstVideo, isLastVideo, goToNextVideo, goToPrevVideo, getNextVideoInfo } =
     useVideoNavigation(courseSectionData);
@@ -36,6 +45,29 @@ const VideoDetails = () => {
     handleRewatch,
     isCompleted,
   } = useVideoPlayer(courseSectionData, courseEntireData);
+
+  // Estado para el conteo de discusiones
+  const [discussionCount, setDiscussionCount] = React.useState(0);
+
+  // Obtener el conteo de discusiones
+  React.useEffect(() => {
+    if (!subSectionId) {
+      setDiscussionCount(0);
+      return;
+    }
+
+    const loadDiscussionCount = async () => {
+      try {
+        const discussions = await getDiscussions(subSectionId);
+        setDiscussionCount(discussions.length);
+      } catch (error) {
+        console.error("Error loading discussion count:", error);
+        setDiscussionCount(0);
+      }
+    };
+
+    loadDiscussionCount();
+  }, [subSectionId]);
 
   // Log para depuración
   React.useEffect(() => {
@@ -72,7 +104,7 @@ const VideoDetails = () => {
   }
 
   return (
-    <div className="flex flex-col gap-6 text-white pb-12 md:pb-16">
+    <div className="flex flex-col gap-6 text-white">
       {/* Sidebar toggle button */}
       <div
         className="sm:hidden text-white absolute left-7 top-3 cursor-pointer z-10"
@@ -82,7 +114,21 @@ const VideoDetails = () => {
       </div>
 
       {/* Video Player Container - Más pequeño y centrado */}
-      <div className="w-full max-w-4xl mx-auto">
+      <div className="w-full max-w-4xl mx-auto relative">
+        {/* Botón de discusiones - arriba a la derecha */}
+        {subSectionId && (
+          <div className="flex justify-end mb-4">
+            <DiscussionButton
+              onClick={() => {
+                dispatch(setDiscussionSidebarOpen(true));
+                // Cerrar el sidebar izquierdo cuando se abre el de discusiones
+                dispatch(setCourseViewSidebar(false));
+              }}
+              discussionCount={discussionCount}
+            />
+          </div>
+        )}
+
         <VideoPlayer
           videoData={videoData}
           previewSource={previewSource}
@@ -110,7 +156,7 @@ const VideoDetails = () => {
               <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-richblack-5 mb-3 leading-tight">
                 {videoData.title || "Sin título"}
               </h1>
-              
+
               {/* Video Metadata */}
               <div className="flex flex-wrap items-center gap-4 text-sm text-richblack-400">
                 {videoData.timeDuration && (
@@ -120,8 +166,8 @@ const VideoDetails = () => {
                     </svg>
                     <span className="font-medium">
                       {(() => {
-                        const duration = typeof videoData.timeDuration === 'string' 
-                          ? parseFloat(videoData.timeDuration) 
+                        const duration = typeof videoData.timeDuration === 'string'
+                          ? parseFloat(videoData.timeDuration)
                           : videoData.timeDuration;
                         if (!duration) return '';
                         const seconds = Math.round(duration);
