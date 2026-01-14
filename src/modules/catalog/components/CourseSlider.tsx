@@ -26,11 +26,20 @@ function CourseSlider({ Courses }: CourseSliderProps) {
       // modules={[ Pagination]}
 
       breakpoints={{
+        640: {
+          slidesPerView: 2,
+          spaceBetween: 20,
+        },
         1024: {
           slidesPerView: 3,
+          spaceBetween: 25,
+        },
+        1280: {
+          slidesPerView: 4,
+          spaceBetween: 25,
         },
       }}
-      className="max-h-[30rem] pt-8 px-2"
+      className="pt-8 px-2 pb-4"
     >
       {Courses.map((course, i) => (
         <SwiperSlide key={i} className="h-auto flex">

@@ -9,4 +9,6 @@ export { default as CreateCategoryModal } from "./components/category/CreateCate
 export { default as PendingCoursesContainer } from "./containers/PendingCoursesContainer";
 export { default as AllCoursesContainer } from "./containers/AllCoursesContainer";
 export { default as AdminEditCourse } from "./containers/AdminEditCourse";
+export { default as CourseDetailsContainer } from "./containers/CourseDetailsContainer";
+export { default as ReviewsList } from "./components/course/ReviewsList";
 
