@@ -55,8 +55,8 @@ const cartSlice = createSlice({
       // Update the total quantity and price
       state.totalItems++;
       // Asegurar que el precio sea un número válido
-      const coursePrice = typeof course.price === 'number' 
-        ? course.price 
+      const coursePrice = typeof course.price === 'number'
+        ? course.price
         : (typeof course.price === 'string' ? parseFloat(course.price) : 0);
       state.total = (state.total || 0) + coursePrice;
       // Update to localstorage
@@ -89,8 +89,6 @@ const cartSlice = createSlice({
         localStorage.setItem("cart", JSON.stringify(state.cart));
         localStorage.setItem("total", JSON.stringify(state.total));
         localStorage.setItem("totalItems", JSON.stringify(state.totalItems));
-        // show toast
-        toast.success("Curso eliminado del carrito");
       }
     },
 
