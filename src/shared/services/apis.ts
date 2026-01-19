@@ -70,7 +70,6 @@ export const categories = {
   GET_CATEGORY_COURSES_API: BASE_URL + "/category/getCategoryCourses",
   CHANGE_COURSE_CATEGORY_API: BASE_URL + "/category/changeCourseCategory",
   CHANGE_MULTIPLE_COURSES_CATEGORY_API: BASE_URL + "/category/changeMultipleCoursesCategory",
-  PUBLIC_CATEGORIES_API: BASE_URL + "/category/public",
 }
 
 // CATALOG PAGE DATA
