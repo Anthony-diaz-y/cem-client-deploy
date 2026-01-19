@@ -3,19 +3,49 @@
  */
 
 // ================ Dashboard Types ================
-export interface AdminDashboardStats {
+// ================ Dashboard Types ================
+export interface AdminDashboardCounts {
   totalInstructors: number;
   approvedInstructors: number;
   pendingInstructors: number;
   totalStudents: number;
-  unreadMessages?: number;
+  unreadMessages: number;
+}
+
+export interface AdminDashboardRevenue {
+  total: number;
+  period: string;
+}
+
+export interface AdminDashboardCharts {
+  topCoursesByStudents: Array<{
+    id: string;
+    courseName: string;
+    thumbnail: string;
+    studentsCount: number;
+  }>;
+  topCoursesByRevenue: Array<{
+    id: string;
+    courseName: string;
+    thumbnail: string;
+    revenue: number;
+  }>;
+}
+
+export interface AdminDashboardData {
+  counts: AdminDashboardCounts;
+  revenue: AdminDashboardRevenue;
+  charts: AdminDashboardCharts;
 }
 
 export interface AdminDashboardResponse {
   success: boolean;
-  data: AdminDashboardStats;
+  data: AdminDashboardData;
   message: string;
 }
+
+// Legacy type support alias if needed, though we should update consumers
+export type AdminDashboardStats = AdminDashboardCounts;
 
 // ================ Instructor Types ================
 export interface Instructor {
