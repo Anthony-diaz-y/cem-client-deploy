@@ -73,7 +73,9 @@ export default function EditCourseModal({
       setValue("courseName", course.courseName);
       setValue("courseDescription", course.courseDescription);
       setValue("price", course.price);
-      setValue("categoryId", course.category.id);
+      // Normalizar el ID de categoría
+      const categoryId = course.category.id || "";
+      setValue("categoryId", categoryId);
       setValue("thumbnailImage", course.thumbnail || "");
       setThumbnailPreview(course.thumbnail || null);
     } else {
@@ -107,9 +109,13 @@ export default function EditCourseModal({
       formData.append("courseDescription", data.courseDescription);
       formData.append("price", data.price.toString());
 
-      // Solo agregar categoryId si cambió
-      if (data.categoryId !== course.category.id) {
-        formData.append("categoryId", data.categoryId);
+      // Normalizar categoryId (convertir a string y asegurar que no sea vacío)
+      const newCategoryId = String(data.categoryId || "").trim();
+
+      // Siempre enviar categoryId si está presente y es válido
+      // Esto asegura que el backend reciba el cambio de categoría correctamente
+      if (newCategoryId && newCategoryId !== "undefined" && newCategoryId !== "") {
+        formData.append("categoryId", newCategoryId);
       }
 
       // Solo agregar thumbnailImage si es un archivo nuevo

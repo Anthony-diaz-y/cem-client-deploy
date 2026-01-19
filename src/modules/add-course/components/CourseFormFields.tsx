@@ -93,7 +93,6 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         </label>
         <select
           {...register("courseCategory", { required: true })}
-          defaultValue=""
           id="courseCategory"
           className="form-style w-full cursor-pointer"
         >
