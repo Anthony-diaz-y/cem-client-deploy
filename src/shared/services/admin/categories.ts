@@ -95,15 +95,13 @@ export async function getAllCategories(
 }
 
 /**
- * Obtiene todas las categorías públicas (sin autenticación)
- * Usado para el catálogo público
- * @returns Lista de categorías públicas
+ * Obtiene todas las categorías públicas 
  */
 export async function getPublicCategories(): Promise<Category[]> {
   try {
     const response = await apiConnector<GetPublicCategoriesResponse>(
       "GET",
-      categories.PUBLIC_CATEGORIES_API,
+      categories.CATEGORIES_API,
       {},
       {
         "Content-Type": "application/json",
