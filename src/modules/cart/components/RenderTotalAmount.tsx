@@ -28,7 +28,7 @@ export default function RenderTotalAmount() {
 
     try {
       console.log("Enviando cursos al backend:", coursesId);
-      
+
       const response = await apiConnector<BuyNowTemporaryResponse>(
         "POST",
         studentEndpoints.BUY_NOW_TEMPORARY_API,
@@ -44,30 +44,19 @@ export default function RenderTotalAmount() {
         throw new Error(response.data.message || "No se pudieron inscribir los cursos");
       }
 
-      // Mostrar mensaje de éxito con advertencia temporal
-      toast.success(
-        response.data.message || "¡Cursos agregados exitosamente! (Modo temporal - sin pago)",
-        {
-          duration: 5000,
-        }
-      );
-
-      // Mostrar advertencia adicional si viene del backend
-      if (response.data.warning) {
-        toast(response.data.warning, {
-          icon: "⚠️",
-          duration: 6000,
-        });
-      }
+      // Mostrar mensaje de éxito único y conciso
+      toast.success("¡Inscrito exitosamente! Redirigiendo...", {
+        duration: 3000,
+      });
 
       // Limpiar el carrito antes de redirigir
       dispatch(resetCart());
-      
+
       // Disparar evento personalizado para notificar que se compraron cursos
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('coursePurchased'));
       }
-      
+
       // Pequeño delay para asegurar que el backend procese la inscripción
       setTimeout(() => {
         router.push("/dashboard/enrolled-courses");
@@ -85,11 +74,11 @@ export default function RenderTotalAmount() {
         error?.response?.data?.message ||
         error?.message ||
         "No se pudieron inscribir los cursos";
-      
+
       // Si el error es que el estudiante ya está inscrito, tratarlo como éxito
       // porque significa que el curso ya está en su lista
-      if (errorMessage.toLowerCase().includes("already enrolled") || 
-          errorMessage.toLowerCase().includes("ya está inscrito")) {
+      if (errorMessage.toLowerCase().includes("already enrolled") ||
+        errorMessage.toLowerCase().includes("ya está inscrito")) {
         toast.success("Ya estás inscrito en uno o más cursos. Redirigiendo...", {
           duration: 3000,
         });
@@ -114,10 +103,10 @@ export default function RenderTotalAmount() {
       const courseId = (course as any)?.id || course?._id;
       return courseId ? String(courseId) : null;
     }).filter(Boolean) as string[];
-    
+
     console.log("Cursos a comprar:", courses);
     console.log("Cart completo:", cart);
-    
+
     if (courses.length === 0) {
       toast.error("No hay cursos en el carrito");
       return;
@@ -144,18 +133,18 @@ export default function RenderTotalAmount() {
 
   // Calcular el total sumando todos los precios del carrito (más confiable que el estado total)
   const calculatedTotal = cart.reduce((sum: number, course: CartItem) => {
-    const coursePrice = typeof course.price === 'number' 
-      ? course.price 
+    const coursePrice = typeof course.price === 'number'
+      ? course.price
       : (typeof course.price === 'string' ? parseFloat(course.price) : 0);
     return sum + coursePrice;
   }, 0);
 
   // Usar el total calculado o el del estado (el calculado tiene prioridad)
   const finalTotal = calculatedTotal > 0 ? calculatedTotal : (total || 0);
-  
+
   // Formatear el total correctamente
-  const formattedTotal = typeof finalTotal === 'number' 
-    ? finalTotal.toFixed(2) 
+  const formattedTotal = typeof finalTotal === 'number'
+    ? finalTotal.toFixed(2)
     : (typeof finalTotal === 'string' ? parseFloat(finalTotal).toFixed(2) : '0.00');
 
   return (

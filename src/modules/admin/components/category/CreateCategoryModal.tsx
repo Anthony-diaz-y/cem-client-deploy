@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { createCategory } from "@shared/services/adminAPI";
+import { createCategory, getPublicCategories } from "@shared/services/adminAPI";
 import { IoMdClose } from "react-icons/io";
 
 interface CreateCategoryModalProps {
@@ -49,6 +49,14 @@ export default function CreateCategoryModal({
       );
 
       if (success) {
+        // Refrescar categorías públicas para el catálogo
+        try {
+          await getPublicCategories();
+        } catch (error) {
+          console.error("Error al refrescar categorías públicas:", error);
+          // No mostrar error al usuario, es solo un refresh
+        }
+        
         reset();
         onSuccess();
         onClose();
@@ -63,7 +71,7 @@ export default function CreateCategoryModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
       <div className="bg-richblack-800 rounded-xl border border-richblack-700 w-full max-w-md m-4">
         {/* Header */}
         <div className="px-6 py-4 border-b border-richblack-700 flex items-center justify-between">

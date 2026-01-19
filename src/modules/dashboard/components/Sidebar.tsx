@@ -19,9 +19,8 @@ export default function Sidebar() {
   const { loading: authLoading } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  // Evitar errores de hidratación: solo renderizar contenido dependiente del estado después de montar
-  // Initialize mounted state lazily to avoid hydration mismatches
-  const [mounted] = useState(() => typeof window !== "undefined");
+  // Inicializar mounted como false para que el render inicial sea idéntico en servidor y cliente
+  const [mounted, setMounted] = useState(false);
 
   // handle side bar menu - open / close
   // const [openSideMenu, setOpenSideMenu] = useState(false)
@@ -33,6 +32,9 @@ export default function Sidebar() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    // Marcar como montado solo en el cliente
+    setMounted(true);
 
     const handleResize = () => dispatch(setScreenSize(window.innerWidth));
 
@@ -58,17 +60,19 @@ export default function Sidebar() {
 
   return (
     <>
-      {mounted && (
-        <div
-          className="sm:hidden text-white absolute left-7 top-3 cursor-pointer "
-          onClick={() => dispatch(setOpenSideMenu(!openSideMenu))}
-        >
-          {openSideMenu ? <IoMdClose size={33} /> : <HiMenuAlt1 size={33} />}
-        </div>
-      )}
+      {/* Botón de menú móvil - usar suppressHydrationWarning porque solo se muestra en móviles después del mount */}
+      <div
+        suppressHydrationWarning
+        className={`sm:hidden text-white absolute left-7 top-3 cursor-pointer ${
+          mounted ? "" : "hidden"
+        }`}
+        onClick={() => dispatch(setOpenSideMenu(!openSideMenu))}
+      >
+        {mounted && (openSideMenu ? <IoMdClose size={33} /> : <HiMenuAlt1 size={33} />)}
+      </div>
 
       {/* Sidebar móvil: overlay cuando está abierto */}
-      {mounted && screenSize && screenSize <= 640 && openSideMenu && (
+      {mounted && screenSize !== undefined && screenSize <= 640 && openSideMenu && (
         <div
           className="fixed inset-0 bg-black/50 z-40 sm:hidden"
           onClick={() => dispatch(setOpenSideMenu(false))}
@@ -76,9 +80,11 @@ export default function Sidebar() {
       )}
 
       {/* Sidebar: visible en pantallas grandes siempre, en móviles solo si openSideMenu es true (después de montar) */}
+      {/* Usar suppressHydrationWarning porque las clases cambian después del mount en móviles */}
       <div
+        suppressHydrationWarning
         className={`${
-          mounted && screenSize && screenSize <= 640
+          mounted && screenSize !== undefined && screenSize <= 640
             ? openSideMenu
               ? "flex fixed left-0 top-[3.5rem] z-50"
               : "hidden"
