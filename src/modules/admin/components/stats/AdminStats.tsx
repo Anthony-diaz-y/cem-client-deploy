@@ -2,10 +2,11 @@
 
 import React from "react";
 import Link from "next/link";
-import { AdminDashboardStats } from "@shared/services/adminAPI";
+import { AdminDashboardCounts } from "@shared/services/admin/types";
+import CountUp from "@shared/components/CountUp";
 
 interface AdminStatsProps {
-  stats: AdminDashboardStats | null;
+  stats: AdminDashboardCounts | null;
   loading?: boolean;
 }
 
@@ -84,12 +85,13 @@ export default function AdminStats({ stats, loading }: AdminStatsProps) {
         return (
           <div
             key={index}
-            className={`bg-richblack-800 rounded-xl p-6 border ${stat.borderColor} ${stat.bgColor} transition-all hover:scale-105 ${
-              stat.highlight ? "border-l-4 border-l-yellow-50" : ""
-            }`}
+            className={`bg-richblack-800 rounded-xl p-6 border ${stat.borderColor} ${stat.bgColor} transition-all hover:scale-105 ${stat.highlight ? "border-l-4 border-l-yellow-50" : ""
+              }`}
           >
             <p className="text-sm font-medium text-richblack-400 mb-2">{stat.title}</p>
-            <p className={`text-3xl font-bold ${stat.color}`}>{stat.value}</p>
+            <p className={`text-3xl font-bold ${stat.color}`}>
+              <CountUp end={stat.value} duration={2} />
+            </p>
             {stat.link && stat.value > 0 && (
               <Link
                 href={stat.link}
