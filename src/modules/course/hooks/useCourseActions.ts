@@ -59,25 +59,14 @@ export const useCourseActions = (
         throw new Error(response.data.message || "No se pudo inscribir al curso");
       }
 
-      // Mostrar mensaje de éxito con advertencia temporal
-      toast.success(
-        response.data.message || "¡Curso agregado exitosamente! (Modo temporal - sin pago)",
-        {
-          duration: 5000,
-        }
-      );
-
-      // Mostrar advertencia adicional si viene del backend
-      if (response.data.warning) {
-        toast(response.data.warning, {
-          icon: "⚠️",
-          duration: 6000,
-        });
-      }
+      // Mostrar mensaje de éxito único y conciso
+      toast.success("¡Inscrito exitosamente! Redirigiendo...", {
+        duration: 3000,
+      });
 
       // Invalidar cache del instructor para que se actualicen los datos de estudiantes
       invalidateInstructorCache();
-      
+
       // Disparar evento personalizado para refrescar datos del instructor
       if (typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent("instructorDataRefresh"));
@@ -91,23 +80,23 @@ export const useCourseActions = (
         error?.response?.data?.message ||
         error?.message ||
         "No se pudo inscribir al curso";
-      
+
       // Si el error es que el estudiante ya está inscrito, tratarlo como éxito
       // porque significa que el curso ya está en su lista
-      if (errorMessage.toLowerCase().includes("already enrolled") || 
-          errorMessage.toLowerCase().includes("ya está inscrito")) {
+      if (errorMessage.toLowerCase().includes("already enrolled") ||
+        errorMessage.toLowerCase().includes("ya está inscrito")) {
         toast.success("Ya estás inscrito en este curso. Redirigiendo...", {
           duration: 3000,
         });
-        
+
         // Invalidar cache del instructor para que se actualicen los datos de estudiantes
         invalidateInstructorCache();
-        
+
         // Disparar evento personalizado para refrescar datos del instructor
         if (typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("instructorDataRefresh"));
         }
-        
+
         // Limpiar el carrito de todas formas
         dispatch(resetCart());
         // Redirigir a cursos inscritos
@@ -129,7 +118,7 @@ export const useCourseActions = (
       const normalizedCourseId = Array.isArray(courseId)
         ? courseId[0]
         : courseId;
-      
+
       if (!normalizedCourseId) {
         toast.error("ID de curso no válido");
         return;

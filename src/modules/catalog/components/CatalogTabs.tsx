@@ -59,7 +59,7 @@ const CatalogTabs: React.FC<CatalogTabsProps> = ({
         return dateB - dateA;
       });
     }
-  }, [catalogPageData?.selectedCategory?.courses, active, searchQuery]);
+  }, [catalogPageData?.selectedCategory?.courses, catalogPageData?.selectedCategory?.name, active, searchQuery]);
 
   const clearSearch = () => {
     setSearchQuery("");

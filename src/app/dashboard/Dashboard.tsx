@@ -13,12 +13,10 @@ export default function DashboardLayout({
   const { loading: authLoading } = useAppSelector((state) => state.auth);
   const { loading: profileLoading } = useAppSelector((state) => state.profile);
   
-  // Evitar errores de hidratación: inicializar mounted como false en ambos servidor y cliente
-  // Esto asegura que el render inicial sea idéntico en ambos
+  // Inicializar mounted como false para que el render inicial sea idéntico en servidor y cliente
   const [mounted, setMounted] = useState(false);
-  const [showLoading, setShowLoading] = useState(false);
 
-  // Scroll to the top of the page when the component mounts
+  // Scroll to the top y marcar como montado solo en el cliente
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0);
@@ -26,20 +24,16 @@ export default function DashboardLayout({
     }
   }, []);
 
-  // Actualizar showLoading solo después del mount para evitar diferencias de hidratación
-  useEffect(() => {
-    if (mounted) {
-      setShowLoading(profileLoading || authLoading);
-    }
-  }, [mounted, profileLoading, authLoading]);
-
   // Renderizar siempre la misma estructura inicial para evitar errores de hidratación
-  // En el servidor y en el primer render del cliente, siempre mostrar contenido (no loading)
+  // En el servidor y en el primer render del cliente, siempre mostrar contenido
+  // El loading solo se muestra después de que el componente esté montado
+  const isLoading = mounted && (profileLoading || authLoading);
+
   return (
     <div className="relative flex h-[calc(100vh-3.5rem)] overflow-hidden">
       <Sidebar />
       <div className="flex-1 h-full overflow-y-auto overflow-x-hidden">
-        {showLoading ? (
+        {isLoading ? (
           <div className="mt-10">
             <Loading />
           </div>
