@@ -147,14 +147,25 @@ const realApiConnector = async <T = unknown>(
       // Mejor logging de errores
       if (axios.isAxiosError(error)) {
         if (error.response) {
-          // El servidor respondió con un código de estado fuera del rango 2xx
-          console.error('❌ API Error Response:', {
-            status: error.response.status,
-            statusText: error.response.statusText,
-            url,
-            method: method.toUpperCase(),
-            data: error.response.data,
-          });
+          // Verificar si es un 400 con cursos asociados en deleteCategory (respuesta válida, no error)
+          const isDeleteCategoryWithCourses = 
+            method.toUpperCase() === 'DELETE' &&
+            url.includes('/category/deleteCategory') &&
+            error.response.status === 400 &&
+            error.response.data?.courses &&
+            Array.isArray(error.response.data.courses) &&
+            error.response.data.courses.length > 0;
+          
+          // Solo loguear como error si NO es un caso válido de cursos asociados
+          if (!isDeleteCategoryWithCourses) {
+            console.error('❌ API Error Response:', {
+              status: error.response.status,
+              statusText: error.response.statusText,
+              url,
+              method: method.toUpperCase(),
+              data: error.response.data,
+            });
+          }
         } else if (error.request) {
           // La petición fue hecha pero no se recibió respuesta
           console.error('❌ API Error - No response received:', {

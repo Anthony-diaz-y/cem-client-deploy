@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as Icons from "react-icons/vsc";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -18,12 +18,19 @@ export default function SidebarLink({ link, iconName }: SidebarLinkProps) {
   )[iconName];
   const pathname = usePathname();
   const dispatch = useDispatch();
-  // Initialize mounted state lazily to ensure consistent SSR/client rendering
-  const [mounted] = useState(() => typeof window !== "undefined");
+  // Inicializar mounted como false para que el render inicial sea idéntico en servidor y cliente
+  const [mounted, setMounted] = useState(false);
 
   const { openSideMenu, screenSize } = useSelector(
     (state: RootState) => state.sidebar
   );
+
+  // Marcar como montado solo en el cliente
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setMounted(true);
+    }
+  }, []);
 
   const matchRoute = (route: string) => {
     if (!mounted || !pathname) return false; // Evitar diferencias durante SSR

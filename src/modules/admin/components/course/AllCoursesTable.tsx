@@ -19,8 +19,6 @@ interface AllCoursesTableProps {
   token: string;
   onUpdate: () => void;
   onEdit: (course: AdminCourse) => void;
-  onCreateCategory?: () => void;
-  categoryRefreshKey?: number;
 }
 
 interface Category {
@@ -37,8 +35,6 @@ export default function AllCoursesTable({
   courses,
   token,
   onUpdate,
-  onCreateCategory,
-  categoryRefreshKey,
 }: AllCoursesTableProps) {
   const [confirmationModal, setConfirmationModal] = useState<{
     isOpen: boolean;
@@ -72,7 +68,7 @@ export default function AllCoursesTable({
     };
 
     loadCategories();
-  }, [categoryRefreshKey]);
+  }, []);
 
   // Usa el hook personalizado para filtrar cursos
   const { filteredCourses, categories, instructors } = useCourseFilters(

@@ -55,14 +55,7 @@ const CatalogSections: React.FC<CatalogSectionsProps> = ({
         </div>
       )}
       
-      {/* Mensaje cuando no hay cursos en la categoría seleccionada */}
-      {topRatedCourses.length === 0 && catalogPageData?.selectedCategory?.name && (
-        <div className="mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent">
-          <div className="text-center text-richblack-300 text-lg">
-            No hay cursos disponibles en la categoría "{catalogPageData.selectedCategory.name}"
-          </div>
-        </div>
-      )}
+      {/* Este mensaje se muestra en CatalogTabs, no aquí para evitar duplicados */}
 
       {/* Section 3 - Most Selling / Frequently Bought */}
       {mostSellingInCategory.length > 0 && (

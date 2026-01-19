@@ -163,9 +163,10 @@ async function verifyPayment(
   bodyData: VerifyPaymentData,
   token: string,
   navigate: (path: string) => void,
-  dispatch: Dispatch
+  dispatch: Dispatch,
+  silent: boolean = false
 ) {
-  const toastId = toast.loading("Verificando pago...");
+  const toastId = silent ? undefined : toast.loading("Verificando pago...");
   dispatch(setPaymentLoading(true));
 
   try {
@@ -176,7 +177,13 @@ async function verifyPayment(
     if (!response.data.success) {
       throw new Error(typeof response.data.message === 'string' ? response.data.message : 'Error al verificar el pago');
     }
-    toast.success("Pago exitoso, has sido agregado al curso");
+
+    if (!silent) {
+      toast.success("¡Compra exitosa! Ya puedes ver tus cursos.");
+    } else if (toastId) {
+      toast.dismiss(toastId);
+    }
+
     navigate("/dashboard/enrolled-courses");
     dispatch(resetCart());
   } catch (error) {
