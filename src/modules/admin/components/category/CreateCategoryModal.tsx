@@ -56,6 +56,11 @@ export default function CreateCategoryModal({
           console.error("Error al refrescar categorías públicas:", error);
           // No mostrar error al usuario, es solo un refresh
         }
+
+        // Disparar evento personalizado para notificar a otros componentes (Navbar, etc.)
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('categoriesUpdated'));
+        }
         
         reset();
         onSuccess();

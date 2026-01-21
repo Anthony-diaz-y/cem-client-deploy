@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Loading from "@shared/components/Loading";
+import { Loading } from "@shared/components";
 
 /**
  * CatalogLoadingState - Loading component for catalog page

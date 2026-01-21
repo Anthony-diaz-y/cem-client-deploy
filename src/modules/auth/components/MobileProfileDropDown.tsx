@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import useOnClickOutside from "@shared/hooks/useOnClickOutside";
-import Img from "@shared/components/Img";
+import { Img } from "@shared/components";
 
 import { logout } from "../services/authAPI";
 

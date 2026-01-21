@@ -324,6 +324,7 @@ export async function deleteCategory(
 ): Promise<{
   success: boolean;
   message?: string;
+  categories?: Category[];
   courses?: Array<{ numero: number; id: string; nombre: string; estado: string; instructor: string }>;
   category?: { id: string; name: string; totalCourses: number };
 }> {
@@ -345,9 +346,11 @@ export async function deleteCategory(
     if (response.status === 200 && response.data.success) {
       toast.success(response.data.message || "Categoría eliminada exitosamente");
       toast.dismiss(toastId);
+      // El backend ahora devuelve la lista completa de categorías actualizada en response.data.data
       return {
         success: true,
-        message: response.data.message
+        message: response.data.message,
+        categories: response.data.data || undefined
       };
     }
 

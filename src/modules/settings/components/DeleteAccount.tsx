@@ -5,9 +5,7 @@ import { FiTrash2 } from "react-icons/fi";
 import { useAppDispatch, useAppSelector } from "@shared/store/hooks";
 import { useRouter } from "next/navigation";
 
-import ConfirmationModal, {
-  ConfirmationModalData,
-} from "@shared/components/ConfirmationModal";
+import { ConfirmationModal, type ConfirmationModalData } from "@shared/components";
 import { deleteProfile } from "@shared/services/SettingsAPI";
 
 export default function DeleteAccount() {

@@ -6,16 +6,15 @@ import BannerImage1 from "@shared/assets/Images/aboutus1.webp"
 import BannerImage2 from "@shared/assets/Images/aboutus2.webp"
 import BannerImage3 from "@shared/assets/Images/aboutus3.webp"
 
-import Footer from "@shared/components/Footer"
+import { Footer, Img } from "@shared/components";
 import ContactFormSection from "../components/ContactFormSection"
 import LearningGrid from "../components/LearningGrid"
 import Quote from "../components/Quote"
 import StatsComponenet from "../components/Stats"
 import HighlightText from "@modules/home/components/HighlightText"
-import Img from "@shared/components/Img"
 
 // Lazy load componentes pesados para mejorar el rendimiento inicial
-const ReviewSlider = lazy(() => import("@shared/components/ReviewSlider"))
+const ReviewSlider = lazy(() => import("@shared/components/sliders/ReviewSlider"))
 
 import { motion } from 'framer-motion'
 import { fadeIn } from "@shared/utils/motionFrameVarients"

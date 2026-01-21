@@ -5,7 +5,7 @@ import { useAppSelector } from "@shared/store/hooks";
 import PendingCoursesTable from "../components/course/PendingCoursesTable";
 import EditCourseModal from "../components/course/EditCourseModal";
 import { getPendingCourses, AdminCourse } from "@shared/services/adminAPI";
-import Loading from "@shared/components/Loading";
+import { Loading } from "@shared/components";
 
 export default function PendingCoursesContainer() {
   const { token } = useAppSelector((state) => state.auth);

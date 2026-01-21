@@ -17,8 +17,7 @@ import {
   fetchInstructorCourses,
 } from "@shared/services/courseDetailsAPI";
 import { COURSE_STATUS } from "@shared/utils/constants";
-import ConfirmationModal from "@shared/components/ConfirmationModal";
-import Img from "@shared/components/Img";
+import { ConfirmationModal, Img } from "@shared/components";
 import toast from "react-hot-toast";
 import { Course, CoursesTableProps, ConfirmationModalData } from "../types";
 
@@ -67,7 +66,6 @@ export default function CoursesTable({
     };
   }, [loading, courses]);
 
-  // delete course
   const handleCourseDelete = async (courseId: string) => {
     if (!courseId) {
       toast.error("Course ID is missing");
@@ -77,15 +75,13 @@ export default function CoursesTable({
     setLoading(true);
     try {
       await deleteCourse({ courseId: courseId }, token);
-      // Solo refrescar la lista si la eliminación fue exitosa
       const result = await fetchInstructorCourses(token);
-      if (result) {
-        setCourses(result);
+      if (result && Array.isArray(result)) {
+        setCourses(result as unknown as Course[]);
       }
       setConfirmationModal(null);
     } catch (error) {
       console.error("Error deleting course:", error);
-      // El error ya se maneja en deleteCourse con toast
     } finally {
       setLoading(false);
     }

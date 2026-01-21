@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { IoMdClose } from "react-icons/io";
 import { HiMenuAlt1 } from "react-icons/hi";
 import { IoIosArrowBack } from "react-icons/io";
-import IconBtn from "@shared/components/IconBtn";
+import { IconBtn } from "@shared/components";
 import { setCourseViewSidebar } from "@modules/dashboard/store/sidebarSlice";
 import { RootState, AppDispatch } from "@shared/store/store";
 import { SidebarHeaderProps } from "../types";

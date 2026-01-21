@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAppSelector } from "@shared/store/hooks";
 import AllCoursesTable from "../components/course/AllCoursesTable";
 import { getAllCoursesAdmin, AdminCourse } from "@shared/services/adminAPI";
-import Loading from "@shared/components/Loading";
+import { Loading } from "@shared/components";
 
 export default function AllCoursesContainer() {
   const router = useRouter();

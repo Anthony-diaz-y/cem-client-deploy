@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import Img from "@shared/components/Img";
+import { Img } from "@shared/components";
 import { InstructorCoursesGridProps } from "../types";
 import { FaCheck } from "react-icons/fa";
 import { HiClock } from "react-icons/hi";

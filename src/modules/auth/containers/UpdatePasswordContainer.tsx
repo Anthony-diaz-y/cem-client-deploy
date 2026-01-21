@@ -10,7 +10,7 @@ import { useRouter, usePathname } from "next/navigation";
 
 import { resetPassword } from "@shared/services/authAPI";
 import { RootState, AppDispatch } from "@shared/store/store";
-import Loading from "@shared/components/Loading";
+import { Loading } from "@shared/components";
 
 function UpdatePasswordContainer() {
   const router = useRouter();

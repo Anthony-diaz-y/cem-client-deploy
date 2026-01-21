@@ -7,7 +7,7 @@ import Logo3 from "@shared/assets/TimeLineLogo/Logo3.svg";
 import Logo4 from "@shared/assets/TimeLineLogo/Logo4.svg";
 import timelineImage from "@shared/assets/Images/TimelineImage.png";
 
-import Img from "@shared/components/Img";
+import { Img } from "@shared/components";
 
 import { motion } from "framer-motion";
 import { fadeIn } from "@shared/utils/motionFrameVarients";

@@ -1,8 +1,11 @@
 import axios, { AxiosResponse } from "axios";
 import { API_URL } from "@/shared/config/api.config";
+import toast from "react-hot-toast";
 
-// Flag to enable/disable mock mode - DESACTIVADO para usar backend real
 export const MOCK_MODE = false;
+
+let isHandling401 = false;
+let redirectTimer: NodeJS.Timeout | null = null;
 
 export const axiosInstance = axios.create({
   baseURL: API_URL,
@@ -12,20 +15,21 @@ export const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-// Interceptor para agregar token JWT a todas las peticiones
+// Agregar token JWT a todas las peticiones
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Si hay un token en localStorage, agregarlo al header
+    if (config.data instanceof FormData) {
+      delete config.headers['Content-Type'];
+    }
+    
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('token');
-      // El token puede estar almacenado como JSON string, parsearlo si es necesario
       let authToken = token;
       try {
         if (token) {
           authToken = JSON.parse(token);
         }
       } catch {
-        // Si no es JSON, usar el token directamente
         authToken = token;
       }
       
@@ -38,40 +42,135 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Interceptor para manejar errores de autenticación
+// Manejar errores de autenticación
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Si no está autenticado, limpiar localStorage y redirigir a login
+      if (isHandling401) {
+        return Promise.reject(error);
+      }
+      
+      isHandling401 = true;
+      
+      const errorData = error.response?.data || {};
+      let errorMessage = '';
+      if (typeof errorData === 'string') {
+        errorMessage = errorData;
+      } else if (errorData.message) {
+        errorMessage = errorData.message;
+      } else if (errorData.error) {
+        errorMessage = typeof errorData.error === 'string' ? errorData.error : errorData.error.message || '';
+      }
+      
+      if (!errorMessage) {
+        errorMessage = 'Tu sesión ha expirado';
+      }
+      
+      const messageStr = String(errorMessage).toLowerCase();
+      const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+      const isAuthRoute = 
+        currentPath.includes('/auth/login') || 
+        currentPath.includes('/login') ||
+        currentPath.includes('/auth/signup') ||
+        currentPath.includes('/signup') ||
+        currentPath.includes('/auth/verify-email') ||
+        currentPath.includes('/verify-email') ||
+        currentPath.includes('/auth/forgot-password') ||
+        currentPath.includes('/forgot-password') ||
+        currentPath.includes('/auth/reset-password') ||
+        currentPath.includes('/reset-password');
+      
+      if (isAuthRoute) {
+        isHandling401 = false;
+        return Promise.reject(error);
+      }
+
+      const isAccountDeactivated = 
+        messageStr.includes('desactivada') || 
+        messageStr.includes('desactivado') ||
+        messageStr.includes('inactiva') ||
+        messageStr.includes('inactivo') ||
+        messageStr.includes('ha sido desactivada') ||
+        messageStr.includes('cuenta ha sido desactivada');
+
+      const isPendingApproval = 
+        messageStr.includes('pendiente de aprobación') ||
+        messageStr.includes('pending approval') ||
+        messageStr.includes('pendiente');
+
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        // Solo redirigir si no estamos ya en login
-        if (window.location.pathname !== '/auth/login') {
-          window.location.href = '/auth/login';
+        localStorage.clear();
+      }
+
+      let toastMessage = '';
+      let toastId = 'session-expired';
+      const toastStyle = {
+        background: '#ef4444',
+        color: '#fff',
+        padding: '16px',
+        borderRadius: '8px',
+        fontSize: '14px',
+      };
+
+      if (isAccountDeactivated) {
+        toastMessage = 'Tu cuenta ha sido desactivada. Por favor, contacta al administrador.';
+        toastId = 'account-deactivated';
+      } else if (isPendingApproval) {
+        toastMessage = 'Tu cuenta está pendiente de aprobación. Por favor, espera la aprobación del administrador.';
+        toastId = 'pending-approval';
+        toastStyle.background = '#f59e0b';
+      } else {
+        toastMessage = 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.';
+      }
+
+      toast.error(toastMessage, {
+        id: toastId,
+        duration: 5000,
+        style: toastStyle,
+      });
+
+      if (typeof window !== 'undefined') {
+        if (redirectTimer) {
+          clearTimeout(redirectTimer);
         }
+
+        const currentPathForRedirect = window.location.pathname;
+        if (!currentPathForRedirect.includes('/auth/login') && !currentPathForRedirect.includes('/login')) {
+          redirectTimer = setTimeout(() => {
+            window.location.replace('/auth/login');
+            setTimeout(() => {
+              isHandling401 = false;
+            }, 1000);
+          }, 5000);
+        } else {
+          setTimeout(() => {
+            isHandling401 = false;
+          }, 1000);
+        }
+      } else {
+        setTimeout(() => {
+          isHandling401 = false;
+        }, 2000);
       }
     }
     return Promise.reject(error);
   }
 );
 
-// Helper para obtener el token de localStorage
+// Obtener token de localStorage
 const getToken = (): string | null => {
   if (typeof window === 'undefined') return null;
   const token = localStorage.getItem('token');
   if (!token) return null;
   try {
-    // El token puede estar almacenado como JSON string
     return JSON.parse(token);
   } catch {
     return token;
   }
 };
 
-// apiConnector principal - ahora usa el backend real
-// Las URLs de apis.ts ya incluyen el BASE_URL completo, así que usamos axios directamente
+// Conector principal de API
 const realApiConnector = async <T = unknown>(
     method: string,
     url: string,
@@ -80,74 +179,52 @@ const realApiConnector = async <T = unknown>(
     params?: Record<string, string | number>
 ): Promise<AxiosResponse<T>> => {
     const token = getToken();
-    
-    // Si bodyData es FormData, no establecer Content-Type (el navegador lo hará automáticamente)
     const isFormData = bodyData instanceof FormData;
     const hasBody = bodyData !== undefined && bodyData !== null;
     
     const requestHeaders: Record<string, string> = {
-      // Solo establecer Content-Type si hay bodyData, NO es FormData, y NO es GET/HEAD
       ...(hasBody && !isFormData && method.toUpperCase() !== 'GET' && method.toUpperCase() !== 'HEAD'
         ? { 'Content-Type': 'application/json' }
         : {}),
       ...headers,
     };
     
-    // Si headers ya tiene Content-Type y es FormData, eliminarlo para que el navegador lo establezca
     if (isFormData && requestHeaders['Content-Type']) {
       delete requestHeaders['Content-Type'];
     }
     
-    // Agregar token si existe y no está ya en headers
     if (token && !headers?.Authorization) {
       requestHeaders.Authorization = `Bearer ${token}`;
     }
 
-    // Para métodos DELETE, algunos backends esperan los parámetros en query params
-    // Si hay bodyData y el método es DELETE, intentar usar params también
     let finalParams: Record<string, string | number> | undefined = params;
     if (method.toUpperCase() === 'DELETE' && bodyData && !(bodyData instanceof FormData)) {
-      // Para DELETE, agregar los datos del body a los params también
-      // Convertir los valores a string o number para query params
       const convertedBodyData: Record<string, string | number> = {};
       for (const [key, value] of Object.entries(bodyData)) {
         if (typeof value === 'string' || typeof value === 'number') {
           convertedBodyData[key] = value;
         } else if (value != null) {
-          // Convertir otros tipos a string
           convertedBodyData[key] = String(value);
         }
       }
       finalParams = { ...params, ...convertedBodyData };
     }
 
-    // Logging para debug en desarrollo
-    if (process.env.NODE_ENV === 'development') {
-      console.log('🌐 API Request:', {
-        method: method.toUpperCase(),
-        url,
-        hasBody: !!bodyData,
-        hasToken: !!token,
-      });
-    }
-
     try {
-      const response = await axios<T>({
+      const response = await axiosInstance<T>({
         method: `${method}`,
         url: url,
         data: bodyData ?? undefined,
         headers: requestHeaders,
         params: finalParams ?? undefined,
         withCredentials: true,
-        timeout: 30000, // 30 segundos de timeout
+        timeout: 30000,
       });
       
       return response;
     } catch (error: unknown) {
-      // Mejor logging de errores
       if (axios.isAxiosError(error)) {
         if (error.response) {
-          // Verificar si es un 400 con cursos asociados en deleteCategory (respuesta válida, no error)
           const isDeleteCategoryWithCourses = 
             method.toUpperCase() === 'DELETE' &&
             url.includes('/category/deleteCategory') &&
@@ -156,47 +233,21 @@ const realApiConnector = async <T = unknown>(
             Array.isArray(error.response.data.courses) &&
             error.response.data.courses.length > 0;
           
-          // Solo loguear como error si NO es un caso válido de cursos asociados
           if (!isDeleteCategoryWithCourses) {
-            console.error('❌ API Error Response:', {
+            console.error('API Error:', {
               status: error.response.status,
-              statusText: error.response.statusText,
               url,
               method: method.toUpperCase(),
-              data: error.response.data,
             });
           }
-        } else if (error.request) {
-          // La petición fue hecha pero no se recibió respuesta
-          console.error('❌ API Error - No response received:', {
-            url,
-            method: method.toUpperCase(),
-            message: error.message,
-            code: error.code,
-          });
-          
-          // Si es un error de red, mostrar mensaje más claro
-          if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK') {
-            console.error('🔴 Error de conexión: No se pudo conectar al servidor. Verifica que:');
-            console.error('   1. La URL del backend esté correcta:', url);
-            console.error('   2. El servidor esté ejecutándose');
-            console.error('   3. No haya problemas de CORS');
-          }
-        } else {
-          // Algo pasó al configurar la petición
-          console.error('❌ API Error - Request setup failed:', error.message);
         }
-      } else {
-        // Error desconocido
-        console.error('❌ API Error desconocido:', error);
       }
       
       throw error;
     }
 };
 
-// Export the apiConnector - ahora siempre usa el backend real
-// Soporta tipos genéricos para type safety
+// Conector de API con soporte de tipos genéricos
 export const apiConnector = <T = unknown>(
     method: string,
     url: string,

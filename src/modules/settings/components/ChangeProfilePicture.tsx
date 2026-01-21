@@ -5,8 +5,7 @@ import { RootState } from "@shared/store/store";
 import { useAppDispatch } from "@shared/store/hooks";
 
 import { updateUserProfileImage } from "@shared/services/SettingsAPI";
-import IconBtn from "@shared/components/IconBtn";
-import Img from "@shared/components/Img";
+import { IconBtn, Img } from "@shared/components";
 
 export default function ChangeProfilePicture() {
   const { token } = useSelector((state: RootState) => state.auth);

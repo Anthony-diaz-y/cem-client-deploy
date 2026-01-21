@@ -20,7 +20,7 @@ import type { CourseItem } from "../types";
 interface UseDeleteCategoryModalProps {
   category: Category | null;
   token: string;
-  onSuccess: () => void;
+  onSuccess: (updatedCategories?: Category[]) => void;
   onClose: () => void;
 }
 
@@ -310,7 +310,19 @@ export function useDeleteCategoryModal({
           console.error("Error al refrescar categorías públicas");
         }
 
-        onSuccess();
+        // Disparar evento personalizado para notificar a otros componentes (Navbar, etc.)
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('categoriesUpdated', { 
+            detail: { categories: result.categories } 
+          }));
+        }
+
+        // Pasar las categorías actualizadas al callback si están disponibles
+        if (result.categories) {
+          onSuccess(result.categories);
+        } else {
+          onSuccess();
+        }
         onClose();
       } else if (result.courses && result.courses.length > 0) {
         const convertedCourses: CourseItem[] = result.courses.map((c) => ({

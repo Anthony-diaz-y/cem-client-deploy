@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import GlobalProviders from "./providers";
-import Navbar from "@shared/components/Navbar";
-import DemoBanner from "@shared/components/DemoBanner";
-import ScrollToTop from "@shared/components/ScrollToTop"; // We'll need to create this or inline it
+import { Navbar, DemoBanner, ScrollToTop } from "@shared/components"; 
 import "../index.css";
 
 export const metadata: Metadata = {

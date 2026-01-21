@@ -1,5 +1,5 @@
 // Course Module Types
-import type { ConfirmationModalData } from "@shared/components/ConfirmationModal";
+import type { ConfirmationModalData } from "@shared/components";
 
 export interface CourseAuthorSectionProps {
   instructor: Course["instructor"] & {
@@ -56,6 +56,12 @@ export interface SubSection {
   description: string;
   videoUrl: string;
   timeDuration?: string;
+  attachments?: {
+    name: string;
+    url: string;
+    type: string;
+  }[];
+  content?: string;
 }
 
 export interface Course {
@@ -169,6 +175,8 @@ export interface SubSectionData {
   title?: string;
   description?: string;
   videoUrl?: string;
+  attachments?: File[];
+  content?: string;
   [key: string]: unknown;
 }
 

@@ -40,7 +40,7 @@ export const useSectionForm = () => {
   // Función para normalizar la estructura del curso (subSections -> subSection)
   const normalizeCourseStructure = (course: any): Course => {
     if (!course || !course.courseContent) return course;
-    
+
     const normalizedContent = course.courseContent.map((section: any) => {
       // Si tiene subSections (con S mayúscula), convertir a subSection
       if (section.subSections && Array.isArray(section.subSections) && !section.subSection) {
@@ -59,7 +59,7 @@ export const useSectionForm = () => {
         subSection: section.subSections || section.subSection || [],
       };
     });
-    
+
     return {
       ...course,
       courseContent: normalizedContent,
@@ -72,44 +72,35 @@ export const useSectionForm = () => {
       return;
     }
 
-    // Validar que hay un curso seleccionado
     if (!course) {
       toast.error('No hay un curso seleccionado. Por favor, crea un curso primero.');
       return;
     }
 
     const courseData = course as Course;
-    
-    // Obtener el ID del curso (priorizar 'id' sobre '_id' ya que PostgreSQL usa UUIDs con campo 'id')
     const courseId = (courseData as any)?.id || courseData?._id;
 
-    // Validar que courseId existe y es válido
     if (!courseId || courseId === 'undefined' || courseId === 'null' || courseId === '') {
-      console.error('Course ID is required and must be a valid UUID');
       toast.error('ID de curso inválido. Por favor, crea el curso primero.');
       return;
     }
 
-    // Validar formato UUID
     if (!isValidUUID(courseId)) {
-      console.error('Invalid course ID format (expected UUID):', courseId);
       toast.error('ID de curso inválido. Por favor, crea el curso nuevamente.');
       return;
     }
 
-    // Validar que sectionName no esté vacío
     const sectionName = data.sectionName?.trim();
     if (!sectionName || sectionName === '') {
       toast.error('El nombre de la sección es requerido');
       return;
     }
 
-    setLoading(true);
-    let result;
-
-    try {
-      if (editSectionName) {
-        result = await updateSection(
+    if (editSectionName) {
+      // Update section (keep existing logic)
+      setLoading(true);
+      try {
+        const result = await updateSection(
           {
             sectionName: sectionName,
             sectionId: editSectionName,
@@ -117,40 +108,58 @@ export const useSectionForm = () => {
           },
           token
         );
-      } else {
-        result = await createSection(
-          { sectionName: sectionName, courseId: courseId },
-          token
-        );
-      }
 
-      if (result) {
-        // El backend devuelve updatedCourseDetails que puede tener subSections en lugar de subSection
-        // Necesitamos normalizar la estructura para asegurar consistencia
+        if (result) {
+          const normalizedResult = normalizeCourseStructure(result);
+          dispatch(setCourse(normalizedResult));
+          setEditSectionName(null);
+          setValue("sectionName", "");
+          toast.success('Sección actualizada exitosamente');
+        }
+      } catch (error: any) {
+        console.error("Error updating section:", error);
+        toast.error(error?.response?.data?.message || 'Error al actualizar la sección');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // Create section with toast.promise
+      const createPromise = async () => {
+        const result = await createSection(
+          { sectionName: sectionName, courseId: courseId },
+          token,
+          true // suppressToast
+        );
+
+        // Backend returns updatedCourseDetails directly
+        if (!result) {
+          throw new Error("No se pudo crear la sección");
+        }
+
         const normalizedResult = normalizeCourseStructure(result);
-        
-        console.log("Normalized course after section creation:", normalizedResult);
         dispatch(setCourse(normalizedResult));
         setEditSectionName(null);
         setValue("sectionName", "");
-        toast.success('Sección ' + (editSectionName ? 'actualizada' : 'creada') + ' exitosamente');
-      }
-    } catch (error: any) {
-      console.error("Error submitting section:", error);
-      
-      // Manejo específico de errores
-      if (error?.response?.status === 400) {
-        const errorMessage = error.response?.data?.message || 'Error al ' + (editSectionName ? 'actualizar' : 'crear') + ' la sección';
-        toast.error(errorMessage);
-      } else if (error?.response?.status === 401) {
-        toast.error('Sesión expirada. Por favor, inicia sesión nuevamente');
-      } else if (error?.response?.status === 403) {
-        toast.error('No tienes permisos para agregar secciones. Debes ser instructor.');
-      } else {
-        toast.error(error?.response?.data?.message || error?.message || 'Error al procesar la sección');
-      }
-    } finally {
-      setLoading(false);
+        return "Sección creada exitosamente";
+      };
+
+      setLoading(true);
+      toast.promise(
+        createPromise(),
+        {
+          loading: 'Creando sección...',
+          success: (msg) => msg,
+          error: (err) => err?.message || 'Error al crear la sección',
+        },
+        {
+          style: { minWidth: '250px' },
+          success: { duration: 3000 },
+        }
+      ).catch((error) => {
+        console.error("Error creating section:", error);
+      }).finally(() => {
+        setLoading(false);
+      });
     }
   };
 

@@ -22,8 +22,8 @@ const ReplyForm: React.FC<ReplyFormProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setError("");
 
     if (reply.trim().length < 5) {
@@ -45,6 +45,13 @@ const ReplyForm: React.FC<ReplyFormProps> = ({
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-2">
       <div className="relative">
@@ -52,6 +59,7 @@ const ReplyForm: React.FC<ReplyFormProps> = ({
           type="text"
           value={reply}
           onChange={(e) => setReply(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder="Escribir una respuesta..."
           className="w-full px-3 py-2 pr-10 bg-richblack-700/50 border border-richblack-600/50 rounded-lg text-sm text-richblack-5 placeholder-richblack-400 focus:outline-none focus:border-richblack-500 transition-colors"
           disabled={loading}

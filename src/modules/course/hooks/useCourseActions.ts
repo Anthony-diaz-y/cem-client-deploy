@@ -7,7 +7,7 @@ import { buyCourse } from "@shared/services/studentFeaturesAPI";
 import { addToCart } from "../store/cartSlice";
 import { ACCOUNT_TYPE } from "@shared/utils/constants";
 import { Course } from "../types";
-import { ConfirmationModalData } from "@shared/components/ConfirmationModal";
+import { type ConfirmationModalData } from "@shared/components";
 import { apiConnector } from "@shared/services/apiConnector";
 import { studentEndpoints } from "@shared/services/apis";
 import { setPaymentLoading } from "../store/courseSlice";

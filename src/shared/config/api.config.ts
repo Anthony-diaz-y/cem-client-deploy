@@ -79,9 +79,10 @@ export const API_ENDPOINTS = {
     CREATE_SECTION: `${API_URL}/course/addSection`,
     UPDATE_SECTION: `${API_URL}/course/updateSection`,
     DELETE_SECTION: `${API_URL}/course/deleteSection`,
-    CREATE_SUBSECTION: `${API_URL}/course/addSubSection`,
-    UPDATE_SUBSECTION: `${API_URL}/course/updateSubSection`,
-    DELETE_SUBSECTION: `${API_URL}/course/deleteSubSection`,
+    CREATE_SUBSECTION: `${API_URL}/subsection/addSubSection`,
+    UPDATE_SUBSECTION: `${API_URL}/subsection/updateSubSection`,
+    DELETE_SUBSECTION: `${API_URL}/subsection/`, // Se le añadirá el ID en el servicio
+    GET_SUBSECTION: `${API_URL}/subsection/`, // Se le añadirá el ID en el servicio
     GET_INSTRUCTOR_COURSES: `${API_URL}/course/getInstructorCourses`,
     UPDATE_COURSE_PROGRESS: `${API_URL}/course/updateCourseProgress`,
     CREATE_RATING: `${API_URL}/course/createRating`,

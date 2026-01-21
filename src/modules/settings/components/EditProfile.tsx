@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 
 import { updateProfile } from "@shared/services/SettingsAPI";
-import IconBtn from "@shared/components/IconBtn";
+import { IconBtn } from "@shared/components";
 import { RootState, AppDispatch } from "@shared/store/store";
 import { ProfileFormData } from "../types";
 

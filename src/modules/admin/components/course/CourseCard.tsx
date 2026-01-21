@@ -4,7 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { AdminCourse } from "@shared/services/adminAPI";
 import { COURSE_STATUS } from "@shared/utils/constants";
-import Img from "@shared/components/Img";
+import { Img } from "@shared/components";
 import { FiEdit2, FiTrash2, FiCheckCircle, FiStar, FiXCircle, FiEye } from "react-icons/fi";
 
 interface CourseCardProps {

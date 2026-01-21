@@ -13,7 +13,7 @@ import {
 import ReplyItem from "./ReplyItem";
 import ReplyForm from "./ReplyForm";
 import EditDiscussionForm from "./EditDiscussionForm";
-import Img from "@shared/components/Img";
+import { Img } from "@shared/components";
 import { HiArrowLeft, HiPencil, HiTrash } from "react-icons/hi2";
 
 interface DiscussionDetailProps {
@@ -22,6 +22,7 @@ interface DiscussionDetailProps {
   onBack: () => void;
   onUpdate: () => void;
   onDiscussionUpdate?: (updatedDiscussion: SubsectionDiscussion) => void;
+  onDeleteSuccess?: (updatedDiscussions: SubsectionDiscussion[]) => void;
 }
 
 /**
@@ -51,6 +52,7 @@ const DiscussionDetail: React.FC<DiscussionDetailProps> = ({
   onBack,
   onUpdate,
   onDiscussionUpdate,
+  onDeleteSuccess,
 }) => {
   const [currentDiscussion, setCurrentDiscussion] = useState<SubsectionDiscussion>(discussion);
   const [isEditingDiscussion, setIsEditingDiscussion] = useState(false);
@@ -69,8 +71,15 @@ const DiscussionDetail: React.FC<DiscussionDetailProps> = ({
       return;
     }
 
-    const success = await deleteDiscussion(currentDiscussion.id);
-    if (success) {
+    const updatedDiscussions = await deleteDiscussion(currentDiscussion.id);
+    if (updatedDiscussions) {
+      // Pasar la lista actualizada al componente padre
+      if (onDeleteSuccess) {
+        onDeleteSuccess(updatedDiscussions);
+      }
+      // Volver a la lista de discusiones después de eliminar
+      onBack();
+      // Notificar actualización
       onUpdate();
     }
   };

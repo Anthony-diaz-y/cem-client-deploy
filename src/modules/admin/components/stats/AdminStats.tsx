@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { AdminDashboardCounts } from "@shared/services/admin/types";
-import CountUp from "@shared/components/CountUp";
+import CountUp from "@shared/components/ui/CountUp";
 
 interface AdminStatsProps {
   stats: AdminDashboardCounts | null;

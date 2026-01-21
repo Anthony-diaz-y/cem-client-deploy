@@ -1,7 +1,7 @@
 "use client";
 
 import DashboardLayout from "./Dashboard";
-import ProtectedRoute from "@shared/components/ProtectedRoute";
+import { ProtectedRoute } from "@shared/components";
 
 export default function DashboardLayoutWrapper({
   children,

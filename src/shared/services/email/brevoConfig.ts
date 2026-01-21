@@ -1,20 +1,11 @@
 /**
  * Configuración de Brevo (anteriormente Sendinblue)
- * 
- * Este archivo contiene la configuración para el servicio de email Brevo.
- * La API key se obtiene de las variables de entorno.
- * 
- * IMPORTANTE: Aunque este archivo está en el frontend, Brevo se usa principalmente
- * en el backend. Esta configuración es para referencia y preparación.
  */
 
 /**
  * Obtiene la API key de Brevo desde las variables de entorno
- * @returns La API key de Brevo o null si no está configurada
  */
 export const getBrevoApiKey = (): string | null => {
-  // En Next.js, las variables de entorno del cliente deben comenzar con NEXT_PUBLIC_
-  // Sin embargo, para seguridad, la API key NO debe estar en el frontend
   // Esta función es solo para referencia y validación
   if (typeof window !== 'undefined') {
     console.warn('⚠️ ADVERTENCIA: La API key de Brevo no debe estar en el frontend por seguridad.');

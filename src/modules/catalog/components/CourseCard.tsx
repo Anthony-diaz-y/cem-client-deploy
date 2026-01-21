@@ -5,8 +5,8 @@ import React, { useMemo } from "react";
 import Link from "next/link";
 
 import GetAvgRating from "@shared/utils/avgRating";
-import RatingStars from "@shared/components/RatingStars";
-import Img from "@shared/components/Img";
+import { RatingStars } from "@shared/components";
+import { Img } from "@shared/components";
 import { CourseCardProps } from "../types";
 
 function CourseCard({ course, Height }: CourseCardProps) {

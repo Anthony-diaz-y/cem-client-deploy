@@ -7,8 +7,7 @@ import { useRouter } from "next/navigation";
 import { RootState } from "@shared/store/store";
 
 import { formattedDate } from "@shared/utils/dateFormatter";
-import IconBtn from "@shared/components/IconBtn";
-import Img from "@shared/components/Img";
+import { IconBtn, Img } from "@shared/components";
 
 export default function MyProfile() {
   const { user } = useSelector((state: RootState) => state.profile);

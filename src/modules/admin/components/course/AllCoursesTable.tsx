@@ -9,7 +9,7 @@ import {
 } from "@shared/services/adminAPI";
 import { COURSE_STATUS } from "@shared/utils/constants";
 import { fetchCourseCategories } from "@shared/services/courseDetailsAPI";
-import ConfirmationModal from "@shared/components/ConfirmationModal";
+import { ConfirmationModal } from "@shared/components";
 import CourseFilters from "./CourseFilters";
 import CourseCard from "./CourseCard";
 import { useCourseFilters } from "./hooks/useCourseFilters";

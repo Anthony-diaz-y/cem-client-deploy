@@ -63,8 +63,18 @@ const DiscussionSidebar: React.FC<DiscussionSidebarProps> = ({
     await loadDiscussions();
   };
 
-  const handleDiscussionUpdate = async () => {
-    await loadDiscussions();
+  const handleDiscussionUpdate = async (updatedDiscussions?: SubsectionDiscussion[]) => {
+    if (updatedDiscussions) {
+      // Actualizar con la lista recibida del backend
+      setDiscussions(updatedDiscussions);
+      // Si la discusión eliminada estaba seleccionada, volver a la lista
+      if (selectedDiscussion) {
+        setSelectedDiscussion(null);
+      }
+    } else {
+      // Si no se proporciona lista, recargar desde el servidor
+      await loadDiscussions();
+    }
   };
 
   const handleCreateClick = () => {
@@ -105,10 +115,11 @@ const DiscussionSidebar: React.FC<DiscussionSidebarProps> = ({
             discussion={selectedDiscussion}
             currentUserId={(user?._id || user?.id) as string || ""}
             onBack={handleBackToList}
-            onUpdate={handleDiscussionUpdate}
+            onUpdate={() => handleDiscussionUpdate()}
             onDiscussionUpdate={(updated) => {
               setSelectedDiscussion(updated);
             }}
+            onDeleteSuccess={handleDiscussionUpdate}
           />
         ) : showCreateForm ? (
           <CreateDiscussionForm

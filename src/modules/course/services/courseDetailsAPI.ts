@@ -56,11 +56,14 @@ export const getAllCourses = async () => {
   } catch (error) {
     const apiError = error as ApiError;
     console.log("GET_ALL_COURSE_API API ERROR............", apiError);
-    toast.error(
-      apiError.response?.data?.message ||
-        apiError.message ||
-        "No se pudieron obtener los cursos"
-    );
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(
+        apiError.response?.data?.message ||
+          apiError.message ||
+          "No se pudieron obtener los cursos"
+      );
+    }
   }
   toast.dismiss(toastId);
   return result;
@@ -155,11 +158,14 @@ export const fetchCourseCategories = async () => {
   } catch (error) {
     const apiError = error as ApiError;
     console.log("COURSE_CATEGORY_API API ERROR............", apiError);
-    toast.error(
-      apiError.response?.data?.message ||
-        apiError.message ||
-        "No se pudieron obtener las categorías de cursos"
-    );
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(
+        apiError.response?.data?.message ||
+          apiError.message ||
+          "No se pudieron obtener las categorías de cursos"
+      );
+    }
   }
   return result;
 };
@@ -185,11 +191,14 @@ export const addCourseDetails = async (data: CourseFormData | Record<string, unk
   } catch (error) {
     const apiError = error as ApiError;
     console.log("CREATE COURSE API ERROR............", apiError);
-    toast.error(
-      apiError.response?.data?.message ||
-        apiError.message ||
-        "No se pudieron agregar los detalles del curso"
-    );
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(
+        apiError.response?.data?.message ||
+          apiError.message ||
+          "No se pudieron agregar los detalles del curso"
+      );
+    }
   }
   toast.dismiss(toastId);
   return result;
@@ -219,11 +228,14 @@ export const editCourseDetails = async (
   } catch (error) {
     const apiError = error as ApiError;
     console.log("EDIT COURSE API ERROR............", apiError);
-    toast.error(
-      apiError.response?.data?.message ||
-        apiError.message ||
-        "No se pudieron actualizar los detalles del curso"
-    );
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(
+        apiError.response?.data?.message ||
+          apiError.message ||
+          "No se pudieron actualizar los detalles del curso"
+      );
+    }
   }
   toast.dismiss(toastId);
   return result;
@@ -249,11 +261,14 @@ export const createSection = async (data: SectionData | Record<string, unknown>,
   } catch (error) {
     const apiError = error as ApiError;
     console.log("CREATE SECTION API ERROR............", apiError);
-    toast.error(
-      apiError.response?.data?.message ||
-        apiError.message ||
-        "No se pudo crear la sección"
-    );
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(
+        apiError.response?.data?.message ||
+          apiError.message ||
+          "No se pudo crear la sección"
+      );
+    }
   }
   toast.dismiss(toastId);
   return result;
@@ -282,11 +297,14 @@ export const createSubSection = async (
   } catch (error) {
     const apiError = error as ApiError;
     console.log("CREATE SUB-SECTION API ERROR............", apiError);
-    toast.error(
-      apiError.response?.data?.message ||
-        apiError.message ||
-        "No se pudo agregar la lección"
-    );
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(
+        apiError.response?.data?.message ||
+          apiError.message ||
+          "No se pudo agregar la lección"
+      );
+    }
   }
   toast.dismiss(toastId);
   return result;
@@ -312,11 +330,14 @@ export const updateSection = async (data: SectionData | Record<string, unknown>,
   } catch (error) {
     const apiError = error as ApiError;
     console.log("UPDATE SECTION API ERROR............", apiError);
-    toast.error(
-      apiError.response?.data?.message ||
-        apiError.message ||
-        "No se pudo actualizar la sección"
-    );
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(
+        apiError.response?.data?.message ||
+          apiError.message ||
+          "No se pudo actualizar la sección"
+      );
+    }
   }
   toast.dismiss(toastId);
   return result;
@@ -345,11 +366,14 @@ export const updateSubSection = async (
   } catch (error) {
     const apiError = error as ApiError;
     console.log("UPDATE SUB-SECTION API ERROR............", apiError);
-    toast.error(
-      apiError.response?.data?.message ||
-        apiError.message ||
-        "No se pudo actualizar la lección"
-    );
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(
+        apiError.response?.data?.message ||
+          apiError.message ||
+          "No se pudo actualizar la lección"
+      );
+    }
   }
   toast.dismiss(toastId);
   return result;
@@ -375,11 +399,14 @@ export const deleteSection = async (data: DeleteSectionData | Record<string, unk
   } catch (error) {
     const apiError = error as ApiError;
     console.log("DELETE SECTION API ERROR............", apiError);
-    toast.error(
-      apiError.response?.data?.message ||
-        apiError.message ||
-        "No se pudo eliminar la sección"
-    );
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(
+        apiError.response?.data?.message ||
+          apiError.message ||
+          "No se pudo eliminar la sección"
+      );
+    }
   }
   toast.dismiss(toastId);
   return result;
@@ -405,11 +432,14 @@ export const deleteSubSection = async (
   } catch (error) {
     const apiError = error as ApiError;
     console.log("DELETE SUB-SECTION API ERROR............", apiError);
-    toast.error(
-      apiError.response?.data?.message ||
-        apiError.message ||
-        "No se pudo eliminar la lección"
-    );
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(
+        apiError.response?.data?.message ||
+          apiError.message ||
+          "No se pudo eliminar la lección"
+      );
+    }
   }
   toast.dismiss(toastId);
   return result;
@@ -436,11 +466,14 @@ export const fetchInstructorCourses = async (token: string) => {
   } catch (error) {
     const apiError = error as ApiError;
     console.log("INSTRUCTOR COURSES API ERROR............", apiError);
-    toast.error(
-      apiError.response?.data?.message ||
-        apiError.message ||
-        "No se pudieron obtener los cursos del instructor"
-    );
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(
+        apiError.response?.data?.message ||
+          apiError.message ||
+          "No se pudieron obtener los cursos del instructor"
+      );
+    }
   }
   return result;
 };
@@ -460,11 +493,14 @@ export const deleteCourse = async (data: DeleteCourseData | Record<string, unkno
   } catch (error) {
     const apiError = error as ApiError;
     console.log("DELETE COURSE API ERROR............", apiError);
-    toast.error(
-      apiError.response?.data?.message ||
-        apiError.message ||
-        "No se pudo eliminar el curso"
-    );
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(
+        apiError.response?.data?.message ||
+          apiError.message ||
+          "No se pudo eliminar el curso"
+      );
+    }
   }
   // toast.dismiss(toastId)
 };
@@ -569,11 +605,14 @@ export const markLectureAsComplete = async (
   } catch (error) {
     const apiError = error as ApiError;
     console.log("MARK_LECTURE_AS_COMPLETE_API API ERROR............", apiError);
-    toast.error(
-      apiError.response?.data?.message ||
-        apiError.message ||
-        "No se pudo marcar la lección como completada"
-    );
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(
+        apiError.response?.data?.message ||
+          apiError.message ||
+          "No se pudo marcar la lección como completada"
+      );
+    }
     result = false;
   }
   toast.dismiss(toastId);
@@ -598,11 +637,14 @@ export const createRating = async (data: RatingData | Record<string, unknown>, t
     const apiError = error as ApiError;
     success = false;
     console.log("CREATE RATING API ERROR............", apiError);
-    toast.error(
-      apiError.response?.data?.message ||
-        apiError.message ||
-        "No se pudo crear la calificación"
-    );
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(
+        apiError.response?.data?.message ||
+          apiError.message ||
+          "No se pudo crear la calificación"
+      );
+    }
   }
   toast.dismiss(toastId);
   return success;

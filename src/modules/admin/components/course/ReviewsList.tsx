@@ -2,10 +2,8 @@
 
 import React, { useState } from "react";
 import { CourseReview, createReviewAdmin, updateReviewAdmin, deleteReviewAdmin } from "@shared/services/adminAPI";
-import Img from "@shared/components/Img";
+import { Img, RatingStars, ConfirmationModal } from "@shared/components";
 import { FiStar, FiUser, FiEdit2, FiTrash2, FiPlus } from "react-icons/fi";
-import RatingStars from "@shared/components/RatingStars";
-import ConfirmationModal from "@shared/components/ConfirmationModal";
 
 interface ReviewsListProps {
   reviews: CourseReview[];

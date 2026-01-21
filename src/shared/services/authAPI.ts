@@ -72,10 +72,10 @@ export function sendOtp(email: string, navigate: NavigateFunction) {
     } catch (error) {
       console.log("SENDOTP API ERROR --> ", error);
       const apiError = error as ApiError;
-      
+
       // Mensajes de error más específicos
       const errorMessage = apiError.response?.data?.message || "";
-      
+
       if (errorMessage.includes("email service") || errorMessage.includes("servicio de correo")) {
         toast.error("Error en el servicio de correo. Por favor, intenta más tarde.");
       } else if (errorMessage.includes("not registered") || errorMessage.includes("no registrado")) {
@@ -154,7 +154,7 @@ export function login(email: string, password: string, navigate: NavigateFunctio
         throw new Error(response.data.message || "Login failed")
       }
 
-      toast.success("Login Successful")
+      toast.success("Inicio de sesión exitoso")
       dispatch(setToken(response.data.token))
 
       const userImage = response.data.user?.image
@@ -171,16 +171,44 @@ export function login(email: string, password: string, navigate: NavigateFunctio
     } catch (error) {
       const apiError = error as ApiError;
       console.log("LOGIN API ERROR.......", apiError)
-      
-      // Manejar error específico de instructor no aprobado
-      const errorMessage = apiError.response?.data?.message || "";
-      if (errorMessage.includes("pending approval") || errorMessage.includes("pendiente de aprobación")) {
+
+      // Obtener mensaje de error del backend
+      const errorMessage = apiError.response?.data?.message || apiError.message || "";
+
+      // Manejar errores específicos con mensajes en español
+      if (errorMessage.includes("pendiente de aprobación") || errorMessage.includes("pending approval")) {
         toast.error(
           "Tu cuenta de instructor está pendiente de aprobación. " +
-          "Por favor, espera a que el administrador apruebe tu cuenta antes de iniciar sesión."
+          "Por favor, espera a que el administrador apruebe tu cuenta antes de iniciar sesión.",
+          { id: 'pending-approval-login' }
+        );
+      } else if (errorMessage.includes("desactivada") || errorMessage.includes("desactivado") || errorMessage.includes("inactiva")) {
+        toast.error(
+          "Tu cuenta ha sido desactivada. Por favor, contacta al administrador.",
+          { id: 'account-deactivated-login' }
+        );
+      } else if (errorMessage.includes("email no está registrado") || errorMessage.includes("no está registrado")) {
+        toast.error(
+          "El email no está registrado en nuestro sistema. Verifica tu email o regístrate.",
+          { id: 'email-not-found' }
+        );
+      } else if (errorMessage.includes("contraseña es incorrecta") || errorMessage.includes("contraseña incorrecta")) {
+        toast.error(
+          "La contraseña es incorrecta. Por favor, verifica tu contraseña.",
+          { id: 'wrong-password' }
+        );
+      } else if (errorMessage.includes("Invalid credentials") || errorMessage.includes("credenciales inválidas")) {
+        // Mensaje genérico solo si no hay mensaje más específico
+        toast.error(
+          "Credenciales inválidas. Verifica tu email y contraseña.",
+          { id: 'invalid-credentials' }
         );
       } else {
-        toast.error(errorMessage || "Login Failed");
+        // Mensaje por defecto en español
+        toast.error(
+          errorMessage || "Error al iniciar sesión. Por favor, intenta nuevamente.",
+          { id: 'login-error' }
+        );
       }
     }
     dispatch(setLoading(false))
@@ -225,9 +253,9 @@ export function getPasswordResetToken(email: string, setEmailSent: (sent: boolea
     } catch (error) {
       const apiError = error as ApiError;
       console.log("RESET PASS TOKEN ERROR............", apiError)
-      
+
       const errorMessage = apiError.response?.data?.message || "";
-      
+
       // Manejar errores específicos
       if (errorMessage.includes("not registered") || errorMessage.includes("no está registrado")) {
         toast.error("Este email no está registrado en nuestro sistema")
@@ -279,9 +307,9 @@ export function resetPassword(password: string, confirmPassword: string, token: 
     } catch (error) {
       const apiError = error as ApiError;
       console.log("RESETPASSWORD ERROR............", apiError)
-      
+
       const errorMessage = apiError.response?.data?.message || "";
-      
+
       // Manejar errores específicos
       if (errorMessage.includes("expired") || errorMessage.includes("expirado")) {
         toast.error("El link ha expirado. Por favor, solicita un nuevo link de reset. (El token expira en 5 minutos)")
@@ -307,7 +335,7 @@ export function logout(navigate: NavigateFunction) {
     dispatch(resetCart())
     localStorage.removeItem("token")
     localStorage.removeItem("user")
-    toast.success("Logged Out")
+    toast.success("Sesión cerrada exitosamente")
     navigate("/")
   }
 }

@@ -41,6 +41,12 @@ export interface SubSection {
   description: string;
   videoUrl: string;
   timeDuration?: string;
+  attachments?: {
+    name: string;
+    url: string;
+    type: string;
+  }[];
+  content?: string;
 }
 
 export interface Course {
@@ -79,9 +85,9 @@ export interface VideoPlayerProps {
   isCompleted: boolean;
   isFirst: boolean;
   isLast: boolean;
-  nextVideoInfo?: { 
-    nextSectionName?: string; 
-    nextLectureTitle?: string; 
+  nextVideoInfo?: {
+    nextSectionName?: string;
+    nextLectureTitle?: string;
     isNextSection: boolean;
   } | null;
 }

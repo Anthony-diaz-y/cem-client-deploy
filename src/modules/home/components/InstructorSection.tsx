@@ -2,7 +2,7 @@ import Instructor from "@shared/assets/Images/teacher3.png";
 import HighlightText from "./HighlightText";
 import CTAButton from "./Button";
 import { FaArrowRight } from "react-icons/fa";
-import Img from "@shared/components/Img";
+import { Img } from "@shared/components";
 
 import { motion } from "framer-motion";
 import { scaleUp } from "@shared/utils/motionFrameVarients";

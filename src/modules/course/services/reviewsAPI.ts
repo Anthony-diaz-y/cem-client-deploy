@@ -86,11 +86,14 @@ export const createRating = async (
   } catch (error) {
     const apiError = error as ApiError;
     console.log("CREATE RATING API ERROR............", apiError);
-    toast.error(
-      apiError.response?.data?.message ||
-        apiError.message ||
-        "No se pudo crear la reseña"
-    );
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(
+        apiError.response?.data?.message ||
+          apiError.message ||
+          "No se pudo crear la reseña"
+      );
+    }
   } finally {
     toast.dismiss(toastId);
   }
@@ -122,11 +125,14 @@ export const updateRating = async (
   } catch (error) {
     const apiError = error as ApiError;
     console.log("UPDATE RATING API ERROR............", apiError);
-    toast.error(
-      apiError.response?.data?.message ||
-        apiError.message ||
-        "No se pudo actualizar la reseña"
-    );
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(
+        apiError.response?.data?.message ||
+          apiError.message ||
+          "No se pudo actualizar la reseña"
+      );
+    }
   } finally {
     toast.dismiss(toastId);
   }

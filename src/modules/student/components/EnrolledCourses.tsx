@@ -1,21 +1,33 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { HiBookOpen } from "react-icons/hi2";
-import ProgressBar from "@shared/components/ProgressBar";
-import { Course } from "../types";
+import { ProgressBar, Img } from "@shared/components";
+import { Course, Section } from "../types";
 import { RootState } from "@shared/store/store";
 import { getUserEnrolledCourses } from "@shared/services/profileAPI";
 import { getFullDetailsOfCourse } from "@shared/services/courseDetailsAPI";
 import { formatTotalDuration } from "@shared/utils/durationHelper";
 
-// Componente para la imagen pequeña del curso con placeholder
-const CourseThumbnailSmall: React.FC<{ thumbnail?: string; courseName?: string }> = ({ thumbnail, courseName }) => {
-  const [imageError, setImageError] = useState(!thumbnail);
+interface CourseWithId extends Course {
+  id?: string;
+}
 
-  if (!thumbnail || imageError) {
+interface SectionWithId extends Section {
+  id?: string;
+  subSections?: Section['subSection'];
+}
+
+interface SubSectionWithId {
+  _id?: string;
+  id?: string;
+  [key: string]: unknown;
+}
+
+const CourseThumbnailSmall: React.FC<{ thumbnail?: string; courseName?: string }> = ({ thumbnail, courseName }) => {
+  if (!thumbnail) {
     return (
       <div className="h-14 w-14 rounded-lg overflow-hidden bg-richblack-900 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-richblack-800 to-richblack-900 text-richblack-400">
         <HiBookOpen size={20} className="opacity-60" />
@@ -25,14 +37,35 @@ const CourseThumbnailSmall: React.FC<{ thumbnail?: string; courseName?: string }
 
   return (
     <div className="h-14 w-14 rounded-lg overflow-hidden bg-richblack-900 relative flex-shrink-0">
-      <img
+      <Img
         src={thumbnail}
         alt={courseName || "course_img"}
         className="absolute inset-0 w-full h-full object-cover"
-        onError={() => setImageError(true)}
       />
     </div>
   );
+};
+
+const getCourseId = (course: CourseWithId): string | undefined => {
+  return course.id || course._id;
+};
+
+const getSectionId = (section: SectionWithId): string | undefined => {
+  return section.id || section._id;
+};
+
+const getSubSectionId = (subSection: SubSectionWithId): string | undefined => {
+  return subSection.id || subSection._id;
+};
+
+const getSubSections = (section: SectionWithId): SubSectionWithId[] => {
+  if (Array.isArray(section.subSections)) {
+    return section.subSections;
+  }
+  if (Array.isArray(section.subSection)) {
+    return section.subSection as SubSectionWithId[];
+  }
+  return [];
 };
 
 export default function EnrolledCourses() {
@@ -42,8 +75,7 @@ export default function EnrolledCourses() {
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  // Función para obtener cursos inscritos
-  const getEnrolledCourses = async () => {
+  const getEnrolledCourses = useCallback(async () => {
     if (!token) {
       setLoading(false);
       return;
@@ -52,9 +84,6 @@ export default function EnrolledCourses() {
     try {
       setLoading(true);
       const res = await getUserEnrolledCourses(token);
-      
-      console.log("Enrolled courses response:", res);
-      console.log("Number of courses:", res?.length);
       
       if (res && Array.isArray(res)) {
         setEnrolledCourses(res as Course[]);
@@ -67,11 +96,11 @@ export default function EnrolledCourses() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     getEnrolledCourses();
-  }, [token, refreshKey]);
+  }, [getEnrolledCourses, refreshKey]);
 
   // Recargar cursos cuando la página recibe foco (útil después de comprar)
   useEffect(() => {
@@ -153,7 +182,7 @@ export default function EnrolledCourses() {
           )}
 
           {/* Course Names */}
-          {enrolledCourses?.map((course: any, i: number, arr: any[]) => (
+          {enrolledCourses?.map((course: Course, i: number, arr: Course[]) => (
             <div
               className={`flex flex-col sm:flex-row sm:items-center border border-richblack-700 ${
                 i === arr.length - 1 ? "rounded-b-2xl" : "rounded-none"
@@ -163,31 +192,26 @@ export default function EnrolledCourses() {
               <div
                 className="flex sm:w-[45%] cursor-pointer items-center gap-4 px-5 py-3 hover:bg-richblack-700 transition-colors rounded"
                 onClick={async () => {
-                  // Obtener el ID del curso (priorizar 'id' sobre '_id' ya que PostgreSQL usa UUIDs con campo 'id')
-                  const courseId = (course as any)?.id || course?._id;
+                  const courseWithId = course as CourseWithId;
+                  const courseId = getCourseId(courseWithId);
                   
                   if (!courseId) {
                     console.error("Missing course ID:", course);
                     return;
                   }
 
-                  // Intentar obtener la primera sección y subsección de los datos disponibles
-                  const firstSection = course.courseContent?.[0];
-                  const sectionId = firstSection?._id || (firstSection as any)?.id;
+                  const firstSection = course.courseContent?.[0] as SectionWithId | undefined;
+                  const sectionId = firstSection ? getSectionId(firstSection) : undefined;
                   
-                  // Manejar tanto subSection como subSections (del backend)
-                  const subSections = firstSection?.subSection || (firstSection as any)?.subSections;
-                  const firstSubSection = Array.isArray(subSections) && subSections.length > 0 ? subSections[0] : null;
-                  const subSectionId = firstSubSection?._id || (firstSubSection as any)?.id;
+                  const subSections = firstSection ? getSubSections(firstSection) : [];
+                  const firstSubSection = subSections.length > 0 ? subSections[0] : null;
+                  const subSectionId = firstSubSection ? getSubSectionId(firstSubSection) : undefined;
 
-                  // Si tenemos todos los IDs, navegar directamente al video
                   if (courseId && sectionId && subSectionId) {
                     router.push(
                       `/view-course/${courseId}/section/${sectionId}/sub-section/${subSectionId}`
                     );
                   } else {
-                    // Si no tenemos los IDs completos, cargar los datos del curso primero
-                    // y luego navegar a la primera lección
                     if (!token) {
                       console.error("Token is required to load course details");
                       return;
@@ -197,30 +221,26 @@ export default function EnrolledCourses() {
                       const courseData = await getFullDetailsOfCourse(courseId, token);
                       
                       if (courseData?.courseDetails?.courseContent) {
-                        const courseContent = courseData.courseDetails.courseContent;
+                        const courseContent = courseData.courseDetails.courseContent as SectionWithId[];
                         const firstSec = courseContent[0];
-                        const secId = firstSec?._id || (firstSec as any)?.id;
+                        const secId = firstSec ? getSectionId(firstSec) : undefined;
                         
-                        // Manejar tanto subSection como subSections
-                        const subs = firstSec?.subSection || (firstSec as any)?.subSections;
-                        const firstSub = Array.isArray(subs) && subs.length > 0 ? subs[0] : null;
-                        const subSecId = firstSub?._id || (firstSub as any)?.id;
+                        const subs = firstSec ? getSubSections(firstSec) : [];
+                        const firstSub = subs.length > 0 ? subs[0] : null;
+                        const subSecId = firstSub ? getSubSectionId(firstSub) : undefined;
                         
                         if (secId && subSecId) {
                           router.push(
                             `/view-course/${courseId}/section/${secId}/sub-section/${subSecId}`
                           );
                         } else {
-                          // Si no hay lecciones, navegar al curso de todas formas
                           router.push(`/view-course/${courseId}`);
                         }
                       } else {
-                        // Si no hay contenido, navegar al curso de todas formas
                         router.push(`/view-course/${courseId}`);
                       }
                     } catch (error) {
                       console.error("Error loading course details:", error);
-                      // En caso de error, intentar navegar de todas formas
                       router.push(`/view-course/${courseId}`);
                     }
                   }
@@ -239,14 +259,10 @@ export default function EnrolledCourses() {
                 </div>
               </div>
 
-              {/* only for smaller devices */}
-              {/* duration -  progress */}
               <div className="sm:hidden">
-                <div className=" px-2 py-3">{formatTotalDuration(course?.totalDuration)}</div>
+                <div className="px-2 py-3">{formatTotalDuration(course?.totalDuration)}</div>
 
                 <div className="flex sm:w-2/5 flex-col gap-2 px-2 py-3">
-                  {/* {console.log('Course ============== ', course.progressPercentage)} */}
-
                   <p>Progress: {course.progressPercentage || 0}%</p>
                   <ProgressBar
                     completed={course.progressPercentage || 0}

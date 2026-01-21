@@ -25,7 +25,7 @@ export default function InstructorCourses() {
       }
       const result = await fetchInstructorCourses(token);
       if (result) {
-        setCourses(result);
+        setCourses(result as unknown as Course[]);
         hasEverLoadedRef.current = true;
       }
       setLoading(false);

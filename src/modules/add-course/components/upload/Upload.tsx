@@ -1,0 +1,141 @@
+import { useEffect, useRef, useState } from "react";
+import { useDropzone, FileWithPath } from "react-dropzone";
+import { FiUploadCloud } from "react-icons/fi";
+import { UploadProps } from "../../types";
+import Image from "next/image";
+
+// Componente de carga de archivos (imágenes/videos)
+export default function Upload({
+  name,
+  label,
+  register,
+  setValue,
+  errors,
+  video = false,
+  viewData = null,
+  editData,
+  required = true,
+}: UploadProps) {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewSource, setPreviewSource] = useState<string>(
+    viewData ? viewData : editData ? editData : ""
+  );
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const onDrop = (acceptedFiles: FileWithPath[]) => {
+    const file = acceptedFiles[0];
+    if (file) {
+      previewFile(file);
+      setSelectedFile(file);
+    }
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: !video
+      ? { "image/*": [".jpeg", ".jpg", ".png"] }
+      : { "video/*": [".mp4"] },
+    onDrop,
+  });
+
+  const previewFile = (file: File) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      const result = reader.result;
+      if (typeof result === "string") {
+        setPreviewSource(result);
+      }
+    };
+  };
+
+  useEffect(() => {
+    register(name, { required: required });
+  }, [register, name, required]);
+
+  useEffect(() => {
+    setValue(name, selectedFile as unknown as Parameters<typeof setValue>[1]);
+  }, [selectedFile, setValue, name]);
+
+  return (
+    <div className="flex flex-col space-y-2">
+      <label className="text-sm text-richblack-5" htmlFor={name}>
+        {label} {required && !viewData && <sup className="text-pink-200">*</sup>}
+      </label>
+
+      <div
+        className={`${isDragActive ? "bg-richblack-600" : "bg-richblack-700"}
+         flex min-h-[250px] cursor-pointer items-center justify-center rounded-md border-2 border-dotted border-richblack-500`}
+      >
+        {previewSource ? (
+          <div className="flex w-full flex-col p-6">
+            {!video ? (
+              <Image
+                src={previewSource}
+                alt="Preview"
+                className="h-full w-full rounded-md object-cover"
+                width={800}
+                height={450}
+                unoptimized={
+                  previewSource.startsWith("data:") ||
+                  previewSource.startsWith("http") ||
+                  previewSource.startsWith("//")
+                }
+              />
+            ) : (
+              <video
+                src={previewSource}
+                className="w-full h-full rounded-md object-cover"
+                controls
+                playsInline
+                style={{ aspectRatio: "16/9" }}
+              />
+            )}
+
+            {!viewData && (
+              <button
+                type="button"
+                onClick={() => {
+                  setPreviewSource("");
+                  setSelectedFile(null);
+                  setValue(
+                    name,
+                    null as unknown as Parameters<typeof setValue>[1]
+                  );
+                }}
+                className="mt-3 text-richblack-400 underline"
+              >
+                Cancelar
+              </button>
+            )}
+          </div>
+        ) : (
+          <div
+            className="flex w-full flex-col items-center p-6"
+            {...getRootProps()}
+          >
+            <input {...getInputProps()} ref={inputRef} />
+            <div className="grid aspect-square w-14 place-items-center rounded-full bg-pure-greys-800">
+              <FiUploadCloud className="text-2xl text-yellow-50" />
+            </div>
+            <p className="mt-2 max-w-[200px] text-center text-sm text-richblack-200">
+              Arrastra y suelta una {!video ? "imagen" : "video"}, o haz clic para{" "}
+              <span className="font-semibold text-yellow-50">Explorar</span> un
+              archivo
+            </p>
+            <ul className="mt-10 flex list-disc justify-between space-x-12 text-center  text-xs text-richblack-200">
+              <li>Relación de aspecto 16:9</li>
+              <li>Tamaño recomendado 1024x576</li>
+            </ul>
+          </div>
+        )}
+      </div>
+
+      {errors[name] && (
+        <span className="ml-2 text-xs tracking-wide text-pink-200">
+          {label} is required
+        </span>
+      )}
+    </div>
+  );
+}
+

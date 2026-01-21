@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Img from "@shared/components/Img";
-import Loading from "@shared/components/Loading";
+import { Img, Loading } from "@shared/components";
 import { FiCheckCircle, FiClock, FiXCircle, FiExternalLink, FiCalendar, FiDollarSign, FiHash } from "react-icons/fi";
 
 // ========== TEMPORAL: Interface para datos de compra ==========

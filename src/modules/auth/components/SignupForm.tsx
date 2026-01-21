@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { sendOtp } from "@shared/services/authAPI";
 import { setSignupData } from "../store/authSlice";
 import { ACCOUNT_TYPE } from "@shared/utils/constants";
-import Tab from "@shared/components/Tab";
+import Tab from "@shared/components/ui/Tab";
 
 function SignupForm() {
   const router = useRouter();
