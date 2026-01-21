@@ -11,7 +11,7 @@ import { useAutoScroll } from "./hooks/useAutoScroll";
 interface CategoriesTableProps {
   categories: Category[];
   token: string;
-  onUpdate: () => void;
+  onUpdate: (updatedCategories?: Category[]) => void;
 }
 
 /**
@@ -131,9 +131,9 @@ export default function CategoriesTable({
           category={deleteModal.category}
           token={token}
           onClose={() => setDeleteModal({ isOpen: false, category: null })}
-          onSuccess={() => {
+          onSuccess={(updatedCategories) => {
             setDeleteModal({ isOpen: false, category: null });
-            onUpdate();
+            onUpdate(updatedCategories);
           }}
         />
       )}

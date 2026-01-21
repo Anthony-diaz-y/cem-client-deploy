@@ -6,8 +6,8 @@ import { setUser } from "../store/profileSlice";
 import { apiConnector } from "@shared/services/apiConnector";
 import { endpoints } from "@shared/services/apis";
 import { AppDispatch } from "@shared/store/store";
-import { 
-  NavigateFunction, 
+import {
+  NavigateFunction,
   ApiError,
   SendOtpResponse,
   SignupResponse,
@@ -119,7 +119,7 @@ export function login(
         throw new Error(response.data.message);
       }
 
-      toast.success("Login Successful");
+      toast.success("Inicio de sesíon exitoso");
       dispatch(setToken(response.data.token));
 
       const userImage = response.data?.user?.image
@@ -224,7 +224,7 @@ export function logout(navigate: NavigateFunction) {
     dispatch(resetCart());
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    toast.success("Logged Out");
+    toast.success("Sesión cerrada exitosamente");
     navigate("/");
   };
 }

@@ -15,7 +15,7 @@ import {
 import { toast } from "react-hot-toast";
 import { apiConnector } from "@shared/services/apiConnector";
 import { API_ENDPOINTS } from "@shared/config/api.config";
-import ConfirmationModal from "@shared/components/ConfirmationModal";
+import { ConfirmationModal } from "@shared/components";
 
 interface DiscussionWithReplies {
   id: string;
@@ -174,7 +174,11 @@ export default function DiscussionsByLesson({
   const handleDeleteDiscussion = async (discussionId: string) => {
     const toastId = toast.loading("Eliminando pregunta...");
     try {
-      const response = await apiConnector<{ success: boolean; message?: string }>(
+      const response = await apiConnector<{ 
+        success: boolean; 
+        data?: any[]; 
+        message?: string 
+      }>(
         "DELETE",
         `${SUBSECTION_DISCUSSIONS.DELETE_DISCUSSION}/${discussionId}`,
         undefined,
@@ -183,6 +187,8 @@ export default function DiscussionsByLesson({
 
       if (response?.data?.success) {
         toast.success("Pregunta eliminada exitosamente", { id: toastId });
+        // El backend ahora devuelve la lista completa actualizada en response.data.data
+        // Notificar al componente padre para que actualice las discusiones
         onUpdate?.();
       } else {
         throw new Error(response?.data?.message || "Error al eliminar la pregunta");

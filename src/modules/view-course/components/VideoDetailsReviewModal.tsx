@@ -7,9 +7,7 @@ import { useParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 
 import { createRating } from "@modules/course/services/reviewsAPI";
-import StarRating from "@shared/components/StarRating";
-import IconBtn from "@shared/components/IconBtn";
-import Img from "@shared/components/Img";
+import { StarRating, IconBtn, Img } from "@shared/components";
 import { VideoDetailsReviewModalProps, ReviewFormData } from "../types";
 import { RootState } from "@shared/store/store";
 

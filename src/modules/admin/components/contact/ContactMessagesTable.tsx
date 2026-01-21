@@ -12,9 +12,7 @@ import {
   GetMessagesParams,
 } from "@shared/services/contactAPI";
 import { formatDateTimeUTC } from "@shared/utils/formatDate";
-import ConfirmationModal, {
-  ConfirmationModalData,
-} from "@shared/components/ConfirmationModal";
+import { ConfirmationModal, type ConfirmationModalData } from "@shared/components";
 import {
   FaEnvelopeOpen,
   FaArchive,

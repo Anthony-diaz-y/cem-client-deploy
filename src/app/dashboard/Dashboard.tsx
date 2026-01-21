@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useAppSelector } from "@shared/store/hooks";
 import Sidebar from "@modules/dashboard/components/Sidebar";
-import Loading from "@shared/components/Loading";
+import { Loading } from "@shared/components";
 
 export default function DashboardLayout({
   children,

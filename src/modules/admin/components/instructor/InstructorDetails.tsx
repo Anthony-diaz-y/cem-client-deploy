@@ -9,10 +9,9 @@ import {
   InstructorCourse,
   Instructor,
 } from "@shared/services/adminAPI";
-import Img from "@shared/components/Img";
+import { Img } from "@shared/components";
 import { formatDate } from "@shared/utils/formatDate";
-import ConfirmationModal from "@shared/components/ConfirmationModal";
-import Loading from "@shared/components/Loading";
+import { ConfirmationModal, Loading } from "@shared/components";
 import { FiArrowLeft, FiEdit, FiCheckCircle, FiXCircle } from "react-icons/fi";
 
 interface InstructorDetailsProps {

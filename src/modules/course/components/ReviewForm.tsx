@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import StarRating from "@shared/components/StarRating";
+import { StarRating } from "@shared/components";
 import { createRating, updateRating, type Review } from "../services/reviewsAPI";
 import type { ApiError } from "../types";
 

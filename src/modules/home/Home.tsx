@@ -9,9 +9,8 @@ import CodeBlocks from "./components/CodeBlocks";
 import TimelineSection from "./components/TimelineSection";
 import LearningLanguageSection from "./components/LearningLanguageSection";
 import InstructorSection from "./components/InstructorSection";
-import Footer from "@shared/components/Footer";
+import { Footer, ReviewSlider } from "@shared/components";
 import ExploreMore from "./components/ExploreMore";
-import ReviewSlider from "@shared/components/ReviewSlider";
 import { CourseSlider } from "../catalog";
 
 import { MdOutlineRateReview } from "react-icons/md";

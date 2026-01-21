@@ -3,7 +3,7 @@
 import React from "react";
 import { SubsectionDiscussionReply } from "../../types";
 import { formatRelativeTime } from "../../utils/dateHelpers";
-import Img from "@shared/components/Img";
+import { Img } from "@shared/components";
 import { HiPencil, HiTrash } from "react-icons/hi2";
 import EditReplyForm from "./EditReplyForm";
 import type { SubsectionDiscussion } from "../../types";

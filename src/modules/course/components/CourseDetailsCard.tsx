@@ -12,7 +12,7 @@ import { FaShareSquare } from "react-icons/fa";
 
 import { addToCart } from "../store/cartSlice";
 import { ACCOUNT_TYPE } from "@shared/utils/constants";
-import Img from "@shared/components/Img";
+import { Img } from "@shared/components";
 import { CourseDetailsCardProps } from "../types";
 import { RootState, AppDispatch } from "@shared/store/store";
 

@@ -1,0 +1,120 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+
+import { editCourseDetails } from "@shared/services/courseDetailsAPI";
+import { resetCourseState, setStep } from "../../../course/store/courseSlice";
+import { COURSE_STATUS } from "@shared/utils/constants";
+import { RootState } from "@shared/store/store";
+import { Course } from "../../../course/types";
+import { PublishCourseFormData } from "../../types";
+import { IconBtn } from "@shared/components";
+import toast from "react-hot-toast";
+
+// Componente para publicar curso
+export default function PublishCourse() {
+  const { register, handleSubmit, setValue, getValues } =
+    useForm<PublishCourseFormData>();
+
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { token } = useSelector((state: RootState) => state.auth);
+  const { course } = useSelector((state: RootState) => state.course);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (course) {
+      const courseData = course as Course;
+      if (courseData.status === COURSE_STATUS.PUBLISHED) {
+        setValue("public", true);
+      }
+    }
+  }, [course, setValue]);
+
+  const goBack = () => {
+    dispatch(setStep(2));
+  };
+
+  const goToCourses = () => {
+    dispatch(resetCourseState());
+    router.push("/dashboard/my-courses");
+  };
+
+  const handleCoursePublish = async () => {
+    if (!course || !token) return;
+
+    const courseData = course as Course;
+    if (
+      (courseData.status === COURSE_STATUS.PUBLISHED &&
+        getValues("public") === true) ||
+      (courseData.status === COURSE_STATUS.DRAFT &&
+        getValues("public") === false)
+    ) {
+      goToCourses();
+      return;
+    }
+    const formData = new FormData();
+    const courseId = (courseData as { id?: string })?.id || courseData?._id;
+    
+    if (!courseId) {
+      toast.error("ID de curso no encontrado");
+      setLoading(false);
+      return;
+    }
+    
+    formData.append("courseId", courseId);
+    const courseStatus = getValues("public")
+      ? COURSE_STATUS.PUBLISHED
+      : COURSE_STATUS.DRAFT;
+    formData.append("status", courseStatus);
+    setLoading(true);
+    const result = await editCourseDetails(formData, token);
+    if (result) {
+      goToCourses();
+    }
+    setLoading(false);
+  };
+
+  const onSubmit = () => {
+    handleCoursePublish();
+  };
+
+  return (
+    <div className="rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-6">
+      <p className="text-2xl font-semibold text-richblack-5">
+        Configuración de Publicación
+      </p>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="my-6 mb-8">
+          <label htmlFor="public" className="inline-flex items-center text-lg">
+            <input
+              type="checkbox"
+              id="public"
+              {...register("public")}
+              className="border-gray-300 h-4 w-4 rounded bg-richblack-500 text-richblack-400 focus:ring-2 focus:ring-richblack-5"
+            />
+            <span className="ml-2 text-richblack-400">
+              Hacer este curso público
+            </span>
+          </label>
+        </div>
+
+        <div className="ml-auto flex max-w-max items-center gap-x-4">
+          <button
+            disabled={loading}
+            type="button"
+            onClick={goBack}
+            className="flex cursor-pointer items-center gap-x-2 rounded-md bg-richblack-300 py-[8px] px-[20px] font-semibold text-richblack-900"
+          >
+            Atrás
+          </button>
+          <IconBtn disabled={loading} text="Guardar Cambios" />
+        </div>
+      </form>
+    </div>
+  );
+}
+

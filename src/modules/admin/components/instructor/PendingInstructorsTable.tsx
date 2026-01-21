@@ -3,9 +3,8 @@
 import React, { useState } from "react";
 import { Instructor } from "@shared/services/adminAPI";
 import { approveInstructor, rejectInstructor } from "@shared/services/adminAPI";
-import Img from "@shared/components/Img";
+import { Img, ConfirmationModal } from "@shared/components";
 import { formatDate } from "@shared/utils/formatDate";
-import ConfirmationModal from "@shared/components/ConfirmationModal";
 
 interface PendingInstructorsTableProps {
   instructors: Instructor[];

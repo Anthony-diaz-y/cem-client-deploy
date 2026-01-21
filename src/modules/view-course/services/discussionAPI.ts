@@ -97,8 +97,9 @@ export const updateDiscussion = async (
 
 /**
  * Eliminar una pregunta/discusión
+ * Ahora devuelve la lista completa de discusiones actualizada
  */
-export const deleteDiscussion = async (discussionId: string): Promise<boolean> => {
+export const deleteDiscussion = async (discussionId: string): Promise<SubsectionDiscussion[] | null> => {
   const toastId = toast.loading("Eliminando pregunta...");
   try {
     const response = await apiConnector<DiscussionApiResponse>(
@@ -111,12 +112,13 @@ export const deleteDiscussion = async (discussionId: string): Promise<boolean> =
     }
 
     toast.success(response.data.message || "Pregunta eliminada exitosamente", { id: toastId });
-    return true;
+    // El backend ahora devuelve la lista completa de discusiones actualizada
+    return (response.data.data as SubsectionDiscussion[]) || null;
   } catch (error: any) {
     const errorMessage = error?.response?.data?.message || error?.message || "Error al eliminar la pregunta";
     toast.error(errorMessage, { id: toastId });
     console.error("DELETE_DISCUSSION API ERROR:", error);
-    return false;
+    return null;
   }
 };
 

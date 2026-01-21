@@ -50,10 +50,13 @@ export function getUserDetails(token: string, navigate: NavigateFunction) {
         ? userData.image
         : `https://api.dicebear.com/5.x/initials/svg?seed=${userData.firstName} ${userData.lastName}`;
       dispatch(setUser({ ...userData, image: userImage }));
-    } catch (error) {
-      dispatch(logout(navigate));
+    } catch (error: any) {
       console.log("GET_USER_DETAILS API ERROR............", error);
-      toast.error("Could Not Get User Details");
+      // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+      if (error?.response?.status !== 401) {
+        toast.error("No se pudieron obtener los detalles del usuario");
+      }
+      dispatch(logout(navigate));
     }
     toast.dismiss(toastId);
     dispatch(setLoading(false));
@@ -81,9 +84,12 @@ export async function getUserEnrolledCourses(token: string) {
       throw new Error(response.data.message || "Could not get enrolled courses");
     }
     result = response.data.data || [];
-  } catch (error) {
+  } catch (error: any) {
     console.log("GET_USER_ENROLLED_COURSES_API API ERROR............", error);
-    toast.error("Could Not Get Enrolled Courses");
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (error?.response?.status !== 401) {
+      toast.error("No se pudieron obtener los cursos inscritos");
+    }
   }
   // toast.dismiss(toastId)
   return result;
@@ -105,9 +111,13 @@ export async function getInstructorData(token: string) {
     if (response?.data?.courses) {
       result = response.data.courses;
     }
-  } catch (error) {
+  } catch (error: any) {
     console.log("GET_INSTRUCTOR_DATA_API API ERROR............", error);
-    toast.error("Could Not Get Instructor Data");
+    // No mostrar toast aquí si es un error 401 (el interceptor ya lo maneja)
+    // Solo mostrar toast para otros tipos de errores
+    if (error?.response?.status !== 401) {
+      toast.error("No se pudo obtener los datos del instructor");
+    }
   }
   // toast.dismiss(toastId)
   return result;

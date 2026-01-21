@@ -1,9 +1,8 @@
 import React from "react";
 
-import Footer from "@shared/components/Footer";
+import { Footer, ReviewSlider } from "@shared/components";
 import ContactDetails from "../components/ContactDetails";
 import ContactForm from "../components/ContactForm";
-import ReviewSlider from "@shared/components/ReviewSlider";
 
 /**
  * ContactContainer - Container component for Contact page

@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
   
   // Configuración de Turbopack (Next.js 16 usa Turbopack por defecto)
   // Los aliases ya están configurados en tsconfig.json, por lo que no necesitamos duplicarlos aquí
-  // Configuración vacía para silenciar el error cuando se usa Turbopack con configuración de webpack
+  // Dejar vacío para que Next.js maneje automáticamente
   turbopack: {},
   
   // Configuración de webpack (solo se usa si se ejecuta con --webpack flag explícitamente)

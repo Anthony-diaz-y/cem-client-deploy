@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
-import IconBtn from "@shared/components/IconBtn";
+import { IconBtn } from "@shared/components";
 import { buyCourse } from "@shared/services/studentFeaturesAPI";
 import { RootState, AppDispatch } from "@shared/store/store";
 import { apiConnector } from "@shared/services/apiConnector";

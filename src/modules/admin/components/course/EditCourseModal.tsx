@@ -6,7 +6,7 @@ import { AdminCourse, editCourseAdmin } from "@shared/services/adminAPI";
 import { fetchCourseCategories } from "@shared/services/courseDetailsAPI";
 import { HiOutlineCurrencyRupee } from "react-icons/hi";
 import { IoMdClose } from "react-icons/io";
-import Img from "@shared/components/Img";
+import { Img } from "@shared/components";
 
 interface EditCourseModalProps {
   course: AdminCourse | null;

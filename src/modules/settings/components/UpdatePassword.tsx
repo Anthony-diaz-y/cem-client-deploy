@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 
 import { changePassword } from "@shared/services/SettingsAPI";
-import IconBtn from "@shared/components/IconBtn";
+import { IconBtn } from "@shared/components";
 import { RootState } from "@shared/store/store";
 import { PasswordFormData } from "../types";
 

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { MdOutlineVerified } from "react-icons/md";
-import Img from "@shared/components/Img";
+import { Img } from "@shared/components";
 import { CourseAuthorSectionProps } from "../types";
 
 /**

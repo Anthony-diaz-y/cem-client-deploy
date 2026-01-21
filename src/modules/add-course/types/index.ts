@@ -57,6 +57,7 @@ export interface UploadProps {
   video?: boolean;
   viewData?: string | null;
   editData?: string | null | undefined;
+  required?: boolean;
 }
 
 export interface NestedViewProps {
@@ -89,6 +90,8 @@ export interface SubSectionModalFormData {
   lectureTitle: string;
   lectureDesc: string;
   lectureVideo: string | File;
+  lectureAttachments?: File[];
+  lectureContent?: string;
 }
 
 export interface SubSectionModalProps {

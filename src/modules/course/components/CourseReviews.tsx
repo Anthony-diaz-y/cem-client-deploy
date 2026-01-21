@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import StarRating from "@shared/components/StarRating";
+import { StarRating } from "@shared/components";
 import { getReviews, type Review, type ReviewsResponse } from "../services/reviewsAPI";
 import { formatDate } from "@shared/utils/formatDate";
 

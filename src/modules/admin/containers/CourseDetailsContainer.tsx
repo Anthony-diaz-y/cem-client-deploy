@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getCourseDetailsAdmin, CourseDetailsData } from "@shared/services/adminAPI";
-import Loading from "@shared/components/Loading";
+import { Loading } from "@shared/components";
 import StatisticsCards from "../components/course/StatisticsCards";
 import StudentsTable from "../components/course/StudentsTable";
 import DiscussionsByLesson from "../components/course/DiscussionsByLesson";
 import ReviewsList from "../components/course/ReviewsList";
-import Img from "@shared/components/Img";
+import { Img } from "@shared/components";
 import { FiEdit2, FiArrowLeft } from "react-icons/fi";
 
 interface CourseDetailsContainerProps {

@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 
 import useOnClickOutside from "@shared/hooks/useOnClickOutside";
 import { logout } from "../services/authAPI";
-import Img from "@shared/components/Img";
+import { Img } from "@shared/components";
 
 export default function ProfileDropdown() {
   const { user } = useAppSelector((state) => state.profile);

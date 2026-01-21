@@ -5,8 +5,7 @@ import { BiInfoCircle } from "react-icons/bi";
 import { HiOutlineGlobeAlt } from "react-icons/hi";
 import { GiReturnArrow } from "react-icons/gi";
 import { useRouter } from "next/navigation";
-import RatingStars from "@shared/components/RatingStars";
-import Img from "@shared/components/Img";
+import { RatingStars, Img } from "@shared/components";
 import { formatDate } from "@shared/utils/formatDate";
 import { CourseHeroProps } from "../types";
 

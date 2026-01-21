@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { EnrolledStudent } from "@shared/services/adminAPI";
-import Img from "@shared/components/Img";
+import { Img } from "@shared/components";
 import { FiSearch } from "react-icons/fi";
 
 interface StudentsTableProps {

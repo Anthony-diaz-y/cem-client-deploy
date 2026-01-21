@@ -1,6 +1,6 @@
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
-import Img from "@shared/components/Img";
+import { Img } from "@shared/components";
 import { TemplateProps } from "../types";
 
 function Template({

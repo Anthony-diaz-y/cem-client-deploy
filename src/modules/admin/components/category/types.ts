@@ -9,7 +9,7 @@ export interface CategoryModalProps {
   category: Category | null;
   token: string;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (updatedCategories?: Category[]) => void;
 }
 
 export interface CourseItem {

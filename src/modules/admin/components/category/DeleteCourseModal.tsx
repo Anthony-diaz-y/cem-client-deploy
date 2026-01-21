@@ -32,7 +32,10 @@ export default function DeleteCourseModal({
       await onConfirm();
       onClose();
     } catch (error: any) {
-      toast.error(error.message || "Error al eliminar el curso");
+      // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+      if (error?.response?.status !== 401) {
+        toast.error(error.message || "Error al eliminar el curso");
+      }
       // No cerrar el modal si hay error, permitir reintentar
     } finally {
       setLoading(false);

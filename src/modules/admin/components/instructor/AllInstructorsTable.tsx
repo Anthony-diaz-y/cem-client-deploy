@@ -3,9 +3,8 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Instructor, toggleInstructorStatus } from "@shared/services/adminAPI";
-import Img from "@shared/components/Img";
+import { Img, ConfirmationModal } from "@shared/components";
 import { formatDate } from "@shared/utils/formatDate";
-import ConfirmationModal from "@shared/components/ConfirmationModal";
 import { FiEye, FiEdit, FiCheckCircle, FiXCircle } from "react-icons/fi";
 
 interface AllInstructorsTableProps {

@@ -418,6 +418,7 @@ export interface GetPublicCategoriesResponse {
 export interface DeleteCategoryResponse {
   success: boolean;
   message: string;
+  data?: Category[];
   details?: string;
   category?: {
     id: string;

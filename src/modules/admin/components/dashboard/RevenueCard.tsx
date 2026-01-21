@@ -3,7 +3,7 @@
 import React from "react";
 import { AdminDashboardRevenue } from "@shared/services/admin/types";
 import { HiOutlineCurrencyDollar } from "react-icons/hi2";
-import CountUp from "@shared/components/CountUp";
+import CountUp from "@shared/components/ui/CountUp";
 
 interface RevenueCardProps {
   revenue: AdminDashboardRevenue;

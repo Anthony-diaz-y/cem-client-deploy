@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import OtpInput from "@shared/components/OtpInput";
-
+import { OtpInput, Loading } from "@shared/components";
 import Link from "next/link";
 import { BiArrowBack } from "react-icons/bi";
 import { RxCountdownTimer } from "react-icons/rx";
@@ -8,7 +7,6 @@ import { useDispatch } from "react-redux";
 import { sendOtp, signUp } from "@shared/services/authAPI";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@shared/store/hooks";
-import Loading from "@shared/components/Loading";
 import { AppDispatch } from "@shared/store/store";
 import type { SignupData } from "../types";
 

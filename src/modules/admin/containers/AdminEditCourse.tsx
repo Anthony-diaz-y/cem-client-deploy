@@ -7,8 +7,8 @@ import { useAppSelector } from "@shared/store/hooks";
 
 import { getFullDetailsOfCourse } from "@shared/services/courseDetailsAPI";
 import { setCourse, setEditCourse } from "@modules/course/store/courseSlice";
-import RenderSteps from "@modules/add-course/components/RenderSteps";
-import Loading from "@shared/components/Loading";
+import RenderSteps from "@modules/add-course/components/navigation/RenderSteps";
+import { Loading } from "@shared/components";
 import { AppDispatch } from "@shared/store/store";
 import { Course } from "@modules/course/types";
 

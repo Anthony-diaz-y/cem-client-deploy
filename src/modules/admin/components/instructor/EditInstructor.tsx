@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { getInstructorDetails, updateInstructor, UpdateInstructorData } from "@shared/services/adminAPI";
-import Loading from "@shared/components/Loading";
+import { Loading } from "@shared/components";
 import { FiArrowLeft } from "react-icons/fi";
 
 interface EditInstructorProps {

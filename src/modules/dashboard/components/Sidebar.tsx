@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import { sidebarLinks } from "@shared/data/dashboard-links";
 import SidebarLink from "./SidebarLink";
-import Loading from "@shared/components/Loading";
+import { Loading } from "@shared/components";
 
 import { HiMenuAlt1 } from "react-icons/hi";
 import { IoMdClose } from "react-icons/io";

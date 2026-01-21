@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useAppSelector } from "@shared/store/hooks";
 import AllInstructorsTable from "../components/instructor/AllInstructorsTable";
 import { getAllInstructors, InstructorFilters, Instructor } from "@shared/services/adminAPI";
-import Loading from "@shared/components/Loading";
+import { Loading } from "@shared/components";
 import CustomDropdown from "../components/dropdown/CustomDropdown";
 import { FiSearch } from "react-icons/fi";
 

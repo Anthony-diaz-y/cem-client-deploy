@@ -28,10 +28,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [videoError, setVideoError] = useState(false);
   const [errorDetails, setErrorDetails] = useState<string>("");
   const [currentVideoUrl, setCurrentVideoUrl] = useState<string>("");
-  const [isUsingFallback, setIsUsingFallback] = useState(false);
-  
-  // URL de video de prueba como fallback
-  const FALLBACK_VIDEO_URL = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
 
   // Expose seek method to parent component via ref
   useEffect(() => {
@@ -64,18 +60,18 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   // Función para validar videoUrl
   const validateVideoUrl = (url: string | null | undefined): string | null => {
     if (!url) return null;
-    
+
     const trimmedUrl = url.trim();
-    
+
     // Verificar que no sea 'null', 'undefined' o vacío
-    if (trimmedUrl === '' || 
-        trimmedUrl === 'null' || 
-        trimmedUrl === 'undefined' ||
-        trimmedUrl.toLowerCase() === 'null' ||
-        trimmedUrl.toLowerCase() === 'undefined') {
+    if (trimmedUrl === '' ||
+      trimmedUrl === 'null' ||
+      trimmedUrl === 'undefined' ||
+      trimmedUrl.toLowerCase() === 'null' ||
+      trimmedUrl.toLowerCase() === 'undefined') {
       return null;
     }
-    
+
     // Verificar que sea una URL válida
     try {
       const urlObj = new URL(trimmedUrl);
@@ -94,52 +90,26 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const video = videoElementRef.current;
     if (!video) return;
 
-    // Validar videoUrl
     const validatedUrl = validateVideoUrl(videoData?.videoUrl);
-    
+
     if (validatedUrl) {
-      // Logging solo en desarrollo
-      if (process.env.NODE_ENV === 'development') {
-        console.log("Loading video:", {
-          title: videoData?.title,
-          videoUrl: validatedUrl,
-        });
-      }
-      
-      // Resetear estados de error y fallback
       setVideoError(false);
       setErrorDetails("");
-      setIsUsingFallback(false);
       setCurrentVideoUrl(validatedUrl);
-      
-      // Cancelar cualquier reproducción anterior
+
       video.pause();
       video.currentTime = 0;
-      
-      // Asegurar que el video no esté muteado
       video.muted = false;
       video.volume = 1.0;
-      
-      // Establecer la fuente del video
       video.src = validatedUrl;
-      
-      // Cargar el video primero
       video.load();
-      
-      // Esperar un poco antes de intentar reproducir
+
       const playTimeout = setTimeout(() => {
         video.play().catch((error) => {
-          // Ignorar errores de autoplay (son normales)
-          // También ignorar NotSupportedError ya que será manejado por onError
-          if (error.name !== 'NotAllowedError' && 
-              error.name !== 'AbortError' && 
-              error.name !== 'NotSupportedError') {
-            if (process.env.NODE_ENV === 'development') {
-              console.warn("Error playing video:", {
-                errorName: error.name,
-                errorMessage: error.message,
-              });
-            }
+          if (error.name !== 'NotAllowedError' &&
+            error.name !== 'AbortError' &&
+            error.name !== 'NotSupportedError') {
+            console.warn("Error playing video:", error.name);
           }
         });
       }, 100);
@@ -151,55 +121,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         video.load();
       };
     } else {
-      // Si no hay URL válida, usar fallback inmediatamente
-      if (process.env.NODE_ENV === 'development') {
-        console.warn("Invalid or missing videoUrl, using fallback:", {
-          originalUrl: videoData?.videoUrl,
-          title: videoData?.title,
-        });
-      }
-      
-      setCurrentVideoUrl(FALLBACK_VIDEO_URL);
-      setIsUsingFallback(true);
-      setVideoError(false);
-      setErrorDetails("URL de video no válida. Usando video de prueba.");
-      
-      video.pause();
-      video.currentTime = 0;
-      video.muted = false;
-      video.volume = 1.0;
-      video.src = FALLBACK_VIDEO_URL;
-      
-      // Usar eventos del video para saber cuándo está listo
-      const handleCanPlay = () => {
-        video.removeEventListener('canplay', handleCanPlay);
-        video.removeEventListener('error', handleFallbackError);
-        
-        video.play().catch((error) => {
-          // Ignorar errores de autoplay
-          if (error.name !== 'NotAllowedError' && error.name !== 'AbortError') {
-            if (process.env.NODE_ENV === 'development') {
-              console.warn("Error playing fallback video:", {
-                errorName: error.name,
-                errorMessage: error.message,
-              });
-            }
-          }
-        });
-      };
-      
-      const handleFallbackError = () => {
-        video.removeEventListener('canplay', handleCanPlay);
-        video.removeEventListener('error', handleFallbackError);
-        // El onError del video element manejará este caso
-      };
-      
-      video.addEventListener('canplay', handleCanPlay, { once: true });
-      video.addEventListener('error', handleFallbackError, { once: true });
-      
-      video.load();
+      setVideoError(true);
+      setErrorDetails("Esta lección no contiene un video válido.");
+      setCurrentVideoUrl("");
+      video.src = "";
     }
-  }, [videoData, FALLBACK_VIDEO_URL]);
+  }, [videoData]);
 
   // Reset error state when videoData changes
   useEffect(() => {
@@ -210,25 +137,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const handleVideoError = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
     const video = e.currentTarget;
     const error = video.error;
-    
-    // Capturar información básica primero
-    const originalUrl = currentVideoUrl || video.src || videoData?.videoUrl || "N/A";
-    const videoTitle = videoData?.title || "N/A";
-    const videoSrc = video.src || "N/A";
-    const videoCurrentSrc = video.currentSrc || "N/A";
-    const networkState = video.networkState;
-    const readyState = video.readyState;
-    
+
     let errorMessage = "Error desconocido al cargar el video";
-    let errorCode: number | null = null;
-    let errorName: string | null = null;
-    
-    // Capturar información del error de manera más robusta
+
     if (error) {
-      errorCode = error.code;
-      // MediaError no tiene propiedad 'name', solo 'code' y 'message'
-      errorName = null;
-      
       switch (error.code) {
         case error.MEDIA_ERR_ABORTED:
           errorMessage = "La carga del video fue cancelada";
@@ -245,162 +157,31 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         default:
           errorMessage = `Error al cargar el video (código: ${error.code})`;
       }
-    } else {
-      // Si no hay objeto de error pero hay un NotSupportedError en la consola
-      // o el networkState indica problema, usar mensaje apropiado
-      if (networkState === 3) { // NETWORK_NO_SOURCE
-        errorMessage = "No se encontró una fuente de video compatible. El formato podría no ser soportado.";
-        errorName = "NotSupportedError";
-      } else {
-        errorMessage = "Error desconocido al cargar el video. El video no pudo cargarse.";
-      }
     }
-    
-    // Si no estamos usando fallback y el video original falla, intentar con fallback
-    if (!isUsingFallback && originalUrl !== FALLBACK_VIDEO_URL) {
-      // Logging solo en desarrollo
-      if (process.env.NODE_ENV === 'development') {
-        console.warn("Error loading original video, switching to fallback", {
-          originalUrl,
-          videoTitle,
-          errorCode: errorCode !== null ? errorCode : "N/A",
-          errorName: errorName || "N/A",
-          errorMessage,
-          networkState,
-          readyState,
-        });
-      }
-      
-      // Cambiar a video de prueba
-      setIsUsingFallback(true);
-      setCurrentVideoUrl(FALLBACK_VIDEO_URL);
-      setErrorDetails("Error al cargar el video original. Usando video de prueba.");
-      setVideoError(false);
-      
-      // Limpiar completamente el video antes de cargar el fallback
-      video.pause();
-      video.removeAttribute('src');
-      video.load();
-      
-      // Esperar un momento antes de cargar el fallback para asegurar limpieza completa
-      const fallbackTimeout = setTimeout(() => {
-        // Limpiar cualquier error previo
-        if (video.error) {
-          video.load();
-        }
-        
-        video.src = FALLBACK_VIDEO_URL;
-        video.currentTime = 0;
-        video.muted = false;
-        video.volume = 1.0;
-        
-        // Usar eventos del video para saber cuándo está listo
-        const handleCanPlay = () => {
-          video.removeEventListener('canplay', handleCanPlay);
-          video.removeEventListener('error', handleFallbackError);
-          
-          // Intentar reproducir solo cuando el video esté listo
-          video.play().catch((playError) => {
-            // Ignorar errores de autoplay (son normales)
-            if (playError.name !== 'NotAllowedError' && playError.name !== 'AbortError') {
-              if (process.env.NODE_ENV === 'development') {
-                console.warn("Error playing fallback video:", {
-                  errorName: playError.name,
-                  errorMessage: playError.message,
-                });
-              }
-            }
-          });
-        };
-        
-        const handleFallbackError = () => {
-          video.removeEventListener('canplay', handleCanPlay);
-          video.removeEventListener('error', handleFallbackError);
-          // El onError del video element manejará este caso
-        };
-        
-        video.addEventListener('canplay', handleCanPlay, { once: true });
-        video.addEventListener('error', handleFallbackError, { once: true });
-        
-        video.load();
-      }, 150);
-      
-      // Guardar el timeout para limpieza
-      (video as any)._fallbackTimeout = fallbackTimeout;
-    } else {
-      // Si ya estamos usando fallback y falla, mostrar error
-      setVideoError(true);
-      setErrorDetails(errorMessage || "No se pudo cargar ningún video. Por favor, verifica tu conexión a internet.");
-      
-      // Logging solo en desarrollo
-      if (process.env.NODE_ENV === 'development') {
-        console.error("Error loading video (fallback also failed)", {
-          currentUrl: currentVideoUrl || "N/A",
-          isUsingFallback,
-          videoTitle,
-          errorCode: errorCode !== null ? errorCode : "N/A",
-          errorName: errorName || "N/A",
-          errorMessage,
-          networkState,
-          readyState,
-        });
-      }
-    }
+
+    setVideoError(true);
+    setErrorDetails(errorMessage);
   };
 
   const handleRetry = () => {
     setVideoError(false);
     setErrorDetails("");
-    setIsUsingFallback(false);
     const video = videoElementRef.current;
     if (video) {
-      // Intentar con la URL original primero
       const validatedUrl = validateVideoUrl(videoData?.videoUrl);
       if (validatedUrl) {
         setCurrentVideoUrl(validatedUrl);
         video.src = validatedUrl;
+        video.load();
       } else {
-        // Si no hay URL válida, usar fallback
-        setCurrentVideoUrl(FALLBACK_VIDEO_URL);
-        setIsUsingFallback(true);
-        video.src = FALLBACK_VIDEO_URL;
+        setVideoError(true);
+        setErrorDetails("No hay un video válido para reintentar.");
       }
-      video.load();
     }
   };
 
-  if (!videoData) {
-    return previewSource ? (
-      <div className="h-full w-full rounded-md bg-richblack-800 flex items-center justify-center">
-        <img
-          src={previewSource}
-          alt="Preview"
-          className="h-full w-full rounded-md object-cover"
-          onError={() => console.error("Error loading preview image")}
-        />
-        <div className="absolute inset-0 flex items-center justify-center bg-richblack-900 bg-opacity-50">
-          <p className="text-richblack-200">Cargando video...</p>
-        </div>
-      </div>
-    ) : (
-      <div className="h-full w-full rounded-md bg-richblack-800 flex items-center justify-center">
-        <p className="text-richblack-400">No hay video disponible</p>
-      </div>
-    );
-  }
-
-  // Si no hay videoUrl válido, usar fallback automáticamente
-  const validatedUrl = validateVideoUrl(videoData?.videoUrl);
-  if (!validatedUrl && !currentVideoUrl) {
-    // Si no hay URL válida y aún no hemos establecido una, usar fallback
-    if (videoElementRef.current && !isUsingFallback) {
-      setIsUsingFallback(true);
-      setCurrentVideoUrl(FALLBACK_VIDEO_URL);
-      setErrorDetails("URL de video no válida. Usando video de prueba.");
-      const video = videoElementRef.current;
-      video.src = FALLBACK_VIDEO_URL;
-      video.load();
-    }
+  if (!videoData || !validateVideoUrl(videoData?.videoUrl)) {
+    return null;
   }
 
   return (
@@ -424,21 +205,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           <p className="mt-2 text-sm text-center text-richblack-300 max-w-md mb-4">
             {errorDetails || "No se pudo cargar el video. Por favor, verifica la URL o tu conexión a internet."}
           </p>
-          {isUsingFallback && (
-            <div className="text-xs text-yellow-200 mb-2 text-center max-w-md">
-              ⚠️ Usando video de prueba
-            </div>
-          )}
-          {currentVideoUrl && (
-            <div className="text-xs text-richblack-500 mb-4 text-center max-w-md break-all">
-              URL actual: {currentVideoUrl}
-            </div>
-          )}
-          {videoData?.videoUrl && videoData.videoUrl !== currentVideoUrl && (
-            <div className="text-xs text-richblack-600 mb-2 text-center max-w-md break-all">
-              URL original: {videoData.videoUrl}
-            </div>
-          )}
           <button
             onClick={handleRetry}
             className="px-6 py-2.5 bg-yellow-50 text-richblack-900 font-semibold rounded-lg hover:bg-yellow-100 transition-colors"
@@ -447,45 +213,38 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           </button>
         </div>
       ) : (
-        <>
-          <video
-            ref={videoElementRef}
-            src={currentVideoUrl || validatedUrl || FALLBACK_VIDEO_URL}
-            className="w-full h-full object-contain"
-            controls={showControls}
-            playsInline
-            autoPlay
-            muted={false}
-            onPlay={() => {
-              setShowControls(true);
-              if (videoElementRef.current) {
-                videoElementRef.current.muted = false;
-                videoElementRef.current.volume = 1.0;
-              }
-            }}
-            onLoadedMetadata={() => {
-              if (videoElementRef.current) {
-                videoElementRef.current.muted = false;
-                videoElementRef.current.volume = 1.0;
-              }
-            }}
-            onError={handleVideoError}
-            onLoadStart={() => {
-              if (videoError) {
-                setVideoError(false);
-                setErrorDetails("");
-              }
-            }}
-          />
-          {isUsingFallback && (
-            <div className="absolute top-4 right-4 bg-yellow-50/90 text-richblack-900 px-3 py-1.5 rounded-lg text-xs font-medium shadow-lg">
-              ⚠️ Video de prueba
-            </div>
-          )}
-        </>
+        <video
+          ref={videoElementRef}
+          src={currentVideoUrl || undefined}
+          className="w-full h-full object-contain"
+          controls={showControls}
+          playsInline
+          autoPlay
+          muted={false}
+          onPlay={() => {
+            setShowControls(true);
+            if (videoElementRef.current) {
+              videoElementRef.current.muted = false;
+              videoElementRef.current.volume = 1.0;
+            }
+          }}
+          onLoadedMetadata={() => {
+            if (videoElementRef.current) {
+              videoElementRef.current.muted = false;
+              videoElementRef.current.volume = 1.0;
+            }
+          }}
+          onError={handleVideoError}
+          onLoadStart={() => {
+            if (videoError) {
+              setVideoError(false);
+              setErrorDetails("");
+            }
+          }}
+        />
       )}
 
-      {/* Custom overlay when video ends - Mejorado */}
+      {/* Custom overlay when video ends */}
       {videoEnded && (
         <div
           style={{
@@ -496,7 +255,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         >
           <div className="text-center space-y-4">
             <h3 className="text-2xl font-bold text-white mb-2">¡Video Completado!</h3>
-            
+
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
               {!isCompleted && (
                 <button
@@ -537,7 +296,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   </button>
                 )}
               </div>
-              
+
               {/* Información sobre la siguiente lecture/sección */}
               {!isLast && nextVideoInfo && (
                 <div className="mt-2 px-4 py-2 bg-richblack-900/80 rounded-lg border border-richblack-700 max-w-md">

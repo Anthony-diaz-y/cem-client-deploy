@@ -5,7 +5,7 @@ import { useAppSelector } from "@shared/store/hooks";
 import CategoriesTable from "../components/category/CategoriesTable";
 import CreateCategoryModal from "../components/category/CreateCategoryModal";
 import { getAllCategories, Category } from "@shared/services/adminAPI";
-import Loading from "@shared/components/Loading";
+import { Loading } from "@shared/components";
 
 export default function CategoriesContainer() {
   const { token } = useAppSelector((state) => state.auth);
@@ -65,7 +65,15 @@ export default function CategoriesContainer() {
       <CategoriesTable
         categories={categories}
         token={token}
-        onUpdate={fetchCategories}
+        onUpdate={(updatedCategories?: Category[]) => {
+          if (updatedCategories) {
+            // Actualizar con la lista recibida del backend
+            setCategories(updatedCategories);
+          } else {
+            // Recargar desde el servidor si no se proporciona lista
+            fetchCategories();
+          }
+        }}
       />
 
       {isCreateCategoryModalOpen && token && (

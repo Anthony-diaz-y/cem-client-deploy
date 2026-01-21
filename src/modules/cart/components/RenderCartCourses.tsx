@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 
 import { removeFromCart } from "../../course/store/cartSlice";
 import { CartItem } from "../../course/types";
-import StarRating from "@shared/components/StarRating";
+import { StarRating } from "@shared/components";
 import { RootState, AppDispatch } from "@shared/store/store";
 import { apiConnector } from "@shared/services/apiConnector";
 import { studentEndpoints } from "@shared/services/apis";

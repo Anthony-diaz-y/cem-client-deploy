@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 
 import { fetchInstructorCourses } from "@shared/services/courseDetailsAPI";
-import IconBtn from "@shared/components/IconBtn";
+import { IconBtn } from "@shared/components";
 import CoursesTable, {
   Course,
 } from "@modules/instructor/components/CoursesTable";
@@ -25,9 +25,8 @@ export default function MyCourses() {
       setLoading(true);
       try {
         const result = await fetchInstructorCourses(token);
-        // console.log('Instructors all courses  ', result);
         if (result) {
-          setCourses(result);
+          setCourses(result as unknown as Course[]);
         }
       } catch (error) {
         console.error("Error fetching courses:", error);

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import RenderSteps from "../components/RenderSteps";
+import RenderSteps from "../components/navigation/RenderSteps";
 
 export default function AddCourse() {
   useEffect(() => {
