@@ -30,8 +30,6 @@ const {
 
 /**
  * Obtiene la lista de instructores pendientes de aprobación
- * @param token - Token JWT de autenticación
- * @returns Lista de instructores pendientes
  */
 export async function getPendingInstructors(token: string): Promise<Instructor[]> {
   try {
@@ -51,17 +49,16 @@ export async function getPendingInstructors(token: string): Promise<Instructor[]
     return response.data.data;
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError.response?.data?.message || "Error al cargar instructores pendientes");
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(apiError.response?.data?.message || "Error al cargar instructores pendientes");
+    }
     return [];
   }
 }
 
 /**
  * Obtiene todos los instructores con filtros opcionales
- * @param token - Token JWT de autenticación
- * @param filters - Filtros opcionales (estado, activo, búsqueda)
- * @param silent - Si es true, no muestra toast de carga
- * @returns Respuesta con instructores filtrados o null en caso de error
  */
 export async function getAllInstructors(
   token: string,
@@ -71,17 +68,25 @@ export async function getAllInstructors(
   const toastId = silent ? null : toast.loading("Cargando instructores...");
   try {
     const params = new URLSearchParams();
-    
+
     if (filters?.status && filters.status !== "all") {
       params.append("status", filters.status);
     }
-    
+
     if (filters?.active !== undefined) {
       params.append("active", filters.active ? "true" : "false");
     }
-    
+
     if (filters?.search && filters.search.trim()) {
       params.append("search", filters.search.trim());
+    }
+
+    if (filters?.page) {
+      params.append("page", filters.page.toString());
+    }
+
+    if (filters?.limit) {
+      params.append("limit", filters.limit.toString());
     }
 
     const url = params.toString()
@@ -105,7 +110,10 @@ export async function getAllInstructors(
     return response.data;
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError.response?.data?.message || "Error al cargar instructores");
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(apiError.response?.data?.message || "Error al cargar instructores");
+    }
     if (toastId) toast.dismiss(toastId);
     return null;
   }
@@ -113,9 +121,6 @@ export async function getAllInstructors(
 
 /**
  * Aprueba un instructor pendiente
- * @param instructorId - ID del instructor a aprobar
- * @param token - Token JWT de autenticación
- * @returns true si la operación fue exitosa
  */
 export async function approveInstructor(
   instructorId: string,
@@ -142,7 +147,10 @@ export async function approveInstructor(
     return true;
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError.response?.data?.message || "Error al aprobar instructor");
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(apiError.response?.data?.message || "Error al aprobar instructor");
+    }
     toast.dismiss(toastId);
     return false;
   }
@@ -150,9 +158,6 @@ export async function approveInstructor(
 
 /**
  * Rechaza un instructor pendiente
- * @param instructorId - ID del instructor a rechazar
- * @param token - Token JWT de autenticación
- * @returns true si la operación fue exitosa
  */
 export async function rejectInstructor(
   instructorId: string,
@@ -179,7 +184,10 @@ export async function rejectInstructor(
     return true;
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError.response?.data?.message || "Error al rechazar instructor");
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(apiError.response?.data?.message || "Error al rechazar instructor");
+    }
     toast.dismiss(toastId);
     return false;
   }
@@ -187,9 +195,6 @@ export async function rejectInstructor(
 
 /**
  * Obtiene los detalles completos de un instructor
- * @param instructorId - ID del instructor
- * @param token - Token JWT de autenticación
- * @returns Datos del instructor con estadísticas y cursos o null en caso de error
  */
 export async function getInstructorDetails(
   instructorId: string,
@@ -214,7 +219,10 @@ export async function getInstructorDetails(
     return response.data.data;
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError.response?.data?.message || "Error al cargar detalles del instructor");
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(apiError.response?.data?.message || "Error al cargar detalles del instructor");
+    }
     toast.dismiss(toastId);
     return null;
   }
@@ -222,10 +230,6 @@ export async function getInstructorDetails(
 
 /**
  * Activa o desactiva un instructor
- * @param instructorId - ID del instructor
- * @param active - Estado deseado (true = activo, false = inactivo)
- * @param token - Token JWT de autenticación
- * @returns true si la operación fue exitosa
  */
 export async function toggleInstructorStatus(
   instructorId: string,
@@ -253,7 +257,10 @@ export async function toggleInstructorStatus(
     return true;
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError.response?.data?.message || "Error al cambiar estado del instructor");
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(apiError.response?.data?.message || "Error al cambiar estado del instructor");
+    }
     toast.dismiss(toastId);
     return false;
   }
@@ -261,10 +268,6 @@ export async function toggleInstructorStatus(
 
 /**
  * Actualiza los datos de un instructor
- * @param instructorId - ID del instructor
- * @param updates - Datos a actualizar
- * @param token - Token JWT de autenticación
- * @returns Instructor actualizado o null en caso de error
  */
 export async function updateInstructor(
   instructorId: string,
@@ -274,7 +277,7 @@ export async function updateInstructor(
   const toastId = toast.loading("Actualizando instructor...");
   try {
     const body: UpdateInstructorData = {};
-    
+
     if (updates.firstName !== undefined) {
       body.firstName = updates.firstName;
     }
@@ -287,17 +290,17 @@ export async function updateInstructor(
     if (updates.approved !== undefined) {
       body.approved = updates.approved;
     }
-    
+
     if (updates.contactNumber !== undefined) {
       if (typeof updates.contactNumber === 'string') {
-        body.contactNumber = updates.contactNumber.trim() === '' 
-          ? null 
+        body.contactNumber = updates.contactNumber.trim() === ''
+          ? null
           : (parseInt(updates.contactNumber.trim(), 10) || null);
       } else {
         body.contactNumber = updates.contactNumber;
       }
     }
-    
+
     const response = await apiConnector<UpdateInstructorResponse>(
       "PUT",
       `${UPDATE_INSTRUCTOR_API}/${instructorId}`,
@@ -317,7 +320,10 @@ export async function updateInstructor(
     return response.data.data;
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError.response?.data?.message || "Error al actualizar instructor");
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(apiError.response?.data?.message || "Error al actualizar instructor");
+    }
     toast.dismiss(toastId);
     return null;
   }

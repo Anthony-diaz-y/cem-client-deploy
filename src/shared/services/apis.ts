@@ -115,4 +115,5 @@ export const adminEndpoints = {
   CREATE_REVIEW_ADMIN_API: BASE_URL + "/admin/review/create",
   UPDATE_REVIEW_ADMIN_API: BASE_URL + "/admin/review",
   DELETE_REVIEW_ADMIN_API: BASE_URL + "/admin/review",
+  GLOBAL_SEARCH_API: BASE_URL + "/admin/global-search",
 }

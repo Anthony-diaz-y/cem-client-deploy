@@ -55,9 +55,18 @@ export default function CourseFilters({
         <input
           type="text"
           value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
+          onChange={(e) => {
+            e.preventDefault();
+            onSearchChange(e.target.value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+            }
+          }}
           placeholder="Buscar por nombre de curso, descripción o instructor..."
           className="w-full px-4 py-3 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 placeholder-richblack-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+          autoComplete="off"
         />
       </div>
 

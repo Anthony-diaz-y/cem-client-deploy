@@ -1,8 +1,5 @@
 /**
  * API de Administración - Exportaciones centralizadas
- * 
- * Este archivo exporta todas las funciones y tipos de las APIs de administración
- * organizadas en módulos separados para mejor mantenibilidad.
  */
 
 // Exportar todos los tipos
@@ -51,3 +48,6 @@ export {
   updateReviewAdmin,
   deleteReviewAdmin,
 } from "./admin/reviews";
+
+// Exportar funciones de búsqueda global
+export { globalSearch } from "./admin/search";
