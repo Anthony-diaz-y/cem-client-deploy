@@ -21,7 +21,7 @@ axiosInstance.interceptors.request.use(
     if (config.data instanceof FormData) {
       delete config.headers['Content-Type'];
     }
-    
+
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('token');
       let authToken = token;
@@ -32,7 +32,7 @@ axiosInstance.interceptors.request.use(
       } catch {
         authToken = token;
       }
-      
+
       if (authToken) {
         config.headers.Authorization = `Bearer ${authToken}`;
       }
@@ -50,9 +50,9 @@ axiosInstance.interceptors.response.use(
       if (isHandling401) {
         return Promise.reject(error);
       }
-      
+
       isHandling401 = true;
-      
+
       const errorData = error.response?.data || {};
       let errorMessage = '';
       if (typeof errorData === 'string') {
@@ -62,15 +62,15 @@ axiosInstance.interceptors.response.use(
       } else if (errorData.error) {
         errorMessage = typeof errorData.error === 'string' ? errorData.error : errorData.error.message || '';
       }
-      
+
       if (!errorMessage) {
         errorMessage = 'Tu sesión ha expirado';
       }
-      
+
       const messageStr = String(errorMessage).toLowerCase();
       const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
-      const isAuthRoute = 
-        currentPath.includes('/auth/login') || 
+      const isAuthRoute =
+        currentPath.includes('/auth/login') ||
         currentPath.includes('/login') ||
         currentPath.includes('/auth/signup') ||
         currentPath.includes('/signup') ||
@@ -80,21 +80,21 @@ axiosInstance.interceptors.response.use(
         currentPath.includes('/forgot-password') ||
         currentPath.includes('/auth/reset-password') ||
         currentPath.includes('/reset-password');
-      
+
       if (isAuthRoute) {
         isHandling401 = false;
         return Promise.reject(error);
       }
 
-      const isAccountDeactivated = 
-        messageStr.includes('desactivada') || 
+      const isAccountDeactivated =
+        messageStr.includes('desactivada') ||
         messageStr.includes('desactivado') ||
         messageStr.includes('inactiva') ||
         messageStr.includes('inactivo') ||
         messageStr.includes('ha sido desactivada') ||
         messageStr.includes('cuenta ha sido desactivada');
 
-      const isPendingApproval = 
+      const isPendingApproval =
         messageStr.includes('pendiente de aprobación') ||
         messageStr.includes('pending approval') ||
         messageStr.includes('pendiente');
@@ -172,88 +172,88 @@ const getToken = (): string | null => {
 
 // Conector principal de API
 const realApiConnector = async <T = unknown>(
-    method: string,
-    url: string,
-    bodyData?: Record<string, unknown> | FormData,
-    headers?: Record<string, string>,
-    params?: Record<string, string | number>
+  method: string,
+  url: string,
+  bodyData?: Record<string, unknown> | FormData,
+  headers?: Record<string, string>,
+  params?: Record<string, string | number>
 ): Promise<AxiosResponse<T>> => {
-    const token = getToken();
-    const isFormData = bodyData instanceof FormData;
-    const hasBody = bodyData !== undefined && bodyData !== null;
-    
-    const requestHeaders: Record<string, string> = {
-      ...(hasBody && !isFormData && method.toUpperCase() !== 'GET' && method.toUpperCase() !== 'HEAD'
-        ? { 'Content-Type': 'application/json' }
-        : {}),
-      ...headers,
-    };
-    
-    if (isFormData && requestHeaders['Content-Type']) {
-      delete requestHeaders['Content-Type'];
-    }
-    
-    if (token && !headers?.Authorization) {
-      requestHeaders.Authorization = `Bearer ${token}`;
-    }
+  const token = getToken();
+  const isFormData = bodyData instanceof FormData;
+  const hasBody = bodyData !== undefined && bodyData !== null;
 
-    let finalParams: Record<string, string | number> | undefined = params;
-    if (method.toUpperCase() === 'DELETE' && bodyData && !(bodyData instanceof FormData)) {
-      const convertedBodyData: Record<string, string | number> = {};
-      for (const [key, value] of Object.entries(bodyData)) {
-        if (typeof value === 'string' || typeof value === 'number') {
-          convertedBodyData[key] = value;
-        } else if (value != null) {
-          convertedBodyData[key] = String(value);
+  const requestHeaders: Record<string, string> = {
+    ...(hasBody && !isFormData && method.toUpperCase() !== 'GET' && method.toUpperCase() !== 'HEAD'
+      ? { 'Content-Type': 'application/json' }
+      : {}),
+    ...headers,
+  };
+
+  if (isFormData && requestHeaders['Content-Type']) {
+    delete requestHeaders['Content-Type'];
+  }
+
+  if (token && !headers?.Authorization) {
+    requestHeaders.Authorization = `Bearer ${token}`;
+  }
+
+  let finalParams: Record<string, string | number> | undefined = params;
+  if (method.toUpperCase() === 'DELETE' && bodyData && !(bodyData instanceof FormData)) {
+    const convertedBodyData: Record<string, string | number> = {};
+    for (const [key, value] of Object.entries(bodyData)) {
+      if (typeof value === 'string' || typeof value === 'number') {
+        convertedBodyData[key] = value;
+      } else if (value != null) {
+        convertedBodyData[key] = String(value);
+      }
+    }
+    finalParams = { ...params, ...convertedBodyData };
+  }
+
+  try {
+    const response = await axiosInstance<T>({
+      method: `${method}`,
+      url: url,
+      data: bodyData ?? undefined,
+      headers: requestHeaders,
+      params: finalParams ?? undefined,
+      withCredentials: true,
+      timeout: 30000,
+    });
+
+    return response;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        const isDeleteCategoryWithCourses =
+          method.toUpperCase() === 'DELETE' &&
+          url.includes('/category/deleteCategory') &&
+          error.response.status === 400 &&
+          error.response.data?.courses &&
+          Array.isArray(error.response.data.courses) &&
+          error.response.data.courses.length > 0;
+
+        if (!isDeleteCategoryWithCourses) {
+          console.error('API Error:', {
+            status: error.response.status,
+            url,
+            method: method.toUpperCase(),
+          });
         }
       }
-      finalParams = { ...params, ...convertedBodyData };
     }
 
-    try {
-      const response = await axiosInstance<T>({
-        method: `${method}`,
-        url: url,
-        data: bodyData ?? undefined,
-        headers: requestHeaders,
-        params: finalParams ?? undefined,
-        withCredentials: true,
-        timeout: 30000,
-      });
-      
-      return response;
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          const isDeleteCategoryWithCourses = 
-            method.toUpperCase() === 'DELETE' &&
-            url.includes('/category/deleteCategory') &&
-            error.response.status === 400 &&
-            error.response.data?.courses &&
-            Array.isArray(error.response.data.courses) &&
-            error.response.data.courses.length > 0;
-          
-          if (!isDeleteCategoryWithCourses) {
-            console.error('API Error:', {
-              status: error.response.status,
-              url,
-              method: method.toUpperCase(),
-            });
-          }
-        }
-      }
-      
-      throw error;
-    }
+    throw error;
+  }
 };
 
 // Conector de API con soporte de tipos genéricos
 export const apiConnector = <T = unknown>(
-    method: string,
-    url: string,
-    bodyData?: Record<string, unknown> | FormData,
-    headers?: Record<string, string>,
-    params?: Record<string, string | number>
+  method: string,
+  url: string,
+  bodyData?: Record<string, unknown> | FormData,
+  headers?: Record<string, string>,
+  params?: Record<string, string | number>
 ): Promise<AxiosResponse<T>> => {
-    return realApiConnector<T>(method, url, bodyData, headers, params);
+  return realApiConnector<T>(method, url, bodyData, headers, params);
 };

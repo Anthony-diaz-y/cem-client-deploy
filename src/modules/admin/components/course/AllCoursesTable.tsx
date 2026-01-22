@@ -19,6 +19,20 @@ interface AllCoursesTableProps {
   token: string;
   onUpdate: () => void;
   onEdit: (course: AdminCourse) => void;
+  filters?: {
+    search?: string;
+    status?: string;
+    categoryId?: string;
+    instructorId?: string;
+  };
+  onFiltersChange?: (filters: {
+    search?: string;
+    status?: string;
+    categoryId?: string;
+    instructorId?: string;
+  }) => void;
+  searchInput?: string;
+  onSearchInputChange?: (value: string) => void;
 }
 
 interface Category {
@@ -35,6 +49,10 @@ export default function AllCoursesTable({
   courses,
   token,
   onUpdate,
+  filters,
+  onFiltersChange,
+  searchInput: externalSearchInput,
+  onSearchInputChange,
 }: AllCoursesTableProps) {
   const [confirmationModal, setConfirmationModal] = useState<{
     isOpen: boolean;
@@ -46,12 +64,24 @@ export default function AllCoursesTable({
     course: null,
   });
 
-  const [statusFilter, setStatusFilter] = useState<
+  // Usar filtros externos si están disponibles, sino usar estado local
+  const [localStatusFilter, setLocalStatusFilter] = useState<
     "all" | "Draft" | "Published"
   >("all");
-  const [categoryFilter, setCategoryFilter] = useState<string>("all");
-  const [instructorFilter, setInstructorFilter] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [localCategoryFilter, setLocalCategoryFilter] = useState<string>("all");
+  const [localInstructorFilter, setLocalInstructorFilter] = useState<string>("all");
+  const [localSearchQuery, setLocalSearchQuery] = useState<string>("");
+
+  // Validar que el statusFilter sea uno de los valores permitidos
+  const statusFilter: "all" | "Draft" | "Published" =
+    (filters?.status && (filters.status === "all" || filters.status === "Draft" || filters.status === "Published"))
+      ? filters.status
+      : localStatusFilter;
+  const categoryFilter = filters?.categoryId || localCategoryFilter;
+  const instructorFilter = filters?.instructorId || localInstructorFilter;
+  const searchQuery = filters?.search || localSearchQuery;
+  const searchInput = externalSearchInput !== undefined ? externalSearchInput : localSearchQuery;
+
   const [allCategories, setAllCategories] = useState<Category[]>([]);
 
   // Obtiene todas las categorías desde la API
@@ -70,15 +100,69 @@ export default function AllCoursesTable({
     loadCategories();
   }, []);
 
-  // Usa el hook personalizado para filtrar cursos
+  const hasBackendFilters = filters && (
+    (filters.search !== undefined && filters.search !== null && filters.search.trim() !== "") ||
+    (filters.status !== undefined && filters.status !== null && filters.status !== "all") ||
+    (filters.categoryId !== undefined && filters.categoryId !== null && filters.categoryId !== "all") ||
+    (filters.instructorId !== undefined && filters.instructorId !== null && filters.instructorId !== "all")
+  );
+  const shouldFilterLocally = !hasBackendFilters;
+
+  // Usar el hook solo para obtener categorías e instructores únicos, no para filtrar
   const { filteredCourses, categories, instructors } = useCourseFilters(
     courses,
-    statusFilter,
-    categoryFilter,
-    instructorFilter,
-    searchQuery,
+    shouldFilterLocally ? statusFilter : "all",
+    shouldFilterLocally ? categoryFilter : "all",
+    shouldFilterLocally ? instructorFilter : "all",
+    shouldFilterLocally ? searchQuery : "",
     allCategories
   );
+
+  const displayCourses = hasBackendFilters ? courses : filteredCourses;
+
+  const handleStatusChange = (value: "all" | "Draft" | "Published") => {
+    if (onFiltersChange) {
+      const newFilters = {
+        ...filters,
+        status: value,
+      };
+      onFiltersChange(newFilters);
+    } else {
+      setLocalStatusFilter(value);
+    }
+  };
+
+  const handleCategoryChange = (value: string) => {
+    if (onFiltersChange) {
+      const newFilters = {
+        ...filters,
+        categoryId: value,
+      };
+      onFiltersChange(newFilters);
+    } else {
+      setLocalCategoryFilter(value);
+    }
+  };
+
+  const handleInstructorChange = (value: string) => {
+    if (onFiltersChange) {
+      const newFilters = {
+        ...filters,
+        instructorId: value,
+      };
+      onFiltersChange(newFilters);
+    } else {
+      setLocalInstructorFilter(value);
+    }
+  };
+
+  const handleSearchChange = (value: string) => {
+    if (onSearchInputChange) {
+      onSearchInputChange(value);
+    } else {
+      setLocalSearchQuery(value);
+    }
+  };
 
   // Maneja el click en publicar
   const handlePublishClick = (course: AdminCourse) => {
@@ -140,22 +224,23 @@ export default function AllCoursesTable({
           statusFilter={statusFilter}
           categoryFilter={categoryFilter}
           instructorFilter={instructorFilter}
-          searchQuery={searchQuery}
+          searchQuery={searchInput}
           categories={categories}
           instructors={instructors}
-          onStatusChange={setStatusFilter}
-          onCategoryChange={setCategoryFilter}
-          onInstructorChange={setInstructorFilter}
-          onSearchChange={setSearchQuery}
+          onStatusChange={handleStatusChange}
+          onCategoryChange={handleCategoryChange}
+          onInstructorChange={handleInstructorChange}
+          onSearchChange={handleSearchChange}
         />
 
         {/* Cantidad de cursos */}
         <div className="text-sm text-richblack-400">
-          {filteredCourses.length} de {courses.length} cursos
+          {displayCourses.length} curso{displayCourses.length !== 1 ? "s" : ""} encontrado{displayCourses.length !== 1 ? "s" : ""}
+          {shouldFilterLocally && ` de ${courses.length} total`}
         </div>
 
         {/* Grid de cursos */}
-        {filteredCourses.length === 0 ? (
+        {displayCourses.length === 0 ? (
           <div className="bg-richblack-800 rounded-xl border border-richblack-700 p-12 text-center">
             <p className="text-richblack-400 text-lg">
               {courses.length === 0
@@ -165,7 +250,7 @@ export default function AllCoursesTable({
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {filteredCourses.map((course) => (
+            {displayCourses.map((course) => (
               <CourseCard
                 key={course.id}
                 course={course}
@@ -186,20 +271,20 @@ export default function AllCoursesTable({
               confirmationModal.type === "publish"
                 ? `¿Estás seguro de que deseas publicar el curso "${confirmationModal.course.courseName}"?`
                 : confirmationModal.type === "unpublish"
-                ? `¿Estás seguro de que deseas despublicar el curso "${confirmationModal.course.courseName}"?`
-                : `¿Estás seguro de que deseas eliminar el curso "${confirmationModal.course.courseName}"?`,
+                  ? `¿Estás seguro de que deseas despublicar el curso "${confirmationModal.course.courseName}"?`
+                  : `¿Estás seguro de que deseas eliminar el curso "${confirmationModal.course.courseName}"?`,
             text2:
               confirmationModal.type === "publish"
                 ? "El curso quedará disponible para los estudiantes después de la publicación."
                 : confirmationModal.type === "unpublish"
-                ? "El curso volverá al estado de borrador y no estará disponible para los estudiantes."
-                : "Esta acción es irreversible. El curso será eliminado permanentemente.",
+                  ? "El curso volverá al estado de borrador y no estará disponible para los estudiantes."
+                  : "Esta acción es irreversible. El curso será eliminado permanentemente.",
             btn1Text:
               confirmationModal.type === "publish"
                 ? "Publicar"
                 : confirmationModal.type === "unpublish"
-                ? "Despublicar"
-                : "Eliminar",
+                  ? "Despublicar"
+                  : "Eliminar",
             btn2Text: "Cancelar",
             btn1Handler: handleConfirm,
             btn2Handler: () =>

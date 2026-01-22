@@ -70,6 +70,12 @@ export default function RenderTotalAmount() {
       }, 800);
     } catch (error: any) {
       console.log("ERROR AL INSCRIBIR A LOS CURSOS (TEMPORAL)....", error);
+
+      // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+      if (error?.response?.status === 401) {
+        return;
+      }
+
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||

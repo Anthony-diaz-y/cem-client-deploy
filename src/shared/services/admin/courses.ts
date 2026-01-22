@@ -51,7 +51,10 @@ export async function getPendingCourses(token: string): Promise<AdminCourse[]> {
     return response.data.data;
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError.response?.data?.message || "Error al cargar cursos pendientes");
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(apiError.response?.data?.message || "Error al cargar cursos pendientes");
+    }
     toast.dismiss(toastId);
     return [];
   }
@@ -59,14 +62,52 @@ export async function getPendingCourses(token: string): Promise<AdminCourse[]> {
 
 /**
  * Obtiene todos los cursos del sistema
- * @param token - Token JWT de autenticación
- * @returns Lista de todos los cursos
  */
-export async function getAllCoursesAdmin(token: string): Promise<AdminCourse[]> {
+export async function getAllCoursesAdmin(
+  token: string,
+  filters?: { page?: number; limit?: number; search?: string; status?: string; categoryId?: string; instructorId?: string },
+  silent = false
+): Promise<AllCoursesResponse | null> {
+  const toastId = silent ? null : toast.loading("Cargando cursos...");
   try {
+    const params = new URLSearchParams();
+
+    // Siempre enviar page y limit si existen
+    if (filters?.page !== undefined) {
+      params.append("page", filters.page.toString());
+    }
+
+    if (filters?.limit !== undefined) {
+      params.append("limit", filters.limit.toString());
+    }
+
+    // Enviar search si existe y no está vacío
+    if (filters?.search && filters.search.trim() !== "") {
+      params.append("search", filters.search.trim());
+    }
+
+    // Enviar status si existe y no es "all"
+    if (filters?.status && filters.status !== "all") {
+      params.append("status", filters.status);
+    }
+
+    // Enviar categoryId si existe y no es "all"
+    if (filters?.categoryId && filters.categoryId !== "all") {
+      params.append("categoryId", filters.categoryId);
+    }
+
+    // Enviar instructorId si existe y no es "all"
+    if (filters?.instructorId && filters.instructorId !== "all") {
+      params.append("instructorId", filters.instructorId);
+    }
+
+    const url = params.toString()
+      ? `${ALL_COURSES_API}?${params.toString()}`
+      : ALL_COURSES_API;
+
     const response = await apiConnector<AllCoursesResponse>(
       "GET",
-      ALL_COURSES_API,
+      url,
       undefined,
       {
         Authorization: `Bearer ${token}`,
@@ -77,19 +118,23 @@ export async function getAllCoursesAdmin(token: string): Promise<AdminCourse[]> 
       throw new Error(response.data.message);
     }
 
-    return response.data.data;
+    if (toastId) toast.dismiss(toastId);
+    return response.data;
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError.response?.data?.message || "Error al cargar cursos");
-    return [];
+    console.error("❌ Error en getAllCoursesAdmin:", error);
+    console.error("❌ Detalles del error:", apiError.response?.data);
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(apiError.response?.data?.message || "Error al cargar cursos");
+    }
+    if (toastId) toast.dismiss(toastId);
+    return null;
   }
 }
 
 /**
  * Publica un curso pendiente
- * @param courseId - ID del curso a publicar
- * @param token - Token JWT de autenticación
- * @returns true si la operación fue exitosa
  */
 export async function publishCourse(
   courseId: string,
@@ -116,7 +161,10 @@ export async function publishCourse(
     return true;
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError.response?.data?.message || "Error al publicar curso");
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(apiError.response?.data?.message || "Error al publicar curso");
+    }
     toast.dismiss(toastId);
     return false;
   }
@@ -124,10 +172,6 @@ export async function publishCourse(
 
 /**
  * Edita un curso existente
- * @param courseId - ID del curso a editar
- * @param data - Datos del curso (FormData o objeto)
- * @param token - Token JWT de autenticación
- * @returns Curso editado o null en caso de error
  */
 export async function editCourseAdmin(
   courseId: string,
@@ -136,15 +180,15 @@ export async function editCourseAdmin(
 ): Promise<AdminCourse | null> {
   const toastId = toast.loading("Editando curso...");
   try {
-    const requestData = data instanceof FormData 
+    const requestData = data instanceof FormData
       ? (() => {
-          const formData = new FormData();
-          formData.append("courseId", courseId);
-          for (const [key, value] of data.entries()) {
-            formData.append(key, value);
-          }
-          return formData;
-        })()
+        const formData = new FormData();
+        formData.append("courseId", courseId);
+        for (const [key, value] of data.entries()) {
+          formData.append(key, value);
+        }
+        return formData;
+      })()
       : { ...data as Record<string, unknown>, courseId };
 
     const response = await apiConnector<EditCourseResponse>(
@@ -166,7 +210,10 @@ export async function editCourseAdmin(
     return response.data.data;
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError.response?.data?.message || "Error al editar curso");
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(apiError.response?.data?.message || "Error al editar curso");
+    }
     toast.dismiss(toastId);
     return null;
   }
@@ -174,10 +221,6 @@ export async function editCourseAdmin(
 
 /**
  * Elimina un curso del sistema
- * @param courseId - ID del curso a eliminar
- * @param token - Token JWT de autenticación
- * @param silent - Si es true, no muestra toasts (útil para operaciones masivas)
- * @returns true si la operación fue exitosa
  */
 export async function deleteCourseAdmin(
   courseId: string,
@@ -208,7 +251,10 @@ export async function deleteCourseAdmin(
   } catch (error) {
     const apiError = error as ApiError;
     if (!silent) {
-      toast.error(apiError.response?.data?.message || "Error al eliminar curso");
+      // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+      if (apiError.response?.status !== 401) {
+        toast.error(apiError.response?.data?.message || "Error al eliminar curso");
+      }
       toast.dismiss(toastId);
     }
     return false;
@@ -217,9 +263,6 @@ export async function deleteCourseAdmin(
 
 /**
  * Obtiene los detalles completos de un curso
- * @param courseId - ID del curso
- * @param token - Token JWT de autenticación
- * @returns Datos completos del curso o null en caso de error
  */
 export async function getCourseDetailsAdmin(
   courseId: string,
@@ -242,17 +285,16 @@ export async function getCourseDetailsAdmin(
     return response.data.data;
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError.response?.data?.message || "Error al cargar detalles del curso");
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(apiError.response?.data?.message || "Error al cargar detalles del curso");
+    }
     return null;
   }
 }
 
 /**
  * Elimina múltiples cursos a la vez
- * Si el backend no tiene un endpoint para eliminar múltiples, elimina uno por uno
- * @param courseIds - Array de IDs de cursos a eliminar
- * @param token - Token JWT de autenticación
- * @returns Resultado de la operación con información de éxitos y fallos
  */
 export async function deleteMultipleCourses(
   courseIds: string[],
@@ -281,11 +323,8 @@ export async function deleteMultipleCourses(
   };
 
   try {
-    // Eliminar cursos uno por uno en modo silencioso (sin toasts individuales)
-    // Con una pequeña espera entre eliminaciones para no sobrecargar el servidor
     for (const courseId of courseIds) {
       try {
-        // Usar modo silencioso para no mostrar toasts individuales
         const success = await deleteCourseAdmin(courseId, token, true);
         if (success) {
           results.successful.push(courseId);
@@ -297,7 +336,6 @@ export async function deleteMultipleCourses(
           });
         }
 
-        // Pequeña espera entre eliminaciones (100ms) para no sobrecargar
         if (courseIds.indexOf(courseId) < courseIds.length - 1) {
           await new Promise((resolve) => setTimeout(resolve, 100));
         }
@@ -310,7 +348,6 @@ export async function deleteMultipleCourses(
       }
     }
 
-    // Mensaje final
     if (results.failed.length === 0) {
       results.message = `Todos los ${results.successful.length} curso(s) fueron eliminados exitosamente`;
       toast.success(results.message, { id: toastId });

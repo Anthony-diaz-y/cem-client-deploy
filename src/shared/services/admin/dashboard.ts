@@ -31,7 +31,10 @@ export async function getAdminDashboard(token: string, filter: string = "month")
     return response.data.data;
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError.response?.data?.message || "Error al cargar estadísticas");
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(apiError.response?.data?.message || "Error al cargar estadísticas");
+    }
     return null;
   }
 }

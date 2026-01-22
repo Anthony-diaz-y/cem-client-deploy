@@ -2,22 +2,21 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useAppSelector } from "@shared/store/hooks";
-import AllInstructorsTable from "../components/instructor/AllInstructorsTable";
-import { getAllInstructors, InstructorFilters, Instructor } from "@shared/services/adminAPI";
+import AllStudentsTable from "../components/student/AllStudentsTable";
+import { getAllStudents, StudentFilters, Student } from "@shared/services/admin/students";
 import { Loading } from "@shared/components";
 import CustomDropdown from "../components/dropdown/CustomDropdown";
 import { FiSearch } from "react-icons/fi";
 
 import Pagination from "@shared/components/common/Pagination";
 
-export default function AllInstructorsContainer() {
+export default function AllStudentsContainer() {
   const { token } = useAppSelector((state) => state.auth);
-  const [instructors, setInstructors] = useState<Instructor[]>([]);
+  const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [searching, setSearching] = useState(false);
   const [searchInput, setSearchInput] = useState("");
-  const [filters, setFilters] = useState<InstructorFilters>({
-    status: "all",
+  const [filters, setFilters] = useState<StudentFilters>({
     active: undefined,
     search: "",
     page: 1,
@@ -25,8 +24,6 @@ export default function AllInstructorsContainer() {
   });
   const [counts, setCounts] = useState({
     total: 0,
-    approved: 0,
-    pending: 0,
     active: 0,
     inactive: 0,
   });
@@ -39,7 +36,7 @@ export default function AllInstructorsContainer() {
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialMount = useRef(true);
 
-  const fetchInstructors = useCallback(async (currentFilters: InstructorFilters, showLoading = true) => {
+  const fetchStudents = useCallback(async (currentFilters: StudentFilters, showLoading = true) => {
     if (!token) return;
     if (showLoading) {
       setLoading(true);
@@ -47,22 +44,20 @@ export default function AllInstructorsContainer() {
       setSearching(true);
     }
     try {
-      const response = await getAllInstructors(token, currentFilters, true);
-      if (response) {
-        setInstructors(response.data.all || []);
+      const response = await getAllStudents(token, currentFilters, true);
+      if (response && response.success) {
+        setStudents(response.data.all || []);
         setCounts({
-          total: response.counts.total || 0,
-          approved: response.counts.approved || 0,
-          pending: response.counts.pending || 0,
-          active: response.counts.active || 0,
-          inactive: response.counts.inactive || 0,
+          total: response.counts?.total || 0,
+          active: response.counts?.active || 0,
+          inactive: response.counts?.inactive || 0,
         });
         if (response.meta) {
           setMeta(response.meta);
         }
       }
     } catch (error) {
-      setInstructors([]);
+      setStudents([]);
     } finally {
       setLoading(false);
       setSearching(false);
@@ -86,7 +81,6 @@ export default function AllInstructorsContainer() {
       return;
     }
 
-    // Búsqueda más inmediata con debounce reducido
     debounceTimerRef.current = setTimeout(() => {
       setFilters((prev) => ({ ...prev, search: trimmedSearch, page: 1 }));
     }, 300);
@@ -98,18 +92,18 @@ export default function AllInstructorsContainer() {
     };
   }, [searchInput]);
 
-  // Efecto para cargar instructores cuando cambian los filtros
+  // Efecto para cargar estudiantes cuando cambian los filtros
   useEffect(() => {
     if (!token) return;
 
     const showLoading = isInitialMount.current || filters.page !== meta.page;
 
-    fetchInstructors(filters, showLoading);
+    fetchStudents(filters, showLoading);
 
     if (isInitialMount.current) {
       isInitialMount.current = false;
     }
-  }, [token, filters, fetchInstructors]);
+  }, [token, filters, fetchStudents]);
 
   if (!token) {
     return (
@@ -127,26 +121,18 @@ export default function AllInstructorsContainer() {
     <div className="space-y-6">
       <div className="space-y-4">
         <h1 className="text-3xl font-bold text-richblack-5">
-          Gestión de Instructores
+          Gestión de Estudiantes
         </h1>
         <p className="text-richblack-400">
-          Administra todos los instructores del sistema. Filtra, busca, edita información, activa/desactiva cuentas y gestiona sus estados de manera completa.
+          Administra todos los estudiantes del sistema. Filtra, busca, edita información y administra sus estados.
         </p>
       </div>
 
       {/* Contadores de estadísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-richblack-800 rounded-xl p-4 border border-richblack-700">
           <p className="text-sm text-richblack-400 mb-1">Total</p>
           <p className="text-2xl font-bold text-richblack-5">{counts.total}</p>
-        </div>
-        <div className="bg-richblack-800 rounded-xl p-4 border border-richblack-700">
-          <p className="text-sm text-richblack-400 mb-1">Aprobados</p>
-          <p className="text-2xl font-bold text-green-400">{counts.approved}</p>
-        </div>
-        <div className="bg-richblack-800 rounded-xl p-4 border border-richblack-700">
-          <p className="text-sm text-richblack-400 mb-1">Pendientes</p>
-          <p className="text-2xl font-bold text-yellow-400">{counts.pending}</p>
         </div>
         <div className="bg-richblack-800 rounded-xl p-4 border border-richblack-700">
           <p className="text-sm text-richblack-400 mb-1">Activos</p>
@@ -160,21 +146,7 @@ export default function AllInstructorsContainer() {
 
       {/* Filtros y búsqueda */}
       <div className="bg-richblack-800 rounded-xl border border-richblack-700 p-6 space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <CustomDropdown
-            label="Estado de Aprobación"
-            value={filters.status || "all"}
-            onChange={(value) =>
-              setFilters({ ...filters, status: value as "approved" | "pending" | "all", page: 1 })
-            }
-            options={[
-              { value: "all", label: "Todos" },
-              { value: "approved", label: "Aprobados" },
-              { value: "pending", label: "Pendientes" },
-            ]}
-            placeholder="Seleccionar estado"
-          />
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <CustomDropdown
             label="Estado Activo"
             value={
@@ -188,7 +160,7 @@ export default function AllInstructorsContainer() {
               setFilters({
                 ...filters,
                 active: value === "all" ? undefined : value === "true",
-                page: 1,
+                page: 1, // Reset to page 1 on filter change
               });
             }}
             options={[
@@ -201,7 +173,7 @@ export default function AllInstructorsContainer() {
 
           <div className="relative">
             <label className="block text-sm font-medium text-richblack-300 mb-2">
-              Buscar instructor
+              Buscar estudiante
             </label>
             <div className="relative">
               <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-richblack-400" size={18} />
@@ -228,10 +200,10 @@ export default function AllInstructorsContainer() {
         </div>
       ) : (
         <>
-          <AllInstructorsTable
-            instructors={instructors}
+          <AllStudentsTable
+            students={students}
             token={token}
-            onUpdate={() => fetchInstructors(filters, true)}
+            onUpdate={() => fetchStudents(filters, true)}
           />
 
           <Pagination
@@ -244,4 +216,3 @@ export default function AllInstructorsContainer() {
     </div>
   );
 }
-

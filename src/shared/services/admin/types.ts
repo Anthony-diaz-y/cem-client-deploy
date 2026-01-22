@@ -78,6 +78,8 @@ export interface InstructorFilters {
   status?: "approved" | "pending" | "all";
   active?: boolean;
   search?: string;
+  page?: number;
+  limit?: number;
 }
 
 export interface PendingInstructorsResponse {
@@ -101,8 +103,14 @@ export interface AllInstructorsResponse {
     total: number;
     approved: number;
     pending: number;
-    active?: number;
-    inactive?: number;
+    active: number;
+    inactive: number;
+  };
+  meta?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
   };
 }
 
@@ -180,6 +188,106 @@ export interface ApproveInstructorResponse {
   };
 }
 
+// ================ Student Types ================
+export interface Student {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  accountType: string;
+  active: boolean;
+  image: string;
+  createdAt: string;
+  updatedAt: string;
+  contactNumber?: string | null;
+  additionalDetails?: {
+    dateOfBirth?: string | null;
+    gender?: string | null;
+    about?: string | null;
+    contactNumber?: string | null;
+  };
+}
+
+export interface StudentFilters {
+  active?: boolean;
+  search?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface AllStudentsResponse {
+  success: boolean;
+  data: {
+    all: Student[];
+    active: Student[];
+    inactive: Student[];
+  };
+  message: string;
+  counts: {
+    total: number;
+    active: number;
+    inactive: number;
+  };
+  meta?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export interface StudentCourse {
+  id: string;
+  courseName: string;
+  thumbnail: string;
+  progressPercentage: number;
+  enrolledAt: string;
+  completed: boolean;
+  category?: {
+    name: string;
+  };
+}
+
+export interface StudentStatistics {
+  enrolledCourses: number;
+  completedCourses: number;
+  averageProgress: number;
+  totalTimeSpent?: number;
+}
+
+export interface StudentDetailsResponse {
+  success: boolean;
+  data: {
+    student: Student;
+    statistics: StudentStatistics;
+    enrolledCourses: StudentCourse[];
+  };
+  message: string;
+}
+
+export interface UpdateStudentData {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  contactNumber?: string | number | null;
+  active?: boolean;
+}
+
+export interface UpdateStudentResponse {
+  success: boolean;
+  message: string;
+  data: Student;
+}
+
+export interface ToggleStudentStatusResponse {
+  success: boolean;
+  message: string;
+  data: {
+    id: string;
+    active: boolean;
+  };
+}
+
 // ================ Course Types ================
 export interface CourseInstructor {
   id: string;
@@ -222,6 +330,17 @@ export interface AllCoursesResponse {
   data: AdminCourse[];
   message: string;
   count: number;
+  counts?: {
+    total: number;
+    published: number;
+    draft: number;
+  };
+  meta?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 export interface PublishCourseResponse {
@@ -552,6 +671,25 @@ export interface DeleteReviewResponse {
       lastName: string;
       email: string;
     };
+  };
+}
+
+// ================ Global Search Types ================
+export interface GlobalSearchResult {
+  students: Student[];
+  instructors: Instructor[];
+  courses: AdminCourse[];
+}
+
+export interface GlobalSearchResponse {
+  success: boolean;
+  message: string;
+  data: GlobalSearchResult;
+  counts: {
+    students: number;
+    instructors: number;
+    courses: number;
+    total: number;
   };
 }
 

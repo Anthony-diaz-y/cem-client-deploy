@@ -17,7 +17,6 @@ import type { BuyNowTemporaryResponse } from "../types";
 
 /**
  * Custom hook for course actions (buy, add to cart, active sections)
- * Separates action handlers from component
  */
 export const useCourseActions = (
   courseId: string | string[] | undefined,
@@ -76,6 +75,12 @@ export const useCourseActions = (
       dispatch(resetCart());
     } catch (error: any) {
       console.log("ERROR AL INSCRIBIR AL CURSO (TEMPORAL)....", error);
+
+      // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+      if (error?.response?.status === 401) {
+        return;
+      }
+
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
@@ -92,7 +97,7 @@ export const useCourseActions = (
         // Invalidar cache del instructor para que se actualicen los datos de estudiantes
         invalidateInstructorCache();
 
-        // Disparar evento personalizado para refrescar datos del instructor
+        // Disparar evento personalizado para refreshar datos del instructor
         if (typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("instructorDataRefresh"));
         }
