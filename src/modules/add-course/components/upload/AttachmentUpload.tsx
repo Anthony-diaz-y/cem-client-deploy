@@ -5,6 +5,7 @@ import { UseFormRegister, UseFormSetValue, FieldErrors, FieldValues, Path } from
 
 interface AttachmentUploadProps<TFieldValues extends FieldValues = FieldValues> {
   name: Path<TFieldValues>;
+  deletedAttachmentsName?: Path<TFieldValues>;
   label: string;
   register: UseFormRegister<TFieldValues>;
   setValue: UseFormSetValue<TFieldValues>;
@@ -14,6 +15,7 @@ interface AttachmentUploadProps<TFieldValues extends FieldValues = FieldValues> 
 
 function AttachmentUpload<TFieldValues extends FieldValues = FieldValues>({
   name,
+  deletedAttachmentsName,
   label,
   register,
   setValue,
@@ -21,6 +23,7 @@ function AttachmentUpload<TFieldValues extends FieldValues = FieldValues>({
   existingAttachments = [],
 }: AttachmentUploadProps<TFieldValues>) {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [deletedUrls, setDeletedUrls] = useState<string[]>([]);
 
   const onDrop = (acceptedFiles: FileWithPath[]) => {
     const newFiles = [...selectedFiles, ...acceptedFiles];
@@ -29,13 +32,6 @@ function AttachmentUpload<TFieldValues extends FieldValues = FieldValues>({
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: {
-      "application/pdf": [".pdf"],
-      "application/msword": [".doc"],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
-      "application/vnd.ms-excel": [".xls"],
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
-    },
     onDrop,
   });
 
@@ -45,9 +41,22 @@ function AttachmentUpload<TFieldValues extends FieldValues = FieldValues>({
     setValue(name, (newFiles.length > 0 ? newFiles : undefined) as TFieldValues[Path<TFieldValues>]);
   };
 
+  const handleRemoveExisting = (url: string) => {
+    const updatedDeleted = [...deletedUrls, url];
+    setDeletedUrls(updatedDeleted);
+    if (deletedAttachmentsName) {
+      setValue(deletedAttachmentsName, updatedDeleted as TFieldValues[Path<TFieldValues>]);
+    }
+  };
+
   useEffect(() => {
     register(name);
-  }, [register, name]);
+    if (deletedAttachmentsName) {
+      register(deletedAttachmentsName);
+    }
+  }, [register, name, deletedAttachmentsName]);
+
+  const visibleExisting = existingAttachments.filter(att => !deletedUrls.includes(att.url));
 
   return (
     <div className="flex flex-col space-y-2">
@@ -70,7 +79,7 @@ function AttachmentUpload<TFieldValues extends FieldValues = FieldValues>({
             Arrastra archivos o haz clic para <span className="font-semibold text-yellow-50">Explorar</span>
           </p>
           <p className="mt-1 text-center text-[10px] text-richblack-400">
-            Soportado: PDF, Word, Excel
+            Todos los formatos permitidos (.zip, .pdf, .json, .sql, etc.)
           </p>
         </div>
       </div>
@@ -78,7 +87,7 @@ function AttachmentUpload<TFieldValues extends FieldValues = FieldValues>({
       {/* Lista de archivos seleccionados */}
       {selectedFiles.length > 0 && (
         <div className="mt-4 space-y-2">
-          <p className="text-xs font-semibold text-richblack-5">Archivos seleccionados:</p>
+          <p className="text-xs font-semibold text-richblack-5">Nuevos archivos:</p>
           {selectedFiles.map((file, index) => (
             <div key={index} className="flex items-center justify-between rounded-md bg-richblack-700 p-2 text-xs text-richblack-5">
               <div className="flex items-center space-x-2">
@@ -97,14 +106,23 @@ function AttachmentUpload<TFieldValues extends FieldValues = FieldValues>({
         </div>
       )}
 
-      {/* Adjuntos existentes (solo lectura visual por ahora) */}
-      {existingAttachments.length > 0 && (
+      {/* Adjuntos existentes */}
+      {visibleExisting.length > 0 && (
         <div className="mt-4 space-y-2">
           <p className="text-xs font-semibold text-richblack-5 text-yellow-100">Adjuntos actuales:</p>
-          {existingAttachments.map((attachment, index) => (
-            <div key={index} className="flex items-center space-x-2 rounded-md bg-richblack-800 p-2 text-xs text-richblack-400">
-              <FiFile />
-              <span className="truncate">{attachment.name}</span>
+          {visibleExisting.map((attachment, index) => (
+            <div key={index} className="flex items-center justify-between rounded-md bg-richblack-800 p-2 text-xs text-richblack-400">
+              <div className="flex items-center space-x-2">
+                <FiFile />
+                <span className="truncate max-w-[200px]">{attachment.name}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleRemoveExisting(attachment.url)}
+                className="text-pink-200 hover:text-pink-100"
+              >
+                <FiX size={16} />
+              </button>
             </div>
           ))}
         </div>
@@ -117,7 +135,7 @@ function AttachmentUpload<TFieldValues extends FieldValues = FieldValues>({
       )}
     </div>
   );
-};
+}
 
 export default AttachmentUpload;
 

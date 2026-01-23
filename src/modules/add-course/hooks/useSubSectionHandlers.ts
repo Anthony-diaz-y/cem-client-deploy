@@ -133,6 +133,12 @@ export const useSubSectionHandlers = ({
       });
     }
 
+    if (currentValues.deletedAttachments && currentValues.deletedAttachments.length > 0) {
+      currentValues.deletedAttachments.forEach((url) => {
+        formData.append("deletedAttachments", url);
+      });
+    }
+
     const updatePromise = async () => {
       const result = await updateSubSection(formData, token, true);
 

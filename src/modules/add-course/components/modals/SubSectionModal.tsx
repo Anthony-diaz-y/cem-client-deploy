@@ -78,8 +78,8 @@ export default function SubSectionModal({
           <p className="text-xl font-semibold text-richblack-5">
             {view && "Viendo"} {add && "Agregando"} {edit && "Editando"} Lección
           </p>
-          <button 
-            onClick={() => (!loading ? setModalData(null) : {})} 
+          <button
+            onClick={() => (!loading ? setModalData(null) : {})}
             className="text-richblack-5 hover:text-richblack-200 transition-colors"
           >
             <RxCross2 className="text-2xl" />
@@ -121,11 +121,10 @@ export default function SubSectionModal({
                 <button
                   type="button"
                   onClick={() => setShowTextContent(!showTextContent)}
-                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
-                    showTextContent
-                      ? 'border-yellow-50 bg-yellow-50/10 text-yellow-50'
-                      : 'border-richblack-600 bg-richblack-700 text-richblack-300 hover:border-richblack-500'
-                  }`}
+                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${showTextContent
+                    ? 'border-yellow-50 bg-yellow-50/10 text-yellow-50'
+                    : 'border-richblack-600 bg-richblack-700 text-richblack-300 hover:border-richblack-500'
+                    }`}
                 >
                   <MdTextFields className="text-xl" />
                   <span className="text-sm font-medium">Contenido de Texto</span>
@@ -135,11 +134,10 @@ export default function SubSectionModal({
                 <button
                   type="button"
                   onClick={() => setShowVideo(!showVideo)}
-                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
-                    showVideo
-                      ? 'border-yellow-50 bg-yellow-50/10 text-yellow-50'
-                      : 'border-richblack-600 bg-richblack-700 text-richblack-300 hover:border-richblack-500'
-                  }`}
+                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${showVideo
+                    ? 'border-yellow-50 bg-yellow-50/10 text-yellow-50'
+                    : 'border-richblack-600 bg-richblack-700 text-richblack-300 hover:border-richblack-500'
+                    }`}
                 >
                   <MdVideoLibrary className="text-xl" />
                   <span className="text-sm font-medium">Video</span>
@@ -149,11 +147,10 @@ export default function SubSectionModal({
                 <button
                   type="button"
                   onClick={() => setShowAttachments(!showAttachments)}
-                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
-                    showAttachments
-                      ? 'border-yellow-50 bg-yellow-50/10 text-yellow-50'
-                      : 'border-richblack-600 bg-richblack-700 text-richblack-300 hover:border-richblack-500'
-                  }`}
+                  className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${showAttachments
+                    ? 'border-yellow-50 bg-yellow-50/10 text-yellow-50'
+                    : 'border-richblack-600 bg-richblack-700 text-richblack-300 hover:border-richblack-500'
+                    }`}
                 >
                   <MdAttachFile className="text-xl" />
                   <span className="text-sm font-medium">Archivos</span>
@@ -213,6 +210,7 @@ export default function SubSectionModal({
               <div className="animate-fadeIn">
                 <AttachmentUpload<SubSectionModalFormData>
                   name="lectureAttachments"
+                  deletedAttachmentsName="deletedAttachments"
                   label="Material Descargable"
                   register={register}
                   setValue={setValue}
