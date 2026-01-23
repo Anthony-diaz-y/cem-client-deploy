@@ -28,12 +28,12 @@ export const useSubSectionForm = ({
   useEffect(() => {
     if ((view || edit) && modalData && typeof modalData === "object") {
       const subSectionData = modalData as SubSection & { sectionId?: string };
-      
+
       // Usar setTimeout para evitar llamadas sincrónicas de setState
       setTimeout(() => {
         setValue("lectureTitle", subSectionData.title);
         setValue("lectureVideo", subSectionData.videoUrl);
-        
+
         const content = subSectionData.content || subSectionData.description || "";
         setRichTextContent(content);
         setValue("lectureContent", content);
@@ -52,11 +52,13 @@ export const useSubSectionForm = ({
     if (!modalData || typeof modalData === "string") return false;
     const currentValues = getValues();
     const subSectionData = modalData as SubSection & { sectionId?: string };
-    
+
     return (
       currentValues.lectureTitle !== subSectionData.title ||
       currentValues.lectureContent !== subSectionData.description ||
-      currentValues.lectureVideo !== subSectionData.videoUrl
+      currentValues.lectureVideo !== subSectionData.videoUrl ||
+      !!(currentValues.lectureAttachments && currentValues.lectureAttachments.length > 0) ||
+      !!(currentValues.deletedAttachments && currentValues.deletedAttachments.length > 0)
     );
   };
 

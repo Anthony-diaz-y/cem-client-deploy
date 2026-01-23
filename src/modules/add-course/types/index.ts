@@ -92,6 +92,7 @@ export interface SubSectionModalFormData {
   lectureVideo: string | File;
   lectureAttachments?: File[];
   lectureContent?: string;
+  deletedAttachments?: string[];
 }
 
 export interface SubSectionModalProps {
