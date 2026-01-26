@@ -42,10 +42,13 @@ export default function InstructorClassFilters({
 
   // Efecto para el debounce de búsqueda
   useEffect(() => {
-    if (!searchValue) return;
-
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
+    }
+
+    if (!searchValue || searchValue.trim() === '') {
+      onSearch('');
+      return;
     }
 
     searchTimeoutRef.current = setTimeout(() => {

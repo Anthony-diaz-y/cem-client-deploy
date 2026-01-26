@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ClaseProgramada } from "@/types/scheduledClasses.types";
 import { actualizarClaseProgramada } from "@/shared/services/scheduledClasses/scheduledClassesAPI";
 import { ConfirmationModal } from "@shared/components";
@@ -20,6 +20,14 @@ export default function AllScheduledClassesTable({
   token,
   onUpdate,
 }: AllScheduledClassesTableProps) {
+  // Estado local de las clases para actualizar sin recargar
+  const [localClasses, setLocalClasses] = useState<ClaseProgramada[]>(classes);
+
+  // Sincronizar estado local cuando cambian las props
+  useEffect(() => {
+    setLocalClasses(classes);
+  }, [classes]);
+
   const [confirmationModal, setConfirmationModal] = useState<{
     isOpen: boolean;
     class: ClaseProgramada | null;
@@ -47,13 +55,23 @@ export default function AllScheduledClassesTable({
         { isActive: newActiveStatus },
         token
       );
+      
+      // Actualizar solo la clase modificada en el estado local
+      setLocalClasses((prevClasses) =>
+        prevClasses.map((clase) =>
+          clase.id === confirmationModal.class!.id
+            ? { ...clase, isActive: newActiveStatus }
+            : clase
+        )
+      );
+
       toast.success(
         newActiveStatus
           ? "Clase activada exitosamente"
           : "Clase desactivada exitosamente"
       );
       setConfirmationModal({ isOpen: false, class: null });
-      onUpdate();
+      // No llamar a onUpdate() para evitar recargar toda la página
     } catch (error: unknown) {
       const mensaje =
         (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Error al cambiar estado de la clase";
@@ -61,7 +79,7 @@ export default function AllScheduledClassesTable({
     }
   };
 
-  if (classes.length === 0) {
+  if (localClasses.length === 0) {
     return (
       <div className="bg-richblack-800 rounded-xl p-8 border border-richblack-700 text-center">
         <p className="text-richblack-400 text-lg">
@@ -102,7 +120,7 @@ export default function AllScheduledClassesTable({
               </tr>
             </thead>
             <tbody className="divide-y divide-richblack-700">
-              {classes.map((clase) => (
+              {localClasses.map((clase) => (
                 <tr
                   key={clase.id}
                   className="hover:bg-richblack-700/50 transition-colors"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ClaseProgramada } from "@/types/scheduledClasses.types";
 import { formatearFechaProgramada } from "@/shared/utils/scheduledClassUtils";
 import { obtenerColorPlataforma, obtenerColorTextoPlataforma } from "@/shared/utils/scheduledClassUtils";
@@ -20,14 +20,30 @@ export default function AdminClassCard({
   onEdit,
   onDelete
 }: AdminClassCardProps) {
+  // Estado local para el estado activo/inactivo
+  const [isActive, setIsActive] = useState(clase.isActive);
+  
+  // Sincronizar estado local cuando cambia la prop
+  useEffect(() => {
+    setIsActive(clase.isActive);
+  }, [clase.isActive]);
+
   const fechaFormateada = formatearFechaProgramada(clase.scheduledDate);
   const [cambiandoEstado, setCambiandoEstado] = useState(false);
 
   const handleToggle = async () => {
     if (!onToggleActive) return;
     setCambiandoEstado(true);
+    const newActiveStatus = !isActive;
+    
+    // Actualizar estado local inmediatamente para feedback visual
+    setIsActive(newActiveStatus);
+    
     try {
-      await onToggleActive(clase.id, !clase.isActive);
+      await onToggleActive(clase.id, newActiveStatus);
+    } catch (error) {
+      // Revertir estado local si hay error
+      setIsActive(!newActiveStatus);
     } finally {
       setCambiandoEstado(false);
     }
@@ -42,12 +58,12 @@ export default function AdminClassCard({
         </div>
         <span
           className={`px-3 py-1 rounded-full text-xs font-semibold ${
-            clase.isActive
+            isActive
               ? "bg-green-500/20 text-green-400"
               : "bg-gray-500/20 text-gray-400"
           }`}
         >
-          {clase.isActive ? "✅ Activa" : "❌ Inactiva"}
+          {isActive ? "✅ Activa" : "❌ Inactiva"}
         </span>
       </div>
 
@@ -110,12 +126,12 @@ export default function AdminClassCard({
               onClick={handleToggle}
               disabled={cambiandoEstado}
               className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 ${
-                clase.isActive
+                isActive
                   ? "bg-orange-600/20 text-orange-400 hover:bg-orange-600/30"
                   : "bg-green-600/20 text-green-400 hover:bg-green-600/30"
               } ${cambiandoEstado ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              {cambiandoEstado ? '⏳' : clase.isActive ? '👁️ Desactivar' : '✅ Activar'}
+              {cambiandoEstado ? '⏳' : isActive ? '👁️ Desactivar' : '✅ Activar'}
             </button>
           )}
 

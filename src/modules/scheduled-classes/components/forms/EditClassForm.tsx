@@ -11,7 +11,7 @@ interface EditClassFormProps {
   clase: ClaseProgramada;
   token: string;
   userRole?: string;
-  onSuccess: () => void;
+  onSuccess: (updatedClass?: ClaseProgramada) => void;
   onCancel: () => void;
 }
 
@@ -77,9 +77,9 @@ export default function EditClassForm({ clase, token, userRole, onSuccess, onCan
         ...(esAdmin && { isActive: datos.isActive }),
       };
 
-      await actualizarClaseProgramada(clase.id, payload, token);
+      const response = await actualizarClaseProgramada(clase.id, payload, token);
       toast.success(SCHEDULED_CLASSES_TEXTS.forms.edit.success);
-      onSuccess();
+      onSuccess(response?.data);
     } catch (error: unknown) {
       const mensaje = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || SCHEDULED_CLASSES_TEXTS.forms.edit.error;
       toast.error(mensaje);

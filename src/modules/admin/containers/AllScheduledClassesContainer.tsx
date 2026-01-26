@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useAppSelector } from "@shared/store/hooks";
 import { Loading } from "@shared/components";
 import Pagination from "@shared/components/common/Pagination";
@@ -13,6 +13,9 @@ import { ConfirmationModal } from "@shared/components";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAdminClasses } from "../hooks/useAdminClasses";
 import { useClassModals } from "@/modules/scheduled-classes/hooks/useClassModals";
+import { ClaseProgramada } from "@/types/scheduledClasses.types";
+import { actualizarClaseProgramada, eliminarClaseProgramada } from "@/shared/services/scheduledClasses/scheduledClassesAPI";
+import toast from "react-hot-toast";
 
 /**
  * AllScheduledClassesContainer - Container component for Admin Classes Management
@@ -22,6 +25,9 @@ export default function AllScheduledClassesContainer() {
   const { token } = useAppSelector((state) => state.auth);
   const { user } = useAppSelector((state) => state.profile);
   const [mostrarFormularioCrear, setMostrarFormularioCrear] = useState(false);
+  
+  // Estado local de las clases para actualizar sin recargar
+  const [localClasses, setLocalClasses] = useState<ClaseProgramada[]>([]);
 
   // Custom hooks for data fetching and business logic
   const {
@@ -43,6 +49,11 @@ export default function AllScheduledClassesContainer() {
     refreshClasses,
   } = useAdminClasses(token);
 
+  // Sincronizar estado local cuando cambian las clases del hook
+  useEffect(() => {
+    setLocalClasses(classes);
+  }, [classes]);
+
   const {
     claseSeleccionada,
     editModalAbierto,
@@ -56,20 +67,80 @@ export default function AllScheduledClassesContainer() {
   } = useClassModals(user);
 
   // Wrapper para handleToggleActive que adapta la firma del componente AdminClassCard
+  // No recarga toda la página, solo actualiza el estado local del componente
   const handleToggleActiveWrapper = useCallback(async (classId: string, isActive: boolean) => {
     if (!token) return;
-    await handleToggleActiveFromHook(classId, isActive, token, user?.accountType, refreshClasses);
-  }, [token, user?.accountType, refreshClasses, handleToggleActiveFromHook]);
+    
+    try {
+      // Actualizar el estado local inmediatamente para feedback visual
+      setLocalClasses((prevClasses) =>
+        prevClasses.map((clase) =>
+          clase.id === classId ? { ...clase, isActive } : clase
+        )
+      );
+      
+      // Llamar al hook para actualizar en el backend
+      await handleToggleActiveFromHook(classId, isActive, token, user?.accountType);
+    } catch (error) {
+      // Revertir el estado local si hay error
+      setLocalClasses((prevClasses) =>
+        prevClasses.map((clase) =>
+          clase.id === classId ? { ...clase, isActive: !isActive } : clase
+        )
+      );
+    }
+  }, [token, user?.accountType, handleToggleActiveFromHook]);
 
   // Wrapper para handleEdit que adapta la firma del componente AdminClassCard
+  // Usa localClasses para asegurar que se use la versión más actualizada
   const handleEditWrapper = useCallback((classId: string) => {
-    handleEdit(classId, classes);
-  }, [classes, handleEdit]);
+    handleEdit(classId, localClasses);
+  }, [localClasses, handleEdit]);
 
-  // Wrapper para confirmDelete que adapta la firma del modal
+  // Wrapper para confirmDelete que actualiza el estado local sin recargar
   const confirmDeleteWrapper = useCallback(async () => {
-    await confirmDeleteFromHook(token, user?.accountType, refreshClasses);
-  }, [token, user?.accountType, refreshClasses, confirmDeleteFromHook]);
+    if (!deleteModal.classId) return;
+    
+    try {
+      await eliminarClaseProgramada(deleteModal.classId, token);
+      
+      // Remover la clase eliminada del estado local
+      setLocalClasses((prevClasses) =>
+        prevClasses.filter((clase) => clase.id !== deleteModal.classId)
+      );
+      
+      toast.success("Clase eliminada exitosamente");
+      closeDeleteModal();
+      // No llamar a refreshClasses para evitar recargar toda la página
+    } catch (error: unknown) {
+      const mensaje =
+        (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Error al eliminar la clase";
+      toast.error(mensaje);
+    }
+  }, [token, deleteModal.classId, closeDeleteModal]);
+
+  // Handler para cuando se edita exitosamente una clase
+  // Actualiza el estado local con la clase editada sin recargar toda la página
+  const handleEditSuccess = useCallback((updatedClass?: ClaseProgramada) => {
+    if (updatedClass) {
+      // Actualizar solo la clase editada en el estado local
+      setLocalClasses((prevClasses) =>
+        prevClasses.map((clase) =>
+          clase.id === updatedClass.id ? updatedClass : clase
+        )
+      );
+      // También actualizar claseSeleccionada para que el modal muestre los datos actualizados si se vuelve a abrir
+      // Esto se hace a través del hook, pero como no tenemos acceso directo, 
+      // el handleEditWrapper ya usará localClasses que está actualizado
+    } else {
+      // Si no se proporciona la clase actualizada, refrescar los datos
+      // pero solo después de un breve delay para asegurar que el backend haya procesado
+      setTimeout(() => {
+        refreshClasses();
+      }, 100);
+    }
+    closeEditModal();
+  }, [closeEditModal, refreshClasses]);
 
   const startIndex = useMemo(() => (meta.page - 1) * meta.limit + 1, [meta.page, meta.limit]);
   const endIndex = useMemo(() => Math.min(meta.page * meta.limit, meta.total), [meta.page, meta.limit, meta.total]);
@@ -172,7 +243,7 @@ export default function AllScheduledClassesContainer() {
           </div>
         ) : (
           <div className={`grid grid-cols-1 lg:grid-cols-2 gap-4 transition-opacity duration-200 ${isFiltering ? 'opacity-60' : 'opacity-100'}`}>
-            {classes.map((clase) => (
+            {localClasses.map((clase) => (
               <AdminClassCard
                 key={clase.id}
                 clase={clase}
@@ -196,23 +267,25 @@ export default function AllScheduledClassesContainer() {
         </div>
       )}
 
-      {editModalAbierto && claseSeleccionada && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50">
-          <div className="bg-richblack-800 rounded-2xl shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto border border-richblack-700">
-            <h2 className="text-2xl font-bold mb-6 text-richblack-5">Editar Clase</h2>
-            <EditClassForm
-              clase={claseSeleccionada}
-              token={token}
-              userRole="Admin"
-              onSuccess={() => {
-                closeEditModal();
-                refreshClasses();
-              }}
-              onCancel={closeEditModal}
-            />
+      {editModalAbierto && claseSeleccionada && (() => {
+        // Obtener la versión actualizada de la clase del estado local
+        const claseActualizada = localClasses.find(c => c.id === claseSeleccionada.id) || claseSeleccionada;
+        
+        return (
+          <div key={claseActualizada.id} className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50">
+            <div className="bg-richblack-800 rounded-2xl shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto border border-richblack-700">
+              <h2 className="text-2xl font-bold mb-6 text-richblack-5">Editar Clase</h2>
+              <EditClassForm
+                clase={claseActualizada}
+                token={token}
+                userRole="Admin"
+                onSuccess={handleEditSuccess}
+                onCancel={closeEditModal}
+              />
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {deleteModal.isOpen && deleteModal.classId && (
         <ConfirmationModal
