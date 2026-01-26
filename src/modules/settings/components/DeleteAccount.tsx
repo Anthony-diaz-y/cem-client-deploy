@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 import { ConfirmationModal, type ConfirmationModalData } from "@shared/components";
 import { deleteProfile } from "@shared/services/SettingsAPI";
+import { SETTINGS_TEXTS } from "../constants/settings.constants";
 
 export default function DeleteAccount() {
   const [confirmationModal, setConfirmationModal] =
@@ -26,15 +27,13 @@ export default function DeleteAccount() {
 
         <div className="flex flex-col ">
           <h2 className="text-lg font-semibold text-richblack-5 ">
-            {" "}
-            Delete Account
+            {SETTINGS_TEXTS.deleteAccount.title}
           </h2>
 
           <div className="sm:w-3/5 text-pink-25 flex flex-col gap-3 mt-1">
-            <p>Would you like to delete account ?</p>
+            <p>{SETTINGS_TEXTS.deleteAccount.message}</p>
             <p>
-              This account may contain Paid Courses. Deleting your account is
-              permanent and will remove all the contain associated with it.
+              {SETTINGS_TEXTS.deleteAccount.warning}
             </p>
           </div>
 
@@ -53,10 +52,10 @@ export default function DeleteAccount() {
                 check &&
                 token &&
                 setConfirmationModal({
-                  text1: "Are you sure ?",
-                  text2: "Delete my account...!",
-                  btn1Text: "Delete",
-                  btn2Text: "Cancel",
+                  text1: SETTINGS_TEXTS.deleteAccount.modal.title,
+                  text2: SETTINGS_TEXTS.deleteAccount.modal.message,
+                  btn1Text: SETTINGS_TEXTS.deleteAccount.modal.confirm,
+                  btn2Text: SETTINGS_TEXTS.deleteAccount.modal.cancel,
                   btn1Handler: () =>
                     dispatch(
                       deleteProfile(token, (path: string) => router.push(path))
@@ -68,7 +67,7 @@ export default function DeleteAccount() {
                 })
               }
             >
-              I want to delete my account.
+              {SETTINGS_TEXTS.deleteAccount.checkboxLabel}
             </button>
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { CatalogPageData } from "../types";
+import { CATALOG_TEXTS } from "../constants/catalog.constants";
 
 interface CatalogHeroProps {
   catalogPageData: CatalogPageData;
@@ -16,7 +17,7 @@ const CatalogHero: React.FC<CatalogHeroProps> = ({ catalogPageData }) => {
     <div className=" box-content bg-richblack-800 px-4">
       <div className="mx-auto flex min-h-[260px] max-w-maxContentTab flex-col justify-center gap-4 lg:max-w-maxContent ">
         <p className="text-sm text-richblack-300">
-          {`Home / Catalog / `}
+          {`${CATALOG_TEXTS.breadcrumb.home} / ${CATALOG_TEXTS.breadcrumb.catalog} / `}
           <span className="text-yellow-25">
             {catalogPageData?.selectedCategory?.name}
           </span>

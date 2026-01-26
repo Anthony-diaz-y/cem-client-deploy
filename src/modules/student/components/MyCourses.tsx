@@ -11,6 +11,8 @@ import CoursesTable, {
   Course,
 } from "@modules/instructor/components/CoursesTable";
 import { RootState } from "@shared/store/store";
+import { STUDENT_TEXTS } from "../constants/student.constants";
+import { useScrollToTop } from "@modules/profile/hooks/useScrollToTop";
 
 export default function MyCourses() {
   const { token } = useSelector((state: RootState) => state.auth);
@@ -29,7 +31,7 @@ export default function MyCourses() {
           setCourses(result as unknown as Course[]);
         }
       } catch (error) {
-        console.error("Error fetching courses:", error);
+        console.error(STUDENT_TEXTS.errors.fetchCourses, error);
       } finally {
         setLoading(false);
       }
@@ -37,23 +39,17 @@ export default function MyCourses() {
     fetchCourses();
   }, [token]);
 
-  // Scroll to the top of the page when the component mounts
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.scrollTo(0, 0);
-    }
-  }, []);
+  useScrollToTop();
 
   return (
     <div>
       <div className="mb-14 flex justify-between">
-        {/* <div className="mb-14 flex items-center justify-between"> */}
         <h1 className="text-4xl font-medium text-richblack-5 font-boogaloo text-center lg:text-left">
-          My Courses
+          {STUDENT_TEXTS.myCourses.title}
         </h1>
         <IconBtn
-          text="Add Course"
-          onclick={() => router.push("/dashboard/add-course")}
+          text={STUDENT_TEXTS.myCourses.addCourse}
+          onclick={() => router.push(STUDENT_TEXTS.myCourses.links.addCourse)}
         >
           <VscAdd />
         </IconBtn>

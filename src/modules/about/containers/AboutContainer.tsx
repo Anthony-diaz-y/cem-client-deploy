@@ -1,28 +1,24 @@
-'use client'
-import React, { lazy, Suspense } from "react"
+"use client";
 
-import FoundingStory from "@shared/assets/Images/FoundingStory.png"
-import BannerImage1 from "@shared/assets/Images/aboutus1.webp"
-import BannerImage2 from "@shared/assets/Images/aboutus2.webp"
-import BannerImage3 from "@shared/assets/Images/aboutus3.webp"
-
+import React, { lazy, Suspense } from "react";
+import { motion } from "framer-motion";
 import { Footer, Img } from "@shared/components";
-import ContactFormSection from "../components/ContactFormSection"
-import LearningGrid from "../components/LearningGrid"
-import Quote from "../components/Quote"
-import StatsComponenet from "../components/Stats"
-import HighlightText from "@modules/home/components/HighlightText"
+import { fadeIn } from "@shared/utils/motionFrameVarients";
+import HighlightText from "@modules/home/components/HighlightText";
 
-// Lazy load componentes pesados para mejorar el rendimiento inicial
-const ReviewSlider = lazy(() => import("@shared/components/sliders/ReviewSlider"))
+import FoundingStory from "@shared/assets/Images/FoundingStory.png";
+import BannerImage1 from "@shared/assets/Images/aboutus1.webp";
+import BannerImage2 from "@shared/assets/Images/aboutus2.webp";
+import BannerImage3 from "@shared/assets/Images/aboutus3.webp";
 
-import { motion } from 'framer-motion'
-import { fadeIn } from "@shared/utils/motionFrameVarients"
+import ContactFormSection from "../components/ContactFormSection";
+import LearningGrid from "../components/LearningGrid";
+import Quote from "../components/Quote";
+import Stats from "../components/Stats";
+import { LEARNING_GRID_ITEMS, STATS_DATA } from "../constants/about.constants";
 
-/**
- * AboutContainer - Container component for About page
- * Handles all business logic and renders the About page UI
- */
+const ReviewSlider = lazy(() => import("@shared/components/sliders/ReviewSlider"));
+
 const AboutContainer = () => {
   return (
     <div>
@@ -32,20 +28,23 @@ const AboutContainer = () => {
             className="mx-auto py-20 text-4xl font-semibold lg:w-[70%]"
           >
             <motion.p
-              variants={fadeIn('down', 0.1)}
-              initial='hidden'
-              whileInView={'show'}
+              variants={fadeIn("down", 0.1)}
+              initial="hidden"
+              whileInView={"show"}
               viewport={{ once: false, amount: 0.1 }}
-            > Driving Innovation in Online Education for a
+            >
+              {" "}
+              Driving Innovation in Online Education for a
               <HighlightText text={"Brighter Future"} />
             </motion.p>
 
             <motion.p
-              variants={fadeIn('up', 0.1)}
-              initial='hidden'
-              whileInView={'show'}
+              variants={fadeIn("up", 0.1)}
+              initial="hidden"
+              whileInView={"show"}
               viewport={{ once: false, amount: 0.1 }}
-              className="mx-auto mt-3 text-center text-base font-medium text-richblack-300 lg:w-[95%]">
+              className="mx-auto mt-3 text-center text-base font-medium text-richblack-300 lg:w-[95%]"
+            >
               Studynotion is at the forefront of driving innovation in online
               education. We&apos;re passionate about creating a brighter future by
               offering cutting-edge courses, leveraging emerging technologies,
@@ -74,11 +73,12 @@ const AboutContainer = () => {
         <div className="mx-auto flex w-11/12 max-w-maxContent flex-col justify-between gap-10 text-richblack-500">
           <div className="flex flex-col items-center gap-10 lg:flex-row justify-between">
             <motion.div
-              variants={fadeIn('right', 0.1)}
-              initial='hidden'
-              whileInView={'show'}
+              variants={fadeIn("right", 0.1)}
+              initial="hidden"
+              whileInView={"show"}
               viewport={{ once: false, amount: 0.1 }}
-              className="my-24 flex lg:w-[50%] flex-col gap-10">
+              className="my-24 flex lg:w-[50%] flex-col gap-10"
+            >
               <h1 className="bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCB045] bg-clip-text text-4xl font-semibold text-transparent lg:w-[70%] ">
                 Our Founding Story
               </h1>
@@ -101,9 +101,9 @@ const AboutContainer = () => {
             </motion.div>
 
             <motion.div
-              variants={fadeIn('left', 0.1)}
-              initial='hidden'
-              whileInView={'show'}
+              variants={fadeIn("left", 0.1)}
+              initial="hidden"
+              whileInView={"show"}
               viewport={{ once: false, amount: 0.1 }}
             >
               <Img
@@ -141,14 +141,13 @@ const AboutContainer = () => {
         </div>
       </section>
 
-      <StatsComponenet />
+      <Stats stats={STATS_DATA} />
 
       <section className="mx-auto mt-20 flex w-11/12 max-w-maxContent flex-col justify-between gap-10 text-white">
-        <LearningGrid />
+        <LearningGrid items={LEARNING_GRID_ITEMS} />
         <ContactFormSection />
       </section>
 
-      {/* Reviews from Other Learners */}
       <div className=" my-20 px-5 text-white ">
         <h1 className="text-center text-4xl font-semibold mt-8">
           Reviews from other learners
@@ -158,11 +157,9 @@ const AboutContainer = () => {
         </Suspense>
       </div>
 
-      {/* Footer */}
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default AboutContainer
-
+export default AboutContainer;

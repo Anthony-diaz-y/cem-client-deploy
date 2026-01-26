@@ -3,13 +3,14 @@ import { HomePageExplore } from "@shared/data/homepage-explore";
 import CourseCard from "./CourseCard";
 import HighlightText from "./HighlightText";
 import { ExploreCourseCard } from "../types";
+import { HOME_TEXTS } from "../constants/home.constants";
 
 const tabsName = [
-  "Free",
-  "New to coding",
-  "Most popular",
-  "Skills paths",
-  "Career paths",
+  HOME_TEXTS.exploreMore.tabs.free,
+  HOME_TEXTS.exploreMore.tabs.newToCoding,
+  HOME_TEXTS.exploreMore.tabs.mostPopular,
+  HOME_TEXTS.exploreMore.tabs.skillsPaths,
+  HOME_TEXTS.exploreMore.tabs.careerPaths,
 ] as const;
 
 const ExploreMore = () => {
@@ -35,10 +36,10 @@ const ExploreMore = () => {
       {/* Explore more section */}
       <div>
         <div className="text-3xl lg:text-4xl font-semibold text-center my-10">
-          Unlock the
-          <HighlightText text={"Power of Code"} />
+          {HOME_TEXTS.exploreMore.title.part1}
+          <HighlightText text={HOME_TEXTS.exploreMore.title.part2} />
           <p className="text-center text-richblack-300 text-base lg:text-lg font-semibold mt-1">
-            Learn to Build Anything You Can Imagine
+            {HOME_TEXTS.exploreMore.subtitle}
           </p>
         </div>
       </div>

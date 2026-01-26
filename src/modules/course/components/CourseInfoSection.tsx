@@ -2,6 +2,7 @@
 
 import React from "react";
 import { CourseInfoSectionProps } from "../types";
+import { COURSE_TEXTS } from "../constants/course.constants";
 
 /**
  * CourseInfoSection - Section component for course information
@@ -15,7 +16,7 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({
     <>
       {/* What you'll learn */}
       <div className="my-8 border border-richblack-600 p-8">
-        <p className="text-3xl font-semibold">Lo que aprenderás</p>
+        <p className="text-3xl font-semibold">{COURSE_TEXTS.infoSection.whatYouWillLearn}</p>
         <div className="mt-3">
           {whatYouWillLearn &&
             whatYouWillLearn.split("\n").map((line, index) => (
@@ -29,7 +30,7 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({
 
       {/* Tags */}
       <div className="flex flex-col lg:flex-row gap-4">
-        <p className="text-xl font-bold">Etiquetas</p>
+        <p className="text-xl font-bold">{COURSE_TEXTS.infoSection.tags}</p>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {tag &&
             tag.map((item, ind) => (

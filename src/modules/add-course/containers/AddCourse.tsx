@@ -1,12 +1,8 @@
-import { useEffect } from "react";
 import RenderSteps from "../components/navigation/RenderSteps";
+import { useScrollToTop } from "../hooks/useScrollToTop";
 
 export default function AddCourse() {
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.scrollTo(0, 0);
-    }
-  }, []);
+  useScrollToTop();
 
   return (
     <div className="flex w-full items-start gap-x-6">

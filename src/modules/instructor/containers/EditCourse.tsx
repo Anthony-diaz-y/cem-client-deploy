@@ -11,6 +11,7 @@ import RenderSteps from "@modules/add-course/components/navigation/RenderSteps";
 import { Loading } from "@shared/components";
 import { AppDispatch } from "@shared/store/store";
 import { Course } from "@modules/course/types";
+import { INSTRUCTOR_TEXTS } from "../constants/instructor.constants";
 
 // Función para normalizar la estructura del curso (subSections -> subSection)
 const normalizeCourseStructure = (course: any): Course => {
@@ -83,7 +84,7 @@ export default function EditCourse() {
     <div className="flex w-full items-start gap-x-6">
       <div className="flex flex-1 flex-col">
         <h1 className="mb-14 text-3xl font-medium text-richblack-5 text-center sm:text-left">
-          Edit Course
+          {INSTRUCTOR_TEXTS.editCourse.title}
         </h1>
 
         {loading ? (
@@ -94,7 +95,7 @@ export default function EditCourse() {
               <RenderSteps />
             ) : (
               <p className="mt-14 text-center text-3xl font-semibold text-richblack-100">
-                Course not found
+                {INSTRUCTOR_TEXTS.editCourse.notFound}
               </p>
             )}
           </div>

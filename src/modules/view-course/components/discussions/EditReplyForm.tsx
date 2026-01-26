@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { SubsectionDiscussionReply } from "../../types";
 import { updateReply } from "../../services/discussionAPI";
 import type { SubsectionDiscussion } from "../../types";
+import { VIEW_COURSE_TEXTS } from "../../constants/viewCourse.constants";
 
 interface EditReplyFormProps {
   reply: SubsectionDiscussionReply;
@@ -28,8 +29,8 @@ const EditReplyForm: React.FC<EditReplyFormProps> = ({
     e.preventDefault();
     setError("");
 
-    if (replyText.trim().length < 5) {
-      setError("La respuesta debe tener al menos 5 caracteres");
+    if (replyText.trim().length < VIEW_COURSE_TEXTS.discussions.reply.minLength) {
+      setError(VIEW_COURSE_TEXTS.discussions.reply.validation.minLength);
       return;
     }
 
@@ -65,14 +66,14 @@ const EditReplyForm: React.FC<EditReplyFormProps> = ({
             className="px-3 py-1.5 text-sm text-richblack-300 hover:text-richblack-100 transition-colors"
             disabled={loading}
           >
-            Cancelar
+            {VIEW_COURSE_TEXTS.discussions.createForm.buttons.cancel}
           </button>
           <button
             type="submit"
-            disabled={loading || replyText.trim().length < 5}
+            disabled={loading || replyText.trim().length < VIEW_COURSE_TEXTS.discussions.reply.minLength}
             className="px-3 py-1.5 text-sm bg-yellow-50 text-richblack-900 rounded-lg font-medium hover:bg-yellow-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Guardando..." : "Guardar"}
+            {loading ? VIEW_COURSE_TEXTS.reviewModal.buttons.saving : VIEW_COURSE_TEXTS.reviewModal.buttons.save}
           </button>
         </div>
       </form>

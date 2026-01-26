@@ -77,4 +77,25 @@ export const sidebarLinks = [
     type: ACCOUNT_TYPE.ADMIN,
     icon: "VscMortarBoard",
   },
+  {
+    id: 15,
+    name: "Gestión de Clases",
+    path: "/dashboard/admin/scheduled-classes",
+    type: ACCOUNT_TYPE.ADMIN,
+    icon: "VscCalendar",
+  },
+  {
+    id: 13,
+    name: "Clases",
+    path: "/dashboard/scheduled-classes",
+    type: ACCOUNT_TYPE.STUDENT,
+    icon: "VscCalendar",
+  },
+  {
+    id: 14,
+    name: "Gestión de Clases",
+    path: "/dashboard/instructor/scheduled-classes",
+    type: ACCOUNT_TYPE.INSTRUCTOR,
+    icon: "VscCalendar",
+  },
 ];

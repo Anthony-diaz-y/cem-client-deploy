@@ -7,6 +7,7 @@ import { logout } from "@modules/auth/services/authAPI";
 import { AppDispatch } from "@shared/store/store";
 import { ApiError, NavigateFunction } from "@modules/auth/types";
 import { ProfileFormData, PasswordFormData } from "../types";
+import { SETTINGS_TEXTS } from "../constants/settings.constants";
 
 const {
   UPDATE_DISPLAY_PICTURE_API,
@@ -41,7 +42,7 @@ interface UpdateProfileResponse {
 // ================ update User Profile Image  ================
 export function updateUserProfileImage(token: string, formData: FormData) {
   return async (dispatch: AppDispatch) => {
-    const toastId = toast.loading("Loading...");
+    const toastId = toast.loading(SETTINGS_TEXTS.api.loading);
 
     try {
       const response = await apiConnector<ApiResponse<UserData>>(
@@ -59,9 +60,9 @@ export function updateUserProfileImage(token: string, formData: FormData) {
       );
 
       if (!response.data.success || !response.data.data) {
-        throw new Error(response.data.message || "Could not update profile picture");
+        throw new Error(response.data.message || SETTINGS_TEXTS.api.errors.defaultUpdateProfilePicture);
       }
-      toast.success("Display Picture Updated Successfully");
+      toast.success(SETTINGS_TEXTS.api.success.updateProfilePicture);
       dispatch(setUser(response.data.data));
 
       // below line is must - if not code - then as we refresh the page after changing profile image then old profile image will show
@@ -71,7 +72,7 @@ export function updateUserProfileImage(token: string, formData: FormData) {
       const apiError = error as ApiError;
       console.log("UPDATE_DISPLAY_PICTURE_API API ERROR............", apiError);
       toast.error(
-        apiError.response?.data?.message || "Could Not Update Profile Picture"
+        apiError.response?.data?.message || SETTINGS_TEXTS.api.errors.updateProfilePicture
       );
     }
     toast.dismiss(toastId);
@@ -82,7 +83,7 @@ export function updateUserProfileImage(token: string, formData: FormData) {
 export function updateProfile(token: string, formData: ProfileFormData) {
   return async (dispatch: AppDispatch) => {
     // console.log('This is formData for updated profile -> ', formData)
-    const toastId = toast.loading("Loading...");
+    const toastId = toast.loading(SETTINGS_TEXTS.api.loading);
     try {
       const response = await apiConnector<UpdateProfileResponse>("PUT", UPDATE_PROFILE_API, formData as unknown as (Record<string, unknown> | FormData), {
         Authorization: `Bearer ${token} `,
@@ -90,7 +91,7 @@ export function updateProfile(token: string, formData: ProfileFormData) {
       console.log("UPDATE_PROFILE_API API RESPONSE............", response);
 
       if (!response.data.success || !response.data.updatedUserDetails) {
-        throw new Error(response.data.message || "Could not update profile");
+        throw new Error(response.data.message || SETTINGS_TEXTS.api.errors.defaultUpdateProfile);
       }
       const updatedUser = response.data.updatedUserDetails;
       const userImage = updatedUser.image
@@ -109,12 +110,12 @@ export function updateProfile(token: string, formData: ProfileFormData) {
           image: userImage,
         })
       );
-      toast.success("Profile Updated Successfully");
+      toast.success(SETTINGS_TEXTS.api.success.updateProfile);
     } catch (error) {
       const apiError = error as ApiError;
       console.log("UPDATE_PROFILE_API API ERROR............", apiError);
       toast.error(
-        apiError.response?.data?.message || "Could Not Update Profile"
+        apiError.response?.data?.message || SETTINGS_TEXTS.api.errors.updateProfile
       );
     }
     toast.dismiss(toastId);
@@ -126,7 +127,7 @@ export async function changePassword(
   token: string,
   formData: PasswordFormData
 ) {
-  const toastId = toast.loading("Loading...");
+  const toastId = toast.loading(SETTINGS_TEXTS.api.loading);
   try {
     const response = await apiConnector<ApiResponse>("POST", CHANGE_PASSWORD_API, formData as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
@@ -134,13 +135,13 @@ export async function changePassword(
     console.log("CHANGE_PASSWORD_API API RESPONSE............", response);
 
     if (!response.data.success) {
-      throw new Error(response.data.message || "Could not change password");
+      throw new Error(response.data.message || SETTINGS_TEXTS.api.errors.defaultChangePassword);
     }
-    toast.success("Password Changed Successfully");
+    toast.success(SETTINGS_TEXTS.api.success.changePassword);
   } catch (error) {
     const apiError = error as ApiError;
     console.log("CHANGE_PASSWORD_API API ERROR............", apiError);
-    toast.error(apiError.response?.data?.message || "Something went wrong");
+    toast.error(apiError.response?.data?.message || SETTINGS_TEXTS.api.errors.changePassword);
   }
   toast.dismiss(toastId);
 }
@@ -148,7 +149,7 @@ export async function changePassword(
 // ================ delete Profile ================
 export function deleteProfile(token: string, navigate: NavigateFunction) {
   return async (dispatch: AppDispatch) => {
-    const toastId = toast.loading("Loading...");
+    const toastId = toast.loading(SETTINGS_TEXTS.api.loading);
     try {
       const response = await apiConnector<ApiResponse>("DELETE", DELETE_PROFILE_API, undefined, {
         Authorization: `Bearer ${token}`,
@@ -156,15 +157,15 @@ export function deleteProfile(token: string, navigate: NavigateFunction) {
       console.log("DELETE_PROFILE_API API RESPONSE............", response);
 
       if (!response.data.success) {
-        throw new Error(response.data.message || "Could not delete profile");
+        throw new Error(response.data.message || SETTINGS_TEXTS.api.errors.defaultDeleteProfile);
       }
-      toast.success("Profile Deleted Successfully");
+      toast.success(SETTINGS_TEXTS.api.success.deleteProfile);
       dispatch(logout(navigate));
     } catch (error) {
       const apiError = error as ApiError;
       console.log("DELETE_PROFILE_API API ERROR............", apiError);
       toast.error(
-        apiError.response?.data?.message || "Could Not Delete Profile"
+        apiError.response?.data?.message || SETTINGS_TEXTS.api.errors.deleteProfile
       );
     }
     toast.dismiss(toastId);

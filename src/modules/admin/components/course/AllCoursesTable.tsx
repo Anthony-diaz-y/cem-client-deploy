@@ -12,7 +12,7 @@ import { fetchCourseCategories } from "@shared/services/courseDetailsAPI";
 import { ConfirmationModal } from "@shared/components";
 import CourseFilters from "./CourseFilters";
 import CourseCard from "./CourseCard";
-import { useCourseFilters } from "./hooks/useCourseFilters";
+import { useCourseFilters } from "../../hooks/course/useCourseFilters";
 
 interface AllCoursesTableProps {
   courses: AdminCourse[];

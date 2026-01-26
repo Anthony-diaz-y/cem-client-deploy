@@ -1,35 +1,16 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAppSelector } from "@shared/store/hooks";
 import CategoriesTable from "../components/category/CategoriesTable";
 import CreateCategoryModal from "../components/category/CreateCategoryModal";
-import { getAllCategories, Category } from "@shared/services/adminAPI";
 import { Loading } from "@shared/components";
+import { useCategories } from "../hooks/category/useCategories";
 
 export default function CategoriesContainer() {
   const { token } = useAppSelector((state) => state.auth);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
   const [isCreateCategoryModalOpen, setIsCreateCategoryModalOpen] = useState(false);
-
-  const fetchCategories = async () => {
-    if (!token) return;
-    setLoading(true);
-    try {
-      const data = await getAllCategories(token);
-      setCategories(data || []);
-    } catch (error) {
-      // Error manejado por el servicio
-      setCategories([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, [token]);
+  const { categories, loading, refreshCategories } = useCategories(token);
 
   if (!token) {
     return (
@@ -65,13 +46,11 @@ export default function CategoriesContainer() {
       <CategoriesTable
         categories={categories}
         token={token}
-        onUpdate={(updatedCategories?: Category[]) => {
+        onUpdate={async (updatedCategories) => {
           if (updatedCategories) {
-            // Actualizar con la lista recibida del backend
-            setCategories(updatedCategories);
+            await refreshCategories();
           } else {
-            // Recargar desde el servidor si no se proporciona lista
-            fetchCategories();
+            await refreshCategories();
           }
         }}
       />
@@ -80,8 +59,8 @@ export default function CategoriesContainer() {
         <CreateCategoryModal
           isOpen={isCreateCategoryModalOpen}
           onClose={() => setIsCreateCategoryModalOpen(false)}
-          onSuccess={() => {
-            fetchCategories();
+          onSuccess={async () => {
+            await refreshCategories();
           }}
           token={token}
         />
@@ -89,4 +68,3 @@ export default function CategoriesContainer() {
     </div>
   );
 }
-

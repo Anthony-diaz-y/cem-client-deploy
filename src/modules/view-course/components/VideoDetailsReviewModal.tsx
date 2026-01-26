@@ -10,6 +10,7 @@ import { createRating } from "@modules/course/services/reviewsAPI";
 import { StarRating, IconBtn, Img } from "@shared/components";
 import { VideoDetailsReviewModalProps, ReviewFormData } from "../types";
 import { RootState } from "@shared/store/store";
+import { VIEW_COURSE_TEXTS } from "../constants/viewCourse.constants";
 
 export default function VideoDetailsReviewModal({
   setReviewModal,
@@ -45,32 +46,32 @@ export default function VideoDetailsReviewModal({
     const courseIdToUse = normalizedCourseId || courseEntireData?._id || (courseEntireData as any)?.id;
 
     if (!token) {
-      toast.error("No estás autenticado. Por favor, inicia sesión.");
+      toast.error(VIEW_COURSE_TEXTS.reviewModal.validation.notAuthenticated);
       return;
     }
 
     if (!courseIdToUse) {
-      toast.error("No se pudo identificar el curso. Por favor, recarga la página.");
+      toast.error(VIEW_COURSE_TEXTS.reviewModal.validation.courseNotFound);
       console.error("CourseId no disponible:", { courseId, courseEntireData });
       return;
     }
 
     // Validaciones
     if (rating === 0) {
-      setError("Por favor, selecciona una calificación con estrellas");
-      toast.error("Por favor, selecciona una calificación con estrellas");
+      setError(VIEW_COURSE_TEXTS.reviewModal.validation.ratingRequired);
+      toast.error(VIEW_COURSE_TEXTS.reviewModal.validation.ratingRequired);
       return;
     }
 
     if (!data.courseExperience?.trim()) {
-      setError("Por favor, escribe tu experiencia");
-      toast.error("Por favor, escribe tu experiencia");
+      setError(VIEW_COURSE_TEXTS.reviewModal.validation.experienceRequired);
+      toast.error(VIEW_COURSE_TEXTS.reviewModal.validation.experienceRequired);
       return;
     }
 
-    if (data.courseExperience.trim().length < 10) {
-      setError("La reseña debe tener al menos 10 caracteres");
-      toast.error("La reseña debe tener al menos 10 caracteres");
+    if (data.courseExperience.trim().length < VIEW_COURSE_TEXTS.reviewModal.experience.minLength) {
+      setError(VIEW_COURSE_TEXTS.reviewModal.validation.experienceMinLength);
+      toast.error(VIEW_COURSE_TEXTS.reviewModal.validation.experienceMinLength);
       return;
     }
 
@@ -94,18 +95,18 @@ export default function VideoDetailsReviewModal({
           setReviewModal(false);
           // Recargar la página o actualizar las reseñas si es necesario
           if (typeof window !== "undefined") {
-            window.dispatchEvent(new CustomEvent("reviewUpdated"));
+            window.dispatchEvent(new CustomEvent(VIEW_COURSE_TEXTS.reviewModal.events.reviewUpdated));
           }
         }, 1500);
       } else {
-        setError("No se pudo guardar la reseña. Por favor, intenta nuevamente.");
+        setError(VIEW_COURSE_TEXTS.reviewModal.validation.saveError);
         // El servicio ya muestra el toast de error, así que no duplicamos
       }
     } catch (err: any) {
       const errorMessage =
         err?.response?.data?.message ||
         err?.message ||
-        "Error al guardar la reseña. Por favor, intenta nuevamente.";
+        VIEW_COURSE_TEXTS.reviewModal.validation.defaultError;
       setError(errorMessage);
       // El servicio ya muestra el toast de error, así que no duplicamos
     } finally {
@@ -118,7 +119,7 @@ export default function VideoDetailsReviewModal({
       <div className="my-10 w-11/12 max-w-[700px] rounded-lg border border-richblack-400 bg-richblack-800">
         {/* Modal Header */}
         <div className="flex items-center justify-between rounded-t-lg bg-richblack-700 p-5">
-          <p className="text-xl font-semibold text-richblack-5">Agregar Reseña</p>
+          <p className="text-xl font-semibold text-richblack-5">{VIEW_COURSE_TEXTS.reviewModal.title}</p>
           <button onClick={() => setReviewModal(false)}>
             <RxCross2 className="text-2xl text-richblack-5" />
           </button>
@@ -136,7 +137,7 @@ export default function VideoDetailsReviewModal({
               <p className="font-semibold text-richblack-5 capitalize">
                 {user?.firstName} {user?.lastName}
               </p>
-              <p className="text-sm text-richblack-5">Publicando públicamente</p>
+              <p className="text-sm text-richblack-5">{VIEW_COURSE_TEXTS.reviewModal.publishing}</p>
             </div>
           </div>
 
@@ -147,7 +148,7 @@ export default function VideoDetailsReviewModal({
             {/* Calificación con Estrellas */}
             <div className="mb-6 flex flex-col items-center">
               <label className="mb-3 text-sm font-medium text-richblack-5">
-                Calificación con estrellas <sup className="text-pink-200">*</sup>
+                {VIEW_COURSE_TEXTS.reviewModal.rating.label} <sup className="text-pink-200">*</sup>
               </label>
               <div className="flex items-center gap-4">
                 <StarRating
@@ -158,7 +159,7 @@ export default function VideoDetailsReviewModal({
                 />
                 {rating > 0 && (
                   <span className="text-richblack-200 text-sm">
-                    {rating} {rating === 1 ? "estrella" : "estrellas"}
+                    {rating} {rating === 1 ? VIEW_COURSE_TEXTS.reviewModal.rating.star : VIEW_COURSE_TEXTS.reviewModal.rating.stars}
                   </span>
                 )}
               </div>
@@ -173,26 +174,26 @@ export default function VideoDetailsReviewModal({
                 className="text-sm text-richblack-5"
                 htmlFor="courseExperience"
               >
-                Agrega tu Experiencia <sup className="text-pink-200">*</sup>
+                {VIEW_COURSE_TEXTS.reviewModal.experience.label} <sup className="text-pink-200">*</sup>
               </label>
               <textarea
                 id="courseExperience"
-                placeholder="Comparte tu experiencia con este curso..."
+                placeholder={VIEW_COURSE_TEXTS.reviewModal.experience.placeholder}
                 {...register("courseExperience", { 
-                  required: "Por favor, escribe tu experiencia",
+                  required: VIEW_COURSE_TEXTS.reviewModal.validation.experienceRequired,
                   minLength: {
-                    value: 10,
-                    message: "La reseña debe tener al menos 10 caracteres"
+                    value: VIEW_COURSE_TEXTS.reviewModal.experience.minLength,
+                    message: VIEW_COURSE_TEXTS.reviewModal.validation.experienceMinLength
                   }
                 })}
                 className="form-style resize-none min-h-[130px] w-full"
               />
               <small className="text-richblack-400 text-xs">
-                {courseExperience?.length || 0} caracteres (mínimo 10)
+                {VIEW_COURSE_TEXTS.reviewModal.experience.characterCount(courseExperience?.length || 0)}
               </small>
               {errors.courseExperience && (
                 <span className="ml-2 text-xs tracking-wide text-pink-200">
-                  {errors.courseExperience.message || "Por favor, agrega tu experiencia"}
+                  {errors.courseExperience.message || VIEW_COURSE_TEXTS.reviewModal.validation.experienceRequired}
                 </span>
               )}
               {error && !error.includes("calificación") && (
@@ -212,7 +213,7 @@ export default function VideoDetailsReviewModal({
                            text-richblack-900 hover:bg-richblack-900 hover:text-richblack-300 duration-300
                            disabled:opacity-50 disabled:cursor-not-allowed`}
               >
-                Cancelar
+                {VIEW_COURSE_TEXTS.reviewModal.buttons.cancel}
               </button>
               <button
                 type="submit"
@@ -221,7 +222,7 @@ export default function VideoDetailsReviewModal({
                            text-richblack-900 hover:bg-yellow-100 duration-300
                            disabled:opacity-50 disabled:cursor-not-allowed`}
               >
-                {loading ? "Guardando..." : "Guardar"}
+                {loading ? VIEW_COURSE_TEXTS.reviewModal.buttons.saving : VIEW_COURSE_TEXTS.reviewModal.buttons.save}
               </button>
             </div>
           </form>

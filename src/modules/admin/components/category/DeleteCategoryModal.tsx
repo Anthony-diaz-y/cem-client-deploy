@@ -3,7 +3,7 @@
 import React from "react";
 import { IoMdClose } from "react-icons/io";
 import { FiTrash2, FiRefreshCw } from "react-icons/fi";
-import { useDeleteCategoryModal } from "./hooks/useDeleteCategoryModal";
+import { useDeleteCategoryModal } from "../../hooks/category/useDeleteCategoryModal";
 import CourseList from "./components/CourseList";
 import QuickActions from "./components/QuickActions";
 import DeleteAllCoursesModal from "./DeleteAllCoursesModal";

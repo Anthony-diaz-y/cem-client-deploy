@@ -20,6 +20,8 @@ import { motion } from "framer-motion";
 import { fadeIn } from "@shared/utils/motionFrameVarients";
 
 import type { HomeProps } from "./types";
+import { HOME_TEXTS } from "./constants/home.constants";
+import { useHomeLinks } from "./hooks/useHomeLinks";
 
 /**
  * Home - Presentational component for Home page
@@ -31,13 +33,7 @@ const Home: React.FC<HomeProps> = ({
   catalogPageData,
   token,
 }) => {
-  // Use state to avoid hydration mismatch - only update after mount
-  const [learnMoreLink, setLearnMoreLink] = React.useState("/auth/login");
-
-  // Update link after component mounts to avoid SSR/client mismatch
-  React.useEffect(() => {
-    setLearnMoreLink(token ? "/dashboard/my-profile" : "/auth/login");
-  }, [token]);
+  const learnMoreLink = useHomeLinks(token);
 
   return (
     <React.Fragment>
@@ -62,7 +58,7 @@ const Home: React.FC<HomeProps> = ({
       <div className=" ">
         {/*Section1  */}
         <div className="relative h-[450px] md:h-[550px] justify-center mx-auto flex flex-col w-11/12 max-w-maxContent items-center text-white ">
-          <Link href={"/auth/signup"}>
+          <Link href={HOME_TEXTS.links.signup}>
             <div
               className="z-0 group p-1 mx-auto rounded-full bg-richblack-800 font-bold text-richblack-200
                                         transition-all duration-200 hover:scale-95 w-fit"
@@ -71,7 +67,7 @@ const Home: React.FC<HomeProps> = ({
                 className="flex flex-row items-center gap-2 rounded-full px-10 py-[5px]
                               transition-all duration-200 group-hover:bg-richblack-900"
               >
-                <p>Become an Instructor</p>
+                <p>{HOME_TEXTS.hero.becomeInstructor}</p>
                 <FaArrowRight />
               </div>
             </div>
@@ -84,8 +80,8 @@ const Home: React.FC<HomeProps> = ({
             viewport={{ once: false, amount: 0.1 }}
             className="text-center text-3xl lg:text-4xl font-semibold mt-7  "
           >
-            Empower Your Future with
-            <HighlightText text={"Coding Skills"} />
+            {HOME_TEXTS.hero.title.part1}
+            <HighlightText text={HOME_TEXTS.hero.title.part2} />
           </motion.div>
 
           <motion.div
@@ -95,19 +91,16 @@ const Home: React.FC<HomeProps> = ({
             viewport={{ once: false, amount: 0.1 }}
             className=" mt-4 w-[90%] text-center text-base lg:text-lg font-bold text-richblack-300"
           >
-            With our online coding courses, you can learn at your own pace, from
-            anywhere in the world, and get access to a wealth of resources,
-            including hands-on projects, quizzes, and personalized feedback from
-            instructors.
+            {HOME_TEXTS.hero.description}
           </motion.div>
 
           <div className="flex flex-row gap-7 mt-8">
             <CTAButton active={true} linkto={learnMoreLink}>
-              Learn More
+              {HOME_TEXTS.hero.buttons.learnMore}
             </CTAButton>
 
-            <CTAButton active={false} linkto={"/auth/signup"}>
-              Book a Demo
+            <CTAButton active={false} linkto={HOME_TEXTS.links.signup}>
+              {HOME_TEXTS.hero.buttons.bookDemo}
             </CTAButton>
           </div>
         </div>
@@ -120,21 +113,19 @@ const Home: React.FC<HomeProps> = ({
               position={"lg:flex-row"}
               heading={
                 <div className="text-3xl lg:text-4xl font-semibold">
-                  Unlock Your
-                  <HighlightText text={"coding potential "} />
-                  with our online courses
+                  {HOME_TEXTS.codeBlocks.block1.heading.part1}
+                  <HighlightText text={HOME_TEXTS.codeBlocks.block1.heading.part2} />
+                  {HOME_TEXTS.codeBlocks.block1.heading.part3}
                 </div>
               }
-              subheading={
-                "Our courses are designed and taught by industry experts who have years of experience in coding and are passionate about sharing their knowledge with you."
-              }
+              subheading={HOME_TEXTS.codeBlocks.block1.subheading}
               ctabtn1={{
-                btnText: "try it yourself",
-                linkto: "/auth/signup",
+                btnText: HOME_TEXTS.codeBlocks.block1.buttons.tryIt,
+                linkto: HOME_TEXTS.links.signup,
                 active: true,
               }}
               ctabtn2={{
-                btnText: "learn more",
+                btnText: HOME_TEXTS.codeBlocks.block1.buttons.learnMore,
                 linkto: learnMoreLink,
                 active: false,
               }}
@@ -150,20 +141,18 @@ const Home: React.FC<HomeProps> = ({
               position={"lg:flex-row-reverse"}
               heading={
                 <div className="w-[100%] text-3xl lg:text-4xl font-semibold lg:w-[50%]">
-                  Start
-                  <HighlightText text={"coding in seconds"} />
+                  {HOME_TEXTS.codeBlocks.block2.heading.part1}
+                  <HighlightText text={HOME_TEXTS.codeBlocks.block2.heading.part2} />
                 </div>
               }
-              subheading={
-                "Go ahead, give it a try. Our hands-on learning environment means you'll be writing real code from your very first lesson."
-              }
+              subheading={HOME_TEXTS.codeBlocks.block2.subheading}
               ctabtn1={{
-                btnText: "Continue Lesson",
-                linkto: "/auth/signup",
+                btnText: HOME_TEXTS.codeBlocks.block2.buttons.continueLesson,
+                linkto: HOME_TEXTS.links.signup,
                 active: true,
               }}
               ctabtn2={{
-                btnText: "Learn More",
+                btnText: HOME_TEXTS.codeBlocks.block2.buttons.learnMore,
                 linkto: learnMoreLink,
                 active: false,
               }}
@@ -176,7 +165,7 @@ const Home: React.FC<HomeProps> = ({
           {/* course slider */}
           <div className="mx-auto box-content w-full max-w-maxContentTab px- py-12 lg:max-w-maxContent">
             <h2 className="text-white mb-6 text-2xl ">
-              Popular Picks for You 🏆
+              {HOME_TEXTS.courseSections.popularPicks}
             </h2>
             <CourseSlider
               Courses={catalogPageData?.selectedCategory?.courses || []}
@@ -184,7 +173,7 @@ const Home: React.FC<HomeProps> = ({
           </div>
           <div className=" mx-auto box-content w-full max-w-maxContentTab px- py-12 lg:max-w-maxContent">
             <h2 className="text-white mb-6 text-2xl ">
-              Top Enrollments Today 🔥
+              {HOME_TEXTS.courseSections.topEnrollments}
             </h2>
             <CourseSlider Courses={catalogPageData?.mostSellingCourses || []} />
           </div>
@@ -198,14 +187,14 @@ const Home: React.FC<HomeProps> = ({
             <div className="w-11/12 max-w-maxContent flex flex-col items-center justify-between gap-5 mx-auto">
               <div className="h-[150px]"></div>
               <div className="flex flex-row gap-7 text-white ">
-                <CTAButton active={true} linkto={"/auth/signup"}>
+                <CTAButton active={true} linkto={HOME_TEXTS.links.signup}>
                   <div className="flex items-center gap-3">
-                    Explore Full Catalog
+                    {HOME_TEXTS.section2.buttons.exploreCatalog}
                     <FaArrowRight />
                   </div>
                 </CTAButton>
                 <CTAButton active={false} linkto={learnMoreLink}>
-                  <div>Learn more</div>
+                  <div>{HOME_TEXTS.section2.buttons.learnMore}</div>
                 </CTAButton>
               </div>
             </div>
@@ -214,18 +203,16 @@ const Home: React.FC<HomeProps> = ({
           <div className="mx-auto w-11/12 max-w-maxContent flex flex-col items-center justify-between gap-7">
             <div className="flex flex-col lg:flex-row gap-5 mb-10 mt-[95px]">
               <div className="text-3xl lg:text-4xl font-semibold w-full lg:w-[45%]">
-                Get the Skills you need for a
-                <HighlightText text={"Job that is in demand"} />
+                {HOME_TEXTS.section2.title.part1}
+                <HighlightText text={HOME_TEXTS.section2.title.part2} />
               </div>
 
               <div className="flex flex-col gap-10 w-full lg:w-[40%] items-start">
                 <div className="text-[16px]">
-                  The modern StudyNotion is the dictates its own terms. Today,
-                  to be a competitive specialist requires more than professional
-                  skills.
+                  {HOME_TEXTS.section2.description}
                 </div>
                 <CTAButton active={true} linkto={learnMoreLink}>
-                  <div>Learn more</div>
+                  <div>{HOME_TEXTS.section2.buttons.learnMore}</div>
                 </CTAButton>
               </div>
             </div>
@@ -243,7 +230,7 @@ const Home: React.FC<HomeProps> = ({
 
           {/* Reviws from Other Learner */}
           <h1 className="text-center text-3xl lg:text-4xl font-semibold mt-8 flex justify-center items-center gap-x-3">
-            Reviews from other learners{" "}
+            {HOME_TEXTS.reviews.title}{" "}
             <MdOutlineRateReview className="text-yellow-25" />
           </h1>
           <ReviewSlider />

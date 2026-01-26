@@ -117,3 +117,18 @@ export const adminEndpoints = {
   DELETE_REVIEW_ADMIN_API: BASE_URL + "/admin/review",
   GLOBAL_SEARCH_API: BASE_URL + "/admin/global-search",
 }
+
+// SCHEDULED CLASSES ENDPOINTS
+export const scheduledClassesEndpoints = {
+  CREATE_CLASS_API: BASE_URL + "/scheduled-classes",
+  GET_CLASSES_API: BASE_URL + "/scheduled-classes",
+  GET_ADMIN_LIST_API: BASE_URL + "/scheduled-classes/admin/list",
+  GET_CALENDAR_API: BASE_URL + "/scheduled-classes/calendar",
+  GET_CLASS_DETAILS_API: BASE_URL + "/scheduled-classes",
+  UPDATE_CLASS_API: BASE_URL + "/scheduled-classes",
+  DELETE_CLASS_API: BASE_URL + "/scheduled-classes",
+  ENROLL_API: BASE_URL + "/scheduled-classes",
+  UNENROLL_API: BASE_URL + "/scheduled-classes",
+  CHECK_ENROLLMENT_API: BASE_URL + "/scheduled-classes",
+  GET_ENROLLMENTS_API: BASE_URL + "/scheduled-classes",
+}

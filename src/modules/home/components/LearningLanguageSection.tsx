@@ -5,19 +5,19 @@ import know_your_progress from "@shared/assets/Images/Know_your_progress.png";
 import compare_with_others from "@shared/assets/Images/Compare_with_others.png";
 import plan_your_lesson from "@shared/assets/Images/Plan_your_lessons.png";
 import CTAButton from "./Button";
+import { HOME_TEXTS } from "../constants/home.constants";
 
 const LearningLanguageSection = () => {
   return (
     <div className="mt-[130px] mb-10">
       <div className="flex flex-col gap-5 items-center">
         <div className="text-3xl lg:text-4xl font-semibold text-center">
-          Your Swiss Knife for
-          <HighlightText text={" learning any language"} />
+          {HOME_TEXTS.learningLanguage.title.part1}
+          <HighlightText text={HOME_TEXTS.learningLanguage.title.part2} />
         </div>
 
         <div className="lg:text-center text-richblack-600 mx-auto text-base font-medium lg:w-[70%]">
-          Using spin making learning multiple languages easy. with 20+ languages
-          realistic voice-over, progress tracking, custom schedule and more.
+          {HOME_TEXTS.learningLanguage.description}
         </div>
 
         <div className="flex flex-col lg:flex-row items-center justify-center mt-5">
@@ -45,8 +45,8 @@ const LearningLanguageSection = () => {
         </div>
 
         <div className="w-fit">
-          <CTAButton active={true} linkto={"/auth/login"}>
-            <div>Learn more</div>
+          <CTAButton active={true} linkto={HOME_TEXTS.links.login}>
+            <div>{HOME_TEXTS.learningLanguage.button}</div>
           </CTAButton>
         </div>
       </div>

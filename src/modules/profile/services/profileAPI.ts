@@ -5,6 +5,7 @@ import { setLoading, setUser } from "@modules/auth/store/profileSlice";
 import { apiConnector } from "@shared/services/apiConnector";
 import { profileEndpoints } from "@shared/services/apis";
 import { logout } from "@modules/auth/services/authAPI";
+import { PROFILE_TEXTS } from "../constants/profile.constants";
 
 const {
   GET_USER_DETAILS_API,
@@ -34,7 +35,7 @@ interface UserData {
 // ================ get User Details  ================
 export function getUserDetails(token: string, navigate: NavigateFunction) {
   return async (dispatch: AppDispatch) => {
-    const toastId = toast.loading("Loading...");
+    const toastId = toast.loading(PROFILE_TEXTS.api.loading);
     dispatch(setLoading(true));
     try {
       const response = await apiConnector<ApiResponse<UserData>>("GET", GET_USER_DETAILS_API, undefined, {
@@ -43,7 +44,7 @@ export function getUserDetails(token: string, navigate: NavigateFunction) {
       console.log("GET_USER_DETAILS API RESPONSE............", response);
 
       if (!response.data.success || !response.data.data) {
-        throw new Error(response.data.message || "Could not get user details");
+        throw new Error(response.data.message || PROFILE_TEXTS.api.errors.default);
       }
       const userData = response.data.data;
       const userImage = userData.image
@@ -54,7 +55,7 @@ export function getUserDetails(token: string, navigate: NavigateFunction) {
       console.log("GET_USER_DETAILS API ERROR............", error);
       // No mostrar toast si es error 401 (el interceptor ya lo maneja)
       if (error?.response?.status !== 401) {
-        toast.error("No se pudieron obtener los detalles del usuario");
+        toast.error(PROFILE_TEXTS.api.errors.getUserDetails);
       }
       dispatch(logout(navigate));
     }
@@ -81,14 +82,14 @@ export async function getUserEnrolledCourses(token: string) {
     );
 
     if (!response.data.success) {
-      throw new Error(response.data.message || "Could not get enrolled courses");
+      throw new Error(response.data.message || PROFILE_TEXTS.api.errors.defaultEnrolled);
     }
     result = response.data.data || [];
   } catch (error: any) {
     console.log("GET_USER_ENROLLED_COURSES_API API ERROR............", error);
     // No mostrar toast si es error 401 (el interceptor ya lo maneja)
     if (error?.response?.status !== 401) {
-      toast.error("No se pudieron obtener los cursos inscritos");
+      toast.error(PROFILE_TEXTS.api.errors.getEnrolledCourses);
     }
   }
   // toast.dismiss(toastId)
@@ -116,7 +117,7 @@ export async function getInstructorData(token: string) {
     // No mostrar toast aquí si es un error 401 (el interceptor ya lo maneja)
     // Solo mostrar toast para otros tipos de errores
     if (error?.response?.status !== 401) {
-      toast.error("No se pudo obtener los datos del instructor");
+      toast.error(PROFILE_TEXTS.api.errors.getInstructorData);
     }
   }
   // toast.dismiss(toastId)

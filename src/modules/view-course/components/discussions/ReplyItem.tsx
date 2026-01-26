@@ -7,6 +7,7 @@ import { Img } from "@shared/components";
 import { HiPencil, HiTrash } from "react-icons/hi2";
 import EditReplyForm from "./EditReplyForm";
 import type { SubsectionDiscussion } from "../../types";
+import { VIEW_COURSE_TEXTS } from "../../constants/viewCourse.constants";
 
 interface ReplyItemProps {
   reply: SubsectionDiscussionReply;
@@ -90,7 +91,7 @@ const ReplyItem: React.FC<ReplyItemProps> = ({
                 <span className="text-xs text-richblack-400">
                   {formatRelativeTime(reply.createdAt).toUpperCase()}
                   {reply.updatedAt !== reply.createdAt && (
-                    <span className="ml-1">(EDITADO)</span>
+                    <span className="ml-1">{VIEW_COURSE_TEXTS.discussions.replyItem.edited}</span>
                   )}
                 </span>
               </div>
@@ -103,7 +104,7 @@ const ReplyItem: React.FC<ReplyItemProps> = ({
                   <button
                     onClick={onEdit}
                     className="text-richblack-400 hover:text-yellow-50 transition-colors p-1 rounded"
-                    aria-label="Editar respuesta"
+                    aria-label={VIEW_COURSE_TEXTS.discussions.replyItem.edit}
                   >
                     <HiPencil className="w-4 h-4" />
                   </button>
@@ -112,7 +113,7 @@ const ReplyItem: React.FC<ReplyItemProps> = ({
                   <button
                     onClick={onDelete}
                     className="text-richblack-400 hover:text-red-400 transition-colors p-1 rounded"
-                    aria-label="Eliminar respuesta"
+                    aria-label={VIEW_COURSE_TEXTS.discussions.replyItem.delete}
                   >
                     <HiTrash className="w-4 h-4" />
                   </button>

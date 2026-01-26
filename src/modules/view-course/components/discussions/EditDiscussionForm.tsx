@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { SubsectionDiscussion } from "../../types";
 import { updateDiscussion } from "../../services/discussionAPI";
+import { VIEW_COURSE_TEXTS } from "../../constants/viewCourse.constants";
 
 interface EditDiscussionFormProps {
   discussion: SubsectionDiscussion;
@@ -26,8 +27,8 @@ const EditDiscussionForm: React.FC<EditDiscussionFormProps> = ({
     e.preventDefault();
     setError("");
 
-    if (question.trim().length < 10) {
-      setError("La pregunta debe tener al menos 10 caracteres");
+    if (question.trim().length < VIEW_COURSE_TEXTS.discussions.createForm.minLength) {
+      setError(VIEW_COURSE_TEXTS.discussions.createForm.validation.minLength);
       return;
     }
 
@@ -51,7 +52,7 @@ const EditDiscussionForm: React.FC<EditDiscussionFormProps> = ({
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-richblack-300 mb-2">
-            Pregunta
+            {VIEW_COURSE_TEXTS.discussions.createForm.question}
           </label>
           <textarea
             value={question}
@@ -61,7 +62,7 @@ const EditDiscussionForm: React.FC<EditDiscussionFormProps> = ({
             disabled={loading}
           />
           <p className="mt-1 text-xs text-richblack-400">
-            {question.length} / 10 caracteres mínimos
+            {VIEW_COURSE_TEXTS.discussions.createForm.characterCount(question.length)}
           </p>
           {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
         </div>
@@ -73,14 +74,14 @@ const EditDiscussionForm: React.FC<EditDiscussionFormProps> = ({
             className="px-4 py-2 text-richblack-300 hover:text-richblack-100 transition-colors"
             disabled={loading}
           >
-            Cancelar
+            {VIEW_COURSE_TEXTS.discussions.createForm.buttons.cancel}
           </button>
           <button
             type="submit"
-            disabled={loading || question.trim().length < 10}
+            disabled={loading || question.trim().length < VIEW_COURSE_TEXTS.discussions.createForm.minLength}
             className="px-4 py-2 bg-yellow-50 text-richblack-900 rounded-lg font-medium hover:bg-yellow-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Guardando..." : "Guardar Cambios"}
+            {loading ? VIEW_COURSE_TEXTS.reviewModal.buttons.saving : "Guardar Cambios"}
           </button>
         </div>
       </form>

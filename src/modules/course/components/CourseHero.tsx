@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { RatingStars, Img } from "@shared/components";
 import { formatDate } from "@shared/utils/formatDate";
 import { CourseHeroProps } from "../types";
+import { COURSE_TEXTS } from "../constants/course.constants";
 
 /**
  * CourseHero - Hero section component for course details page
@@ -65,22 +66,22 @@ const CourseHero: React.FC<CourseHeroProps> = ({
               {avgReviewCount > 0 ? Math.max(0, Math.min(5, avgReviewCount)).toFixed(1) : "0"}
             </span>
             <RatingStars Review_Count={avgReviewCount} Star_Size={24} />
-            <span>{`(${ratingAndReviews.length} ${ratingAndReviews.length === 1 ? 'reseña' : 'reseñas'})`}</span>
-            <span>{`${studentsEnrolled.length} ${studentsEnrolled.length === 1 ? 'estudiante inscrito' : 'estudiantes inscritos'}`}</span>
+            <span>{`(${ratingAndReviews.length} ${ratingAndReviews.length === 1 ? COURSE_TEXTS.hero.review.singular : COURSE_TEXTS.hero.review.plural})`}</span>
+            <span>{`${studentsEnrolled.length} ${studentsEnrolled.length === 1 ? COURSE_TEXTS.hero.student.singular : COURSE_TEXTS.hero.student.plural}`}</span>
           </div>
           <p className="capitalize">
             {" "}
-            Creado por{" "}
+            {COURSE_TEXTS.hero.createdBy}{" "}
             <span className="font-semibold underline">
               {instructor.firstName} {instructor.lastName}
             </span>
           </p>
           <div className="flex flex-wrap gap-5 text-lg">
             <p className="flex items-center gap-2">
-              <BiInfoCircle /> Creado el {formatDate(createdAt)}
+              <BiInfoCircle /> {COURSE_TEXTS.hero.createdOn} {formatDate(createdAt)}
             </p>
             <p className="flex items-center gap-2">
-              <HiOutlineGlobeAlt /> Español
+              <HiOutlineGlobeAlt /> {COURSE_TEXTS.hero.language}
             </p>
           </div>
         </div>
@@ -88,13 +89,13 @@ const CourseHero: React.FC<CourseHeroProps> = ({
         {/* Mobile actions */}
         <div className="flex w-full flex-col gap-4 border-y border-y-richblack-500 py-4 lg:hidden">
           <p className="space-x-3 pb-4 text-3xl font-semibold text-richblack-5">
-            Rs. {price}
+            {COURSE_TEXTS.hero.pricePrefix} {price}
           </p>
           <button className="yellowButton" onClick={onBuyCourse}>
-            Comprar Ahora
+            {COURSE_TEXTS.hero.actions.buyNow}
           </button>
           <button onClick={onAddToCart} className="blackButton">
-            Agregar al Carrito
+            {COURSE_TEXTS.hero.actions.addToCart}
           </button>
         </div>
       </div>

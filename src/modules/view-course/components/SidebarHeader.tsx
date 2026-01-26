@@ -10,6 +10,7 @@ import { IconBtn } from "@shared/components";
 import { setCourseViewSidebar } from "@modules/dashboard/store/sidebarSlice";
 import { RootState, AppDispatch } from "@shared/store/store";
 import { SidebarHeaderProps } from "../types";
+import { VIEW_COURSE_TEXTS } from "../constants/viewCourse.constants";
 
 /**
  * SidebarHeader - Header component for video details sidebar
@@ -42,20 +43,20 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
 
         <button
           onClick={() => {
-            router.push(`/dashboard/enrolled-courses`);
+            router.push(VIEW_COURSE_TEXTS.sidebarHeader.links.enrolledCourses);
           }}
           className="flex h-[36px] w-[36px] items-center justify-center rounded-lg bg-richblack-700 p-1 text-richblack-5 hover:bg-richblack-600 hover:scale-105 transition-all border border-richblack-600"
-          title="Volver"
+          title={VIEW_COURSE_TEXTS.sidebarHeader.back}
         >
           <IoIosArrowBack size={24} />
         </button>
 
-        <IconBtn text="Agregar Reseña" onclick={onReviewClick} />
+        <IconBtn text={VIEW_COURSE_TEXTS.sidebarHeader.addReview} onclick={onReviewClick} />
       </div>
 
       <div className="flex flex-col w-full px-1">
         <h2 className="text-lg font-bold text-richblack-5 truncate mb-1">
-          {courseName || "Curso"}
+          {courseName || VIEW_COURSE_TEXTS.sidebarHeader.defaultCourseName}
         </h2>
         <div className="flex items-center gap-2">
           <div className="flex-1 h-2 bg-richblack-700 rounded-full overflow-hidden">

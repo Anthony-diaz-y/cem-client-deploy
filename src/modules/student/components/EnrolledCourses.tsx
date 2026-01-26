@@ -10,6 +10,7 @@ import { RootState } from "@shared/store/store";
 import { getUserEnrolledCourses } from "@shared/services/profileAPI";
 import { getFullDetailsOfCourse } from "@shared/services/courseDetailsAPI";
 import { formatTotalDuration } from "@shared/utils/durationHelper";
+import { STUDENT_TEXTS } from "../constants/student.constants";
 
 interface CourseWithId extends Course {
   id?: string;
@@ -91,7 +92,7 @@ export default function EnrolledCourses() {
         setEnrolledCourses([]);
       }
     } catch (error) {
-      console.error("Could not fetch enrolled courses.", error);
+      console.error(STUDENT_TEXTS.errors.fetchEnrolledCourses, error);
       setEnrolledCourses([]);
     } finally {
       setLoading(false);
@@ -113,16 +114,16 @@ export default function EnrolledCourses() {
 
     // Escuchar evento personalizado para recargar cursos después de compra
     const handleCoursePurchased = () => {
-      console.log("Evento de compra detectado, recargando cursos...");
+      console.log(STUDENT_TEXTS.events.logPurchase);
       setRefreshKey(prev => prev + 1);
     };
 
     window.addEventListener('focus', handleFocus);
-    window.addEventListener('coursePurchased', handleCoursePurchased as EventListener);
+    window.addEventListener(STUDENT_TEXTS.events.coursePurchased, handleCoursePurchased as EventListener);
 
     return () => {
       window.removeEventListener('focus', handleFocus);
-      window.removeEventListener('coursePurchased', handleCoursePurchased as EventListener);
+      window.removeEventListener(STUDENT_TEXTS.events.coursePurchased, handleCoursePurchased as EventListener);
     };
   }, [token]);
 
@@ -151,7 +152,7 @@ export default function EnrolledCourses() {
   if (enrolledCourses?.length == 0) {
     return (
       <p className="grid h-[50vh] w-full place-content-center text-center text-richblack-5 text-3xl">
-        You have not enrolled in any course yet.
+        {STUDENT_TEXTS.enrolledCourses.emptyState}
       </p>
     );
   }
@@ -159,15 +160,15 @@ export default function EnrolledCourses() {
   return (
     <>
       <div className="text-4xl text-richblack-5 font-boogaloo text-center sm:text-left">
-        Enrolled Courses
+        {STUDENT_TEXTS.enrolledCourses.title}
       </div>
       {
         <div className="my-8 text-richblack-5">
           {/* Headings */}
           <div className="flex rounded-t-2xl bg-richblack-800 ">
-            <p className="w-[45%] px-5 py-3">Course Name</p>
-            <p className="w-1/4 px-2 py-3">Duration</p>
-            <p className="flex-1 px-2 py-3">Progress</p>
+            <p className="w-[45%] px-5 py-3">{STUDENT_TEXTS.enrolledCourses.table.courseName}</p>
+            <p className="w-1/4 px-2 py-3">{STUDENT_TEXTS.enrolledCourses.table.duration}</p>
+            <p className="flex-1 px-2 py-3">{STUDENT_TEXTS.enrolledCourses.table.progress}</p>
           </div>
 
           {/* loading Skeleton */}
@@ -196,7 +197,7 @@ export default function EnrolledCourses() {
                   const courseId = getCourseId(courseWithId);
                   
                   if (!courseId) {
-                    console.error("Missing course ID:", course);
+                    console.error(STUDENT_TEXTS.errors.missingCourseId, course);
                     return;
                   }
 
@@ -213,7 +214,7 @@ export default function EnrolledCourses() {
                     );
                   } else {
                     if (!token) {
-                      console.error("Token is required to load course details");
+                      console.error(STUDENT_TEXTS.errors.tokenRequired);
                       return;
                     }
                     
@@ -240,7 +241,7 @@ export default function EnrolledCourses() {
                         router.push(`/view-course/${courseId}`);
                       }
                     } catch (error) {
-                      console.error("Error loading course details:", error);
+                      console.error(STUDENT_TEXTS.errors.loadCourseDetails, error);
                       router.push(`/view-course/${courseId}`);
                     }
                   }
@@ -263,7 +264,7 @@ export default function EnrolledCourses() {
                 <div className="px-2 py-3">{formatTotalDuration(course?.totalDuration)}</div>
 
                 <div className="flex sm:w-2/5 flex-col gap-2 px-2 py-3">
-                  <p>Progress: {course.progressPercentage || 0}%</p>
+                  <p>{STUDENT_TEXTS.enrolledCourses.table.progressLabel(course.progressPercentage || 0)}</p>
                   <ProgressBar
                     completed={course.progressPercentage || 0}
                     height="8px"
@@ -278,7 +279,7 @@ export default function EnrolledCourses() {
                 {formatTotalDuration(course?.totalDuration)}
               </div>
               <div className="hidden sm:flex w-1/5 flex-col gap-2 px-2 py-3">
-                <p>Progress: {course.progressPercentage || 0}%</p>
+                <p>{STUDENT_TEXTS.enrolledCourses.table.progressLabel(course.progressPercentage || 0)}</p>
                 <ProgressBar
                   completed={course.progressPercentage || 0}
                   height="8px"

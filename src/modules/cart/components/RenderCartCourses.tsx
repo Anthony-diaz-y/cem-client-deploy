@@ -1,55 +1,27 @@
-import React, { useState } from "react";
+import React from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { HiBookOpen } from "react-icons/hi2";
-import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
-import { toast } from "react-hot-toast";
-
-import { removeFromCart } from "../../course/store/cartSlice";
-import { CartItem } from "../../course/types";
 import { StarRating } from "@shared/components";
-import { RootState, AppDispatch } from "@shared/store/store";
-import { apiConnector } from "@shared/services/apiConnector";
-import { studentEndpoints } from "@shared/services/apis";
-import { setPaymentLoading } from "@modules/course/store/courseSlice";
-import type { BuyNowTemporaryResponse } from "@modules/course/types";
-
-// Componente para la imagen del curso con placeholder
-const CourseThumbnail: React.FC<{ thumbnail?: string; courseName?: string }> = ({ thumbnail, courseName }) => {
-  const [imageError, setImageError] = useState(!thumbnail);
-
-  if (!thumbnail || imageError) {
-    return (
-      <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-richblack-800 to-richblack-900 text-richblack-400">
-        <HiBookOpen size={28} className="mb-1 opacity-60" />
-        <span className="text-[10px] text-center px-1">Sin imagen</span>
-      </div>
-    );
-  }
-
-  return (
-    <img
-      src={thumbnail}
-      alt={courseName || "course thumbnail"}
-      className="absolute inset-0 w-full h-full object-cover"
-      onError={() => setImageError(true)}
-    />
-  );
-};
+import { CartItem } from "@modules/course/types";
+import { useCartCourses } from "../hooks/useCartCourses";
+import { CourseThumbnail } from "./CourseThumbnail";
+import { CART_TEXTS } from "../constants/cart.constants";
 
 export default function RenderCartCourses() {
-  const { cart } = useSelector((state: RootState) => state.cart);
-  const { token } = useSelector((state: RootState) => state.auth);
-  const { user } = useSelector((state: RootState) => state.profile);
-  const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
+  const {
+    cart,
+    handleBuyCourse,
+    handleRemoveCourse,
+    getCourseId,
+    calculateRating,
+    formatPrice,
+  } = useCartCourses();
 
   // Validar que cart existe y tiene elementos
-  if (!cart || !Array.isArray(cart) || cart.length === 0) {
+  if (!cart || cart.length === 0) {
     return (
       <div className="flex flex-1 flex-col">
         <p className="text-center text-richblack-400 py-8">
-          No hay cursos en el carrito
+          {CART_TEXTS.noCourses}
         </p>
       </div>
     );
@@ -58,8 +30,8 @@ export default function RenderCartCourses() {
   return (
     <div className="flex flex-1 flex-col">
       {cart.map((course: CartItem, indx: number) => {
-        // Obtener el ID del curso (priorizar 'id' sobre '_id' ya que PostgreSQL usa UUIDs con campo 'id')
-        const courseId = (course as any)?.id || course?._id || `cart-item-${indx}`;
+        const courseId = getCourseId(course, indx);
+        const { rating, totalReviews } = calculateRating(course);
 
         return (
           <div
@@ -81,35 +53,15 @@ export default function RenderCartCourses() {
                 {course?.category?.name}
               </p>
               <div className="flex items-center gap-1.5 flex-wrap">
-                {(() => {
-                  // Calcular rating promedio: priorizar averageRating del backend
-                  const avgRating = course?.averageRating
-                    ? (typeof course.averageRating === 'number'
-                      ? course.averageRating
-                      : (typeof course.averageRating === 'string' ? parseFloat(course.averageRating) : 0))
-                    : (course?.ratingAndReviews && Array.isArray(course.ratingAndReviews) && course.ratingAndReviews.length > 0
-                      ? course.ratingAndReviews
-                        .filter((r: any) => r?.rating && typeof r.rating === 'number')
-                        .reduce((sum: number, r: any) => sum + r.rating, 0) / course.ratingAndReviews.filter((r: any) => r?.rating).length
-                      : 0);
-
-                  const displayRating = isNaN(avgRating) ? 0 : Math.min(Math.max(avgRating, 0), 5);
-                  const totalReviews = course?.totalReviews || (course?.ratingAndReviews?.length || 0);
-
-                  return (
-                    <>
-                      <span className="text-yellow-50 font-semibold text-sm">{displayRating.toFixed(1)}</span>
-                      <StarRating
-                        rating={displayRating}
-                        readonly={true}
-                        starSize={14}
-                      />
-                      <span className="text-richblack-400 text-xs">
-                        ({totalReviews})
-                      </span>
-                    </>
-                  );
-                })()}
+                <span className="text-yellow-50 font-semibold text-sm">{rating.toFixed(1)}</span>
+                <StarRating
+                  rating={rating}
+                  readonly={true}
+                  starSize={14}
+                />
+                <span className="text-richblack-400 text-xs">
+                  ({totalReviews})
+                </span>
               </div>
             </div>
 
@@ -118,90 +70,23 @@ export default function RenderCartCourses() {
               <div className="flex items-center gap-2">
                 {/* Botón Buy Now individual */}
                 <button
-                  onClick={async () => {
-                    if (!token) {
-                      toast.error("Por favor, inicia sesión para comprar");
-                      router.push("/auth/login");
-                      return;
-                    }
-
-                    const courseIdToBuy = (course as any)?.id || course?._id;
-                    if (!courseIdToBuy) {
-                      toast.error("ID de curso no válido");
-                      return;
-                    }
-
-                    const confirmed = window.confirm(
-                      "⚠️ MODO TEMPORAL\n\n" +
-                      "Esta compra no requiere pago real. Solo para pruebas y desarrollo.\n\n" +
-                      "¿Deseas comprar este curso?"
-                    );
-
-                    if (!confirmed) return;
-
-                    const toastId = toast.loading("Comprando curso...");
-                    dispatch(setPaymentLoading(true));
-
-                    try {
-                      const response = await apiConnector<BuyNowTemporaryResponse>(
-                        "POST",
-                        studentEndpoints.BUY_NOW_TEMPORARY_API,
-                        { coursesId: [courseIdToBuy] } as Record<string, unknown>,
-                        {
-                          Authorization: `Bearer ${token}`,
-                        }
-                      );
-
-                      if (!response.data.success) {
-                        throw new Error(response.data.message || "No se pudo comprar el curso");
-                      }
-
-                      toast.success("¡Curso comprado exitosamente!", { duration: 3000 });
-
-                      // Remover del carrito después de comprar
-                      dispatch(removeFromCart(courseIdToBuy));
-
-                      setTimeout(() => {
-                        router.push("/dashboard/enrolled-courses");
-                      }, 1500);
-                    } catch (error: any) {
-                      const errorMessage =
-                        error?.response?.data?.message ||
-                        error?.message ||
-                        "No se pudo comprar el curso";
-                      toast.error(errorMessage);
-                    } finally {
-                      toast.dismiss(toastId);
-                      dispatch(setPaymentLoading(false));
-                    }
-                  }}
+                  onClick={() => handleBuyCourse(course)}
                   className="flex items-center gap-x-1 rounded-md bg-yellow-50 text-richblack-900 py-1.5 px-3 hover:bg-yellow-100 transition-colors text-xs sm:text-sm font-semibold"
                 >
-                  <span>Comprar</span>
+                  <span>{CART_TEXTS.buy}</span>
                 </button>
 
                 {/* Botón Remove */}
                 <button
-                  onClick={() => {
-                    const courseIdToRemove = (course as any)?.id || course?._id;
-                    if (courseIdToRemove) {
-                      dispatch(removeFromCart(courseIdToRemove));
-                      toast.success("Curso eliminado del carrito");
-                    }
-                  }}
+                  onClick={() => handleRemoveCourse(course)}
                   className="flex items-center gap-x-1 rounded-md border border-richblack-600 bg-richblack-700 py-1.5 px-2.5 text-pink-200 hover:bg-richblack-600 transition-colors text-xs sm:text-sm"
                 >
                   <RiDeleteBin6Line size={14} />
-                  <span className="hidden sm:inline">Remove</span>
+                  <span className="hidden sm:inline">{CART_TEXTS.remove}</span>
                 </button>
               </div>
               <p className="text-xl sm:text-2xl font-semibold text-yellow-100 whitespace-nowrap">
-                $ {(() => {
-                  const price = typeof course?.price === 'number'
-                    ? course.price
-                    : (typeof course?.price === 'string' ? parseFloat(course.price) : 0);
-                  return price.toFixed(2);
-                })()}
+                $ {formatPrice(course?.price)}
               </p>
             </div>
           </div>
