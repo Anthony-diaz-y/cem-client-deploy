@@ -11,6 +11,7 @@ import { resetCourseState } from "@modules/course/store/courseSlice";
 import { RootState } from "@shared/store/store";
 import { setOpenSideMenu } from "../store/sidebarSlice";
 import { SidebarLinkProps } from "../types";
+import { DASHBOARD_TEXTS } from "../constants/dashboard.constants";
 
 export default function SidebarLink({ link, iconName }: SidebarLinkProps) {
   const Icon = (
@@ -46,7 +47,7 @@ export default function SidebarLink({ link, iconName }: SidebarLinkProps) {
 
   const handleClick = () => {
     dispatch(resetCourseState());
-    if (openSideMenu && screenSize !== undefined && screenSize <= 640)
+    if (openSideMenu && screenSize !== undefined && screenSize <= DASHBOARD_TEXTS.breakpoints.mobile)
       dispatch(setOpenSideMenu(false));
   };
 

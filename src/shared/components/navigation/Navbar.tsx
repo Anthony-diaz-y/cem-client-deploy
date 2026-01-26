@@ -12,7 +12,6 @@ import { getImageUrl } from "../../utils/imageHelper";
 import ProfileDropDown from "@modules/auth/components/ProfileDropDown";
 import MobileProfileDropDown from "@modules/auth/components/MobileProfileDropDown";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { MdKeyboardArrowDown } from "react-icons/md";
 import CatalogDropdown from "./CatalogDropdown";
 
 interface SubLink {
@@ -44,13 +43,13 @@ const Navbar = () => {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    
+
     setMounted(true);
   }, []);
 
   useEffect(() => {
     if (!mounted) return;
-    
+
     fetchSublinks();
 
     const handleCategoriesUpdate = () => {
@@ -58,7 +57,7 @@ const Navbar = () => {
     };
 
     window.addEventListener('categoriesUpdated', handleCategoriesUpdate);
-    
+
     return () => {
       window.removeEventListener('categoriesUpdated', handleCategoriesUpdate);
     };
@@ -124,11 +123,10 @@ const Navbar = () => {
               ) : (
                 <Link href={link?.path || "/"}>
                   <p
-                    className={`${
-                      matchRoute(link?.path)
+                    className={`${matchRoute(link?.path)
                         ? "bg-yellow-25 text-black"
                         : "text-richblack-25"
-                    } rounded-xl p-1 px-3`}
+                      } block rounded-xl p-1 px-3`}
                   >
                     {link.title}
                   </p>
@@ -154,11 +152,10 @@ const Navbar = () => {
               {token === null && (
                 <Link href="/auth/login">
                   <button
-                    className={`px-[12px] py-[8px] text-richblack-100 rounded-md ${
-                      matchRoute("/auth/login")
+                    className={`px-[12px] py-[8px] text-richblack-100 rounded-md ${matchRoute("/auth/login")
                         ? "border-[2.5px] border-yellow-50"
                         : "border border-richblack-700 bg-richblack-800"
-                    }`}
+                      }`}
                   >
                     Log in
                   </button>
@@ -167,11 +164,10 @@ const Navbar = () => {
               {token === null && (
                 <Link href="/auth/signup">
                   <button
-                    className={`px-[12px] py-[8px] text-richblack-100 rounded-md ${
-                      matchRoute("/auth/signup")
+                    className={`px-[12px] py-[8px] text-richblack-100 rounded-md ${matchRoute("/auth/signup")
                         ? "border-[2.5px] border-yellow-50"
                         : "border border-richblack-700 bg-richblack-800"
-                    }`}
+                      }`}
                   >
                     Sign Up
                   </button>

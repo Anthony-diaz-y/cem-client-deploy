@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import CourseSlider from "./CourseSlider";
 import CourseCard from "./CourseCard";
 import { CatalogSectionsProps, Course } from "../types";
-import GetAvgRating from "@shared/utils/avgRating";
+import { useCatalogSections } from "../hooks/useCatalogSections";
+import { CATALOG_TEXTS } from "../constants/catalog.constants";
 
 /**
  * CatalogSections - Sections component for catalog page
@@ -13,33 +14,9 @@ import GetAvgRating from "@shared/utils/avgRating";
 const CatalogSections: React.FC<CatalogSectionsProps> = ({
   catalogPageData,
 }) => {
-  // Obtener cursos destacados de la categoría seleccionada (top rated)
-  const topRatedCourses = useMemo(() => {
-    const courses = catalogPageData?.selectedCategory?.courses || [];
-    return [...courses]
-      .sort((a: Course, b: Course) => {
-        const ratingA = GetAvgRating(a.ratingAndReviews || []);
-        const ratingB = GetAvgRating(b.ratingAndReviews || []);
-        return ratingB - ratingA;
-      })
-      .slice(0, 6); // Top 6 cursos mejor valorados
-  }, [catalogPageData?.selectedCategory?.courses]);
-
-  // Filtrar cursos más vendidos que pertenezcan a la categoría seleccionada
-  const mostSellingInCategory = useMemo(() => {
-    const allMostSelling = catalogPageData?.mostSellingCourses || [];
-    const categoryName = catalogPageData?.selectedCategory?.name?.toLowerCase();
-    
-    // Si hay cursos más vendidos, mostrar los primeros 4
-    // Si no hay suficientes, complementar con cursos destacados de la categoría
-    if (allMostSelling.length >= 4) {
-      return allMostSelling.slice(0, 4);
-    }
-    
-    // Combinar y tomar los primeros 4
-    const combined = [...allMostSelling, ...topRatedCourses];
-    return combined.slice(0, 4);
-  }, [catalogPageData?.mostSellingCourses, topRatedCourses]);
+  const { topRatedCourses, mostSellingInCategory } = useCatalogSections({
+    catalogPageData,
+  });
 
   return (
     <>
@@ -47,7 +24,7 @@ const CatalogSections: React.FC<CatalogSectionsProps> = ({
       {topRatedCourses.length > 0 && (
         <div className="mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent mt-8">
           <div className="section_heading mb-6">
-            Cursos Mejor Valorados en {catalogPageData?.selectedCategory?.name}
+            {CATALOG_TEXTS.sections.topRatedInCategory(catalogPageData?.selectedCategory?.name || "")}
           </div>
           <div>
             <CourseSlider Courses={topRatedCourses} />
@@ -55,16 +32,14 @@ const CatalogSections: React.FC<CatalogSectionsProps> = ({
         </div>
       )}
       
-      {/* Este mensaje se muestra en CatalogTabs, no aquí para evitar duplicados */}
-
       {/* Section 3 - Most Selling / Frequently Bought */}
       {mostSellingInCategory.length > 0 && (
         <div className="mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent overflow-x-hidden">
-          <div className="section_heading mb-6">Frecuentemente Comprados</div>
+          <div className="section_heading mb-6">{CATALOG_TEXTS.sections.frequentlyBought}</div>
           <div className="py-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 w-full">
               {mostSellingInCategory.map((course: Course, i: number) => {
-                const courseId = (course as any)?.id || course?._id || i;
+                const courseId = (course as { id?: string })?.id || course?._id || i;
                 return (
                   <div key={courseId} className="w-full min-w-0">
                     <CourseCard

@@ -1,30 +1,18 @@
 import React from "react";
 import { FaCheck } from "react-icons/fa";
 import { useSelector } from "react-redux";
-
+import { RootState } from "@shared/store/store";
 import CourseBuilderForm from "../forms/CourseBuilderForm";
 import CourseInformationForm from "../forms/CourseInformationForm";
-import { RootState } from "@shared/store/store";
+import { COURSE_STEPS } from "../../constants/addCourse.constants";
 
-// Renderizar pasos del formulario de creación de curso
 export default function RenderSteps() {
   const { step, editCourse } = useSelector((state: RootState) => state.course);
-
-  const steps = [
-    {
-      id: 1,
-      title: "Información del Curso",
-    },
-    {
-      id: 2,
-      title: "Constructor de Curso",
-    },
-  ];
 
   return (
     <>
       <div className="relative mb-2 flex w-full select-none justify-center ">
-        {steps.map((item) => (
+        {COURSE_STEPS.map((item) => (
           <React.Fragment key={item.id}>
             <div className="flex flex-col items-center ">
               <div
@@ -44,7 +32,7 @@ export default function RenderSteps() {
               </div>
             </div>
 
-            {item.id !== steps.length && (
+            {item.id !== COURSE_STEPS.length && (
               <div
                 className={`h-[calc(34px/2)] w-[33%] border-dashed border-b-2 ${
                   step > item.id ? "border-yellow-50" : "border-richblack-500"
@@ -56,7 +44,7 @@ export default function RenderSteps() {
       </div>
 
       <div className="relative mb-16 flex w-full select-none justify-between">
-        {steps.map((item) => (
+        {COURSE_STEPS.map((item) => (
           <div
             className={`sm:min-w-[130px] flex flex-col items-center gap-y-2 ${
               editCourse && "sm:min-w-[270px]"
@@ -79,4 +67,3 @@ export default function RenderSteps() {
     </>
   );
 }
-

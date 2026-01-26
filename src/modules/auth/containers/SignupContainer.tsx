@@ -3,14 +3,15 @@
 import Template from "../components/Template";
 import OpenRoute from "../components/OpenRoute";
 import signupImage from "@shared/assets/Images/signup2.webp";
+import { AUTH_TEXTS } from "../constants/auth.constants";
 
 function SignupContainer() {
   return (
     <OpenRoute>
       <Template
-        title="Join the millions learning to code with StudyNotion for free"
-        description1="Build skills for today, tomorrow, and beyond."
-        description2="Education to future-proof your career."
+        title={AUTH_TEXTS.signup.title}
+        description1={AUTH_TEXTS.signup.description1}
+        description2={AUTH_TEXTS.signup.description2}
         image={signupImage}
         formType="signup"
       />

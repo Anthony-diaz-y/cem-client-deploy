@@ -1,10 +1,14 @@
 // Profile Module - Public API
+// Scream Modular Architecture: Feature-based organization
 
-// Components
-export { default as MyProfile } from "./components/MyProfile";
+// Constants
+export { PROFILE_TEXTS } from "./constants/profile.constants";
+
+// Hooks
+export { useScrollToTop } from "./hooks/useScrollToTop";
 
 // Services
 export * from "./services/profileAPI";
 
-// Container (to be created)
-// export { default as ProfileContainer } from './containers/ProfileContainer';
+// Components
+export { default as MyProfile } from "./components/MyProfile";

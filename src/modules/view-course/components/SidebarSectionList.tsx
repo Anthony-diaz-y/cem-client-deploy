@@ -9,6 +9,7 @@ import { RootState, AppDispatch } from "@shared/store/store";
 import { Section, SubSection, SidebarSectionListProps } from "../types";
 import { toggleLectureCompletion } from "@shared/services/courseDetailsAPI";
 import { updateCompletedLectures, removeCompletedLecture } from "../store/viewCourseSlice";
+import { VIEW_COURSE_TEXTS } from "../constants/viewCourse.constants";
 
 /**
  * SidebarSectionList - Section list component for video details sidebar
@@ -66,7 +67,7 @@ const SidebarSectionList: React.FC<SidebarSectionListProps> = ({
     const currentCourseId = courseId || courseEntireData?._id || (courseEntireData as any)?.id;
     
     if (!token || !currentCourseId) {
-      console.error("Token o courseId no disponible");
+      console.error(VIEW_COURSE_TEXTS.sidebarSectionList.errors.tokenOrCourseId);
       return;
     }
 
@@ -127,7 +128,7 @@ const SidebarSectionList: React.FC<SidebarSectionListProps> = ({
     <div className="h-full w-full overflow-y-auto custom-scrollbar">
       {courseSectionData.length === 0 ? (
         <div className="flex items-center justify-center h-full text-richblack-400 text-sm p-6">
-          <p className="text-center">No hay secciones disponibles</p>
+          <p className="text-center">{VIEW_COURSE_TEXTS.sidebarSectionList.empty}</p>
         </div>
       ) : (
         <div className="p-2 space-y-2">
@@ -151,11 +152,11 @@ const SidebarSectionList: React.FC<SidebarSectionListProps> = ({
                 <div className="flex justify-between items-center bg-richblack-700 px-4 py-3.5 hover:bg-richblack-600 transition-colors">
                   <div className="flex-1 min-w-0">
                     <div className="font-semibold text-richblack-5 truncate text-base">
-                      {section?.sectionName || `Sección ${index + 1}`}
+                      {section?.sectionName || VIEW_COURSE_TEXTS.sidebarSectionList.defaultSection(index + 1)}
                     </div>
                     {subSectionsArray.length > 0 && (
                       <div className="text-xs text-richblack-400 mt-1">
-                        {subSectionsArray.length} {subSectionsArray.length === 1 ? 'lecture' : 'lectures'}
+                        {subSectionsArray.length} {subSectionsArray.length === 1 ? VIEW_COURSE_TEXTS.sidebarSectionList.lecture : VIEW_COURSE_TEXTS.sidebarSectionList.lectures}
                       </div>
                     )}
                   </div>
@@ -204,7 +205,7 @@ const SidebarSectionList: React.FC<SidebarSectionListProps> = ({
                                       : 'border-richblack-500 hover:border-yellow-400'
                                 }`}
                                 onClick={(e) => handleToggleCompletion(e, topicId, sectionId, isCompleted)}
-                                title={isCompleted ? "Clic para desmarcar como completada" : "Clic para marcar como completada"}
+                                title={isCompleted ? VIEW_COURSE_TEXTS.sidebarSectionList.completion.unmark : VIEW_COURSE_TEXTS.sidebarSectionList.completion.mark}
                               >
                                 {isCompleted && (
                                   <span className="text-richblack-900 text-xs font-bold">✓</span>
@@ -222,7 +223,7 @@ const SidebarSectionList: React.FC<SidebarSectionListProps> = ({
                                 <span className={`text-sm font-medium truncate ${
                                   isActive ? 'text-richblack-900' : 'text-richblack-5'
                                 }`}>
-                                  {topic.title || `Lecture ${i + 1}`}
+                                  {topic.title || VIEW_COURSE_TEXTS.sidebarSectionList.defaultLecture(i + 1)}
                                 </span>
                                 {topic.timeDuration && (
                                   <span className={`text-xs ${
@@ -238,7 +239,7 @@ const SidebarSectionList: React.FC<SidebarSectionListProps> = ({
                       </div>
                     ) : (
                       <div className="px-4 py-3 text-richblack-400 text-sm text-center">
-                        No hay lectures disponibles en esta sección
+                        {VIEW_COURSE_TEXTS.sidebarSectionList.emptyLectures}
                       </div>
                     )}
                   </div>

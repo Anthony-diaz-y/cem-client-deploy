@@ -38,7 +38,6 @@ const {
   GET_ALL_INSTRUCTOR_COURSES_API,
   DELETE_COURSE_API,
   GET_FULL_COURSE_DETAILS_AUTHENTICATED,
-  CREATE_RATING_API,
   LECTURE_COMPLETION_API,
 } = courseEndpoints;
 
@@ -619,33 +618,3 @@ export const markLectureAsComplete = async (
   return result;
 };
 
-// ================ create Course Rating  ================
-export const createRating = async (data: RatingData | Record<string, unknown>, token: string) => {
-  const toastId = toast.loading("Cargando...");
-  let success = false;
-  try {
-    const response = await apiConnector<ApiResponse>("POST", CREATE_RATING_API, data as unknown as Record<string, unknown>, {
-      Authorization: `Bearer ${token}`,
-    });
-    console.log("CREATE RATING API RESPONSE............", response);
-    if (!response?.data?.success) {
-      throw new Error("Could Not Create Rating");
-    }
-    toast.success("Calificación creada");
-    success = true;
-  } catch (error) {
-    const apiError = error as ApiError;
-    success = false;
-    console.log("CREATE RATING API ERROR............", apiError);
-    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
-    if (apiError.response?.status !== 401) {
-      toast.error(
-        apiError.response?.data?.message ||
-          apiError.message ||
-          "No se pudo crear la calificación"
-      );
-    }
-  }
-  toast.dismiss(toastId);
-  return success;
-};

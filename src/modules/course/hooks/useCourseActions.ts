@@ -14,6 +14,7 @@ import { setPaymentLoading } from "../store/courseSlice";
 import { resetCart } from "../store/cartSlice";
 import { invalidateInstructorCache } from "@modules/instructor/hooks/useInstructorData";
 import type { BuyNowTemporaryResponse } from "../types";
+import { COURSE_TEXTS } from "../constants/course.constants";
 
 /**
  * Custom hook for course actions (buy, add to cart, active sections)
@@ -41,7 +42,7 @@ export const useCourseActions = (
   // ================ TEMPORAL: Función para inscribir directamente sin pago ================
   // TODO: REMOVER ESTA FUNCIÓN CUANDO SE IMPLEMENTE LA PASARELA DE PAGO
   const enrollCourseDirectly = async (coursesId: string[]) => {
-    const toastId = toast.loading("Inscribiendo al curso...");
+    const toastId = toast.loading(COURSE_TEXTS.actions.enrollment.loading);
     dispatch(setPaymentLoading(true));
 
     try {
@@ -55,11 +56,11 @@ export const useCourseActions = (
       );
 
       if (!response.data.success) {
-        throw new Error(response.data.message || "No se pudo inscribir al curso");
+        throw new Error(response.data.message || COURSE_TEXTS.actions.enrollment.error);
       }
 
       // Mostrar mensaje de éxito único y conciso
-      toast.success("¡Inscrito exitosamente! Redirigiendo...", {
+      toast.success(COURSE_TEXTS.actions.enrollment.success, {
         duration: 3000,
       });
 
@@ -90,7 +91,7 @@ export const useCourseActions = (
       // porque significa que el curso ya está en su lista
       if (errorMessage.toLowerCase().includes("already enrolled") ||
         errorMessage.toLowerCase().includes("ya está inscrito")) {
-        toast.success("Ya estás inscrito en este curso. Redirigiendo...", {
+        toast.success(COURSE_TEXTS.actions.enrollment.alreadyEnrolled, {
           duration: 3000,
         });
 
@@ -125,7 +126,7 @@ export const useCourseActions = (
         : courseId;
 
       if (!normalizedCourseId) {
-        toast.error("ID de curso no válido");
+        toast.error(COURSE_TEXTS.actions.errors.invalidCourseId);
         return;
       }
 
@@ -135,10 +136,10 @@ export const useCourseActions = (
       // TODO: REMOVER ESTE BLOQUE Y DESCOMENTAR buyCourse CUANDO SE IMPLEMENTE LA PASARELA DE PAGO
       // Mostrar advertencia antes de proceder
       const confirmed = window.confirm(
-        "⚠️ MODO TEMPORAL\n\n" +
-        "Esta compra no requiere pago real. Solo para pruebas y desarrollo.\n\n" +
-        "Esto será removido cuando se implemente la pasarela de pago.\n\n" +
-        "¿Deseas continuar?"
+        `${COURSE_TEXTS.actions.temporary.warning}\n\n` +
+        `${COURSE_TEXTS.actions.temporary.description}\n\n` +
+        `${COURSE_TEXTS.actions.temporary.note}\n\n` +
+        `${COURSE_TEXTS.actions.temporary.confirm}`
       );
 
       if (confirmed) {
@@ -151,10 +152,10 @@ export const useCourseActions = (
       // return;
     }
     setConfirmationModal({
-      text1: "¡No estás autenticado!",
-      text2: "Por favor, inicia sesión para comprar el curso.",
-      btn1Text: "Iniciar Sesión",
-      btn2Text: "Cancelar",
+      text1: COURSE_TEXTS.actions.errors.notAuthenticated,
+      text2: COURSE_TEXTS.actions.errors.loginToBuy,
+      btn1Text: COURSE_TEXTS.actions.modal.login,
+      btn2Text: COURSE_TEXTS.actions.modal.cancel,
       btn1Handler: () => router.push("/auth/login"),
       btn2Handler: () => setConfirmationModal(null),
     });
@@ -162,7 +163,7 @@ export const useCourseActions = (
 
   const handleAddToCart = () => {
     if (user && user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
-      toast.error("Eres un Instructor. No puedes comprar un curso.");
+      toast.error(COURSE_TEXTS.actions.errors.instructorCannotBuy);
       return;
     }
     if (token && course) {
@@ -170,10 +171,10 @@ export const useCourseActions = (
       return;
     }
     setConfirmationModal({
-      text1: "¡No estás autenticado!",
-      text2: "Por favor, inicia sesión para agregar al carrito",
-      btn1Text: "Iniciar Sesión",
-      btn2Text: "Cancelar",
+      text1: COURSE_TEXTS.actions.errors.notAuthenticated,
+      text2: COURSE_TEXTS.actions.errors.loginToAddToCart,
+      btn1Text: COURSE_TEXTS.actions.modal.login,
+      btn2Text: COURSE_TEXTS.actions.modal.cancel,
       btn1Handler: () => router.push("/auth/login"),
       btn2Handler: () => setConfirmationModal(null),
     });

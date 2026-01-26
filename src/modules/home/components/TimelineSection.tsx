@@ -12,6 +12,7 @@ import { Img } from "@shared/components";
 import { motion } from "framer-motion";
 import { fadeIn } from "@shared/utils/motionFrameVarients";
 import { TimelineItem } from "../types";
+import { HOME_TEXTS } from "../constants/home.constants";
 
 // Helper to get image URL
 const getLogoUrl = (logo: string | StaticImageData): string => {
@@ -21,29 +22,12 @@ const getLogoUrl = (logo: string | StaticImageData): string => {
   return staticImage?.src || String(logo);
 };
 
-const timeline: TimelineItem[] = [
-  {
-    Logo: getLogoUrl(Logo1),
-    heading: "Leadership",
-    Description: "Fully committed to the success company",
-  },
-  {
-    Logo: getLogoUrl(Logo2),
-    heading: "Responsibility",
-    Description: "Students will always be our top priority",
-  },
-  {
-    Logo: getLogoUrl(Logo3),
-    heading: "Flexibility",
-    Description: "The ability to switch is an important skills",
-  },
-
-  {
-    Logo: getLogoUrl(Logo4),
-    heading: "Solve the problem",
-    Description: "Code your way to a solution",
-  },
-];
+const logos = [Logo1, Logo2, Logo3, Logo4];
+const timeline: TimelineItem[] = HOME_TEXTS.timeline.items.map((item, index) => ({
+  Logo: getLogoUrl(logos[index]),
+  heading: item.heading,
+  Description: item.description,
+}));
 
 const TimelineSection = () => {
   return (
@@ -97,16 +81,16 @@ const TimelineSection = () => {
                             left-[50%] translate-x-[-50%] translate-y-[-70%] rounded-3xl"
           >
             <div className="flex flex-row gap-5 items-center border-r border-caribbeangreen-300 px-7">
-              <p className="text-2xl lg:text-3xl font-bold">10</p>
+              <p className="text-2xl lg:text-3xl font-bold">{HOME_TEXTS.timeline.stats.years.value}</p>
               <p className="text-caribbeangreen-300 text-xs lg:text-sm">
-                Years of Experience
+                {HOME_TEXTS.timeline.stats.years.label}
               </p>
             </div>
 
             <div className="flex gap-5 items-center px-7">
-              <p className="text-2xl lg:text-3xl font-bold">250</p>
+              <p className="text-2xl lg:text-3xl font-bold">{HOME_TEXTS.timeline.stats.courses.value}</p>
               <p className="text-caribbeangreen-300 text-xs lg:text-sm">
-                TYpe of Courses
+                {HOME_TEXTS.timeline.stats.courses.label}
               </p>
             </div>
           </div>

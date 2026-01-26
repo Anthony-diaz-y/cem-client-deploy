@@ -13,21 +13,13 @@ export default function DashboardLayout({
   const { loading: authLoading } = useAppSelector((state) => state.auth);
   const { loading: profileLoading } = useAppSelector((state) => state.profile);
   
-  // Inicializar mounted como false para que el render inicial sea idéntico en servidor y cliente
-  const [mounted, setMounted] = useState(false);
-
-  // Scroll to the top y marcar como montado solo en el cliente
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0);
-      setMounted(true);
     }
   }, []);
 
-  // Renderizar siempre la misma estructura inicial para evitar errores de hidratación
-  // En el servidor y en el primer render del cliente, siempre mostrar contenido
-  // El loading solo se muestra después de que el componente esté montado
-  const isLoading = mounted && (profileLoading || authLoading);
+  const isLoading = profileLoading || authLoading;
 
   return (
     <div className="relative flex h-[calc(100vh-3.5rem)] overflow-hidden">

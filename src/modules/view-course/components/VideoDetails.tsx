@@ -12,6 +12,7 @@ import { useVideoNavigation } from "../hooks/useVideoNavigation";
 import { useVideoPlayer } from "../hooks/useVideoPlayer";
 import DiscussionButton from "./discussions/DiscussionButton";
 import { getDiscussions } from "../services/discussionAPI";
+import { VIEW_COURSE_TEXTS } from "../constants/viewCourse.constants";
 
 /**
  * VideoDetails - Main component for video details page
@@ -62,7 +63,7 @@ const VideoDetails = () => {
         const discussions = await getDiscussions(subSectionId);
         setDiscussionCount(discussions.length);
       } catch (error) {
-        console.error("Error loading discussion count:", error);
+        console.error(VIEW_COURSE_TEXTS.discussions.errors.loadCount, error);
         setDiscussionCount(0);
       }
     };
@@ -99,7 +100,7 @@ const VideoDetails = () => {
   if (!mounted) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-richblack-400">Cargando...</p>
+        <p className="text-richblack-400">{VIEW_COURSE_TEXTS.videoDetails.loading}</p>
       </div>
     );
   }
@@ -118,7 +119,7 @@ const VideoDetails = () => {
       {videoData ? (
         <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 mb-6">
           <h1 className="text-2xl md:text-3xl font-bold text-richblack-5 mb-3">
-            {videoData.title || "Sin título"}
+            {videoData.title || VIEW_COURSE_TEXTS.videoDetails.noTitle}
           </h1>
           <div className="border-b border-richblack-700 pb-3 mb-6">
             <div className="flex flex-wrap items-center gap-4 text-sm text-richblack-400">
@@ -146,7 +147,7 @@ const VideoDetails = () => {
                   <svg className="w-4 h-4 text-yellow-200" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  <span className="text-yellow-200 font-medium">Completado</span>
+                  <span className="text-yellow-200 font-medium">{VIEW_COURSE_TEXTS.videoDetails.completed}</span>
                 </div>
               )}
             </div>
@@ -285,7 +286,7 @@ const VideoDetails = () => {
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-1 h-6 bg-gradient-to-b from-blue-200 to-blue-300 rounded-full"></div>
                 <h2 className="text-lg font-semibold text-richblack-5 tracking-wide">
-                  Recursos Descargables
+                  {VIEW_COURSE_TEXTS.videoDetails.attachments.title}
                 </h2>
               </div>
               <div className="grid grid-cols-1 gap-4">
@@ -314,7 +315,7 @@ const VideoDetails = () => {
                           {attachment.name}
                         </p>
                         <p className="text-richblack-400 text-sm mt-1">
-                          {attachment.type.split('/')[1]?.toUpperCase() || 'Archivo'}
+                          {attachment.type.split('/')[1]?.toUpperCase() || VIEW_COURSE_TEXTS.videoDetails.attachments.fileType}
                         </p>
                       </div>
                       <div className="flex-shrink-0">
@@ -336,7 +337,7 @@ const VideoDetails = () => {
               <div className="h-8 bg-richblack-700 rounded w-3/4 mx-auto mb-4"></div>
               <div className="h-4 bg-richblack-700 rounded w-1/2 mx-auto"></div>
             </div>
-            <p className="text-lg text-richblack-400 mt-4">Cargando información del video...</p>
+            <p className="text-lg text-richblack-400 mt-4">{VIEW_COURSE_TEXTS.videoDetails.loadingVideo}</p>
           </div>
         </div>
       )}

@@ -238,6 +238,8 @@ const realApiConnector = async <T = unknown>(
             status: error.response.status,
             url,
             method: method.toUpperCase(),
+            data: error.response.data,
+            message: error.response.data?.message || error.message,
           });
         }
       }

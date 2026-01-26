@@ -145,7 +145,7 @@ export default function CoursesTable({
                 <td colSpan={5}>{skItem()}</td>
               </tr>
             </>
-          ) : courses?.length === 0 ? (
+          ) : !loading && courses?.length === 0 ? (
             <tr>
               <td
                 className="py-10 text-center text-2xl font-medium text-richblack-100"
@@ -156,8 +156,7 @@ export default function CoursesTable({
             </tr>
           ) : (
             courses?.map((course: Course, index: number) => {
-              // Obtener el ID del curso (priorizar 'id' sobre '_id' ya que PostgreSQL usa UUIDs con campo 'id')
-              const courseId = (course as any)?.id || course?._id || `course-${index}`;
+              const courseId = course.id || course._id || `course-${index}`;
               
               return (
               <tr

@@ -1,14 +1,21 @@
 // Dashboard Module - Public API
-// This module now re-exports from the new modular structure for backward compatibility
+// Scream Modular Architecture: Feature-based organization
 
 // Types
 export type { ConfirmationModalData, SidebarLinkProps } from "./types";
 
-// Dashboard Shared Components (Sidebar, etc.)
+// Constants
+export { DASHBOARD_TEXTS } from "./constants/dashboard.constants";
+
+// Store
+export { default as sidebarReducer } from "./store/sidebarSlice";
+export { setOpenSideMenu, setScreenSize, setCourseViewSidebar, setDiscussionSidebarOpen } from "./store/sidebarSlice";
+
+// Components
 export { default as Sidebar } from "./components/Sidebar";
 export { default as SidebarLink } from "./components/SidebarLink";
-export { default as sidebarReducer } from "./store/sidebarSlice";
 
+// Re-exports from other modules (for backward compatibility)
 // Profile
 export { MyProfile } from "../profile";
 
@@ -36,7 +43,7 @@ export {
   InstructorChart,
   CoursesTable,
   EditCourse,
-  InstructorCourses, // Explicitly added to replace implicit export
+  InstructorCourses,
 } from "../instructor";
 
 // Services - Re-export from new modules

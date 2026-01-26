@@ -1,7 +1,6 @@
 "use client";
 
 import { useSelector } from "react-redux";
-import { useState, useEffect, useRef } from "react";
 import InstructorChart from "../components/InstructorChart";
 import InstructorStats from "../components/InstructorStats";
 import InstructorCoursesGrid from "../components/InstructorCoursesGrid";
@@ -9,15 +8,14 @@ import InstructorLoadingSkeleton from "../components/InstructorLoadingSkeleton";
 import InstructorEmptyState from "../components/InstructorEmptyState";
 import { useInstructorData } from "../hooks/useInstructorData";
 import { useInstructorStats } from "../hooks/useInstructorStats";
+import { useSkeletonLoading } from "../hooks/useSkeletonLoading";
 import { RootState } from "@shared/store/store";
+import { INSTRUCTOR_TEXTS } from "../constants/instructor.constants";
 
 /**
  * Instructor - Main component for instructor dashboard
- * Orchestrates instructor data and statistics through custom hooks
- * Muestra skeleton solo si la carga toma más de 300ms (evita parpadeo rápido)
+ * Minimal logic container following Scream Modular Architecture
  */
-const MIN_LOADING_TIME = 300; // Tiempo mínimo en ms antes de mostrar skeleton
-
 export default function Instructor() {
   const { user } = useSelector((state: RootState) => state.profile);
   const { loading, instructorData, courses } = useInstructorData();
@@ -26,56 +24,22 @@ export default function Instructor() {
     courses
   );
 
-  const [showSkeleton, setShowSkeleton] = useState(false);
-  const loadingStartTimeRef = useRef<number | null>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const hasEverLoadedRef = useRef(courses.length > 0 || instructorData !== null);
+  const showSkeleton = useSkeletonLoading({
+    loading,
+    hasData: courses.length > 0 || instructorData !== null,
+  });
 
-  // Controlar cuándo mostrar skeleton con delay mínimo
-  useEffect(() => {
-    if (loading && !hasEverLoadedRef.current) {
-      // Iniciar timer solo si nunca se han cargado datos
-      loadingStartTimeRef.current = Date.now();
-      timeoutRef.current = setTimeout(() => {
-        // Solo mostrar skeleton si todavía está cargando después del delay mínimo
-        if (loading) {
-          setShowSkeleton(true);
-        }
-      }, MIN_LOADING_TIME);
-    } else {
-      // Si terminó de cargar o ya hay datos, ocultar skeleton inmediatamente
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-      setShowSkeleton(false);
-      
-      if (courses.length > 0 || instructorData) {
-        hasEverLoadedRef.current = true;
-      }
-    }
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, [loading, courses, instructorData]);
-
-  // Renderizar siempre el contenido, incluso si está vacío inicialmente
-  // Esto evita el parpadeo durante navegación
   return (
     <div>
       <div className="space-y-2">
         <h1 className="text-2xl font-bold text-richblack-5 text-center sm:text-left">
-          Hii {user?.firstName} 👋
+          {INSTRUCTOR_TEXTS.dashboard.greeting.hi} {user?.firstName} {INSTRUCTOR_TEXTS.dashboard.greeting.emoji}
         </h1>
         <p className="font-medium text-richblack-200 text-center sm:text-left">
-          Let&apos;s start something new
+          {INSTRUCTOR_TEXTS.dashboard.greeting.subtitle}
         </p>
       </div>
 
-      {/* Mostrar skeleton solo si la carga toma más de 300ms (evita parpadeo rápido) */}
       {showSkeleton ? (
         <InstructorLoadingSkeleton />
       ) : courses.length > 0 ? (
@@ -85,9 +49,9 @@ export default function Instructor() {
               <InstructorChart courses={courses} />
             ) : (
               <div className="flex-1 rounded-md bg-richblack-800 p-6">
-                <p className="text-lg font-bold text-richblack-5">Visualize</p>
+                <p className="text-lg font-bold text-richblack-5">{INSTRUCTOR_TEXTS.dashboard.chart.title}</p>
                 <p className="mt-4 text-xl font-medium text-richblack-50">
-                  Not Enough Data To Visualize
+                  {INSTRUCTOR_TEXTS.dashboard.chart.noData}
                 </p>
               </div>
             )}

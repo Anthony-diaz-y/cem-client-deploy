@@ -11,6 +11,7 @@ import { IoMdClose } from "react-icons/io";
 
 import { setOpenSideMenu, setScreenSize } from "../store/sidebarSlice";
 import { useAppDispatch, useAppSelector } from "@shared/store/hooks";
+import { DASHBOARD_TEXTS } from "../constants/dashboard.constants";
 
 export default function Sidebar() {
   const { user, loading: profileLoading } = useAppSelector(
@@ -45,7 +46,7 @@ export default function Sidebar() {
 
   // If screen size is small then close the side bar
   useEffect(() => {
-    if (screenSize && screenSize <= 640) {
+    if (screenSize && screenSize <= DASHBOARD_TEXTS.breakpoints.mobile) {
       dispatch(setOpenSideMenu(false));
     } else dispatch(setOpenSideMenu(true));
   }, [screenSize, dispatch]);
@@ -72,7 +73,7 @@ export default function Sidebar() {
       </div>
 
       {/* Sidebar móvil: overlay cuando está abierto */}
-      {mounted && screenSize !== undefined && screenSize <= 640 && openSideMenu && (
+      {mounted && screenSize !== undefined && screenSize <= DASHBOARD_TEXTS.breakpoints.mobile && openSideMenu && (
         <div
           className="fixed inset-0 bg-black/50 z-40 sm:hidden"
           onClick={() => dispatch(setOpenSideMenu(false))}
@@ -84,7 +85,7 @@ export default function Sidebar() {
       <div
         suppressHydrationWarning
         className={`${
-          mounted && screenSize !== undefined && screenSize <= 640
+          mounted && screenSize !== undefined && screenSize <= DASHBOARD_TEXTS.breakpoints.mobile
             ? openSideMenu
               ? "flex fixed left-0 top-[3.5rem] z-50"
               : "hidden"
@@ -109,8 +110,8 @@ export default function Sidebar() {
 
         <div className="flex flex-col">
           <SidebarLink
-            link={{ name: "Configuración", path: "/dashboard/settings" }}
-            iconName={"VscSettingsGear"}
+            link={{ name: DASHBOARD_TEXTS.sidebar.settings.name, path: DASHBOARD_TEXTS.sidebar.settings.path }}
+            iconName={DASHBOARD_TEXTS.sidebar.settings.icon}
             setOpenSideMenu={setOpenSideMenu}
           />
         </div>

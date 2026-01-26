@@ -1,115 +1,29 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useAppSelector } from "@shared/store/hooks";
 import AllInstructorsTable from "../components/instructor/AllInstructorsTable";
-import { getAllInstructors, InstructorFilters, Instructor } from "@shared/services/adminAPI";
 import { Loading } from "@shared/components";
 import CustomDropdown from "../components/dropdown/CustomDropdown";
 import { FiSearch } from "react-icons/fi";
-
 import Pagination from "@shared/components/common/Pagination";
+import { useAdminInstructors } from "../hooks/instructor/useAdminInstructors";
 
 export default function AllInstructorsContainer() {
   const { token } = useAppSelector((state) => state.auth);
-  const [instructors, setInstructors] = useState<Instructor[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searching, setSearching] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
-  const [filters, setFilters] = useState<InstructorFilters>({
-    status: "all",
-    active: undefined,
-    search: "",
-    page: 1,
-    limit: 10,
-  });
-  const [counts, setCounts] = useState({
-    total: 0,
-    approved: 0,
-    pending: 0,
-    active: 0,
-    inactive: 0,
-  });
-  const [meta, setMeta] = useState({
-    page: 1,
-    limit: 10,
-    total: 0,
-    totalPages: 1,
-  });
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const isInitialMount = useRef(true);
-
-  const fetchInstructors = useCallback(async (currentFilters: InstructorFilters, showLoading = true) => {
-    if (!token) return;
-    if (showLoading) {
-      setLoading(true);
-    } else {
-      setSearching(true);
-    }
-    try {
-      const response = await getAllInstructors(token, currentFilters, true);
-      if (response) {
-        setInstructors(response.data.all || []);
-        setCounts({
-          total: response.counts.total || 0,
-          approved: response.counts.approved || 0,
-          pending: response.counts.pending || 0,
-          active: response.counts.active || 0,
-          inactive: response.counts.inactive || 0,
-        });
-        if (response.meta) {
-          setMeta(response.meta);
-        }
-      }
-    } catch (error) {
-      setInstructors([]);
-    } finally {
-      setLoading(false);
-      setSearching(false);
-    }
-  }, [token]);
-
-  // Handle page change
-  const handlePageChange = (newPage: number) => {
-    setFilters((prev) => ({ ...prev, page: newPage }));
-  };
-
-  // Debounce para la búsqueda - reducido para búsqueda más inmediata
-  useEffect(() => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    const trimmedSearch = searchInput.trim();
-    if (trimmedSearch === "") {
-      setFilters((prev) => ({ ...prev, search: "", page: 1 }));
-      return;
-    }
-
-    // Búsqueda más inmediata con debounce reducido
-    debounceTimerRef.current = setTimeout(() => {
-      setFilters((prev) => ({ ...prev, search: trimmedSearch, page: 1 }));
-    }, 300);
-
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, [searchInput]);
-
-  // Efecto para cargar instructores cuando cambian los filtros
-  useEffect(() => {
-    if (!token) return;
-
-    const showLoading = isInitialMount.current || filters.page !== meta.page;
-
-    fetchInstructors(filters, showLoading);
-
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-    }
-  }, [token, filters, fetchInstructors]);
+  const {
+    instructors,
+    counts,
+    meta,
+    filters,
+    loading,
+    searching,
+    searchInput,
+    setSearchInput,
+    handlePageChange,
+    handleStatusChange,
+    handleActiveChange,
+    refreshInstructors,
+  } = useAdminInstructors(token);
 
   if (!token) {
     return (
@@ -119,7 +33,7 @@ export default function AllInstructorsContainer() {
     );
   }
 
-  if (loading && isInitialMount.current) {
+  if (loading) {
     return <Loading />;
   }
 
@@ -134,7 +48,6 @@ export default function AllInstructorsContainer() {
         </p>
       </div>
 
-      {/* Contadores de estadísticas */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <div className="bg-richblack-800 rounded-xl p-4 border border-richblack-700">
           <p className="text-sm text-richblack-400 mb-1">Total</p>
@@ -158,15 +71,12 @@ export default function AllInstructorsContainer() {
         </div>
       </div>
 
-      {/* Filtros y búsqueda */}
       <div className="bg-richblack-800 rounded-xl border border-richblack-700 p-6 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <CustomDropdown
             label="Estado de Aprobación"
             value={filters.status || "all"}
-            onChange={(value) =>
-              setFilters({ ...filters, status: value as "approved" | "pending" | "all", page: 1 })
-            }
+            onChange={(value) => handleStatusChange(value as "approved" | "pending" | "all")}
             options={[
               { value: "all", label: "Todos" },
               { value: "approved", label: "Aprobados" },
@@ -185,11 +95,7 @@ export default function AllInstructorsContainer() {
                   : "false"
             }
             onChange={(value) => {
-              setFilters({
-                ...filters,
-                active: value === "all" ? undefined : value === "true",
-                page: 1,
-              });
+              handleActiveChange(value === "all" ? undefined : value === "true");
             }}
             options={[
               { value: "all", label: "Todos" },
@@ -231,7 +137,7 @@ export default function AllInstructorsContainer() {
           <AllInstructorsTable
             instructors={instructors}
             token={token}
-            onUpdate={() => fetchInstructors(filters, true)}
+            onUpdate={refreshInstructors}
           />
 
           <Pagination
@@ -244,4 +150,3 @@ export default function AllInstructorsContainer() {
     </div>
   );
 }
-

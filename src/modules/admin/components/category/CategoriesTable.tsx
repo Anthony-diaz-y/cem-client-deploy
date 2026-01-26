@@ -5,8 +5,8 @@ import { Category } from "@shared/services/adminAPI";
 import DeleteCategoryModal from "./DeleteCategoryModal";
 import EditCategoryModal from "./EditCategoryModal";
 import CategoryCard from "./components/CategoryCard";
-import { useCategoriesTable } from "./hooks/useCategoriesTable";
-import { useAutoScroll } from "./hooks/useAutoScroll";
+import { useCategoriesTable } from "../../hooks/category/useCategoriesTable";
+import { useAutoScroll } from "../../hooks/category/useAutoScroll";
 
 interface CategoriesTableProps {
   categories: Category[];

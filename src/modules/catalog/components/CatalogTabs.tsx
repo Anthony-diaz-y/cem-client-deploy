@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React from "react";
 import CourseSlider from "./CourseSlider";
-import { CatalogTabsProps, Course } from "../types";
-import GetAvgRating from "@shared/utils/avgRating";
+import { CatalogTabsProps } from "../types";
 import { FiSearch, FiX } from "react-icons/fi";
+import { useCatalogTabsFilter } from "../hooks/useCatalogTabsFilter";
+import { CATALOG_TEXTS } from "../constants/catalog.constants";
 
 /**
  * CatalogTabs - Tabs component for catalog page
@@ -15,59 +16,19 @@ const CatalogTabs: React.FC<CatalogTabsProps> = ({
   active,
   onTabChange,
 }) => {
-  const [searchQuery, setSearchQuery] = useState("");
-
-  // Filtrar y ordenar cursos según la pestaña activa y búsqueda
-  const filteredCourses = useMemo(() => {
-    let courses = catalogPageData?.selectedCategory?.courses || [];
-    
-    // Aplicar filtro de búsqueda
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim();
-      courses = courses.filter((course: Course) => {
-        const courseName = course.courseName?.toLowerCase() || "";
-        const instructorName = `${course.instructor?.firstName || ""} ${course.instructor?.lastName || ""}`.toLowerCase();
-        const categoryName = catalogPageData?.selectedCategory?.name?.toLowerCase() || "";
-        
-        return (
-          courseName.includes(query) ||
-          instructorName.includes(query) ||
-          categoryName.includes(query)
-        );
-      });
-    }
-    
-    if (active === 1) {
-      // Most Popular: Ordenar por rating promedio y número de estudiantes
-      return [...courses].sort((a: Course, b: Course) => {
-        const ratingA = GetAvgRating(a.ratingAndReviews || []);
-        const ratingB = GetAvgRating(b.ratingAndReviews || []);
-        const studentsA = (a.studentsEnrolled?.length || 0);
-        const studentsB = (b.studentsEnrolled?.length || 0);
-        
-        // Priorizar rating, luego número de estudiantes
-        if (ratingB !== ratingA) {
-          return ratingB - ratingA;
-        }
-        return studentsB - studentsA;
-      });
-    } else {
-      // New: Ordenar por fecha de creación (más recientes primero)
-      return [...courses].sort((a: Course, b: Course) => {
-        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-        return dateB - dateA;
-      });
-    }
-  }, [catalogPageData?.selectedCategory?.courses, catalogPageData?.selectedCategory?.name, active, searchQuery]);
-
-  const clearSearch = () => {
-    setSearchQuery("");
-  };
+  const {
+    searchQuery,
+    filteredCourses,
+    setSearchQuery,
+    clearSearch,
+  } = useCatalogTabsFilter({
+    catalogPageData,
+    activeTab: active,
+  });
 
   return (
     <div className="mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent">
-      <div className="section_heading mb-6">Cursos para comenzar</div>
+      <div className="section_heading mb-6">{CATALOG_TEXTS.sections.coursesToStart}</div>
       
       {/* Barra de búsqueda */}
       <div className="mb-6">
@@ -77,7 +38,7 @@ const CatalogTabs: React.FC<CatalogTabsProps> = ({
           </div>
           <input
             type="text"
-            placeholder="Buscar cursos por nombre, instructor o categoría..."
+            placeholder={CATALOG_TEXTS.search.placeholder}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="block w-full pl-12 pr-12 py-3.5 bg-richblack-800 border border-richblack-700 rounded-xl text-richblack-5 placeholder-richblack-400 focus:outline-none focus:ring-2 focus:ring-yellow-50/50 focus:border-yellow-50/50 transition-all duration-200"
@@ -93,7 +54,7 @@ const CatalogTabs: React.FC<CatalogTabsProps> = ({
         </div>
         {searchQuery && (
           <p className="mt-2 text-sm text-richblack-400">
-            {filteredCourses.length} curso{filteredCourses.length !== 1 ? "s" : ""} encontrado{filteredCourses.length !== 1 ? "s" : ""}
+            {CATALOG_TEXTS.search.results(filteredCourses.length)}
           </p>
         )}
       </div>
@@ -108,7 +69,7 @@ const CatalogTabs: React.FC<CatalogTabsProps> = ({
           } cursor-pointer`}
           onClick={() => onTabChange(1)}
         >
-          Más Populares
+          {CATALOG_TEXTS.tabs.mostPopular}
         </button>
         <button
           className={`px-4 py-2 transition-all duration-200 ${
@@ -118,7 +79,7 @@ const CatalogTabs: React.FC<CatalogTabsProps> = ({
           } cursor-pointer`}
           onClick={() => onTabChange(2)}
         >
-          Nuevos
+          {CATALOG_TEXTS.tabs.new}
         </button>
       </div>
       
@@ -131,8 +92,8 @@ const CatalogTabs: React.FC<CatalogTabsProps> = ({
         <div className="text-center py-12">
           <p className="text-richblack-400 text-lg">
             {searchQuery
-              ? "No se encontraron cursos con tu búsqueda"
-              : "No hay cursos disponibles en esta categoría"}
+              ? CATALOG_TEXTS.search.noResults
+              : CATALOG_TEXTS.search.noCoursesInCategory}
           </p>
         </div>
       )}

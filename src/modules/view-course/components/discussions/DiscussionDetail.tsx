@@ -15,6 +15,7 @@ import ReplyForm from "./ReplyForm";
 import EditDiscussionForm from "./EditDiscussionForm";
 import { Img } from "@shared/components";
 import { HiArrowLeft, HiPencil, HiTrash } from "react-icons/hi2";
+import { VIEW_COURSE_TEXTS } from "../../constants/viewCourse.constants";
 
 interface DiscussionDetailProps {
   discussion: SubsectionDiscussion;
@@ -67,7 +68,7 @@ const DiscussionDetail: React.FC<DiscussionDetailProps> = ({
   const canDeleteDiscussion = currentDiscussion.userId === currentUserId;
 
   const handleDeleteDiscussion = async () => {
-    if (!confirm("¿Estás seguro de que quieres eliminar esta pregunta?")) {
+    if (!confirm(VIEW_COURSE_TEXTS.discussions.detail.deleteConfirm)) {
       return;
     }
 
@@ -102,7 +103,7 @@ const DiscussionDetail: React.FC<DiscussionDetailProps> = ({
   };
 
   const handleReplyDelete = async (replyId: string) => {
-    if (!confirm("¿Estás seguro de que quieres eliminar esta respuesta?")) {
+    if (!confirm(VIEW_COURSE_TEXTS.discussions.detail.deleteReplyConfirm)) {
       return;
     }
 
@@ -142,7 +143,7 @@ const DiscussionDetail: React.FC<DiscussionDetailProps> = ({
           className="flex items-center gap-2 text-richblack-400 hover:text-richblack-100 mb-3 transition-colors"
         >
           <HiArrowLeft className="w-4 h-4" />
-          <span className="text-sm">Volver</span>
+          <span className="text-sm">{VIEW_COURSE_TEXTS.discussions.detail.back}</span>
         </button>
 
         {/* Pregunta - diseño compacto */}
@@ -175,7 +176,7 @@ const DiscussionDetail: React.FC<DiscussionDetailProps> = ({
                   <button
                     onClick={() => setIsEditingDiscussion(true)}
                     className="text-richblack-400 hover:text-yellow-50 transition-colors p-1 rounded"
-                    aria-label="Editar pregunta"
+                    aria-label={VIEW_COURSE_TEXTS.discussions.detail.edit}
                   >
                     <HiPencil className="w-4 h-4" />
                   </button>
@@ -184,7 +185,7 @@ const DiscussionDetail: React.FC<DiscussionDetailProps> = ({
                   <button
                     onClick={handleDeleteDiscussion}
                     className="text-richblack-400 hover:text-red-400 transition-colors p-1 rounded"
-                    aria-label="Eliminar pregunta"
+                    aria-label={VIEW_COURSE_TEXTS.discussions.detail.delete}
                   >
                     <HiTrash className="w-4 h-4" />
                   </button>
@@ -204,7 +205,7 @@ const DiscussionDetail: React.FC<DiscussionDetailProps> = ({
         {currentDiscussion.replies && currentDiscussion.replies.length > 0 ? (
           <>
             <div className="text-xs font-semibold text-richblack-400 uppercase tracking-wide mb-3">
-              {currentDiscussion.replies.length} {currentDiscussion.replies.length === 1 ? 'RESPUESTA' : 'RESPUESTAS'}
+              {currentDiscussion.replies.length} {VIEW_COURSE_TEXTS.discussions.detail.replies(currentDiscussion.replies.length)}
             </div>
             <div className="space-y-0">
               {currentDiscussion.replies.map((reply) => (
@@ -223,7 +224,7 @@ const DiscussionDetail: React.FC<DiscussionDetailProps> = ({
           </>
         ) : (
           <div className="text-center py-8 text-richblack-400 text-sm">
-            No hay respuestas aún. Sé el primero en responder.
+            {VIEW_COURSE_TEXTS.discussions.detail.empty}
           </div>
         )}
       </div>

@@ -5,128 +5,123 @@ import { getCatalogPageData } from "@shared/services/pageAndComponentData";
 import { Category, CatalogPageData } from "../types";
 
 /**
- * Custom hook to fetch and manage catalog data
- * Separates data fetching logic from component
+ * Hook personalizado para obtener y gestionar los datos del catálogo.
+ * Maneja la carga de categorías y cursos basándose en el parámetro de la URL.
  */
 export const useCatalogData = () => {
   const { catalogName } = useParams();
-  const [catalogPageData, setCatalogPageData] =
-    useState<CatalogPageData | null>(null);
+  const [catalogPageData, setCatalogPageData] = useState<CatalogPageData | null>(null);
   const [categoryId, setCategoryId] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // Función para validar UUID
+  /**
+   * Valida si un string tiene formato UUID válido.
+   */
   const isValidUUID = (id: string): boolean => {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     return uuidRegex.test(id);
   };
 
-  // Fetch All Categories
+  /**
+   * Normaliza un nombre de categoría para comparación (espacios a guiones, minúsculas).
+   */
+  const normalizeCategoryName = (name: string): string => {
+    return name.split(" ").join("-").toLowerCase().trim();
+  };
+
+  /**
+   * Obtiene el ID de categoría desde el nombre en la URL.
+   * Busca la categoría correspondiente y establece su ID.
+   */
   useEffect(() => {
+    const catalogNameRaw = Array.isArray(catalogName) ? catalogName[0] : catalogName;
+
+    if (!catalogNameRaw) {
+      setLoading(false);
+      setCatalogPageData(null);
+      setCategoryId("");
+      return;
+    }
+
+    setLoading(true);
+
     (async () => {
       try {
-        const res = (await fetchCourseCategories()) as Category[];
-        const catalogNameRaw = Array.isArray(catalogName)
-          ? catalogName[0]
-          : catalogName;
-        
-        if (!catalogNameRaw) return;
-        
-        // Decodificar el catalogName de URL encoding (ej: programaci%C3%B3n -> programación)
+        const categories = (await fetchCourseCategories()) as Category[];
         let catalogNameStr: string;
+
         try {
           catalogNameStr = decodeURIComponent(catalogNameRaw);
-        } catch (error) {
-          // Si falla la decodificación, usar el valor original
-          console.warn("Failed to decode catalogName, using raw value:", catalogNameRaw);
+        } catch {
           catalogNameStr = catalogNameRaw;
         }
-        
-        if (catalogNameStr) {
-          // Normalizar el nombre para comparar: convertir espacios a guiones y a minúsculas
-          const normalizedCatalogName = catalogNameStr.toLowerCase().trim();
-          
-          const category = res.find((ct: Category) => {
-            // Normalizar el nombre de la categoría de la misma manera
-            const normalizedCategoryName = ct.name
-              .split(" ")
-              .join("-")
-              .toLowerCase()
-              .trim();
-            
-            return normalizedCategoryName === normalizedCatalogName;
-          });
-          
-          if (!category) {
-            console.error("Category not found for catalogName:", catalogNameStr);
-            return;
-          }
 
-          // El backend PostgreSQL usa 'id' (UUID), pero mantenemos compatibilidad con '_id'
-          // Priorizar 'id' sobre '_id' ya que el backend usa UUIDs
-          const category_id = (category as any)?.id || category?._id;
-          
-          if (category_id) {
-            // Validar que sea un UUID válido
-            if (!isValidUUID(category_id)) {
-              console.error(
-                "Invalid category ID format (expected UUID):", 
-                category_id, 
-                "for category:",
-                category.name
-              );
-              console.error("This looks like a MongoDB ObjectId. Make sure you're using IDs from the backend.");
-              return;
-            }
-            
-            console.log("Category ID found (UUID):", category_id, "for category:", category?.name);
-            setCategoryId(category_id);
-          } else {
-            console.error("Category ID not found for catalogName:", catalogNameStr, "Category:", category);
-          }
+        const normalizedCatalogName = normalizeCategoryName(catalogNameStr);
+        const category = categories.find((ct: Category) => 
+          normalizeCategoryName(ct.name) === normalizedCatalogName
+        );
+
+        if (!category) {
+          console.error("Category not found for catalogName:", catalogNameStr);
+          setLoading(false);
+          return;
         }
+
+        const categoryId = (category as Category & { id?: string })?.id || category?._id;
+
+        if (!categoryId) {
+          console.error("Category ID not found for catalogName:", catalogNameStr);
+          setLoading(false);
+          return;
+        }
+
+        if (!isValidUUID(categoryId)) {
+          console.error("Invalid category ID format (expected UUID):", categoryId);
+          setLoading(false);
+          return;
+        }
+
+        setCategoryId(categoryId);
       } catch (error) {
         console.error("Could not fetch Categories.", error);
+        setLoading(false);
       }
     })();
   }, [catalogName]);
 
-  // Función para validar UUID (duplicada para uso en useEffect)
-  const isValidUUIDInEffect = (id: string): boolean => {
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    return uuidRegex.test(id);
-  };
-
-  // Fetch Catalog Page Data
+  /**
+   * Obtiene los datos de la página del catálogo (cursos) para la categoría seleccionada.
+   */
   useEffect(() => {
-    if (categoryId) {
-      // Validar formato UUID antes de hacer la petición
-      if (!isValidUUIDInEffect(categoryId)) {
-        console.error("Invalid category ID format (expected UUID):", categoryId);
-        setCatalogPageData(null);
-        setLoading(false);
-        return;
-      }
+    if (!categoryId) {
+      setCatalogPageData(null);
+      return;
+    }
 
-      (async () => {
-        setLoading(true);
-        try {
-          const res = await getCatalogPageData(categoryId);
-          // Si res es null, significa que no hay cursos para esta categoría
-          // pero aún así queremos mostrar el estado vacío, así que no establecemos catalogPageData
-          if (res && typeof res === 'object' && 'selectedCategory' in res) {
-            setCatalogPageData(res as CatalogPageData);
-          } else {
-            // No hay datos, establecer a null para mostrar el estado vacío
-            setCatalogPageData(null);
-          }
-        } catch (error) {
-          console.error("Error fetching catalog page data:", error);
+    if (!isValidUUID(categoryId)) {
+      console.error("Invalid category ID format (expected UUID):", categoryId);
+      setCatalogPageData(null);
+      setLoading(false);
+      return;
+    }
+
+    setCatalogPageData(null);
+
+    (async () => {
+      try {
+        const res = await getCatalogPageData(categoryId);
+        if (res && typeof res === 'object' && 'selectedCategory' in res) {
+          setCatalogPageData(res as CatalogPageData);
+        } else {
           setCatalogPageData(null);
         }
+      } catch (error) {
+        console.error("Error fetching catalog page data:", error);
+        setCatalogPageData(null);
+      } finally {
         setLoading(false);
-      })();
-    }
+      }
+    })();
   }, [categoryId]);
 
   return { catalogPageData, loading };

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { createReply } from "../../services/discussionAPI";
 import type { SubsectionDiscussion } from "../../types";
 import { HiArrowLeft } from "react-icons/hi2";
+import { VIEW_COURSE_TEXTS } from "../../constants/viewCourse.constants";
 
 interface ReplyFormProps {
   discussionId: string;
@@ -26,8 +27,8 @@ const ReplyForm: React.FC<ReplyFormProps> = ({
     if (e) e.preventDefault();
     setError("");
 
-    if (reply.trim().length < 5) {
-      setError("La respuesta debe tener al menos 5 caracteres");
+    if (reply.trim().length < VIEW_COURSE_TEXTS.discussions.reply.minLength) {
+      setError(VIEW_COURSE_TEXTS.discussions.reply.validation.minLength);
       return;
     }
 
@@ -39,7 +40,7 @@ const ReplyForm: React.FC<ReplyFormProps> = ({
         onSuccess(updatedDiscussion);
       }
     } catch (err) {
-      setError("Error al crear la respuesta. Inténtalo de nuevo.");
+      setError(VIEW_COURSE_TEXTS.discussions.reply.validation.createError);
     } finally {
       setLoading(false);
     }
@@ -60,15 +61,15 @@ const ReplyForm: React.FC<ReplyFormProps> = ({
           value={reply}
           onChange={(e) => setReply(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Escribir una respuesta..."
+          placeholder={VIEW_COURSE_TEXTS.discussions.reply.placeholder}
           className="w-full px-3 py-2 pr-10 bg-richblack-700/50 border border-richblack-600/50 rounded-lg text-sm text-richblack-5 placeholder-richblack-400 focus:outline-none focus:border-richblack-500 transition-colors"
           disabled={loading}
         />
         <button
           type="submit"
-          disabled={loading || reply.trim().length < 5}
+          disabled={loading || reply.trim().length < VIEW_COURSE_TEXTS.discussions.reply.minLength}
           className="absolute right-2 top-1/2 -translate-y-1/2 text-richblack-400 hover:text-richblack-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors p-1"
-          aria-label="Enviar respuesta"
+          aria-label={VIEW_COURSE_TEXTS.discussions.reply.send}
         >
           <HiArrowLeft className="w-4 h-4 rotate-180" />
         </button>

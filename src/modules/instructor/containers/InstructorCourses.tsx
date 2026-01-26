@@ -7,54 +7,61 @@ import { fetchInstructorCourses } from "../services/InstructorDashboardAPI";
 import CoursesTable from "../components/CoursesTable";
 import { Course } from "../types";
 import { RootState } from "@/shared/store/store";
+import { INSTRUCTOR_TEXTS } from "../constants/instructor.constants";
 
 export default function InstructorCourses() {
   const { token } = useSelector((state: RootState) => state.auth);
   const router = useRouter();
 
   const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(false);
-  const hasEverLoadedRef = useRef(false);
-  const isInitialMountRef = useRef(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCourses = async () => {
-      // SOLO mostrar loading en la carga inicial real, NUNCA durante navegación
-      if (isInitialMountRef.current && !hasEverLoadedRef.current) {
-        setLoading(true);
-      }
-      const result = await fetchInstructorCourses(token);
-      if (result) {
-        setCourses(result as unknown as Course[]);
-        hasEverLoadedRef.current = true;
-      }
+    if (!token) {
       setLoading(false);
-      isInitialMountRef.current = false;
+      return;
+    }
+
+    setLoading(true);
+
+    const fetchCourses = async () => {
+      try {
+        const result = await fetchInstructorCourses(token);
+        if (result) {
+          setCourses(result as unknown as Course[]);
+        } else {
+          setCourses([]);
+        }
+      } catch (error) {
+        console.error("Error fetching instructor courses:", error);
+        setCourses([]);
+      } finally {
+        setLoading(false);
+      }
     };
+    
     fetchCourses();
-  }, [token]); // Remover hasEverLoaded de dependencias para evitar loops
+  }, [token]);
 
   return (
     <div>
       <div className="mb-14 flex items-center justify-between">
-        <h1 className="text-3xl font-medium text-richblack-5">My Courses</h1>
+        <h1 className="text-3xl font-medium text-richblack-5">{INSTRUCTOR_TEXTS.courses.title}</h1>
         <button
           onClick={() => {
-            router.push("/dashboard/add-course");
+            router.push(INSTRUCTOR_TEXTS.links.addCourse);
           }}
           className="flex items-center gap-x-1 rounded-md bg-yellow-50 px-4 py-2 font-semibold text-richblack-900 transition-all duration-200 hover:scale-95"
         >
-          Add Course
+          {INSTRUCTOR_TEXTS.courses.addCourse}
         </button>
       </div>
-      {courses && (
-        <CoursesTable
-          courses={courses}
-          setCourses={setCourses}
-          loading={loading}
-          setLoading={setLoading}
-        />
-      )}
+      <CoursesTable
+        courses={courses}
+        setCourses={setCourses}
+        loading={loading}
+        setLoading={setLoading}
+      />
     </div>
   );
 }

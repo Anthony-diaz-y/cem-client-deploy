@@ -11,6 +11,6 @@ export { default as DeleteAllCoursesModal } from "./DeleteAllCoursesModal";
 export { default as DeleteCourseModal } from "./DeleteCourseModal";
 
 export * from "./types";
-export * from "./hooks/useDeleteCategoryModal";
-export * from "./hooks/useCategoriesTable";
+export * from "../../hooks/category/useDeleteCategoryModal";
+export * from "../../hooks/category/useCategoriesTable";
 

@@ -10,6 +10,7 @@ import { setDiscussionSidebarOpen, setCourseViewSidebar } from "@modules/dashboa
 import DiscussionItem from "./DiscussionItem";
 import DiscussionDetail from "./DiscussionDetail";
 import CreateDiscussionForm from "./CreateDiscussionForm";
+import { VIEW_COURSE_TEXTS } from "../../constants/viewCourse.constants";
 
 interface DiscussionSidebarProps {
   subSectionId: string;
@@ -38,7 +39,7 @@ const DiscussionSidebar: React.FC<DiscussionSidebarProps> = ({
       const data = await getDiscussions(subSectionId);
       setDiscussions(data);
     } catch (error) {
-      console.error("Error loading discussions:", error);
+      console.error(VIEW_COURSE_TEXTS.discussions.errors.loadDiscussions, error);
     } finally {
       setLoading(false);
     }
@@ -95,14 +96,14 @@ const DiscussionSidebar: React.FC<DiscussionSidebarProps> = ({
         <h2 className="text-lg font-semibold text-richblack-5">
           {selectedDiscussion || showCreateForm
             ? selectedDiscussion
-              ? "Discusión"
-              : "Crear Nueva Pregunta"
-            : `${discussions.length} Discusiones`}
+              ? VIEW_COURSE_TEXTS.discussions.sidebar.discussion
+              : VIEW_COURSE_TEXTS.discussions.sidebar.createNew
+            : VIEW_COURSE_TEXTS.discussions.sidebar.discussions(discussions.length)}
         </h2>
         <button
           onClick={handleClose}
           className="text-richblack-400 hover:text-richblack-100 transition-colors duration-200 p-1.5 rounded hover:bg-richblack-700"
-          aria-label="Cerrar"
+          aria-label={VIEW_COURSE_TEXTS.discussions.sidebar.close}
         >
           <RxCross2 className="w-5 h-5" />
         </button>
@@ -134,17 +135,17 @@ const DiscussionSidebar: React.FC<DiscussionSidebarProps> = ({
               onClick={handleCreateClick}
               className="w-full mb-4 px-4 py-3 bg-richblack-700 hover:bg-richblack-600 text-richblack-100 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.98]"
             >
-              CREAR NUEVO POST
+              {VIEW_COURSE_TEXTS.discussions.sidebar.createPost}
             </button>
 
             {/* Lista de discusiones */}
             {loading ? (
               <div className="text-center py-8 text-richblack-400">
-                Cargando discusiones...
+                {VIEW_COURSE_TEXTS.discussions.sidebar.loading}
               </div>
             ) : discussions.length === 0 ? (
               <div className="text-center py-8 text-richblack-400">
-                No hay discusiones aún. Sé el primero en preguntar.
+                {VIEW_COURSE_TEXTS.discussions.sidebar.empty}
               </div>
             ) : (
               <div className="space-y-3">

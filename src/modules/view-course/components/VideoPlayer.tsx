@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import { VideoPlayerProps } from "../types";
+import { VIEW_COURSE_TEXTS } from "../constants/viewCourse.constants";
 
 /**
  * VideoPlayer - Video player component using native HTML5 video
@@ -122,7 +123,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       };
     } else {
       setVideoError(true);
-      setErrorDetails("Esta lección no contiene un video válido.");
+      setErrorDetails(VIEW_COURSE_TEXTS.videoPlayer.errors.invalidVideo);
       setCurrentVideoUrl("");
       video.src = "";
     }
@@ -138,24 +139,24 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const video = e.currentTarget;
     const error = video.error;
 
-    let errorMessage = "Error desconocido al cargar el video";
+    let errorMessage: string = VIEW_COURSE_TEXTS.videoPlayer.errors.unknown;
 
     if (error) {
       switch (error.code) {
         case error.MEDIA_ERR_ABORTED:
-          errorMessage = "La carga del video fue cancelada";
+          errorMessage = VIEW_COURSE_TEXTS.videoPlayer.errors.aborted;
           break;
         case error.MEDIA_ERR_NETWORK:
-          errorMessage = "Error de red al cargar el video. Verifica tu conexión a internet.";
+          errorMessage = VIEW_COURSE_TEXTS.videoPlayer.errors.network;
           break;
         case error.MEDIA_ERR_DECODE:
-          errorMessage = "Error al decodificar el video. El formato podría no ser compatible.";
+          errorMessage = VIEW_COURSE_TEXTS.videoPlayer.errors.decode;
           break;
         case error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-          errorMessage = "El formato de video no es compatible o la URL no es válida.";
+          errorMessage = VIEW_COURSE_TEXTS.videoPlayer.errors.notSupported;
           break;
         default:
-          errorMessage = `Error al cargar el video (código: ${error.code})`;
+          errorMessage = VIEW_COURSE_TEXTS.videoPlayer.errors.loadError(error.code);
       }
     }
 
@@ -175,7 +176,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         video.load();
       } else {
         setVideoError(true);
-        setErrorDetails("No hay un video válido para reintentar.");
+        setErrorDetails(VIEW_COURSE_TEXTS.videoPlayer.errors.noValidVideo);
       }
     }
   };
@@ -201,15 +202,15 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
             />
           </svg>
-          <p className="text-center font-semibold text-lg mb-2">Error al cargar el video</p>
+          <p className="text-center font-semibold text-lg mb-2">{VIEW_COURSE_TEXTS.videoPlayer.errorTitle}</p>
           <p className="mt-2 text-sm text-center text-richblack-300 max-w-md mb-4">
-            {errorDetails || "No se pudo cargar el video. Por favor, verifica la URL o tu conexión a internet."}
+            {errorDetails || VIEW_COURSE_TEXTS.videoPlayer.errors.default}
           </p>
           <button
             onClick={handleRetry}
             className="px-6 py-2.5 bg-yellow-50 text-richblack-900 font-semibold rounded-lg hover:bg-yellow-100 transition-colors"
           >
-            🔄 Reintentar
+            {VIEW_COURSE_TEXTS.videoPlayer.retry}
           </button>
         </div>
       ) : (
@@ -254,7 +255,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           className="absolute inset-0 z-[100] flex flex-col items-center justify-center gap-4 p-6 rounded-xl"
         >
           <div className="text-center space-y-4">
-            <h3 className="text-2xl font-bold text-white mb-2">¡Video Completado!</h3>
+            <h3 className="text-2xl font-bold text-white mb-2">{VIEW_COURSE_TEXTS.videoPlayer.videoCompleted}</h3>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
               {!isCompleted && (
@@ -263,7 +264,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   onClick={onMarkComplete}
                   className="px-6 py-3 bg-yellow-50 text-richblack-900 font-semibold rounded-lg hover:bg-yellow-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-w-[180px]"
                 >
-                  {!loading ? "✓ Marcar como Completado" : "Cargando..."}
+                  {!loading ? VIEW_COURSE_TEXTS.videoPlayer.markComplete : VIEW_COURSE_TEXTS.videoPlayer.loading}
                 </button>
               )}
               <button
@@ -271,7 +272,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 onClick={onRewatch}
                 className="px-6 py-3 bg-richblack-700 text-richblack-5 font-semibold rounded-lg hover:bg-richblack-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-w-[180px] border border-richblack-600"
               >
-                🔄 Volver a Ver
+                {VIEW_COURSE_TEXTS.videoPlayer.rewatch}
               </button>
             </div>
 
@@ -283,7 +284,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                     onClick={onPrev}
                     className="px-5 py-2.5 bg-richblack-700 text-richblack-5 font-medium rounded-lg hover:bg-richblack-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-richblack-600 flex items-center gap-2"
                   >
-                    <span>←</span> Anterior
+                    {VIEW_COURSE_TEXTS.videoPlayer.previous}
                   </button>
                 )}
                 {!isLast && (
@@ -292,7 +293,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                     onClick={onNext}
                     className="px-5 py-2.5 bg-yellow-50 text-richblack-900 font-medium rounded-lg hover:bg-yellow-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
-                    Siguiente <span>→</span>
+                    {VIEW_COURSE_TEXTS.videoPlayer.next}
                   </button>
                 )}
               </div>
@@ -303,10 +304,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   {nextVideoInfo.isNextSection ? (
                     <div className="text-center">
                       <p className="text-xs text-richblack-400 mb-1">
-                        Continúa en la siguiente sección:
+                        {VIEW_COURSE_TEXTS.videoPlayer.nextSection}
                       </p>
                       <p className="text-sm font-semibold text-yellow-200">
-                        {nextVideoInfo.nextSectionName || "Siguiente Sección"}
+                        {nextVideoInfo.nextSectionName || VIEW_COURSE_TEXTS.videoPlayer.defaultNextSection}
                       </p>
                       {nextVideoInfo.nextLectureTitle && (
                         <p className="text-xs text-richblack-300 mt-1">
@@ -318,7 +319,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                     nextVideoInfo.nextLectureTitle && (
                       <div className="text-center">
                         <p className="text-xs text-richblack-400 mb-1">
-                          Siguiente lecture:
+                          {VIEW_COURSE_TEXTS.videoPlayer.nextLecture}
                         </p>
                         <p className="text-sm font-semibold text-yellow-200">
                           {nextVideoInfo.nextLectureTitle}
