@@ -6,7 +6,8 @@ import { EXPERTS } from "../../constants/experts.constants";
 export const ExpertsSection: React.FC = () => {
   return (
     <section className="w-full bg-white py-16 md:py-20">
-      <div className="w-11/12 max-w-5xl mx-auto">
+      <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8">
+        <div className="max-w-[1200px] mx-auto">
         {/* Header */}
         <div className="text-center mb-12 md:mb-16">
           <p className="text-sm md:text-base font-medium text-cem-primary mb-2">
@@ -25,6 +26,7 @@ export const ExpertsSection: React.FC = () => {
           {EXPERTS.map((expert) => (
             <ExpertCard key={expert.id} expert={expert} />
           ))}
+        </div>
         </div>
       </div>
     </section>

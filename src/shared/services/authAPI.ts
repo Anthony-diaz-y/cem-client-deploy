@@ -89,7 +89,126 @@ export function sendOtp(email: string, navigate: NavigateFunction) {
   }
 }
 
-// ================ sign Up ================
+// ================ send Otp for Signup (Nuevo flujo) ================
+/**
+ * Envía un código OTP al email del usuario para registro
+ * NO navega automáticamente, solo envía el OTP
+ */
+export function sendOtpForSignup(email: string) {
+  return async (dispatch: AppDispatch) => {
+    const toastId = toast.loading("Enviando código de verificación...");
+    dispatch(setLoading(true));
+
+    try {
+      const response = await apiConnector<ApiResponse & { otp?: string }>("POST", SENDOTP_API, {
+        email,
+      });
+
+      if (!response.data.success) {
+        throw new Error(response.data.message || "No se pudo enviar el código OTP");
+      }
+
+      toast.success(response.data.message || "Código de verificación enviado exitosamente");
+      
+      // En desarrollo, mostrar el OTP en consola si viene en la respuesta
+      if (response.data.otp && process.env.NODE_ENV === "development") {
+        console.log("🔑 OTP (solo desarrollo):", response.data.otp);
+      }
+
+      return { success: true, message: response.data.message, otp: response.data.otp };
+    } catch (error) {
+      console.log("SENDOTP FOR SIGNUP API ERROR --> ", error);
+      const apiError = error as ApiError;
+      const errorMessage = apiError.response?.data?.message || "";
+
+      if (errorMessage.includes("ya está registrado") || errorMessage.includes("Already Registered")) {
+        toast.error("Este email ya está registrado. Por favor, inicia sesión.");
+      } else if (errorMessage.includes("email") || errorMessage.includes("correo")) {
+        toast.error(errorMessage || "Error al enviar el código de verificación");
+      } else {
+        toast.error(errorMessage || "No se pudo enviar el código de verificación");
+      }
+
+      throw error;
+    } finally {
+      dispatch(setLoading(false));
+      toast.dismiss(toastId);
+    }
+  };
+}
+
+// ================ sign Up (Nuevo flujo simplificado) ================
+/**
+ * Registra un nuevo usuario con el nuevo formato de API
+ * Campos: name, email, password, otp
+ */
+export function signUpNew(
+  name: string,
+  email: string,
+  password: string,
+  otp: string,
+  navigate: NavigateFunction
+) {
+  return async (dispatch: AppDispatch) => {
+    const toastId = toast.loading("Registrando usuario...");
+    dispatch(setLoading(true));
+
+    try {
+      const response = await apiConnector<ApiResponse>("POST", SIGNUP_API, {
+        name,
+        email,
+        password,
+        otp,
+      });
+
+      if (!response.data.success) {
+        const errorMsg = response.data.message || "Error al registrar usuario";
+        toast.error(errorMsg);
+        throw new Error(errorMsg);
+      }
+
+      toast.success(response.data.message || "Usuario registrado exitosamente");
+      navigate("/auth/login");
+    } catch (error) {
+      const apiError = error as ApiError;
+      console.log("SIGNUP NEW API ERROR --> ", apiError);
+      
+      const errorMessage = apiError.response?.data?.message || "";
+      
+      if (errorMessage.includes("OTP") || errorMessage.includes("otp")) {
+        if (errorMessage.includes("expirado") || errorMessage.includes("expired")) {
+          toast.error("El código OTP ha expirado. Por favor, solicita uno nuevo.");
+        } else {
+          toast.error("Código OTP inválido. Verifica el código e intenta nuevamente.");
+        }
+      } else if (errorMessage.includes("ya está registrado") || errorMessage.includes("Already Registered")) {
+        toast.error("Este email ya está registrado. Por favor, inicia sesión.");
+      } else if (apiError.response?.data?.errors) {
+        const validationErrors = apiError.response.data.errors;
+        if (Array.isArray(validationErrors) && validationErrors.length > 0) {
+          const firstError = validationErrors[0];
+          if (firstError && typeof firstError === 'object' && 'constraints' in firstError && firstError.constraints) {
+            const constraintMessage = Object.values(firstError.constraints)[0];
+            toast.error(constraintMessage as string);
+          } else {
+            toast.error(errorMessage || "Error de validación");
+          }
+        } else {
+          toast.error(errorMessage || "Error de validación");
+        }
+      } else {
+        toast.error(errorMessage || "Error al registrar usuario");
+      }
+
+      throw error;
+    } finally {
+      dispatch(setLoading(false));
+      toast.dismiss(toastId);
+    }
+  };
+}
+
+// ================ sign Up (Método antiguo - mantener para compatibilidad) ================
 export function signUp(
   accountType: string,
   firstName: string,
@@ -187,9 +306,9 @@ export function login(email: string, password: string, navigate: NavigateFunctio
           "Tu cuenta ha sido desactivada. Por favor, contacta al administrador.",
           { id: 'account-deactivated-login' }
         );
-      } else if (errorMessage.includes("email no está registrado") || errorMessage.includes("no está registrado")) {
+      } else if (errorMessage.includes("email no está registrado") || errorMessage.includes("no está registrado") || errorMessage.includes("not registered") || errorMessage.includes("no encontrado")) {
         toast.error(
-          "El email no está registrado en nuestro sistema. Verifica tu email o regístrate.",
+          "Este correo no se encuentra registrado. Por favor, verifica tu correo o regístrate.",
           { id: 'email-not-found' }
         );
       } else if (errorMessage.includes("contraseña es incorrecta") || errorMessage.includes("contraseña incorrecta")) {
