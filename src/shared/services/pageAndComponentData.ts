@@ -112,28 +112,6 @@ export const getCatalogPageData = async (categoryId: string) => {
         result.differentCategory.courses = result.differentCategory.courses.map(normalizeCourse);
       }
       
-      // Debug: Verificar estructura de los cursos devueltos
-      if (process.env.NODE_ENV === 'development') {
-        const courses = [
-          ...(result.selectedCategory?.courses || []),
-          ...(result.mostSellingCourses || []),
-          ...(result.differentCategory?.courses || [])
-        ];
-        
-        if (courses.length > 0) {
-          console.log('Catalog Page Data - Sample course structure (after normalization):', {
-            courseName: courses[0]?.courseName,
-            hasAverageRating: courses[0]?.averageRating !== undefined,
-            averageRating: courses[0]?.averageRating,
-            hasTotalReviews: courses[0]?.totalReviews !== undefined,
-            totalReviews: courses[0]?.totalReviews,
-            hasRatingAndReviews: courses[0]?.ratingAndReviews !== undefined,
-            ratingAndReviewsType: typeof courses[0]?.ratingAndReviews,
-            ratingAndReviewsIsArray: Array.isArray(courses[0]?.ratingAndReviews),
-            ratingAndReviewsLength: Array.isArray(courses[0]?.ratingAndReviews) ? courses[0]?.ratingAndReviews.length : 'N/A'
-          });
-        }
-      }
     } else {
       console.error("Invalid data structure in response");
       return null;

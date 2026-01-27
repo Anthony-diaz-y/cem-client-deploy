@@ -3,6 +3,7 @@
 
 // Types
 export type {
+  Review,
   Course,
   Category,
   CategoryWithCourses,

@@ -3,7 +3,6 @@
 import { useSelector } from "react-redux";
 import Home from "../Home";
 import { RootState } from "@shared/store/store";
-import { useHomeBackground } from "../hooks/useHomeBackground";
 import { useHomeCatalogData } from "../hooks/useHomeCatalogData";
 
 /**
@@ -12,14 +11,14 @@ import { useHomeCatalogData } from "../hooks/useHomeCatalogData";
  */
 const HomeContainer = () => {
   const { token } = useSelector((state: RootState) => state.auth);
-  const backgroundImg = useHomeBackground();
-  const catalogPageData = useHomeCatalogData();
+  const { courses, loading, error } = useHomeCatalogData();
 
   return (
     <Home
-      backgroundImg={backgroundImg}
-      catalogPageData={catalogPageData}
+      courses={courses}
       token={token}
+      coursesLoading={loading}
+      coursesError={error}
     />
   );
 };

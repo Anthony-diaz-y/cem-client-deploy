@@ -19,16 +19,16 @@ const CatalogDropdown = ({ subLinks, loading, isActive }: CatalogDropdownProps) 
     <div
       className={`group relative flex cursor-pointer items-center gap-1 ${
         isActive
-          ? "bg-yellow-25 text-black rounded-xl p-1 px-3"
-          : "text-richblack-25 rounded-xl p-1 px-3"
-      }`}
+          ? "text-cem-primary-DEFAULT font-semibold"
+          : "text-cem-neutral-gray-800 hover:text-cem-primary-DEFAULT"
+      } transition-colors text-sm font-medium`}
     >
-      <p>Catalog</p>
-      <MdKeyboardArrowDown />
-      <div className="invisible absolute left-[50%] top-[50%] z-[1000] flex w-[200px] translate-x-[-50%] translate-y-[3em] flex-col rounded-lg bg-richblack-5 p-4 text-richblack-900 opacity-0 transition-all duration-150 group-hover:visible group-hover:translate-y-[1.65em] group-hover:opacity-100 lg:w-[300px]">
-        <div className="absolute left-[50%] top-0 z-[100] h-6 w-6 translate-x-[80%] translate-y-[-40%] rotate-45 select-none rounded bg-richblack-5"></div>
+      <p>Cursos</p>
+      <MdKeyboardArrowDown className="h-4 w-4" />
+      <div className="invisible absolute left-[50%] top-[50%] z-[1000] flex w-[200px] translate-x-[-50%] translate-y-[3em] flex-col rounded-lg bg-white p-4 text-gray-700 shadow-lg border border-gray-200 opacity-0 transition-all duration-150 group-hover:visible group-hover:translate-y-[1.65em] group-hover:opacity-100 lg:w-[300px]">
+        <div className="absolute left-[50%] top-0 z-[100] h-6 w-6 translate-x-[80%] translate-y-[-40%] rotate-45 select-none rounded bg-white border-l border-t border-gray-200"></div>
         {loading ? (
-          <p className="text-center">Loading...</p>
+          <p className="text-center text-gray-500">Cargando...</p>
         ) : subLinks.length ? (
           <>
             {subLinks.map((subLink, i) => (
@@ -37,7 +37,7 @@ const CatalogDropdown = ({ subLinks, loading, isActive }: CatalogDropdownProps) 
                   .split(" ")
                   .join("-")
                   .toLowerCase()}`}
-                className="rounded-lg bg-transparent py-4 pl-4 hover:bg-richblack-50"
+                className="rounded-lg bg-transparent py-3 pl-4 hover:bg-cem-teal-50 hover:text-cem-primary-DEFAULT transition-colors"
                 key={i}
               >
                 <p>{subLink.name}</p>
@@ -45,7 +45,7 @@ const CatalogDropdown = ({ subLinks, loading, isActive }: CatalogDropdownProps) 
             ))}
           </>
         ) : (
-          <p className="text-center">No Courses Found</p>
+          <p className="text-center text-gray-500">No se encontraron cursos</p>
         )}
       </div>
     </div>

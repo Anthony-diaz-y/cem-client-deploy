@@ -79,6 +79,7 @@ export interface Course {
   studentsEnrolled: string[];
   instructions: string[];
   status: string;
+  totalDuration?: string | number;
   createdAt: string;
   updatedAt: string;
 }

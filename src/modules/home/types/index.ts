@@ -1,19 +1,5 @@
 // Home Module Types
-
-export interface Course {
-  _id: string;
-  courseName: string;
-  price: number;
-  thumbnail: string;
-  instructor: {
-    firstName: string;
-    lastName: string;
-  };
-  firstName: string;
-  lastName: string;
-  ratingAndReviews: unknown[];
-  studentsEnrolled: unknown[];
-}
+import type { Course } from "../../catalog/types";
 
 export interface CategoryWithCourses {
   name: string;
@@ -28,27 +14,19 @@ export interface CatalogPageData {
 }
 
 export interface HomeProps {
-  backgroundImg: string | null;
-  catalogPageData: CatalogPageData | null;
+  courses: Course[];
   token: string | null;
+  coursesLoading?: boolean;
+  coursesError?: boolean;
 }
+
+export type { Course };
 
 export interface CTAButtonType {
   active: boolean;
   linkto?: string;
   link?: string;
   btnText: string;
-}
-
-export interface CodeBlocksProps {
-  position: string;
-  heading: React.ReactNode;
-  subheading: string;
-  ctabtn1: CTAButtonType;
-  ctabtn2: CTAButtonType;
-  codeblock: string;
-  backgroundGradient: string;
-  codeColor: string;
 }
 
 export interface ButtonProps {
@@ -61,26 +39,23 @@ export interface HighlightTextProps {
   text: string;
 }
 
-export interface ExploreCourseCard {
-  heading: string;
-  description: string;
-  level: string;
-  lessionNumber: number;
-}
-
-export interface HomePageExploreItem {
-  tag: string;
-  courses: ExploreCourseCard[];
-}
-
-export interface CourseCardProps {
-  cardData: ExploreCourseCard;
-  currentCard: string;
-  setCurrentCard: (heading: string) => void;
-}
-
-export interface TimelineItem {
-  Logo: string;
-  heading: string;
-  Description: string;
+export interface ConcentricCirclesProps {
+  /** Tamaño del círculo más grande en píxeles */
+  size?: number;
+  /** Número de círculos concéntricos (por defecto 4) */
+  circles?: number;
+  /** Color del borde de los círculos */
+  borderColor?: string;
+  /** Color del punto decorativo */
+  dotColor?: string;
+  /** Mostrar punto decorativo */
+  showDot?: boolean;
+  /** Tamaño del punto decorativo en píxeles */
+  dotSize?: number;
+  /** Clases CSS adicionales */
+  className?: string;
+  /** Clases CSS adicionales para el círculo pequeño (dot) */
+  dotClassName?: string;
+  /** Estilos inline adicionales */
+  style?: React.CSSProperties;
 }

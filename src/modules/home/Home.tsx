@@ -1,245 +1,54 @@
 "use client";
+
 import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-
-import HighlightText from "./components/HighlightText";
-import CTAButton from "./components/Button";
-import CodeBlocks from "./components/CodeBlocks";
-import TimelineSection from "./components/TimelineSection";
-import LearningLanguageSection from "./components/LearningLanguageSection";
-import InstructorSection from "./components/InstructorSection";
-import { Footer, ReviewSlider } from "@shared/components";
-import ExploreMore from "./components/ExploreMore";
-import { CourseSlider } from "../catalog";
-
-import { MdOutlineRateReview } from "react-icons/md";
-import { FaArrowRight } from "react-icons/fa";
-
-import { motion } from "framer-motion";
-import { fadeIn } from "@shared/utils/motionFrameVarients";
-
+import { Footer } from "@shared/components";
+import HeroSection from "./components/HeroSection";
+import PartnersSection from "./components/PartnersSection";
+import { CoursesSection } from "./components/courses";
+import { ValuePropositionSection } from "./components/valueProposition";
+import { ExpertsSection } from "./components/experts";
+import { TestimonialsSection } from "./components/testimonials";
+import { FAQSection } from "./components/faq";
+import { AlliesSection } from "./components/allies";
+import { NewsSection } from "./components/news";
 import type { HomeProps } from "./types";
-import { HOME_TEXTS } from "./constants/home.constants";
-import { useHomeLinks } from "./hooks/useHomeLinks";
+import { useCombinedCourses } from "./hooks/useCombinedCourses";
 
-/**
- * Home - Presentational component for Home page
- * Receives all data and handlers as props from container
- * No business logic, only UI rendering
- */
 const Home: React.FC<HomeProps> = ({
-  backgroundImg,
-  catalogPageData,
+  courses,
   token,
+  coursesLoading = false,
+  coursesError = false,
 }) => {
-  const learnMoreLink = useHomeLinks(token);
+  const displayCourses = useCombinedCourses(courses || []);
 
   return (
-    <React.Fragment>
-      {/* background random image */}
-      <div>
-        <div className="w-full h-[450px] md:h-[650px] absolute top-0 left-0 opacity-[0.3] overflow-hidden">
-          {backgroundImg && (
-            <Image
-              src={backgroundImg}
-              alt="Background"
-              fill
-              className="object-cover"
-              sizes="100vw"
-              priority
-            />
-          )}
-
-          <div className="absolute left-0 bottom-0 w-full h-[250px] opacity_layer_bg "></div>
-        </div>
+    <div className="bg-white min-h-screen">
+      <div className="relative w-11/12 max-w-maxContent mx-auto bg-white">
+        <HeroSection />
+        <PartnersSection />
       </div>
 
-      <div className=" ">
-        {/*Section1  */}
-        <div className="relative h-[450px] md:h-[550px] justify-center mx-auto flex flex-col w-11/12 max-w-maxContent items-center text-white ">
-          <Link href={HOME_TEXTS.links.signup}>
-            <div
-              className="z-0 group p-1 mx-auto rounded-full bg-richblack-800 font-bold text-richblack-200
-                                        transition-all duration-200 hover:scale-95 w-fit"
-            >
-              <div
-                className="flex flex-row items-center gap-2 rounded-full px-10 py-[5px]
-                              transition-all duration-200 group-hover:bg-richblack-900"
-              >
-                <p>{HOME_TEXTS.hero.becomeInstructor}</p>
-                <FaArrowRight />
-              </div>
-            </div>
-          </Link>
+      <CoursesSection 
+        courses={displayCourses}
+        loading={coursesLoading}
+        error={coursesError}
+      />
 
-          <motion.div
-            variants={fadeIn("left", 0.1)}
-            initial="hidden"
-            whileInView={"show"}
-            viewport={{ once: false, amount: 0.1 }}
-            className="text-center text-3xl lg:text-4xl font-semibold mt-7  "
-          >
-            {HOME_TEXTS.hero.title.part1}
-            <HighlightText text={HOME_TEXTS.hero.title.part2} />
-          </motion.div>
+      <ValuePropositionSection />
 
-          <motion.div
-            variants={fadeIn("right", 0.1)}
-            initial="hidden"
-            whileInView={"show"}
-            viewport={{ once: false, amount: 0.1 }}
-            className=" mt-4 w-[90%] text-center text-base lg:text-lg font-bold text-richblack-300"
-          >
-            {HOME_TEXTS.hero.description}
-          </motion.div>
+      <ExpertsSection />
 
-          <div className="flex flex-row gap-7 mt-8">
-            <CTAButton active={true} linkto={learnMoreLink}>
-              {HOME_TEXTS.hero.buttons.learnMore}
-            </CTAButton>
+      <TestimonialsSection />
 
-            <CTAButton active={false} linkto={HOME_TEXTS.links.signup}>
-              {HOME_TEXTS.hero.buttons.bookDemo}
-            </CTAButton>
-          </div>
-        </div>
+      <FAQSection />
 
-        {/* animated code */}
-        <div className="relative mx-auto flex flex-col w-11/12 max-w-maxContent items-center text-white justify-between">
-          {/* Code block 1 */}
-          <div className="">
-            <CodeBlocks
-              position={"lg:flex-row"}
-              heading={
-                <div className="text-3xl lg:text-4xl font-semibold">
-                  {HOME_TEXTS.codeBlocks.block1.heading.part1}
-                  <HighlightText text={HOME_TEXTS.codeBlocks.block1.heading.part2} />
-                  {HOME_TEXTS.codeBlocks.block1.heading.part3}
-                </div>
-              }
-              subheading={HOME_TEXTS.codeBlocks.block1.subheading}
-              ctabtn1={{
-                btnText: HOME_TEXTS.codeBlocks.block1.buttons.tryIt,
-                linkto: HOME_TEXTS.links.signup,
-                active: true,
-              }}
-              ctabtn2={{
-                btnText: HOME_TEXTS.codeBlocks.block1.buttons.learnMore,
-                linkto: learnMoreLink,
-                active: false,
-              }}
-              codeblock={`<<!DOCTYPE html>\n<html>\n<head><title>Example</title>\n</head>\n<body>\n<h1><ahref="/">Header</a>\n</h1>\n<nav><ahref="one/">One</a><ahref="two/">Two</a><ahref="three/">Three</a>\n</nav>`}
-              codeColor={"text-yellow-25"}
-              backgroundGradient={"code-block1-grad"}
-            />
-          </div>
+      <AlliesSection />
 
-          {/* Code block 2 */}
-          <div>
-            <CodeBlocks
-              position={"lg:flex-row-reverse"}
-              heading={
-                <div className="w-[100%] text-3xl lg:text-4xl font-semibold lg:w-[50%]">
-                  {HOME_TEXTS.codeBlocks.block2.heading.part1}
-                  <HighlightText text={HOME_TEXTS.codeBlocks.block2.heading.part2} />
-                </div>
-              }
-              subheading={HOME_TEXTS.codeBlocks.block2.subheading}
-              ctabtn1={{
-                btnText: HOME_TEXTS.codeBlocks.block2.buttons.continueLesson,
-                linkto: HOME_TEXTS.links.signup,
-                active: true,
-              }}
-              ctabtn2={{
-                btnText: HOME_TEXTS.codeBlocks.block2.buttons.learnMore,
-                linkto: learnMoreLink,
-                active: false,
-              }}
-              codeColor={"text-white"}
-              codeblock={`import React from "react";\n import CTAButton from "./Button";\nimport TypeAnimation from "react-type";\nimport { FaArrowRight } from "react-icons/fa";\n\nconst Home = () => {\nreturn (\n<div>Home</div>\n)\n}\nexport default Home;`}
-              backgroundGradient={"code-block2-grad"}
-            />
-          </div>
+      <NewsSection />
 
-          {/* course slider */}
-          <div className="mx-auto box-content w-full max-w-maxContentTab px- py-12 lg:max-w-maxContent">
-            <h2 className="text-white mb-6 text-2xl ">
-              {HOME_TEXTS.courseSections.popularPicks}
-            </h2>
-            <CourseSlider
-              Courses={catalogPageData?.selectedCategory?.courses || []}
-            />
-          </div>
-          <div className=" mx-auto box-content w-full max-w-maxContentTab px- py-12 lg:max-w-maxContent">
-            <h2 className="text-white mb-6 text-2xl ">
-              {HOME_TEXTS.courseSections.topEnrollments}
-            </h2>
-            <CourseSlider Courses={catalogPageData?.mostSellingCourses || []} />
-          </div>
-
-          <ExploreMore />
-        </div>
-
-        {/*Section 2  */}
-        <div className="bg-pure-greys-5 text-richblack-700 ">
-          <div className="homepage_bg h-[310px]">
-            <div className="w-11/12 max-w-maxContent flex flex-col items-center justify-between gap-5 mx-auto">
-              <div className="h-[150px]"></div>
-              <div className="flex flex-row gap-7 text-white ">
-                <CTAButton active={true} linkto={HOME_TEXTS.links.signup}>
-                  <div className="flex items-center gap-3">
-                    {HOME_TEXTS.section2.buttons.exploreCatalog}
-                    <FaArrowRight />
-                  </div>
-                </CTAButton>
-                <CTAButton active={false} linkto={learnMoreLink}>
-                  <div>{HOME_TEXTS.section2.buttons.learnMore}</div>
-                </CTAButton>
-              </div>
-            </div>
-          </div>
-
-          <div className="mx-auto w-11/12 max-w-maxContent flex flex-col items-center justify-between gap-7">
-            <div className="flex flex-col lg:flex-row gap-5 mb-10 mt-[95px]">
-              <div className="text-3xl lg:text-4xl font-semibold w-full lg:w-[45%]">
-                {HOME_TEXTS.section2.title.part1}
-                <HighlightText text={HOME_TEXTS.section2.title.part2} />
-              </div>
-
-              <div className="flex flex-col gap-10 w-full lg:w-[40%] items-start">
-                <div className="text-[16px]">
-                  {HOME_TEXTS.section2.description}
-                </div>
-                <CTAButton active={true} linkto={learnMoreLink}>
-                  <div>{HOME_TEXTS.section2.buttons.learnMore}</div>
-                </CTAButton>
-              </div>
-            </div>
-
-            {/* leadership */}
-            <TimelineSection />
-
-            <LearningLanguageSection />
-          </div>
-        </div>
-
-        {/*Section 3 */}
-        <div className="mt-14 w-11/12 mx-auto max-w-maxContent flex-col items-center justify-between gap-8 first-letter bg-richblack-900 text-white">
-          <InstructorSection />
-
-          {/* Reviws from Other Learner */}
-          <h1 className="text-center text-3xl lg:text-4xl font-semibold mt-8 flex justify-center items-center gap-x-3">
-            {HOME_TEXTS.reviews.title}{" "}
-            <MdOutlineRateReview className="text-yellow-25" />
-          </h1>
-          <ReviewSlider />
-        </div>
-
-        {/*Footer */}
-        <Footer />
-      </div>
-    </React.Fragment>
+      <Footer />
+    </div>
   );
 };
 

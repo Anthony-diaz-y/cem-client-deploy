@@ -17,7 +17,6 @@ const {
 
 // Obtener todos los cursos
 export const getAllCourses = async () => {
-  const toastId = toast.loading("Loading...")
   let result: unknown[] = []
 
   try {
@@ -32,7 +31,6 @@ export const getAllCourses = async () => {
       toast.error(apiError.message || "No se pudieron obtener los cursos")
     }
   }
-  toast.dismiss(toastId)
   return result
 }
 
