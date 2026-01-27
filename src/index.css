@@ -189,3 +189,27 @@ body {
   background: linear-gradient(180deg, rgba(4, 21, 45, 0) 0%, #04152d 79.17%);
 }
 
+/* Electron orbit animation for ConcentricCircles */
+@keyframes electron-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Floating animation for course cards */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.course-card-float {
+  animation: float 3s ease-in-out infinite;
+}
+

@@ -33,7 +33,7 @@ export const TestimonialsSection: React.FC = () => {
 
   return (
     <section className="w-full py-16 md:py-20 relative" style={{ backgroundColor: '#F9FAFB' }}>
-      <div className="w-11/12 max-w-maxContent mx-auto relative z-10">
+      <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8 relative z-10">
         {/* Header */}
         <div className="text-center mb-12 md:mb-16">
           <p className="text-sm md:text-base font-medium text-cem-primary mb-2">

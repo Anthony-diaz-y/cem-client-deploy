@@ -49,12 +49,12 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
 
   return (
     <div className="w-full bg-white py-16">
-      <div className="w-11/12 max-w-[90%] lg:max-w-[85%] mx-auto">
+      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8">
         <CoursesSectionHeader />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {displayCourses.map((course, index) => (
-            <HomeCourseCard key={course._id || index} course={course} />
+            <HomeCourseCard key={course._id || index} course={course} index={index} />
           ))}
         </div>
 

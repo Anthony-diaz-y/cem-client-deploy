@@ -24,7 +24,7 @@ const Home: React.FC<HomeProps> = ({
 
   return (
     <div className="bg-white min-h-screen">
-      <div className="relative w-11/12 max-w-maxContent mx-auto bg-white">
+      <div className="relative w-full max-w-[1400px] mx-auto px-4 md:px-8 bg-white">
         <HeroSection />
         <PartnersSection />
       </div>

@@ -11,7 +11,7 @@ export const NewsSection: React.FC = () => {
 
   return (
     <section className="w-full py-12 md:py-16 lg:py-20 bg-white">
-      <div className="w-11/12 max-w-maxContent mx-auto">
+      <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8">
         {/* Header */}
         <div className="text-left mb-10 md:mb-12 lg:mb-14">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-cem-neutral-gray-900">

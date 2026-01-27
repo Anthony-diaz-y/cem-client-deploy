@@ -1,7 +1,6 @@
 /**
  * Servicios de API para la gestión de Categorías (Admin)
  */
-
 import { toast } from "react-hot-toast";
 import { apiConnector } from "../apiConnector";
 import { categories } from "../apis";
@@ -25,9 +24,6 @@ import type {
 
 /**
  * Crea una nueva categoría de curso
- * @param data - Datos de la categoría (nombre y descripción)
- * @param token - Token JWT de autenticación
- * @returns true si la operación fue exitosa
  */
 export async function createCategory(
   data: CreateCategoryRequest,
@@ -62,8 +58,6 @@ export async function createCategory(
 
 /**
  * Obtiene todas las categorías del sistema
- * @param token - Token JWT de autenticación
- * @returns Lista de categorías
  */
 export async function getAllCategories(
   token: string
@@ -122,11 +116,6 @@ export async function getPublicCategories(): Promise<Category[]> {
 
 /**
  * Actualiza una categoría existente
- * @param categoryId - ID de la categoría a actualizar
- * @param name - Nuevo nombre de la categoría
- * @param description - Nueva descripción de la categoría
- * @param token - Token JWT de autenticación
- * @returns Categoría actualizada o null en caso de error
  */
 export async function updateCategory(
   categoryId: string,
@@ -163,9 +152,6 @@ export async function updateCategory(
 
 /**
  * Obtiene todos los cursos asociados a una categoría específica
- * @param categoryId - ID de la categoría
- * @param token - Token JWT de autenticación
- * @returns Datos de la categoría con sus cursos o null en caso de error
  */
 export async function getCategoryCourses(
   categoryId: string,
@@ -196,11 +182,6 @@ export async function getCategoryCourses(
 
 /**
  * Cambia la categoría de un curso específico a otra categoría
- * @param courseId - ID del curso a cambiar
- * @param newCategoryId - ID de la nueva categoría
- * @param token - Token JWT de autenticación
- * @param silent - Si es true, no muestra toasts (útil para operaciones desde componentes)
- * @returns true si la operación fue exitosa
  */
 export async function changeCourseCategory(
   courseId: string,
@@ -242,10 +223,6 @@ export async function changeCourseCategory(
 /**
  * Cambia la categoría de múltiples cursos a la vez
  * Evita múltiples toasts al hacer cambios masivos
- * @param changes - Array de cambios { courseId, newCategoryId }
- * @param token - Token JWT de autenticación
- * @param silent - Si es true, no muestra toasts (útil cuando el componente los maneja)
- * @returns Resultado de la operación con información de éxitos y fallos, incluyendo flag success
  */
 export async function changeMultipleCoursesCategory(
   changes: Array<{ courseId: string; newCategoryId: string }>,
@@ -276,7 +253,6 @@ export async function changeMultipleCoursesCategory(
     const result = response.data.data;
     const allSuccessful = result.failedCount === 0;
 
-    // Mostrar un solo toast de éxito o error según el resultado si no es silent
     if (!silent) {
       if (result.failedCount > 0) {
         toast.error(
@@ -309,14 +285,6 @@ export async function changeMultipleCoursesCategory(
 
 /**
  * Intenta eliminar una categoría. Si tiene cursos asociados, retorna los cursos en la respuesta
- * Usa query parameter (no body) para evitar problemas de parsing en el backend
- * 
- * IMPORTANTE: Un 400 con cursos asociados NO es un error, es una respuesta válida del backend
- * que indica que se deben reasignar los cursos antes de eliminar la categoría.
- * 
- * @param categoryId - ID de la categoría a eliminar
- * @param token - Token JWT de autenticación
- * @returns Objeto con success, message, y opcionalmente courses si hay cursos asociados
  */
 export async function deleteCategory(
   categoryId: string,
@@ -330,23 +298,19 @@ export async function deleteCategory(
 }> {
   const toastId = toast.loading("Eliminando categoría...");
   try {
-    // Usar solo query parameter, sin body ni Content-Type
     const response = await apiConnector<DeleteCategoryResponse>(
       "DELETE",
       categories.DELETE_CATEGORY_API,
-      undefined, // Sin body
+      undefined,
       {
         Authorization: `Bearer ${token}`,
-        // NO incluir Content-Type cuando no hay body
       },
-      { categoryId } // Query parameters
+      { categoryId } 
     );
 
-    // Si la respuesta es exitosa (status 200)
     if (response.status === 200 && response.data.success) {
       toast.success(response.data.message || "Categoría eliminada exitosamente");
       toast.dismiss(toastId);
-      // El backend ahora devuelve la lista completa de categorías actualizada en response.data.data
       return {
         success: true,
         message: response.data.message,
@@ -354,11 +318,9 @@ export async function deleteCategory(
       };
     }
 
-    // Si tiene información de cursos (aunque no sea success), es una respuesta válida
     const responseData = response.data as DeleteCategoryResponse;
     if (responseData.courses && Array.isArray(responseData.courses) && responseData.courses.length > 0) {
       toast.dismiss(toastId);
-      // NO mostrar error, es una respuesta válida que indica cursos asociados
       return {
         success: false,
         message: responseData.message,
@@ -373,15 +335,10 @@ export async function deleteCategory(
     const apiError = error as ApiError;
     toast.dismiss(toastId);
 
-    // IMPORTANTE: Un 400 con cursos asociados NO es un error, es una respuesta válida del backend
-    // El backend devuelve 400 cuando hay cursos asociados, pero incluye la información de los cursos
     if (apiError.response?.status === 400) {
-      const errorData = apiError.response?.data as DeleteCategoryResponse;
+      const errorData = apiError.response?.data as unknown as DeleteCategoryResponse;
 
-      // Verificar si tiene cursos asociados (respuesta válida del backend)
       if (errorData?.courses && Array.isArray(errorData.courses) && errorData.courses.length > 0) {
-        // NO mostrar toast de error, es información válida que indica que hay cursos asociados
-        // Retornar la información para que el modal la maneje correctamente
         return {
           success: false,
           message: errorData.message || "Esta categoría tiene cursos asociados",
@@ -390,7 +347,6 @@ export async function deleteCategory(
         };
       }
 
-      // Es un 400 pero sin cursos - error real
       const errorMessage = errorData?.message || "Error al eliminar categoría";
       toast.error(errorMessage);
       return {
@@ -399,8 +355,7 @@ export async function deleteCategory(
       };
     }
 
-    // Otro tipo de error (no es 400) - mostrar mensaje de error
-    const errorData = apiError.response?.data as DeleteCategoryResponse;
+    const errorData = apiError.response?.data as unknown as DeleteCategoryResponse;
     const errorMessage = errorData?.message || apiError.message || "Error al eliminar categoría";
     toast.error(errorMessage);
     return {

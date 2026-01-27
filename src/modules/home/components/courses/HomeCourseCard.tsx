@@ -9,9 +9,10 @@ import { formatDurationForBadge } from "../../utils";
 
 interface HomeCourseCardProps {
   course: Course;
+  index?: number;
 }
 
-export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({ course }) => {
+export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({ course, index = 0 }) => {
   const courseId = course._id;
   const avgRating = GetAvgRating(course.ratingAndReviews || []);
   const reviewCount = course.ratingAndReviews?.length || 0;
@@ -23,10 +24,15 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({ course }) => {
     ? `${course.instructor.firstName || ""} ${course.instructor.lastName || ""}`.trim()
     : "Instructor";
 
+  const animationDelay = index * 0.1;
+
   return (
     <Link
       href={`/courses/${courseId}`}
-      className="group bg-white rounded-xl border border-cem-neutral-gray-200 overflow-hidden hover:border-cem-primary hover:shadow-lg transition-all duration-300 flex flex-col"
+      className="group bg-white rounded-xl border border-cem-neutral-gray-200 overflow-hidden hover:border-cem-primary hover:shadow-lg transition-all duration-300 flex flex-col course-card-float"
+      style={{
+        animationDelay: `${animationDelay}s`,
+      }}
     >
       {/* Imagen con badge de duración */}
       <div className="relative w-full h-48 bg-cem-neutral-gray-100 overflow-hidden">

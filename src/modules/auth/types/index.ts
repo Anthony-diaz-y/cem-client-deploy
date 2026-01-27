@@ -1,6 +1,3 @@
-// Auth Module Types
-
-import type { StaticImageData } from "next/image";
 import type { ReactNode } from "react";
 
 export interface SignupData {
@@ -46,15 +43,6 @@ export interface ProfileState {
   loading: boolean;
 }
 
-// Component Props Types
-export interface TemplateProps {
-  title: string;
-  description1: string;
-  description2: string;
-  image: string | StaticImageData;
-  formType: "login" | "signup";
-}
-
 export interface ProtectedRouteProps {
   children: ReactNode;
 }
@@ -63,7 +51,6 @@ export interface OpenRouteProps {
   children: ReactNode;
 }
 
-// Service Types
 export type NavigateFunction = (url: string) => void;
 
 export interface ApiError {
@@ -72,12 +59,16 @@ export interface ApiError {
     statusText?: string;
     data?: {
       message?: string;
+      errors?: Array<{
+        constraints?: Record<string, string>;
+        [key: string]: unknown;
+      }>;
+      [key: string]: unknown;
     };
   };
   message?: string;
 }
 
-// API Response Types
 export interface ApiResponse<T = unknown> {
   success: boolean;
   message: string;

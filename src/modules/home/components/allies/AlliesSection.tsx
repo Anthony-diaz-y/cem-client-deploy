@@ -6,7 +6,7 @@ import { ALLIES_LOGOS } from "../../constants/allies.constants";
 export const AlliesSection: React.FC = () => {
   return (
     <section className="w-full py-16 md:py-20" style={{ backgroundColor: '#F9FAFB' }}>
-      <div className="w-11/12 max-w-maxContent mx-auto">
+      <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8">
         {/* Header */}
         <div className="text-center mb-12 md:mb-16">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-cem-neutral-gray-900">

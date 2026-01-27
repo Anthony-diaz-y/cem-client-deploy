@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import GlobalProviders from "./providers";
-import { Navbar, DemoBanner, ScrollToTop } from "@shared/components"; 
+import { DemoBanner, ScrollToTop } from "@shared/components";
+import ConditionalNavbar from "@shared/components/navigation/ConditionalNavbar";
 import "../index.css";
 
 export const metadata: Metadata = {
@@ -18,7 +19,7 @@ export default function RootLayout({
       <body>
         <GlobalProviders>
           <div className="w-screen min-h-screen bg-richblack-900 flex flex-col font-inter">
-            <Navbar />
+            <ConditionalNavbar />
 
             {/* ScrollToTop logic will be handled here or inside a client component */}
             <ScrollToTop />

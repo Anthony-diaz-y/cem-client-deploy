@@ -11,26 +11,27 @@ import guacamayo from "@shared/assets/hero/guacamayo.webp";
 
 const PartnersSection: React.FC = () => {
   return (
-    <div className="border-cem-neutral-gray-200 relative">
-      {/* Línea horizontal decorativa */}
-      <div className="relative mb-6 mx-auto z-30" style={{ width: '90%', height: '6px' }}>
-        <svg width="100%" height="6" viewBox="0 0 900 6" preserveAspectRatio="none" className="absolute top-0 left-0">
-          <defs>
-            <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor={brandColors.primary.DEFAULT} stopOpacity="0.4" />
-              <stop offset="50%" stopColor={brandColors.primary.DEFAULT} stopOpacity="0.7" />
-              <stop offset="100%" stopColor={brandColors.primary.DEFAULT} stopOpacity="1" />
-            </linearGradient>
-          </defs>
-          <polygon
-            points="0,2.9 900,2 900,4 0,3.1"
-            fill="url(#lineGradient)"
-          />
-        </svg>
-      </div>
-      
-      {/* Logos */}
-      <div className="relative flex items-center justify-between w-full max-w-[90%] gap-4 lg:gap-5 flex-wrap mx-auto">
+    <div className="border-cem-neutral-gray-200 relative pb-8">
+      <div className="max-w-[1200px] mx-auto">
+        {/* Línea horizontal decorativa */}
+        <div className="relative mb-6 z-30 w-full" style={{ height: '6px' }}>
+          <svg width="100%" height="6" viewBox="0 0 1200 6" preserveAspectRatio="none" className="absolute top-0 left-0">
+            <defs>
+              <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor={brandColors.primary.DEFAULT} stopOpacity="0.4" />
+                <stop offset="50%" stopColor={brandColors.primary.DEFAULT} stopOpacity="0.7" />
+                <stop offset="100%" stopColor={brandColors.primary.DEFAULT} stopOpacity="1" />
+              </linearGradient>
+            </defs>
+            <polygon
+              points="0,2.9 1200,2 1200,4 0,3.1"
+              fill="url(#lineGradient)"
+            />
+          </svg>
+        </div>
+        
+        {/* Logos */}
+        <div className="relative flex items-center justify-between w-full gap-4 lg:gap-5 flex-wrap">
         <div className="flex flex-col items-start gap-0 flex-shrink-0">
           <span className="text-cem-neutral-gray-800 font-semibold text-[25px] lg:text-[25px]">
             Con el
@@ -44,7 +45,7 @@ const PartnersSection: React.FC = () => {
         <PartnerLogo src={CBP} alt="CBP Logo" />
         <PartnerLogo src={proInnovate} alt="PRO Innovate Logo" />
         <PartnerLogo src={starUp} alt="STARTUP PERÚ Logo" />
-        
+        </div>
       </div>
       
       {/* WhatsApp y Guacamayo - Posicionados sticky a la derecha */}

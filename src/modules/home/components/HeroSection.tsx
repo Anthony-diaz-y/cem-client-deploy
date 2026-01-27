@@ -8,18 +8,15 @@ import doctor from "@shared/assets/hero/doctor.webp";
 
 const HeroSection: React.FC = () => {
   return (
-    <div className="relative w-full bg-white py-16 md:py-8 overflow-visible !bg-white">
-      <div className="relative w-11/12 max-w-maxContent mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+    <div className="relative w-full bg-white pt-16 md:pt-8 overflow-visible">
+      <div className="relative w-full max-w-[1400px] mx-auto px-4 md:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center max-w-[1200px] mx-auto">
           {/* Sección izquierda - Texto y botones */}
           <div className="relative space-y-6 z-10">
             <ConcentricCircles
               size={400}
               circles={4}
               borderColor={brandColors.primary.light}
-              dotColor={brandColors.primary.light}
-              showDot={false}
-              dotSize={16}
               className="-top-8 -left-20"
             />
 
@@ -27,22 +24,7 @@ const HeroSection: React.FC = () => {
               size={400}
               circles={4}
               borderColor={brandColors.primary.light}
-              dotColor={brandColors.primary.light}
-              showDot={true}
-              dotSize={16}
-              dotClassName="bottom-24 right-80"
               className="top-52 -right-[700px]"
-            />
-            
-            <div 
-              className="absolute -top-[22px] left-0 z-0"
-              style={{ 
-                width: '8px', 
-                height: '8px',
-                borderRadius: '50%',
-                backgroundColor: brandColors.primary.light,
-                pointerEvents: 'none'
-              }}
             />
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight relative z-10">
@@ -86,54 +68,58 @@ const HeroSection: React.FC = () => {
 
 const HeroImageSection: React.FC = () => {
   return (
-    <div className="relative h-[500px] lg:h-[600px] w-full flex items-center justify-center overflow-visible">
-      {/* Corona circular de fondo */}
-      <div 
-        className="absolute z-0"
-        style={{ 
-          width: '500px', 
-          height: '500px',
-          borderRadius: '50%',
-          border: `1px solid ${brandColors.primary.DEFAULT}`,
-          top: '30px',
-          left: '10px',
-          minWidth: '500px',
-          minHeight: '500px',
-          maxWidth: '500px',
-          maxHeight: '500px',
-          boxSizing: 'border-box',
-          pointerEvents: 'none'
-        }}
-      />
+    <div className="relative h-[500px] lg:h-[600px] w-full max-w-[600px] mx-auto">
+      <div className="relative w-[500px] h-[500px] mx-auto" style={{ marginTop: '30px' }}>
+        {/* Corona circular de fondo */}
+        <div 
+          className="absolute z-0"
+          style={{ 
+            width: '500px', 
+            height: '500px',
+            borderRadius: '50%',
+            border: `1px solid ${brandColors.primary.DEFAULT}`,
+            top: '-20px',
+            left: '-20px',
+            minWidth: '500px',
+            minHeight: '500px',
+            maxWidth: '500px',
+            maxHeight: '500px',
+            boxSizing: 'border-box',
+            pointerEvents: 'none'
+          }}
+        />
 
-      {/* Círculo principal con imagen */}
-      <div 
-        className="relative z-10 rounded-full overflow-hidden shadow-2xl"
-        style={{ 
-          width: '500px', 
-          height: '500px',
-          borderRadius: '50%'
-        }}
-      >
-        <div className="relative w-full h-full">
-          <Image
-            src={doctor}
-            alt="doctora"
-            fill
-            className="object-cover"
-            style={{ borderRadius: '50%' }}
-            priority
-          />
+        {/* Círculo principal con imagen */}
+        <div 
+          className="relative z-10 rounded-full overflow-hidden shadow-2xl"
+          style={{ 
+            width: '500px', 
+            height: '500px',
+            borderRadius: '50%',
+            marginTop: '30px',
+            marginLeft: '10px'
+          }}
+        >
+          <div className="relative w-full h-full">
+            <Image
+              src={doctor}
+              alt="doctora"
+              fill
+              className="object-cover"
+              style={{ borderRadius: '50%' }}
+              priority
+            />
+          </div>
         </div>
+
+        {/* Badges */}
+        <HeroBadge position="top-left" value="3+" label="Cursos" icon="menu" />
+        <HeroBadge position="top-right" value="5K+" label="cursos" icon="progress" />
+        <HeroBadge position="bottom-right" value="71+" label="Estudiantes" icon="users" />
+
+        {/* Punto decorativo */}
+        <div className="absolute bottom-2 left-12 w-10 h-10 bg-cem-primary rounded-full z-20"></div>
       </div>
-
-      {/* Badges */}
-      <HeroBadge position="top-left" value="3+" label="Cursos" icon="menu" />
-      <HeroBadge position="top-right" value="5K+" label="cursos" icon="progress" />
-      <HeroBadge position="bottom-right" value="71+" label="Estudiantes" icon="users" />
-
-      {/* Punto decorativo */}
-      <div className="absolute bottom-12 left-12 w-10 h-10 bg-cem-primary rounded-full z-20"></div>
     </div>
   );
 };
@@ -147,9 +133,9 @@ interface HeroBadgeProps {
 
 const HeroBadge: React.FC<HeroBadgeProps> = ({ position, value, label, icon }) => {
   const positionClasses = {
-    'top-left': 'top-52 -left-8 lg:-left-8',
-    'top-right': 'top-8 right-0 lg:right-4',
-    'bottom-right': 'bottom-16 right-0 lg:right-4',
+    'top-left': 'top-52 -left-8',
+    'top-right': 'top-8 -right-4',
+    'bottom-right': 'bottom-16 -right-4',
   };
 
   const iconBgColor = icon === 'users' ? 'bg-cem-primary' : 'bg-cem-teal-100';
