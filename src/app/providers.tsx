@@ -17,7 +17,16 @@ export default function GlobalProviders({
 
   return (
     <StoreProvider>
-      <Toaster />
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+        }}
+        containerStyle={{
+          top: 20,
+          right: 20,
+        }}
+      />
       {children}
     </StoreProvider>
   );

@@ -18,6 +18,12 @@ const CourseContentSection: React.FC<CourseContentSectionProps> = ({
 }) => {
   const { courseContent } = response.data.courseDetails;
 
+  // Convert totalDuration to number if it's a string
+  const totalDuration = response.data?.courseDetails?.totalDuration;
+  const totalDurationNumber = typeof totalDuration === 'string' 
+    ? (isNaN(Number(totalDuration)) ? undefined : Number(totalDuration))
+    : totalDuration;
+
   return (
     <div className="max-w-[830px] mt-9">
       <div className="flex flex-col gap-3">
@@ -30,7 +36,7 @@ const CourseContentSection: React.FC<CourseContentSectionProps> = ({
             <span>
               {totalNoOfLectures} {totalNoOfLectures === 1 ? 'lección' : 'lecciones'}
             </span>
-            <span>{formatTotalDuration(response.data?.totalDuration)} Tiempo Total</span>
+            <span>{formatTotalDuration(totalDurationNumber)} Tiempo Total</span>
           </div>
           <button className="text-yellow-25" onClick={onCollapseAll}>
             Colapsar Todas las Secciones

@@ -1,5 +1,11 @@
 // Catalog Module Types
 
+export interface Review {
+  rating?: number;
+  ratingValue?: number;
+  [key: string]: unknown;
+}
+
 export interface Course {
   id?: string;  // UUID del backend PostgreSQL
   _id?: string; // Mantener compatibilidad si se usa
@@ -10,8 +16,14 @@ export interface Course {
     firstName: string;
     lastName: string;
   };
-  ratingAndReviews: unknown[];
-  studentsEnrolled: unknown[];
+  ratingAndReviews?: Review[] | unknown[];
+  studentsEnrolled?: unknown[];
+  totalDuration?: number; // Duración total en segundos
+  averageRating?: number; // Rating promedio del backend
+  totalReviews?: number; // Total de reseñas
+  totalStudentsEnrolled?: number; // Total de estudiantes inscritos
+  reviews?: Review[]; // Campo alternativo para reviews
+  ratings?: Review[]; // Campo alternativo para ratings
   createdAt?: string; // Para filtrar por fecha
   updatedAt?: string;
 }

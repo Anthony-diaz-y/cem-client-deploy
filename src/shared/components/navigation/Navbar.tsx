@@ -3,65 +3,24 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAppSelector } from "../../store/hooks";
 import { NavbarLinks } from "../../data/navbar-links";
-import studyNotionLogo from "@shared/assets/Logo/logo2.svg";
-import { fetchCourseCategories } from "@shared/services/courseDetailsAPI";
-import { getImageUrl } from "../../utils/imageHelper";
+import logoCEM from "@shared/assets/Logo/Logo-CEM.png";
 import ProfileDropDown from "@modules/auth/components/ProfileDropDown";
 import MobileProfileDropDown from "@modules/auth/components/MobileProfileDropDown";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import CatalogDropdown from "./CatalogDropdown";
-
-interface SubLink {
-  name: string;
-  link?: string;
-}
+import { FiSearch } from "react-icons/fi";
+import { MdKeyboardArrowDown } from "react-icons/md";
 
 const Navbar = () => {
   const location = usePathname();
+  const router = useRouter();
   const { token } = useAppSelector((state) => state.auth);
   const { user } = useAppSelector((state) => state.profile);
   const { totalItems } = useAppSelector((state) => state.cart);
 
-  const [mounted, setMounted] = useState(false);
-  const [subLinks, setSubLinks] = useState<SubLink[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchSublinks = useCallback(async () => {
-    try {
-      setLoading(true);
-      const res = await fetchCourseCategories();
-      setSubLinks(res);
-    } catch (error) {
-      console.error("Could not fetch the category list:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
-
-    fetchSublinks();
-
-    const handleCategoriesUpdate = () => {
-      fetchSublinks();
-    };
-
-    window.addEventListener('categoriesUpdated', handleCategoriesUpdate);
-
-    return () => {
-      window.removeEventListener('categoriesUpdated', handleCategoriesUpdate);
-    };
-  }, [mounted, fetchSublinks]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const matchRoute = useCallback((route: string | null | undefined) => {
     if (!route) return false;
@@ -72,6 +31,13 @@ const Navbar = () => {
     }
     return location === route || location.startsWith(route + "/");
   }, [location]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/catalog?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   const [showNavbar, setShowNavbar] = useState("top");
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -97,85 +63,96 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`z-[10] flex h-14 w-full items-center justify-center border-b-[1px] border-b-richblack-700 text-white translate-y-0 transition-all ${showNavbar}`}
+      className={`z-[10] flex h-16 w-full items-center justify-center bg-cem-neutral-white border-b-cem-neutral-gray-200 translate-y-0 transition-all ${showNavbar}`}
     >
-      <div className="flex w-11/12 max-w-maxContent items-center justify-between">
-        <Link href="/">
-          <Image
-            src={getImageUrl(studyNotionLogo)}
-            width={160}
-            height={42}
-            loading="lazy"
-            alt="StudyNotion Logo"
-            className="object-contain"
+      <div className="flex w-11/12 max-w-maxContent items-center justify-between gap-6">
+        {/* Logo CEM */}
+        <Link href="/" className="flex-shrink-0 flex items-center">
+          <Image 
+            src={logoCEM} 
+            alt="CEM Logo" 
+            width={100} 
+            height={40}
+            className="object-contain h-10"
+            priority
           />
         </Link>
 
-        <ul className="hidden sm:flex gap-x-6 text-richblack-25">
+        {/* Barra de búsqueda */}
+        <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-sm mx-4">
+          <div className="relative w-full flex items-center bg-white border border-cem-neutral-gray-200 rounded-lg overflow-hidden">
+            <div className="absolute left-3 flex items-center pointer-events-none">
+              <FiSearch className="h-5 w-5 text-cem-neutral-gray-600" />
+            </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="¿Qué quieres aprender?"
+              className="w-full pl-10 pr-28 py-2.5 bg-transparent text-cem-neutral-gray-700 placeholder-cem-neutral-gray-500 focus:outline-none text-sm"
+            />
+            <button
+              type="button"
+              className="absolute right-2 flex items-center gap-1 px-3 py-1.5 bg-cem-teal-50 text-cem-primary rounded-md hover:bg-cem-teal-100 transition-colors text-sm font-medium"
+            >
+              Explora
+              <MdKeyboardArrowDown className="h-4 w-4" />
+            </button>
+          </div>
+        </form>
+
+        {/* Enlaces de navegación */}
+        <ul className="hidden lg:flex gap-x-6 items-center flex-shrink-0 mr-8">
           {NavbarLinks.map((link, index) => (
             <li key={index}>
-              {link.title === "Catalog" ? (
-                <CatalogDropdown
-                  subLinks={subLinks}
-                  loading={loading}
-                  isActive={matchRoute("/catalog/:catalogName")}
-                />
-              ) : (
-                <Link href={link?.path || "/"}>
-                  <p
-                    className={`${matchRoute(link?.path)
-                        ? "bg-yellow-25 text-black"
-                        : "text-richblack-25"
-                      } block rounded-xl p-1 px-3`}
-                  >
-                    {link.title}
-                  </p>
-                </Link>
-              )}
+              <Link href={link?.path || "/"}>
+                <p
+                className={`${
+                  matchRoute(link?.path)
+                    ? "text-cem-primary font-semibold"
+                    : "text-cem-neutral-gray-800 hover:text-cem-primary"
+                } transition-colors text-sm font-medium`}
+                >
+                  {link.title}
+                </p>
+              </Link>
             </li>
           ))}
         </ul>
 
-        <div className="flex gap-x-4 items-center">
-          {mounted && (
+        {/* Botones de autenticación / Usuario - Separados del resto */}
+        <div className="flex items-center flex-shrink-0 ml-8">
+          {user && user?.accountType !== "Instructor" && (
+            <Link href="/dashboard/cart" className="relative mr-6">
+              <AiOutlineShoppingCart className="text-2xl text-cem-neutral-gray-700 hover:text-cem-primary transition-colors" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-cem-primary text-center text-xs font-bold text-cem-neutral-white">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
+          )}
+          
+          {!token || token === null ? (
             <>
-              {user && user?.accountType !== "Instructor" && (
-                <Link href="/dashboard/cart" className="relative">
-                  <AiOutlineShoppingCart className="text-[2.35rem] text-richblack-5 hover:bg-richblack-700 rounded-full p-2 duration-200" />
-                  {totalItems > 0 && (
-                    <span className="absolute -bottom-2 -right-2 grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-richblack-600 text-center text-xs font-bold text-yellow-100">
-                      {totalItems}
-                    </span>
-                  )}
-                </Link>
-              )}
-              {token === null && (
-                <Link href="/auth/login">
-                  <button
-                    className={`px-[12px] py-[8px] text-richblack-100 rounded-md ${matchRoute("/auth/login")
-                        ? "border-[2.5px] border-yellow-50"
-                        : "border border-richblack-700 bg-richblack-800"
-                      }`}
-                  >
-                    Log in
-                  </button>
-                </Link>
-              )}
-              {token === null && (
-                <Link href="/auth/signup">
-                  <button
-                    className={`px-[12px] py-[8px] text-richblack-100 rounded-md ${matchRoute("/auth/signup")
-                        ? "border-[2.5px] border-yellow-50"
-                        : "border border-richblack-700 bg-richblack-800"
-                      }`}
-                  >
-                    Sign Up
-                  </button>
-                </Link>
-              )}
-
-              {token !== null && <ProfileDropDown />}
-              {token !== null && <MobileProfileDropDown />}
+              <Link href="/auth/signup" className="mr-6">
+                <span className="text-cem-neutral-gray-800 hover:text-cem-primary transition-colors text-sm font-medium cursor-pointer whitespace-nowrap">
+                  Regístrate
+                </span>
+              </Link>
+              <Link href="/auth/login">
+                <button
+                  type="button"
+                  className="px-5 py-2.5 rounded-lg bg-cem-primary text-white font-medium text-sm"
+                >
+                  Acceder
+                </button>
+              </Link>
+            </>
+          ) : (
+            <>
+              <ProfileDropDown />
+              <MobileProfileDropDown />
             </>
           )}
         </div>

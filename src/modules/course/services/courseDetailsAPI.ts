@@ -43,7 +43,6 @@ const {
 
 // ================ get All Courses ================
 export const getAllCourses = async () => {
-  const toastId = toast.loading("Cargando...");
   let result: unknown[] = [];
 
   try {
@@ -64,7 +63,6 @@ export const getAllCourses = async () => {
       );
     }
   }
-  toast.dismiss(toastId);
   return result;
 };
 

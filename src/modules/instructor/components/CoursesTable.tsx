@@ -215,7 +215,11 @@ export default function CoursesTable({
                 {/* course duration */}
                 <td className="text-sm font-medium text-richblack-100">
                   {(() => {
-                    const formatted = formatTotalDuration(course.totalDuration);
+                    const totalDuration = course.totalDuration;
+                    const totalDurationNumber = typeof totalDuration === 'string' 
+                      ? (isNaN(Number(totalDuration)) ? undefined : Number(totalDuration))
+                      : totalDuration;
+                    const formatted = formatTotalDuration(totalDurationNumber);
                     return formatted !== 'N/A' ? (
                       <span className="text-richblack-5">{formatted}</span>
                     ) : (

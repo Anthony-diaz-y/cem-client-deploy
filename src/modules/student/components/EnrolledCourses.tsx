@@ -261,7 +261,13 @@ export default function EnrolledCourses() {
               </div>
 
               <div className="sm:hidden">
-                <div className="px-2 py-3">{formatTotalDuration(course?.totalDuration)}</div>
+                {(() => {
+                  const totalDuration = course?.totalDuration;
+                  const totalDurationNumber = typeof totalDuration === 'string' 
+                    ? (isNaN(Number(totalDuration)) ? undefined : Number(totalDuration))
+                    : totalDuration;
+                  return <div className="px-2 py-3">{formatTotalDuration(totalDurationNumber)}</div>;
+                })()}
 
                 <div className="flex sm:w-2/5 flex-col gap-2 px-2 py-3">
                   <p>{STUDENT_TEXTS.enrolledCourses.table.progressLabel(course.progressPercentage || 0)}</p>
@@ -276,7 +282,13 @@ export default function EnrolledCourses() {
               {/* only for larger devices */}
               {/* duration -  progress */}
               <div className="hidden w-1/5 sm:flex px-2 py-3">
-                {formatTotalDuration(course?.totalDuration)}
+                {(() => {
+                  const totalDuration = course?.totalDuration;
+                  const totalDurationNumber = typeof totalDuration === 'string' 
+                    ? (isNaN(Number(totalDuration)) ? undefined : Number(totalDuration))
+                    : totalDuration;
+                  return formatTotalDuration(totalDurationNumber);
+                })()}
               </div>
               <div className="hidden sm:flex w-1/5 flex-col gap-2 px-2 py-3">
                 <p>{STUDENT_TEXTS.enrolledCourses.table.progressLabel(course.progressPercentage || 0)}</p>
