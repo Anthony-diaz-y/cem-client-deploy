@@ -1,4 +1,4 @@
-export { default as LoginSection } from "./LoginSection";
-export { default as LoginImagePanel } from "./LoginImagePanel";
-export { default as LoginFormView } from "./LoginFormView";
+export { default as LoginSection } from "./components/LoginSection";
+export { default as LoginImagePanel } from "./components/LoginImagePanel";
+export { default as LoginFormView } from "./components/LoginFormView";
 

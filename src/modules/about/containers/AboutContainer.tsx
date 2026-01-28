@@ -4,7 +4,7 @@ import React, { lazy, Suspense } from "react";
 import { motion } from "framer-motion";
 import { Footer, Img } from "@shared/components";
 import { fadeIn } from "@shared/utils/motionFrameVarients";
-import HighlightText from "@modules/home/components/HighlightText";
+import { HighlightText } from "@modules/home";
 
 import FoundingStory from "@shared/assets/Images/FoundingStory.png";
 import BannerImage1 from "@shared/assets/Images/aboutus1.webp";

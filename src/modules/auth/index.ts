@@ -21,7 +21,7 @@ export type { UseUpdatePasswordReturn } from "./hooks/useUpdatePassword";
 export { useVerifyEmail } from "./hooks/useVerifyEmail";
 export type { UseVerifyEmailReturn } from "./hooks/useVerifyEmail";
 
-export { default as RegisterSection } from "./components/RegisterSection";
+export { RegisterSection } from "./components/register";
 export { default as OpenRoute } from "./components/OpenRoute";
 export { default as ProtectedRoute } from "./components/ProtectedRoute";
 export { default as ProfileDropDown } from "./components/ProfileDropDown";

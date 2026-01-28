@@ -1,2 +1,2 @@
-export { TestimonialsSection } from "./TestimonialsSection";
+export { TestimonialsSection } from "./components/TestimonialsSection";
 

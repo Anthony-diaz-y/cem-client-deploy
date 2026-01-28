@@ -1,3 +1,3 @@
-export { ValuePropositionSection } from "./ValuePropositionSection";
-export { ValuePropositionCard } from "./ValuePropositionCard";
+export { ValuePropositionSection } from "./components/ValuePropositionSection";
+export { ValuePropositionCard } from "./components/ValuePropositionCard";
 

@@ -1,2 +1,2 @@
-export { AlliesSection } from "./AlliesSection";
+export { AlliesSection } from "./components/AlliesSection";
 

@@ -18,7 +18,7 @@ export const VALUE_PROPOSITION_CARDS: ValuePropositionCard[] = [
       "Formación aplicada a la empleabilidad y al desarrollo profesional, con énfasis en tecnologías y técnicas modernas.",
     iconName: "Formacion",
     isLarge: true,
-    bgColor: "teal",
+    bgColor: "white",
   },
   {
     id: "colaboracion",

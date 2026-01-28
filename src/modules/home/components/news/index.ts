@@ -1,3 +1,3 @@
-export { NewsSection } from "./NewsSection";
-export { NewsCard } from "./NewsCard";
+export { NewsSection } from "./components/NewsSection";
+export { NewsCard } from "./components/NewsCard";
 

@@ -11,11 +11,8 @@ import { Img } from "@shared/components";
 
 import { logout } from "../services/authAPI";
 
-import { VscDashboard, VscSignOut, VscAccount } from "react-icons/vsc";
-import { AiOutlineCaretDown, AiOutlineHome } from "react-icons/ai";
-import { MdOutlineContactPhone } from "react-icons/md";
-import { TbMessage2Plus } from "react-icons/tb";
-import { PiNotebook } from "react-icons/pi";
+import { VscSignOut, VscAccount } from "react-icons/vsc";
+import { AiOutlineCaretDown } from "react-icons/ai";
 
 // const CatalogDropDown = ({ subLinks }) => {
 //     if (!subLinks) return
@@ -51,47 +48,19 @@ export default function MobileProfileDropDown() {
           alt={`profile-${user?.firstName}`}
           className={"aspect-square w-[30px] rounded-full object-cover"}
         />
-        <AiOutlineCaretDown className="text-sm text-richblack-100" />
+        <AiOutlineCaretDown className="text-sm text-cem-neutral-gray-600" />
       </div>
 
       {open && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="absolute min-w-[120px] top-[118%] right-0 z-[1000] divide-y-[1px] divide-richblack-700 overflow-hidden rounded-lg border-[1px] border-richblack-700 bg-richblack-800"
+          className="absolute min-w-[180px] top-[118%] right-0 z-[1000] overflow-hidden rounded-xl border border-cem-neutral-gray-200 bg-white shadow-lg"
           ref={ref}
         >
           <Link href="/dashboard/my-profile" onClick={() => setOpen(false)}>
-            <div className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100">
+            <div className="flex w-full items-center gap-x-2 py-3 px-4 text-sm font-medium text-cem-neutral-gray-800 hover:bg-cem-teal-50 hover:text-cem-primary transition-colors">
               <VscAccount className="text-lg" />
               My Profile
-            </div>
-          </Link>
-
-          <Link href="/" onClick={() => setOpen(false)}>
-            <div className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100 border-y border-richblack-700 ">
-              <AiOutlineHome className="text-lg" />
-              Home
-            </div>
-          </Link>
-
-          <Link href="/" onClick={() => setOpen(false)}>
-            <div className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100">
-              <PiNotebook className="text-lg" />
-              Catalog
-            </div>
-          </Link>
-
-          <Link href="/about" onClick={() => setOpen(false)}>
-            <div className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100 border-y border-richblack-700 ">
-              <TbMessage2Plus className="text-lg" />
-              About Us
-            </div>
-          </Link>
-
-          <Link href="/contact" onClick={() => setOpen(false)}>
-            <div className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100 ">
-              <MdOutlineContactPhone className="text-lg" />
-              Contact Us
             </div>
           </Link>
 
@@ -100,7 +69,7 @@ export default function MobileProfileDropDown() {
               dispatch(logout(router.push));
               setOpen(false);
             }}
-            className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100"
+            className="flex w-full items-center gap-x-2 py-3 px-4 text-sm font-medium text-cem-neutral-gray-800 hover:bg-red-50 hover:text-red-600 transition-colors cursor-pointer border-t border-cem-neutral-gray-200"
           >
             <VscSignOut className="text-lg" />
             Cerrar Sesión

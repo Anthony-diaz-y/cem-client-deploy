@@ -1,6 +1,6 @@
-export { CoursesSection } from "./CoursesSection";
-export { HomeCourseCard } from "./HomeCourseCard";
-export { CoursesLoadingSpinner } from "./CoursesLoadingSpinner";
-export { CoursesError } from "./CoursesError";
-export { CoursesSectionHeader } from "./CoursesSectionHeader";
+export { CoursesSection } from "./components/CoursesSection";
+export { HomeCourseCard } from "./components/HomeCourseCard";
+export { CoursesLoadingSpinner } from "./components/CoursesLoadingSpinner";
+export { CoursesError } from "./components/CoursesError";
+export { CoursesSectionHeader } from "./components/CoursesSectionHeader";
 
