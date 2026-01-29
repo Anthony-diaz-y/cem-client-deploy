@@ -5,7 +5,8 @@ import { Footer } from "@shared/components";
 import { CoursesHeroSection } from "./components/hero";
 import { CategoriesSection } from "./components/categories";
 import { CoursesListSection } from "./components/coursesList";
-import { LoadingSpinner, ErrorState } from "./components/shared";
+import { ErrorState } from "./components/shared";
+import LoadingSpinner from "@shared/components/ui/Loading";
 import type { CoursesProps } from "./types";
 
 const Courses: React.FC<
@@ -29,15 +30,6 @@ const Courses: React.FC<
   isFetching = false,
   error = false,
 }) => {
-  if (loading && courses.length === 0) {
-    return (
-      <div className="bg-white min-h-screen overflow-x-hidden">
-        <LoadingSpinner />
-        <Footer />
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className="bg-white min-h-screen overflow-x-hidden">

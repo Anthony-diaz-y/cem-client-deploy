@@ -7,7 +7,7 @@ export const LoadingSpinner: React.FC = () => {
     <div className="w-full bg-white py-16">
       <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8">
         <div className="flex items-center justify-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cem-primary"></div>
+          <div className="custom-loader"></div>
         </div>
       </div>
     </div>

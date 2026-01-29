@@ -5,9 +5,9 @@ import Link from "next/link";
 import type { Course } from "../../../../courses/types";
 import { fetchCourseCategories } from "@shared/services/courseDetailsAPI";
 import { HomeCourseCard } from "./HomeCourseCard";
-import { CoursesLoadingSpinner } from "./CoursesLoadingSpinner";
 import { CoursesError } from "./CoursesError";
 import { CoursesSectionHeader } from "./CoursesSectionHeader";
+import LoadingSpinner from "@shared/components/ui/Loading";
 
 interface CoursesSectionProps {
   courses: Course[] | null | undefined;
@@ -22,7 +22,7 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
   loading,
   error,
 }) => {
-  if (loading) return <CoursesLoadingSpinner />;
+  if (loading) return <LoadingSpinner />;
   if (error) return <CoursesError />;
 
   return (

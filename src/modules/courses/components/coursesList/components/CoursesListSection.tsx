@@ -123,7 +123,7 @@ export const CoursesListSection: React.FC<CoursesListSectionProps> = ({
         >
           {loading && courses.length === 0 && (
             <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-sm flex items-start justify-center pt-20 transition-all duration-300">
-              <div className="w-10 h-10 border-4 border-cem-neutral-gray-200 border-t-cem-primary rounded-full animate-spin"></div>
+              <div className="custom-loader"></div>
             </div>
           )}
 

@@ -73,17 +73,37 @@ body {
   background-color: #64748b;
 }
 
-/* loading spinner  */
+/* loading spinner - Premium CEM design */
 .custom-loader {
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background: conic-gradient(#0000 15%, #02819e);
-  -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 8px), #000 0);
-  animation: s3 0.6s infinite linear;
+  background: conic-gradient(#0000 10%, #02819e 40%, #14b8a6 70%, #02819e);
+  -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 6px), #000 0);
+  mask: radial-gradient(farthest-side, #0000 calc(100% - 6px), #000 0);
+  animation: spinner-rotate 1s infinite linear;
+  position: relative;
 }
 
-@keyframes s3 {
+.custom-loader::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  padding: 3px;
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    #14b8a6 0deg,
+    transparent 120deg
+  );
+  -webkit-mask: content-box, border-box;
+  -webkit-mask-composite: source-out;
+  mask-composite: subtract;
+  animation: spinner-rotate 2s infinite reverse linear;
+  opacity: 0.5;
+}
+
+@keyframes spinner-rotate {
   to {
     transform: rotate(1turn);
   }
