@@ -48,7 +48,7 @@ const Navbar = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/catalog?search=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`/courses?search=${encodeURIComponent(searchQuery.trim())}&page=1`);
     }
   };
 
@@ -74,7 +74,6 @@ const Navbar = () => {
     };
   }, [controlNavbar]);
 
-  // Lock body scroll when mobile menu is open (prevent jump)
   useEffect(() => {
     if (mobileMenuOpen) {
       const scrollY = window.scrollY;
@@ -125,7 +124,7 @@ const Navbar = () => {
                 className="w-full pl-10 pr-28 py-2.5 bg-transparent text-cem-neutral-gray-700 placeholder-cem-neutral-gray-400 focus:outline-none text-sm"
               />
               <button
-                type="button"
+                type="submit"
                 className="absolute right-2 flex items-center gap-1 px-3 py-1.5 bg-cem-teal-50 text-cem-primary rounded-md hover:bg-cem-teal-100 transition-colors text-sm font-medium"
               >
                 Explora

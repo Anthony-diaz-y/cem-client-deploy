@@ -3,7 +3,15 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Img, Loading } from "@shared/components";
-import { FiCheckCircle, FiClock, FiXCircle, FiExternalLink, FiCalendar, FiDollarSign, FiHash } from "react-icons/fi";
+import {
+  FiCheckCircle,
+  FiClock,
+  FiXCircle,
+  FiExternalLink,
+  FiCalendar,
+  FiDollarSign,
+  FiHash,
+} from "react-icons/fi";
 
 // ========== TEMPORAL: Interface para datos de compra ==========
 // TODO: ELIMINAR ESTE CÓDIGO TEMPORAL DESPUÉS - Reemplazar con datos de la BD
@@ -31,8 +39,8 @@ function PurchaseHistory() {
         setLoading(true);
         // Obtener token del localStorage
         let token: string | null = null;
-        if (typeof window !== 'undefined') {
-          const tokenStr = localStorage.getItem('token');
+        if (typeof window !== "undefined") {
+          const tokenStr = localStorage.getItem("token");
           if (tokenStr) {
             try {
               token = JSON.parse(tokenStr);
@@ -51,39 +59,50 @@ function PurchaseHistory() {
         // Nota: El backend no tiene un endpoint específico para purchase history
         // Por ahora, usamos los cursos inscritos como historial de compras
         // TODO: Implementar endpoint específico para purchase history en el backend
-        const { getUserEnrolledCourses } = await import("@shared/services/profileAPI");
+        const { getUserEnrolledCourses } =
+          await import("@shared/services/profileAPI");
         const enrolledCourses = await getUserEnrolledCourses(token);
-        
+
         // Adaptar los datos de cursos inscritos a la estructura de PurchaseItem
         if (enrolledCourses && Array.isArray(enrolledCourses)) {
-          const purchases: PurchaseItem[] = enrolledCourses.map((course: any, index: number) => {
-            // Asegurar que siempre haya un ID único para evitar keys duplicadas
-            const courseId = course._id || course.courseId || course.id || `course-${index}-${Date.now()}`;
-            // Asegurar que el precio sea un número
-            const price = typeof course.price === 'number' 
-              ? course.price 
-              : parseFloat(course.price) || 0;
-            
-            return {
-              _id: courseId,
-              courseName: course.courseName || '',
-              courseDescription: course.courseDescription || '',
-              thumbnail: course.thumbnail || '',
-              price: price,
-              purchaseDate: course.createdAt || course.purchaseDate || new Date().toISOString().split('T')[0],
-              status: "Completed" as const,
-              transactionId: course.transactionId || `TXN-${courseId}`,
-              courseContent: course.courseContent || [],
-            };
-          });
-          
+          const purchases: PurchaseItem[] = enrolledCourses.map(
+            (course: any, index: number) => {
+              // Asegurar que siempre haya un ID único para evitar keys duplicadas
+              const courseId =
+                course._id ||
+                course.courseId ||
+                course.id ||
+                `course-${index}-${Date.now()}`;
+              // Asegurar que el precio sea un número
+              const price =
+                typeof course.price === "number"
+                  ? course.price
+                  : parseFloat(course.price) || 0;
+
+              return {
+                _id: courseId,
+                courseName: course.courseName || "",
+                courseDescription: course.courseDescription || "",
+                thumbnail: course.thumbnail || "",
+                price: price,
+                purchaseDate:
+                  course.createdAt ||
+                  course.purchaseDate ||
+                  new Date().toISOString().split("T")[0],
+                status: "Completed" as const,
+                transactionId: course.transactionId || `TXN-${courseId}`,
+                courseContent: course.courseContent || [],
+              };
+            },
+          );
+
           // Ordenar por fecha de compra (más recientes primero)
           purchases.sort((a, b) => {
             const dateA = new Date(a.purchaseDate).getTime();
             const dateB = new Date(b.purchaseDate).getTime();
             return dateB - dateA; // Orden descendente (más recientes primero)
           });
-          
+
           setPurchases(purchases);
         }
       } catch (error) {
@@ -110,16 +129,16 @@ function PurchaseHistory() {
   };
 
   const formatPrice = (price: number | string | undefined | null): string => {
-    if (typeof price === 'number') {
+    if (typeof price === "number") {
       return price.toFixed(2);
     }
-    if (typeof price === 'string') {
+    if (typeof price === "string") {
       const parsed = parseFloat(price);
       if (!isNaN(parsed)) {
         return parsed.toFixed(2);
       }
     }
-    return '0.00';
+    return "0.00";
   };
 
   const getStatusBadge = (status: string) => {
@@ -157,8 +176,8 @@ function PurchaseHistory() {
   const handleCourseClick = async (purchase: PurchaseItem) => {
     // Obtener token del localStorage
     let token: string | null = null;
-    if (typeof window !== 'undefined') {
-      const tokenStr = localStorage.getItem('token');
+    if (typeof window !== "undefined") {
+      const tokenStr = localStorage.getItem("token");
       if (tokenStr) {
         try {
           token = JSON.parse(tokenStr);
@@ -179,15 +198,19 @@ function PurchaseHistory() {
     if (purchase.courseContent?.[0]?._id) {
       const firstSection = purchase.courseContent[0];
       const sectionId = firstSection._id;
-      
+
       // Manejar tanto subSection como subSections
-      const subSections = firstSection.subSection || (firstSection as any).subSections;
-      const firstSubSection = Array.isArray(subSections) && subSections.length > 0 ? subSections[0] : null;
+      const subSections =
+        firstSection.subSection || (firstSection as any).subSections;
+      const firstSubSection =
+        Array.isArray(subSections) && subSections.length > 0
+          ? subSections[0]
+          : null;
       const subSectionId = firstSubSection?._id || (firstSubSection as any)?.id;
 
       if (sectionId && subSectionId) {
         router.push(
-          `/view-course/${courseId}/section/${sectionId}/sub-section/${subSectionId}`
+          `/view-course/${courseId}/section/${sectionId}/sub-section/${subSectionId}`,
         );
         return;
       }
@@ -195,22 +218,24 @@ function PurchaseHistory() {
 
     // Si no tenemos los IDs completos, cargar los datos del curso primero
     try {
-      const { getFullDetailsOfCourse } = await import("@shared/services/courseDetailsAPI");
+      const { getFullDetailsOfCourse } =
+        await import("@shared/services/courseDetailsAPI");
       const courseData = await getFullDetailsOfCourse(courseId, token);
-      
+
       if (courseData?.courseDetails?.courseContent) {
         const courseContent = courseData.courseDetails.courseContent;
         const firstSec = courseContent[0];
         const secId = firstSec?._id || (firstSec as any)?.id;
-        
+
         // Manejar tanto subSection como subSections
         const subs = firstSec?.subSection || (firstSec as any)?.subSections;
-        const firstSub = Array.isArray(subs) && subs.length > 0 ? subs[0] : null;
+        const firstSub =
+          Array.isArray(subs) && subs.length > 0 ? subs[0] : null;
         const subSecId = firstSub?._id || (firstSub as any)?.id;
-        
+
         if (secId && subSecId) {
           router.push(
-            `/view-course/${courseId}/section/${secId}/sub-section/${subSecId}`
+            `/view-course/${courseId}/section/${secId}/sub-section/${subSecId}`,
           );
         } else {
           // Si no hay lecciones, navegar al curso de todas formas (vista de estudiante)
@@ -269,7 +294,7 @@ function PurchaseHistory() {
               Tus compras aparecerán aquí cuando adquieras un curso.
             </p>
             <button
-              onClick={() => router.push("/catalog")}
+              onClick={() => router.push("/courses")}
               className="px-6 py-3 bg-yellow-50 hover:bg-yellow-100 text-richblack-900 rounded-lg font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-yellow-500/20"
             >
               Explorar Cursos
@@ -349,7 +374,9 @@ function PurchaseHistory() {
                         <FiCheckCircle className="w-4 h-4 text-green-400" />
                       </div>
                       <div>
-                        <p className="text-xs text-richblack-400 mb-1">Estado</p>
+                        <p className="text-xs text-richblack-400 mb-1">
+                          Estado
+                        </p>
                         {getStatusBadge(purchase.status)}
                       </div>
                     </div>
@@ -360,7 +387,9 @@ function PurchaseHistory() {
                         <FiHash className="w-4 h-4 text-purple-400" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-richblack-400 mb-1">ID de Transacción</p>
+                        <p className="text-xs text-richblack-400 mb-1">
+                          ID de Transacción
+                        </p>
                         <p className="text-xs font-mono text-richblack-400 break-all bg-richblack-900/50 px-2 py-1.5 rounded border border-richblack-700">
                           {purchase.transactionId}
                         </p>

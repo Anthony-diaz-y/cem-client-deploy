@@ -14,7 +14,11 @@ interface CatalogDropdownProps {
   isActive: boolean;
 }
 
-const CatalogDropdown = ({ subLinks, loading, isActive }: CatalogDropdownProps) => {
+const CatalogDropdown = ({
+  subLinks,
+  loading,
+  isActive,
+}: CatalogDropdownProps) => {
   return (
     <div
       className={`group relative flex cursor-pointer items-center gap-1 ${
@@ -33,14 +37,11 @@ const CatalogDropdown = ({ subLinks, loading, isActive }: CatalogDropdownProps) 
           <>
             {subLinks.map((subLink, i) => (
               <Link
-                href={`/catalog/${subLink.name
-                  .split(" ")
-                  .join("-")
-                  .toLowerCase()}`}
-                className="rounded-lg bg-transparent py-3 pl-4 hover:bg-cem-teal-50 hover:text-cem-primary-DEFAULT transition-colors"
+                href={`/courses?category=${encodeURIComponent(subLink.name)}`}
+                className="rounded-lg bg-transparent py-3 pl-4 hover:bg-cem-teal-50 hover:text-cem-primary-DEFAULT transition-all duration-200"
                 key={i}
               >
-                <p>{subLink.name}</p>
+                <p className="text-sm font-medium">{subLink.name}</p>
               </Link>
             ))}
           </>
@@ -53,4 +54,3 @@ const CatalogDropdown = ({ subLinks, loading, isActive }: CatalogDropdownProps) 
 };
 
 export default CatalogDropdown;
-

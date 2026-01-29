@@ -6,12 +6,15 @@ import Image from "next/image";
 import { ConcentricCircles } from "../../shared";
 import { brandColors } from "@shared/design-tokens";
 import doctor from "@shared/assets/hero/doctor.webp";
+import iconCourse from "@shared/assets/hero/icon-course.webp";
+import iconCoursesView from "@shared/assets/hero/icon-coursesView.webp";
+import iconStudent from "@shared/assets/hero/icon-student.webp";
 
 export const HeroSection: React.FC = () => {
   return (
     <div className="relative w-full bg-white pt-8 md:pt-16 lg:pt-8 overflow-hidden">
       <div className="relative w-full max-w-[1400px] mx-auto px-4 md:px-8">
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 xl:gap-8 items-center max-w-[1200px] mx-auto">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 xl:gap-8 items-stretch xl:items-center max-w-[1200px] mx-auto">
           {/* Sección izquierda - Texto y botones */}
           <div className="relative space-y-4 md:space-y-6 z-10 text-center xl:text-left">
             {/* Círculo concéntrico principal - Mobile */}
@@ -28,14 +31,6 @@ export const HeroSection: React.FC = () => {
               circles={4}
               borderColor={brandColors.primary.light}
               className="hidden md:block -top-8 -left-20"
-            />
-
-            {/* Círculo concéntrico decorativo derecha - Solo Desktop */}
-            <ConcentricCircles
-              size={400}
-              circles={4}
-              borderColor={brandColors.primary.light}
-              className="hidden lg:block top-52 -right-[520px] xl:-right-[700px]"
             />
 
             <h1 className="text-[38px] sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight relative z-10">
@@ -70,7 +65,16 @@ export const HeroSection: React.FC = () => {
           </div>
 
           {/* Sección derecha - Imagen circular con badges */}
-          <HeroImageSection />
+          <div className="relative w-full">
+            {/* Círculo concéntrico decorativo mobile (250px) - Posicionado relativo a la columna */}
+            <ConcentricCircles
+              size={250}
+              circles={4}
+              borderColor={brandColors.primary.light}
+              className="absolute bottom-0 -right-24 block md:hidden z-0"
+            />
+            <HeroImageSection />
+          </div>
         </div>
       </div>
     </div>
@@ -80,6 +84,13 @@ export const HeroSection: React.FC = () => {
 const HeroImageSection: React.FC = () => {
   return (
     <div className="relative h-[350px] md:h-[450px] lg:h-[600px] w-full max-w-[600px] mx-auto">
+      {/* Círculo concéntrico decorativo desktop (400px) */}
+      <ConcentricCircles
+        size={400}
+        circles={4}
+        borderColor={brandColors.primary.light}
+        className="absolute hidden md:block md:top-56 md:-right-48 lg:top-72 lg:-right-32 z-0"
+      />
       <div
         className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px] mx-auto"
         style={{ marginTop: "30px" }}
@@ -119,18 +130,23 @@ const HeroImageSection: React.FC = () => {
         </div>
 
         {/* Badges */}
-        <HeroBadge position="top-left" value="3+" label="Cursos" icon="menu" />
+        <HeroBadge
+          position="top-left"
+          value="3+"
+          label="Cursos"
+          imageSrc={iconCourse}
+        />
         <HeroBadge
           position="top-right"
           value="5K+"
-          label="cursos"
-          icon="progress"
+          label="Vistas de cursos"
+          imageSrc={iconCoursesView}
         />
         <HeroBadge
           position="bottom-right"
           value="71+"
           label="Estudiantes"
-          icon="users"
+          imageSrc={iconStudent}
         />
 
         {/* Punto decorativo */}
@@ -144,124 +160,68 @@ interface HeroBadgeProps {
   position: "top-left" | "top-right" | "bottom-right";
   value: string;
   label: string;
-  icon: "menu" | "progress" | "users";
+  imageSrc: any;
 }
 
 const HeroBadge: React.FC<HeroBadgeProps> = ({
   position,
   value,
   label,
-  icon,
+  imageSrc,
 }) => {
   const positionClasses = {
-    "top-left": "top-32 -left-2 md:top-44 md:-left-6 lg:top-52 lg:-left-8",
-    "top-right": "top-2 -right-2 md:top-6 md:-right-3 lg:top-8 lg:-right-4",
+    "top-left": "top-28 -left-16 md:top-32 md:-left-24 lg:top-52 lg:-left-12",
+    "top-right": "-top-2 -right-12 md:-top-8 md:-right-8 lg:-top-4 lg:-right-4",
     "bottom-right":
-      "bottom-8 -right-2 md:bottom-12 md:-right-3 lg:bottom-16 lg:-right-4",
+      "bottom-8 -right-12 md:bottom-12 md:-right-16 lg:bottom-16 lg:-right-4",
   };
 
-  const iconBgColor = icon === "users" ? "bg-cem-primary" : "bg-cem-teal-100";
+  const isVertical = position === "top-right";
 
   return (
     <div
-      className={`absolute ${positionClasses[position]} bg-white rounded-lg p-2 md:p-3 lg:p-4 border border-1 border-cem-primary z-20 ${position === "top-right" ? "min-w-[100px] md:min-w-[120px]" : ""}`}
+      className={`absolute ${positionClasses[position]} bg-white rounded-xl md:rounded-2xl p-3 md:p-4 shadow-[0_15px_35px_-5px_rgba(0,0,0,0.3)] md:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.35)] border border-gray-100 z-20 transition-transform duration-300 hover:scale-105 ${isVertical ? "min-w-[100px] md:min-w-[120px]" : "flex items-center gap-3 md:gap-4 pr-6 md:pr-8"}`}
     >
-      {icon === "progress" ? (
-        <div className="flex flex-col items-center gap-2">
-          <div className="relative w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 flex-shrink-0">
-            <svg
-              className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14"
-              viewBox="0 0 36 36"
-            >
-              <circle
-                cx="18"
-                cy="18"
-                r="15"
-                fill="none"
-                stroke="#e5e7eb"
-                strokeWidth="2.5"
-              />
-              <circle
-                cx="18"
-                cy="18"
-                r="15"
-                fill="none"
-                stroke="#14b8a6"
-                strokeWidth="3"
-                strokeDasharray="28 84"
-                strokeDashoffset="10"
-                transform="rotate(-90 18 18)"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
-          <div className="text-center">
-            <p className="text-lg md:text-xl lg:text-2xl font-bold text-cem-primary leading-none">
+      <div
+        className={`relative flex-shrink-0 ${isVertical ? "w-12 h-12 md:w-16 md:h-16 mx-auto mb-2 md:mb-3" : "w-10 h-10 md:w-14 md:h-14"}`}
+      >
+        <Image src={imageSrc} alt="icon" fill className="object-contain" />
+      </div>
+
+      <div className={`${isVertical ? "text-center" : ""}`}>
+        {position === "top-right" && (
+          <>
+            <p className="text-xl md:text-3xl font-bold text-gray-900 leading-none">
               {value}
             </p>
-            <p className="text-xs md:text-sm text-cem-primary mt-1">{label}</p>
+            <p className="text-xs md:text-sm text-gray-500 mt-1 md:mt-2 whitespace-nowrap">
+              {label}
+            </p>
+          </>
+        )}
+
+        {position === "top-left" && (
+          <>
+            <p className="text-xl md:text-3xl font-bold text-gray-900 leading-none">
+              {value}
+            </p>
+            <p className="text-xs md:text-sm text-gray-500 mt-0.5 md:mt-1">
+              {label}
+            </p>
+          </>
+        )}
+
+        {position === "bottom-right" && (
+          <div className="flex flex-col">
+            <p className="text-xs md:text-sm text-gray-500 leading-tight mb-0.5 md:mb-1">
+              {label}
+            </p>
+            <p className="text-xl md:text-2xl font-bold text-gray-900 leading-tight">
+              {value}
+            </p>
           </div>
-        </div>
-      ) : (
-        <div className="flex items-center gap-2 md:gap-3">
-          <div
-            className={`w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 ${iconBgColor} rounded-lg flex items-center justify-center flex-shrink-0`}
-          >
-            {icon === "menu" && (
-              <svg
-                className="w-4 h-4 md:w-5 md:h-5 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            )}
-            {icon === "users" && (
-              <svg
-                className="w-4 h-4 md:w-5 md:h-5 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                />
-              </svg>
-            )}
-          </div>
-          <div>
-            {position === "bottom-right" ? (
-              <>
-                <p className="text-xs md:text-sm text-cem-primary leading-tight">
-                  {label}
-                </p>
-                <p className="text-lg md:text-xl lg:text-2xl font-bold text-cem-primary leading-none mt-0.5">
-                  {value}
-                </p>
-              </>
-            ) : (
-              <>
-                <p className="text-lg md:text-xl lg:text-2xl font-bold text-cem-primary leading-none">
-                  {value}
-                </p>
-                <p className="text-xs md:text-sm text-cem-primary mt-1">
-                  {label}
-                </p>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
-

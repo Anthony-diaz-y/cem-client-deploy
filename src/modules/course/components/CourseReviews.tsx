@@ -56,8 +56,9 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
     });
   };
 
-  const getInitials = (firstName: string, lastName: string) => {
-    return `${firstName[0]}${lastName[0]}`.toUpperCase();
+  const getInitials = (name: string | undefined) => {
+    if (!name) return "";
+    return `${name}`.toUpperCase();
   };
 
   if (loading) {
@@ -109,11 +110,11 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-full bg-yellow-50 text-richblack-900 flex items-center justify-center font-bold text-lg shadow-lg flex-shrink-0">
-                      {getInitials(review.user.firstName, review.user.lastName)}
+                      {getInitials(review.user.name)}
                     </div>
                     <div>
                       <strong className="text-richblack-5 block text-lg">
-                        {review.user.firstName} {review.user.lastName}
+                        {review.user.name}
                       </strong>
                       <span className="text-richblack-400 text-sm">
                         {formatReviewDate(review.createdAt)}
