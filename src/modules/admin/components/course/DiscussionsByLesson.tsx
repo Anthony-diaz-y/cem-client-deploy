@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { DiscussionBySubSection, DiscussionReply } from "@shared/services/adminAPI";
+import {
+  DiscussionBySubSection,
+  DiscussionReply,
+} from "@shared/services/adminAPI";
 import {
   FiChevronDown,
   FiChevronRight,
@@ -14,7 +17,7 @@ import {
 } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import { apiConnector } from "@shared/services/apiConnector";
-import { API_ENDPOINTS } from "@shared/config/api.config";
+import { subsectionDiscussionsEndpoints } from "@/shared/services/apis";
 import { ConfirmationModal } from "@shared/components";
 
 interface DiscussionWithReplies {
@@ -41,24 +44,25 @@ export default function DiscussionsByLesson({
   onUpdate,
 }: DiscussionsByLessonProps) {
   const [expandedLessons, setExpandedLessons] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
   const [expandedDiscussions, setExpandedDiscussions] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
-  const [editingDiscussion, setEditingDiscussion] = useState<string | null>(null);
+  const [editingDiscussion, setEditingDiscussion] = useState<string | null>(
+    null,
+  );
   const [editingReply, setEditingReply] = useState<string | null>(null);
   const [newQuestion, setNewQuestion] = useState<{ [key: string]: string }>({});
-  const [editQuestion, setEditQuestion] = useState<{ [key: string]: string }>({});
+  const [editQuestion, setEditQuestion] = useState<{ [key: string]: string }>(
+    {},
+  );
   const [newReply, setNewReply] = useState<{ [key: string]: string }>({});
   const [editReply, setEditReply] = useState<{ [key: string]: string }>({});
   const [deleteConfirm, setDeleteConfirm] = useState<{
     type: "discussion" | "reply";
     id: string;
   } | null>(null);
-
-  const { SUBSECTION_DISCUSSIONS } = API_ENDPOINTS;
-
   const toggleLesson = (lessonId: string) => {
     const newExpanded = new Set(expandedLessons);
     if (newExpanded.has(lessonId)) {
@@ -115,11 +119,14 @@ export default function DiscussionsByLesson({
 
     const toastId = toast.loading("Creando pregunta...");
     try {
-      const response = await apiConnector<{ success: boolean; message?: string }>(
+      const response = await apiConnector<{
+        success: boolean;
+        message?: string;
+      }>(
         "POST",
-        SUBSECTION_DISCUSSIONS.CREATE_DISCUSSION,
+        subsectionDiscussionsEndpoints.CREATE_DISCUSSION,
         { question, subSectionId },
-        { Authorization: `Bearer ${token}` }
+        { Authorization: `Bearer ${token}` },
       );
 
       if (response?.data?.success) {
@@ -127,13 +134,20 @@ export default function DiscussionsByLesson({
         setNewQuestion({ ...newQuestion, [subSectionId]: "" });
         onUpdate?.();
       } else {
-        throw new Error(response?.data?.message || "Error al crear la pregunta");
+        throw new Error(
+          response?.data?.message || "Error al crear la pregunta",
+        );
       }
     } catch (error: unknown) {
-      const apiError = error as { response?: { data?: { message?: string } }; message?: string };
+      const apiError = error as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
       toast.error(
-        apiError?.response?.data?.message || apiError?.message || "Error al crear la pregunta",
-        { id: toastId }
+        apiError?.response?.data?.message ||
+          apiError?.message ||
+          "Error al crear la pregunta",
+        { id: toastId },
       );
     }
   };
@@ -147,11 +161,14 @@ export default function DiscussionsByLesson({
 
     const toastId = toast.loading("Actualizando pregunta...");
     try {
-      const response = await apiConnector<{ success: boolean; message?: string }>(
+      const response = await apiConnector<{
+        success: boolean;
+        message?: string;
+      }>(
         "PUT",
-        `${SUBSECTION_DISCUSSIONS.UPDATE_DISCUSSION}/${discussionId}`,
+        `${subsectionDiscussionsEndpoints.UPDATE_DISCUSSION}/${discussionId}`,
         { question },
-        { Authorization: `Bearer ${token}` }
+        { Authorization: `Bearer ${token}` },
       );
 
       if (response?.data?.success) {
@@ -160,13 +177,20 @@ export default function DiscussionsByLesson({
         setEditQuestion({ ...editQuestion, [discussionId]: "" });
         onUpdate?.();
       } else {
-        throw new Error(response?.data?.message || "Error al actualizar la pregunta");
+        throw new Error(
+          response?.data?.message || "Error al actualizar la pregunta",
+        );
       }
     } catch (error: unknown) {
-      const apiError = error as { response?: { data?: { message?: string } }; message?: string };
+      const apiError = error as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
       toast.error(
-        apiError?.response?.data?.message || apiError?.message || "Error al actualizar la pregunta",
-        { id: toastId }
+        apiError?.response?.data?.message ||
+          apiError?.message ||
+          "Error al actualizar la pregunta",
+        { id: toastId },
       );
     }
   };
@@ -174,15 +198,15 @@ export default function DiscussionsByLesson({
   const handleDeleteDiscussion = async (discussionId: string) => {
     const toastId = toast.loading("Eliminando pregunta...");
     try {
-      const response = await apiConnector<{ 
-        success: boolean; 
-        data?: any[]; 
-        message?: string 
+      const response = await apiConnector<{
+        success: boolean;
+        data?: any[];
+        message?: string;
       }>(
         "DELETE",
-        `${SUBSECTION_DISCUSSIONS.DELETE_DISCUSSION}/${discussionId}`,
+        `${subsectionDiscussionsEndpoints.DELETE_DISCUSSION}/${discussionId}`,
         undefined,
-        { Authorization: `Bearer ${token}` }
+        { Authorization: `Bearer ${token}` },
       );
 
       if (response?.data?.success) {
@@ -191,13 +215,20 @@ export default function DiscussionsByLesson({
         // Notificar al componente padre para que actualice las discusiones
         onUpdate?.();
       } else {
-        throw new Error(response?.data?.message || "Error al eliminar la pregunta");
+        throw new Error(
+          response?.data?.message || "Error al eliminar la pregunta",
+        );
       }
     } catch (error: unknown) {
-      const apiError = error as { response?: { data?: { message?: string } }; message?: string };
+      const apiError = error as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
       toast.error(
-        apiError?.response?.data?.message || apiError?.message || "Error al eliminar la pregunta",
-        { id: toastId }
+        apiError?.response?.data?.message ||
+          apiError?.message ||
+          "Error al eliminar la pregunta",
+        { id: toastId },
       );
     }
   };
@@ -211,11 +242,14 @@ export default function DiscussionsByLesson({
 
     const toastId = toast.loading("Enviando respuesta...");
     try {
-      const response = await apiConnector<{ success: boolean; message?: string }>(
+      const response = await apiConnector<{
+        success: boolean;
+        message?: string;
+      }>(
         "POST",
-        SUBSECTION_DISCUSSIONS.CREATE_REPLY,
+        subsectionDiscussionsEndpoints.CREATE_REPLY,
         { reply, discussionId },
-        { Authorization: `Bearer ${token}` }
+        { Authorization: `Bearer ${token}` },
       );
 
       if (response?.data?.success) {
@@ -223,13 +257,20 @@ export default function DiscussionsByLesson({
         setNewReply({ ...newReply, [discussionId]: "" });
         onUpdate?.();
       } else {
-        throw new Error(response?.data?.message || "Error al crear la respuesta");
+        throw new Error(
+          response?.data?.message || "Error al crear la respuesta",
+        );
       }
     } catch (error: unknown) {
-      const apiError = error as { response?: { data?: { message?: string } }; message?: string };
+      const apiError = error as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
       toast.error(
-        apiError?.response?.data?.message || apiError?.message || "Error al crear la respuesta",
-        { id: toastId }
+        apiError?.response?.data?.message ||
+          apiError?.message ||
+          "Error al crear la respuesta",
+        { id: toastId },
       );
     }
   };
@@ -243,11 +284,14 @@ export default function DiscussionsByLesson({
 
     const toastId = toast.loading("Actualizando respuesta...");
     try {
-      const response = await apiConnector<{ success: boolean; message?: string }>(
+      const response = await apiConnector<{
+        success: boolean;
+        message?: string;
+      }>(
         "PUT",
-        `${SUBSECTION_DISCUSSIONS.UPDATE_REPLY}/${replyId}`,
+        `${subsectionDiscussionsEndpoints.UPDATE_REPLY}/${replyId}`,
         { reply },
-        { Authorization: `Bearer ${token}` }
+        { Authorization: `Bearer ${token}` },
       );
 
       if (response?.data?.success) {
@@ -256,13 +300,20 @@ export default function DiscussionsByLesson({
         setEditReply({ ...editReply, [replyId]: "" });
         onUpdate?.();
       } else {
-        throw new Error(response?.data?.message || "Error al actualizar la respuesta");
+        throw new Error(
+          response?.data?.message || "Error al actualizar la respuesta",
+        );
       }
     } catch (error: unknown) {
-      const apiError = error as { response?: { data?: { message?: string } }; message?: string };
+      const apiError = error as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
       toast.error(
-        apiError?.response?.data?.message || apiError?.message || "Error al actualizar la respuesta",
-        { id: toastId }
+        apiError?.response?.data?.message ||
+          apiError?.message ||
+          "Error al actualizar la respuesta",
+        { id: toastId },
       );
     }
   };
@@ -270,24 +321,34 @@ export default function DiscussionsByLesson({
   const handleDeleteReply = async (replyId: string) => {
     const toastId = toast.loading("Eliminando respuesta...");
     try {
-      const response = await apiConnector<{ success: boolean; message?: string }>(
+      const response = await apiConnector<{
+        success: boolean;
+        message?: string;
+      }>(
         "DELETE",
-        `${SUBSECTION_DISCUSSIONS.DELETE_REPLY}/${replyId}`,
+        `${subsectionDiscussionsEndpoints.DELETE_REPLY}/${replyId}`,
         undefined,
-        { Authorization: `Bearer ${token}` }
+        { Authorization: `Bearer ${token}` },
       );
 
       if (response?.data?.success) {
         toast.success("Respuesta eliminada exitosamente", { id: toastId });
         onUpdate?.();
       } else {
-        throw new Error(response?.data?.message || "Error al eliminar la respuesta");
+        throw new Error(
+          response?.data?.message || "Error al eliminar la respuesta",
+        );
       }
     } catch (error: unknown) {
-      const apiError = error as { response?: { data?: { message?: string } }; message?: string };
+      const apiError = error as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
       toast.error(
-        apiError?.response?.data?.message || apiError?.message || "Error al eliminar la respuesta",
-        { id: toastId }
+        apiError?.response?.data?.message ||
+          apiError?.message ||
+          "Error al eliminar la respuesta",
+        { id: toastId },
       );
     }
   };
@@ -295,9 +356,7 @@ export default function DiscussionsByLesson({
   if (discussions.length === 0) {
     return (
       <div className="bg-richblack-900/50 rounded-lg p-8 text-center">
-        <p className="text-richblack-400">
-          No hay discusiones en este curso
-        </p>
+        <p className="text-richblack-400">No hay discusiones en este curso</p>
       </div>
     );
   }
@@ -361,7 +420,9 @@ export default function DiscussionsByLesson({
                       className="flex-1 px-4 py-2 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 placeholder-richblack-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <button
-                      onClick={() => handleCreateDiscussion(lesson.subSectionId)}
+                      onClick={() =>
+                        handleCreateDiscussion(lesson.subSectionId)
+                      }
                       className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center gap-2"
                     >
                       <FiPlus className="w-4 h-4" />
@@ -375,7 +436,7 @@ export default function DiscussionsByLesson({
                   <div className="space-y-3">
                     {lesson.discussions.map((discussion) => {
                       const isDiscussionExpanded = expandedDiscussions.has(
-                        discussion.id
+                        discussion.id,
                       );
 
                       return (
@@ -441,7 +502,7 @@ export default function DiscussionsByLesson({
                                       </span>
                                       <span
                                         className={`px-2 py-0.5 rounded text-xs font-semibold border ${getAccountTypeBadge(
-                                          discussion.userAccountType
+                                          discussion.userAccountType,
                                         )}`}
                                       >
                                         {discussion.userAccountType}
@@ -453,7 +514,9 @@ export default function DiscussionsByLesson({
                                   </div>
                                   <div className="flex items-center gap-2">
                                     <button
-                                      onClick={() => toggleDiscussion(discussion.id)}
+                                      onClick={() =>
+                                        toggleDiscussion(discussion.id)
+                                      }
                                       className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
                                     >
                                       {isDiscussionExpanded
@@ -521,9 +584,13 @@ export default function DiscussionsByLesson({
                               </div>
 
                               {/* Lista de respuestas */}
-                              {(discussion as DiscussionWithReplies).replies && (discussion as DiscussionWithReplies).replies!.length > 0 ? (
+                              {(discussion as DiscussionWithReplies).replies &&
+                              (discussion as DiscussionWithReplies).replies!
+                                .length > 0 ? (
                                 <div className="space-y-2">
-                                  {(discussion as DiscussionWithReplies).replies!.map((reply: DiscussionReply) => (
+                                  {(
+                                    discussion as DiscussionWithReplies
+                                  ).replies!.map((reply: DiscussionReply) => (
                                     <div
                                       key={reply.id}
                                       className="bg-richblack-900/50 p-3 rounded-lg border border-richblack-700"
@@ -578,7 +645,7 @@ export default function DiscussionsByLesson({
                                               </span>
                                               <span
                                                 className={`px-2 py-0.5 rounded text-xs font-semibold border ${getAccountTypeBadge(
-                                                  reply.userAccountType
+                                                  reply.userAccountType,
                                                 )}`}
                                               >
                                                 {reply.userAccountType}

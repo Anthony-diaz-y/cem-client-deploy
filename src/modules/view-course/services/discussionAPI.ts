@@ -1,13 +1,11 @@
 import { toast } from "react-hot-toast";
 import { apiConnector } from "@/shared/services/apiConnector";
-import { API_ENDPOINTS } from "@/shared/config/api.config";
+import { subsectionDiscussionsEndpoints } from "@/shared/services/apis";
 import type { 
   SubsectionDiscussion, 
   SubsectionDiscussionReply,
   DiscussionApiResponse 
 } from "../types";
-
-const { SUBSECTION_DISCUSSIONS } = API_ENDPOINTS;
 
 /**
  * Crear una nueva pregunta/discusión
@@ -20,7 +18,7 @@ export const createDiscussion = async (
   try {
     const response = await apiConnector<DiscussionApiResponse>(
       "POST",
-      SUBSECTION_DISCUSSIONS.CREATE_DISCUSSION,
+      subsectionDiscussionsEndpoints.CREATE_DISCUSSION,
       {
         question,
         subSectionId,
@@ -50,7 +48,7 @@ export const getDiscussions = async (
   try {
     const response = await apiConnector<DiscussionApiResponse>(
       "GET",
-      `${SUBSECTION_DISCUSSIONS.GET_DISCUSSIONS}/${subSectionId}`
+      `${subsectionDiscussionsEndpoints.GET_DISCUSSIONS}/${subSectionId}`
     );
 
     if (!response?.data?.success) {
@@ -77,7 +75,7 @@ export const updateDiscussion = async (
   try {
     const response = await apiConnector<DiscussionApiResponse>(
       "PUT",
-      `${SUBSECTION_DISCUSSIONS.UPDATE_DISCUSSION}/${discussionId}`,
+      `${subsectionDiscussionsEndpoints.UPDATE_DISCUSSION}/${discussionId}`,
       { question }
     );
 
@@ -104,7 +102,7 @@ export const deleteDiscussion = async (discussionId: string): Promise<Subsection
   try {
     const response = await apiConnector<DiscussionApiResponse>(
       "DELETE",
-      `${SUBSECTION_DISCUSSIONS.DELETE_DISCUSSION}/${discussionId}`
+      `${subsectionDiscussionsEndpoints.DELETE_DISCUSSION}/${discussionId}`
     );
 
     if (!response?.data?.success) {
@@ -134,7 +132,7 @@ export const createReply = async (
   try {
     const response = await apiConnector<DiscussionApiResponse>(
       "POST",
-      SUBSECTION_DISCUSSIONS.CREATE_REPLY,
+      subsectionDiscussionsEndpoints.CREATE_REPLY,
       {
         reply,
         discussionId,
@@ -168,7 +166,7 @@ export const updateReply = async (
   try {
     const response = await apiConnector<DiscussionApiResponse>(
       "PUT",
-      `${SUBSECTION_DISCUSSIONS.UPDATE_REPLY}/${replyId}`,
+      `${subsectionDiscussionsEndpoints.UPDATE_REPLY}/${replyId}`,
       { reply }
     );
 
@@ -196,7 +194,7 @@ export const deleteReply = async (replyId: string): Promise<SubsectionDiscussion
   try {
     const response = await apiConnector<DiscussionApiResponse>(
       "DELETE",
-      `${SUBSECTION_DISCUSSIONS.DELETE_REPLY}/${replyId}`
+      `${subsectionDiscussionsEndpoints.DELETE_REPLY}/${replyId}`
     );
 
     if (!response?.data?.success) {

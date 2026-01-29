@@ -138,3 +138,14 @@ export const scheduledClassesEndpoints = {
   CHECK_ENROLLMENT_API: BASE_URL + "/scheduled-classes",
   GET_ENROLLMENTS_API: BASE_URL + "/scheduled-classes",
 }
+
+// SUBSECTION DISCUSSIONS ENDPOINTS
+export const subsectionDiscussionsEndpoints = {
+    CREATE_DISCUSSION: `${API_URL}/discussion/subsection-discussion/create`,
+    GET_DISCUSSIONS: `${API_URL}/discussion/subsection-discussion`,
+    UPDATE_DISCUSSION: `${API_URL}/discussion/subsection-discussion`,
+    DELETE_DISCUSSION: `${API_URL}/discussion/subsection-discussion`,
+    CREATE_REPLY: `${API_URL}/discussion/subsection-discussion/reply/create`,
+    UPDATE_REPLY: `${API_URL}/discussion/subsection-discussion/reply`,
+    DELETE_REPLY: `${API_URL}/discussion/subsection-discussion/reply`,
+}
