@@ -1,5 +1,4 @@
-import HighlightText from "../../home/components/HighlightText";
-import CTAButton from "../../home/components/Button";
+import { Button as CTAButton, HighlightText } from "@modules/home";
 import type { LearningGridItem } from "../types";
 
 interface LearningGridProps {

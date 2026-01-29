@@ -1,4 +1,4 @@
-import HighlightText from "../../home/components/HighlightText";
+import { HighlightText } from "@modules/home";
 
 const Quote = () => {
   return (

@@ -34,17 +34,17 @@ export default function ProfileDropdown() {
           alt={`profile-${user?.firstName}`}
           className={"aspect-square w-[30px] rounded-full object-cover"}
         />
-        <AiOutlineCaretDown className="text-sm text-richblack-100" />
+        <AiOutlineCaretDown className="text-sm text-cem-neutral-gray-600" />
       </div>
 
       {open && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="absolute top-[118%] right-0 z-[1000] divide-y-[1px] divide-richblack-700 overflow-hidden rounded-md border-[1px] border-richblack-700 bg-richblack-800 min-w-[160px]"
+          className="absolute top-[118%] right-0 z-[1000] overflow-hidden rounded-xl border border-cem-neutral-gray-200 bg-white shadow-lg min-w-[180px]"
           ref={ref}
         >
           <Link href="/dashboard/my-profile" onClick={() => setOpen(false)}>
-            <div className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100 hover:bg-richblack-700 hover:text-richblack-25">
+            <div className="flex w-full items-center gap-x-2 py-3 px-4 text-sm font-medium text-cem-neutral-gray-800 hover:bg-cem-teal-50 hover:text-cem-primary transition-colors">
               <VscAccount className="text-lg" />
               My Profile
             </div>
@@ -55,7 +55,7 @@ export default function ProfileDropdown() {
               dispatch(logout(router.push));
               setOpen(false);
             }}
-            className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100 hover:bg-richblack-700 hover:text-richblack-25"
+            className="flex w-full items-center gap-x-2 py-3 px-4 text-sm font-medium text-cem-neutral-gray-800 hover:bg-red-50 hover:text-red-600 transition-colors cursor-pointer border-t border-cem-neutral-gray-200"
           >
             <VscSignOut className="text-lg" />
             Cerrar Sesión

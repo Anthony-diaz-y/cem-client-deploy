@@ -4,8 +4,9 @@
 
 html,
 body {
-  overflow-x: hidden;
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 * {
@@ -16,18 +17,17 @@ body {
 
 /* use in homePage */
 .homepage_bg {
-  background: url('/bghome.svg');
+  background: url("/bghome.svg");
 }
 
-
 .gradient_color {
-  background: linear-gradient(118.19deg, #1FA2FF -3.62%, #12D8FA 50.44%, #A6FFCB 104.51%),
-    linear-gradient(0deg, #F1F2FF, #F1F2FF);
+  background:
+    linear-gradient(118.19deg, #1fa2ff -3.62%, #12d8fa 50.44%, #a6ffcb 104.51%),
+    linear-gradient(0deg, #f1f2ff, #f1f2ff);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
-
 
 /* ===== Scrollbar CSS ===== */
 /* Firefox */
@@ -73,7 +73,6 @@ body {
   background-color: #64748b;
 }
 
-
 /* loading spinner  */
 .custom-loader {
   width: 70px;
@@ -86,10 +85,9 @@ body {
 
 @keyframes s3 {
   to {
-    transform: rotate(1turn)
+    transform: rotate(1turn);
   }
 }
-
 
 .lable-style {
   @apply text-[14px] text-richblack-5;
@@ -103,7 +101,6 @@ body {
   @apply text-2xl font-bold text-richblack-5 lg:text-4xl;
 }
 
-
 /* Buttons */
 .yellowButton {
   @apply cursor-pointer rounded-md bg-yellow-50 px-[20px] py-[8px] font-semibold text-richblack-900 hover:bg-black hover:text-yellow-50 duration-300;
@@ -112,10 +109,6 @@ body {
 .blackButton {
   @apply cursor-pointer rounded-md bg-richblack-800 px-[20px] py-[8px] font-semibold text-richblack-5 hover:bg-richblack-5 hover:text-richblack-800 duration-300;
 }
-
-
-
-
 
 /* Loading skeleton */
 .skeleton {
@@ -132,11 +125,13 @@ body {
   bottom: 0;
   left: 0;
   transform: translateX(-100%);
-  background-image: linear-gradient(90deg,
-      rgba(111, 119, 131, 0) 0,
-      rgba(143, 132, 132, 0) 20%,
-      rgba(126, 139, 151, 0.5) 60%,
-      rgba(25, 55, 99, 0));
+  background-image: linear-gradient(
+    90deg,
+    rgba(111, 119, 131, 0) 0,
+    rgba(143, 132, 132, 0) 20%,
+    rgba(126, 139, 151, 0.5) 60%,
+    rgba(25, 55, 99, 0)
+  );
   animation: shimmer 0.9s infinite;
   content: "";
 }
@@ -146,7 +141,6 @@ body {
     transform: translateX(100%);
   }
 }
-
 
 /* used in Navbar */
 .top {
@@ -163,7 +157,6 @@ body {
 .hide {
   transform: translateY(-60px);
 }
-
 
 .glass-bg {
   backdrop-filter: blur(9px) saturate(200%);
@@ -183,7 +176,6 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
-
 /* used in home.jsx - random background  */
 .opacity_layer_bg {
   background: linear-gradient(180deg, rgba(4, 21, 45, 0) 0%, #04152d 79.17%);
@@ -201,7 +193,8 @@ body {
 
 /* Floating animation for course cards */
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -209,7 +202,30 @@ body {
   }
 }
 
+
 .course-card-float {
   animation: float 3s ease-in-out infinite;
+}
+
+
+/* Infinite Scroll Animation - Triple groups for seamless looping */
+@keyframes infinite-scroll-triple {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-100% / 3));
+  }
+}
+
+.animate-infinite-scroll-triple {
+  animation: infinite-scroll-triple 30s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.animate-infinite-scroll-triple:hover {
+  animation-play-state: paused;
 }
 

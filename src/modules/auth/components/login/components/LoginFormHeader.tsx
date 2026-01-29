@@ -5,13 +5,16 @@ interface LoginFormHeaderProps {
   subtitle: string;
 }
 
-const LoginFormHeader: React.FC<LoginFormHeaderProps> = ({ title, subtitle }) => {
+const LoginFormHeader: React.FC<LoginFormHeaderProps> = ({
+  title,
+  subtitle,
+}) => {
   return (
-    <div className="text-center w-full mb-6">
-      <h1 className="font-bold text-[2.25rem] leading-[2.75rem] text-[#333333] mb-2 m-0">
+    <div className="text-center w-full mb-8 lg:mb-10">
+      <h1 className="font-bold text-[32px] md:text-[40px] leading-tight text-[#2D2D2D] mb-3 m-0">
         {title}
       </h1>
-      <p className="text-base leading-6 text-gray-500 m-0">
+      <p className="text-base md:text-lg text-gray-500 font-medium m-0">
         {subtitle}
       </p>
     </div>
@@ -19,4 +22,3 @@ const LoginFormHeader: React.FC<LoginFormHeaderProps> = ({ title, subtitle }) =>
 };
 
 export default LoginFormHeader;
-

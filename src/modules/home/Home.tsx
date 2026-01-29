@@ -2,8 +2,8 @@
 
 import React from "react";
 import { Footer } from "@shared/components";
-import HeroSection from "./components/HeroSection";
-import PartnersSection from "./components/PartnersSection";
+import { HeroSection } from "./components/hero";
+import { PartnersSection } from "./components/partners";
 import { CoursesSection } from "./components/courses";
 import { ValuePropositionSection } from "./components/valueProposition";
 import { ExpertsSection } from "./components/experts";
@@ -23,13 +23,13 @@ const Home: React.FC<HomeProps> = ({
   const displayCourses = useCombinedCourses(courses || []);
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen overflow-x-hidden">
       <div className="relative w-full max-w-[1400px] mx-auto px-4 md:px-8 bg-white">
         <HeroSection />
         <PartnersSection />
       </div>
 
-      <CoursesSection 
+      <CoursesSection
         courses={displayCourses}
         loading={coursesLoading}
         error={coursesError}
