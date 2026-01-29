@@ -21,4 +21,3 @@ export const CoursesSectionHeader: React.FC = () => {
     </div>
   );
 };
-

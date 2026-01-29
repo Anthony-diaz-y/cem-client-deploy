@@ -15,24 +15,80 @@ const {
   GET_FULL_COURSE_DETAILS_AUTHENTICATED,
 } = courseEndpoints
 
-// Obtener todos los cursos
-export const getAllCourses = async () => {
-  let result: unknown[] = []
+interface CoursesListMeta {
+  page?: number;
+  limit?: number;
+  total?: number;
+  totalPages?: number;
+}
+
+interface GetAllCoursesFilters {
+  search?: string;
+  category?: string;
+  page?: number;
+  limit?: number;
+}
+
+interface GetAllCoursesResponse {
+  success: boolean;
+  data: unknown[];
+  message?: string;
+  meta?: CoursesListMeta;
+}
+
+// Obtener cursos (con soporte de paginación / búsqueda desde backend)
+export const getAllCoursesWithMeta = async (filters?: GetAllCoursesFilters) => {
+  let result: unknown[] = [];
+  let meta: CoursesListMeta | undefined = undefined;
 
   try {
-    const response = await apiConnector<ApiResponse<unknown[]>>("GET", GET_ALL_COURSE_API)
+    const params: Record<string, string | number> = {};
+    if (filters?.search) params.search = filters.search;
+    if (filters?.category) params.category = filters.category;
+    if (typeof filters?.page === "number") params.page = filters.page;
+    if (typeof filters?.limit === "number") params.limit = filters.limit;
+
+    const response = await apiConnector<ApiResponse<GetAllCoursesResponse>>(
+      "GET",
+      GET_ALL_COURSE_API,
+      undefined,
+      undefined,
+      Object.keys(params).length > 0 ? params : undefined,
+    );
+
     if (!response?.data?.success) {
-      throw new Error("Could Not Fetch Course Categories")
+      throw new Error("Could Not Fetch Courses");
     }
-    result = response?.data?.data || []
+
+    const payload = response?.data?.data as unknown;
+    // Si el backend ya retorna { data, meta } dentro de data, lo soportamos
+    if (payload && typeof payload === "object" && "data" in (payload as any)) {
+      result = ((payload as any).data || []) as unknown[];
+      meta = (payload as any).meta as CoursesListMeta | undefined;
+    } else {
+      // Compatibilidad con respuesta antigua: data es el array
+      result = (response?.data?.data || []) as unknown[];
+    }
+
+    // [FIX] Soporte para cuando meta está al mismo nivel que data (sibling)
+    if (!meta && (response?.data as any)?.meta) {
+      meta = (response.data as any).meta as CoursesListMeta;
+    }
   } catch (error) {
     const apiError = error as ApiError;
     if (apiError.response?.status !== 401) {
-      toast.error(apiError.message || "No se pudieron obtener los cursos")
+      toast.error(apiError.message || "No se pudieron obtener los cursos");
     }
   }
-  return result
-}
+
+  return { courses: result, meta };
+};
+
+// Obtener cursos (compatibilidad: retorna solo array)
+export const getAllCourses = async () => {
+  const { courses } = await getAllCoursesWithMeta();
+  return courses;
+};
 
 // Obtener detalles de un curso
 export const fetchCourseDetails = async (courseId: string) => {

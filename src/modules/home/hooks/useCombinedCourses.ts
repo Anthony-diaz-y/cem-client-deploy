@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { Course } from "../../catalog/types";
+import type { Course } from "../../courses/types";
 
 const MAX_COURSES = 6;
 
@@ -8,7 +8,8 @@ const MAX_COURSES = 6;
  */
 export function useCombinedCourses(courses: Course[]) {
   return useMemo(() => {
-    return courses.slice(0, MAX_COURSES);
+    if (!Array.isArray(courses) || courses.length === 0) return [];
+    return courses.slice(0, MAX_COURSES) || [];
   }, [courses]);
 }
 

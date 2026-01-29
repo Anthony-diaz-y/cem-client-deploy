@@ -1,5 +1,5 @@
 // Home Module Types
-import type { Course } from "../../catalog/types";
+import type { Course } from "../../courses/types";
 
 export interface CategoryWithCourses {
   name: string;

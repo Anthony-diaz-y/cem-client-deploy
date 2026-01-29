@@ -5,15 +5,15 @@ import Link from "next/link";
 import { Img } from "@shared/components";
 import { RatingStars } from "@shared/components";
 import GetAvgRating from "@shared/utils/avgRating";
-import type { Course } from "../../../../courses/types";
+import type { Course } from "../../../types";
 import { formatDurationForBadge } from "../../../utils";
 
-interface HomeCourseCardProps {
+interface CourseCardProps {
   course: Course;
   index?: number;
 }
 
-export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
+export const CourseCard: React.FC<CourseCardProps> = ({
   course,
   index = 0,
 }) => {
@@ -28,17 +28,18 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
     ? `${course.instructor.name || ""}`
     : "Instructor";
 
-  const animationDelay = index * 0.1;
+  const categoryName = (course as any).category?.name || "Categoría";
+  const courseDescription =
+    (course as any).courseDescription || "Descripción del curso no disponible.";
 
   return (
     <Link
       href={`/courses/${courseId}`}
-      className="group bg-white rounded-xl border border-cem-neutral-gray-200 overflow-hidden hover:border-cem-primary hover:shadow-lg transition-all duration-300 flex flex-col course-card-float h-full"
+      className="group bg-white rounded-xl border border-cem-neutral-gray-200 overflow-hidden hover:border-cem-primary hover:shadow-lg transition-all duration-300 flex flex-col h-full course-card-float"
       style={{
-        animationDelay: `${animationDelay}s`,
+        animationDelay: `${index * 0.1}s`,
       }}
     >
-      {/* Imagen con badge de duración */}
       <div className="relative w-full h-48 md:h-40 bg-cem-neutral-gray-100 overflow-hidden">
         {course.thumbnail ? (
           <Img
@@ -64,7 +65,6 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
           </div>
         )}
 
-        {/* Badge de duración */}
         <div className="absolute top-2.5 right-2.5 bg-white rounded-lg px-2.5 py-1 flex items-center gap-1.5 shadow-sm z-10">
           <svg
             className="w-3.5 h-3.5 text-purple-800"
@@ -85,14 +85,11 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
         </div>
       </div>
 
-      {/* Contenido de la tarjeta */}
       <div className="p-4 flex-1 flex flex-col">
-        {/* Categoría */}
         <span className="text-xs font-semibold text-cem-primary mb-1.5">
-          Biología y Biotecnología
+          {categoryName}
         </span>
 
-        {/* Título con flecha - min-h para alinear descripciones */}
         <div className="flex items-start justify-between gap-2 mb-1.5 min-h-[48px]">
           <h3 className="text-base font-bold text-cem-neutral-gray-900 group-hover:text-cem-primary transition-colors flex-1 leading-snug line-clamp-2">
             {course.courseName || "Curso sin título"}
@@ -112,12 +109,10 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
           </svg>
         </div>
 
-        {/* Descripción */}
         <p className="text-sm text-cem-neutral-gray-600 mb-3 line-clamp-2">
-          Estudio de cómo el ADN, ARN y proteínas regulan la vida celular.
+          {courseDescription}
         </p>
 
-        {/* Rating */}
         <div className="flex items-center gap-2 mb-3">
           <div className="flex items-center gap-1.5">
             <span className="text-sm font-semibold text-cem-neutral-gray-900">
@@ -130,7 +125,6 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
           </span>
         </div>
 
-        {/* Instructor y Precio */}
         <div className="mt-auto pt-3 border-t border-cem-neutral-gray-200 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2.5 flex-1 min-w-0">
             <div className="w-9 h-9 rounded-full bg-cem-teal-100 flex items-center justify-center flex-shrink-0">
@@ -143,7 +137,7 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
                 {instructorName}
               </p>
               <p className="text-xs text-cem-neutral-gray-500 truncate">
-                Biólogo experto
+                Instructor
               </p>
             </div>
           </div>

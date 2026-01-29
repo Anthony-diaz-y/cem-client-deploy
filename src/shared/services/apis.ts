@@ -29,7 +29,7 @@ export const studentEndpoints = {
 
 // COURSE ENDPOINTS
 export const courseEndpoints = {
-  GET_ALL_COURSE_API: BASE_URL + "/course/getAllCourses",
+  GET_ALL_COURSE_API: BASE_URL + "/course/getAllCourses", //usando
   COURSE_DETAILS_API: BASE_URL + "/course/getCourseDetails",
   EDIT_COURSE_API: BASE_URL + "/course/editCourse",
   COURSE_CATEGORIES_API: BASE_URL + "/category/showAllCategories",
@@ -60,9 +60,15 @@ export const ratingsEndpoints = {
   GET_RATING_STATS_API: BASE_URL + "/course/rating",
 }
 
+// DOMAINS API
+// export const domains = {
+//   GET_ALL_DOMAINS_API: BASE_URL + "/domain/getAllDomains"
+// }
+
 // CATAGORIES API
 export const categories = {
   CATEGORIES_API: BASE_URL + "/category/showAllCategories",
+  GET_ALL_CATEGORY_API: BASE_URL + "/category/showAllCategories",
   CREATE_CATEGORY_API: BASE_URL + "/category/createCategory",
   SHOW_ALL_CATEGORIES_API: BASE_URL + "/category/showAllCategories",
   UPDATE_CATEGORY_API: BASE_URL + "/category/updateCategory",

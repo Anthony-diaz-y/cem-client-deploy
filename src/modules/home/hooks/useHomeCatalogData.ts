@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getAllCourses } from "@shared/services/courseDetailsAPI";
-import type { Course } from "../../catalog/types";
+import type { Course } from "../../courses/types";
 
 export function useHomeCatalogData() {
   const [courses, setCourses] = useState<Course[]>([]);
