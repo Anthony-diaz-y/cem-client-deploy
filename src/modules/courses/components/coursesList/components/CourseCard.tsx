@@ -141,9 +141,12 @@ export const CourseCard: React.FC<CourseCardProps> = ({
             </div>
           </div>
 
-          <div className="flex-shrink-0">
-            <p className="text-xl font-bold text-cem-primary">
+          <div className="flex flex-col items-end">
+            <p className="text-lg font-bold text-cem-primary leading-tight">
               S/{course.price || 0}
+            </p>
+            <p className="text-xs font-medium text-cem-neutral-gray-500">
+              $ {((course.price || 0) / 3.75).toFixed(2)}
             </p>
           </div>
         </div>

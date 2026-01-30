@@ -19,6 +19,7 @@ interface CoursesListSectionProps {
   };
   onPageChange?: (page: number) => void;
   loading?: boolean;
+  hideHeader?: boolean;
 }
 
 const Pagination: React.FC<{
@@ -75,6 +76,7 @@ export const CoursesListSection: React.FC<CoursesListSectionProps> = ({
   limit,
   meta,
   onPageChange,
+  hideHeader = false,
   loading = false,
 }) => {
   const totalPages =
@@ -107,16 +109,18 @@ export const CoursesListSection: React.FC<CoursesListSectionProps> = ({
   };
 
   return (
-    <div className="w-full bg-white py-16">
+    <div className="w-full py-16">
       <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl lg:text-5xl font-bold text-cem-neutral-gray-900 mb-2">
-            Todos nuestros cursos
-          </h2>
-          <p className="text-lg text-cem-neutral-gray-600">
-            {selectedCategory || "Cursos CEM"}
-          </p>
-        </div>
+        {!hideHeader && (
+          <div className="text-center mb-12">
+            <h2 className="text-4xl lg:text-5xl font-bold text-cem-neutral-gray-900 mb-2">
+              Todos nuestros cursos
+            </h2>
+            <p className="text-cem-neutral-gray-500">
+              {selectedCategory || "Explora nuestra oferta académica"}
+            </p>
+          </div>
+        )}
 
         <div
           className={`relative min-h-[400px] transition-opacity duration-300 ${loading && courses.length > 0 ? "opacity-50" : "opacity-100"}`}

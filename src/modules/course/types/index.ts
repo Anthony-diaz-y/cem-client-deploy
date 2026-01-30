@@ -27,8 +27,8 @@ export interface CourseHeroProps {
     };
   };
   avgReviewCount: number;
-  onBuyCourse: () => void;
-  onAddToCart: () => void;
+  onBuyCourse?: () => void;
+  onAddToCart?: () => void;
 }
 
 export interface CourseInfoSectionProps {
@@ -37,11 +37,21 @@ export interface CourseInfoSectionProps {
 }
 
 export interface Instructor {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
+  _id?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
   image?: string;
+  name?: string;
+  professional_title?: string;
+  additionalDetails?: {
+    about?: string;
+  };
+  links?: {
+    orcid?: string;
+    researchGate?: string;
+    linkedin?: string;
+  };
 }
 
 export interface Section {
@@ -106,7 +116,7 @@ export interface Category {
 
 // Cart Types
 export interface CartItem {
-  id?: string;  // UUID del backend PostgreSQL
+  id?: string; // UUID del backend PostgreSQL
   _id?: string; // Mantener compatibilidad si se usa
   courseName: string;
   price: number;
@@ -222,12 +232,14 @@ export interface CourseDetailsCardProps {
     React.SetStateAction<ConfirmationModalData | null>
   >;
   handleBuyCourse: () => void;
+  handleAddToCart: () => void;
 }
 
 export interface CourseAccordionBarProps {
   course: Section;
   isActive: string[];
   handleActive: (id: string) => void;
+  id?: string;
 }
 
 // Course Details Response Type

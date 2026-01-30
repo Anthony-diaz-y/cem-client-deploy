@@ -19,20 +19,26 @@ export const COURSE_TEXTS = {
       addToCart: "Agregar al Carrito",
       goToCourse: "Ir al Curso",
     },
-    pricePrefix: "Rs.",
+    pricePrefix: "S/",
   },
   infoSection: {
     whatYouWillLearn: "Lo que aprenderás",
     tags: "Etiquetas",
   },
+  contentSection: {
+    title: "Contenido del curso",
+    collapseAll: "Colapsar Todas las Secciones",
+  },
+  expertSection: {
+    title: "Experto",
+  },
   detailsCard: {
-    pricePrefix: "Rs.",
+    pricePrefix: "S/",
     buyNow: "Comprar Ahora",
     goToCourse: "Ir al Curso",
     addToCart: "Agregar al Carrito",
     share: "Compartir",
-    moneyBackGuarantee: "Garantía de devolución de dinero de 30 días",
-    requirements: "Requisitos del Curso:",
+    requirements: "Requisitos del curso",
     shareSuccess: "Enlace copiado al portapapeles",
   },
   actions: {

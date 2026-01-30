@@ -4,7 +4,12 @@ import React from "react";
 import Courses from "../Courses";
 import { useCoursesData } from "../hooks/useCoursesData";
 
-const CoursesContainer = () => {
+interface CoursesContainerProps {
+  categoryId?: string;
+}
+
+/** Container para la lista de cursos con filtrado opcional por categoría */
+const CoursesContainer: React.FC<CoursesContainerProps> = ({ categoryId }) => {
   const {
     courses,
     categories,
@@ -19,7 +24,7 @@ const CoursesContainer = () => {
     setPage,
     setSearch,
     setCategory,
-  } = useCoursesData();
+  } = useCoursesData(categoryId);
 
   return (
     <Courses
