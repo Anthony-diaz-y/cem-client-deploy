@@ -9,14 +9,14 @@ export const endpoints = {
   LOGIN_API: BASE_URL + "/auth/login",
   RESETPASSTOKEN_API: BASE_URL + "/auth/reset-password-token",
   RESETPASSWORD_API: BASE_URL + "/auth/reset-password",
-}
+};
 
 // PROFILE ENDPOINTS
 export const profileEndpoints = {
   GET_USER_DETAILS_API: BASE_URL + "/profile/getUserDetails",
   GET_USER_ENROLLED_COURSES_API: BASE_URL + "/profile/getEnrolledCourses",
   GET_INSTRUCTOR_DATA_API: BASE_URL + "/profile/instructorDashboard",
-}
+};
 
 // STUDENTS ENDPOINTS
 export const studentEndpoints = {
@@ -25,7 +25,7 @@ export const studentEndpoints = {
   SEND_PAYMENT_SUCCESS_EMAIL_API: BASE_URL + "/payment/sendPaymentSuccessEmail",
   // ⚠️ TEMPORAL: Endpoint para comprar cursos sin pasarela de pago - REMOVER cuando se implemente la pasarela
   BUY_NOW_TEMPORARY_API: BASE_URL + "/payment/buyNowTemporary",
-}
+};
 
 // COURSE ENDPOINTS
 export const courseEndpoints = {
@@ -42,13 +42,14 @@ export const courseEndpoints = {
   DELETE_SECTION_API: BASE_URL + "/course/deleteSection",
   DELETE_SUBSECTION_API: BASE_URL + "/subsection/deleteSubSection",
   DELETE_COURSE_API: BASE_URL + "/course/deleteCourse",
-  GET_FULL_COURSE_DETAILS_AUTHENTICATED: BASE_URL + "/course/getFullCourseDetails",
+  GET_FULL_COURSE_DETAILS_AUTHENTICATED:
+    BASE_URL + "/course/getFullCourseDetails",
   LECTURE_COMPLETION_API: BASE_URL + "/course/updateCourseProgress",
   CREATE_RATING_API: BASE_URL + "/course/createRating",
   REORDER_SECTIONS_API: BASE_URL + "/course/reorderSections",
   REORDER_SUBSECTIONS_API: BASE_URL + "/subsection/reorderSubSections",
   MOVE_SUBSECTION_API: BASE_URL + "/subsection/moveSubSection",
-}
+};
 
 // RATINGS AND REVIEWS
 export const ratingsEndpoints = {
@@ -58,12 +59,12 @@ export const ratingsEndpoints = {
   GET_REVIEWS_API: BASE_URL + "/course/reviews",
   GET_USER_REVIEW_API: BASE_URL + "/course/review",
   GET_RATING_STATS_API: BASE_URL + "/course/rating",
-}
+};
 
 // DOMAINS API
-// export const domains = {
-//   GET_ALL_DOMAINS_API: BASE_URL + "/domain/getAllDomains"
-// }
+export const domains = {
+  GET_ALL_DOMAINS_API: BASE_URL + "/domain/getAllDomains",
+};
 
 // CATAGORIES API
 export const categories = {
@@ -75,13 +76,14 @@ export const categories = {
   DELETE_CATEGORY_API: BASE_URL + "/category/deleteCategory",
   GET_CATEGORY_COURSES_API: BASE_URL + "/category/getCategoryCourses",
   CHANGE_COURSE_CATEGORY_API: BASE_URL + "/category/changeCourseCategory",
-  CHANGE_MULTIPLE_COURSES_CATEGORY_API: BASE_URL + "/category/changeMultipleCoursesCategory",
-}
+  CHANGE_MULTIPLE_COURSES_CATEGORY_API:
+    BASE_URL + "/category/changeMultipleCoursesCategory",
+};
 
 // CATALOG PAGE DATA
 export const catalogData = {
   CATALOGPAGEDATA_API: BASE_URL + "/category/getCategoryPageDetails",
-}
+};
 // CONTACT-US API
 export const contactusEndpoint = {
   CONTACT_US_API: BASE_URL + "/contact",
@@ -92,7 +94,7 @@ export const contactusEndpoint = {
   ARCHIVE_MESSAGE_API: BASE_URL + "/contact/messages",
   DELETE_MESSAGE_API: BASE_URL + "/contact/messages",
   REPLY_MESSAGE_API: BASE_URL + "/contact/messages",
-}
+};
 
 // SETTINGS PAGE API
 export const settingsEndpoints = {
@@ -100,7 +102,7 @@ export const settingsEndpoints = {
   UPDATE_PROFILE_API: BASE_URL + "/profile/updateProfile",
   CHANGE_PASSWORD_API: BASE_URL + "/auth/changepassword",
   DELETE_PROFILE_API: BASE_URL + "/profile/deleteProfile",
-}
+};
 
 // ADMIN ENDPOINTS
 export const adminEndpoints = {
@@ -122,7 +124,7 @@ export const adminEndpoints = {
   UPDATE_REVIEW_ADMIN_API: BASE_URL + "/admin/review",
   DELETE_REVIEW_ADMIN_API: BASE_URL + "/admin/review",
   GLOBAL_SEARCH_API: BASE_URL + "/admin/global-search",
-}
+};
 
 // SCHEDULED CLASSES ENDPOINTS
 export const scheduledClassesEndpoints = {
@@ -137,15 +139,15 @@ export const scheduledClassesEndpoints = {
   UNENROLL_API: BASE_URL + "/scheduled-classes",
   CHECK_ENROLLMENT_API: BASE_URL + "/scheduled-classes",
   GET_ENROLLMENTS_API: BASE_URL + "/scheduled-classes",
-}
+};
 
 // SUBSECTION DISCUSSIONS ENDPOINTS
 export const subsectionDiscussionsEndpoints = {
-    CREATE_DISCUSSION: `${API_URL}/discussion/subsection-discussion/create`,
-    GET_DISCUSSIONS: `${API_URL}/discussion/subsection-discussion`,
-    UPDATE_DISCUSSION: `${API_URL}/discussion/subsection-discussion`,
-    DELETE_DISCUSSION: `${API_URL}/discussion/subsection-discussion`,
-    CREATE_REPLY: `${API_URL}/discussion/subsection-discussion/reply/create`,
-    UPDATE_REPLY: `${API_URL}/discussion/subsection-discussion/reply`,
-    DELETE_REPLY: `${API_URL}/discussion/subsection-discussion/reply`,
-}
+  CREATE_DISCUSSION: `${API_URL}/discussion/subsection-discussion/create`,
+  GET_DISCUSSIONS: `${API_URL}/discussion/subsection-discussion`,
+  UPDATE_DISCUSSION: `${API_URL}/discussion/subsection-discussion`,
+  DELETE_DISCUSSION: `${API_URL}/discussion/subsection-discussion`,
+  CREATE_REPLY: `${API_URL}/discussion/subsection-discussion/reply/create`,
+  UPDATE_REPLY: `${API_URL}/discussion/subsection-discussion/reply`,
+  DELETE_REPLY: `${API_URL}/discussion/subsection-discussion/reply`,
+};

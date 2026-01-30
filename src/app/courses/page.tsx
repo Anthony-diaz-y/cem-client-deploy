@@ -1,7 +1,8 @@
-import CoursesContainer from "@modules/courses/containers/CoursesContainer";
+import { CategorySelectionPage } from "@modules/categories";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
+/** Página de selección de categorías de cursos */
 export default function CoursesPage() {
-  return <CoursesContainer />;
+  return <CategorySelectionPage />;
 }

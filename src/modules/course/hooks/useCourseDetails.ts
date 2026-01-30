@@ -11,29 +11,42 @@ export const useCourseDetails = () => {
   const { courseId } = useParams();
   const [response, setResponse] = useState<CourseDetailsResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showSkeleton, setShowSkeleton] = useState(false);
 
   // Función para validar UUID
   const isValidUUID = (id: string | string[] | undefined): boolean => {
-    if (!id || typeof id !== 'string') {
+    if (!id || typeof id !== "string") {
       return false;
     }
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     return uuidRegex.test(id);
   };
 
   useEffect(() => {
+    let skeletonTimer: NodeJS.Timeout;
+
     const fetchCourseDetailsData = async () => {
       try {
         setLoading(true);
-        
+        setShowSkeleton(false);
+
+        // Solo mostrar skeleton si la carga toma más de 300ms
+        skeletonTimer = setTimeout(() => {
+          setShowSkeleton(true);
+        }, 300);
+
         // Normalize courseId to string (handle array case)
         const normalizedCourseId = Array.isArray(courseId)
           ? courseId[0]
           : courseId;
 
         // Validar que courseId existe y es un UUID válido
-        if (!normalizedCourseId || typeof normalizedCourseId !== 'string') {
-          console.error("Course ID is required and must be a valid UUID string");
+        if (!normalizedCourseId || typeof normalizedCourseId !== "string") {
+          console.error(
+            "Course ID is required and must be a valid UUID string",
+          );
+          clearTimeout(skeletonTimer);
           setLoading(false);
           return;
         }
@@ -43,8 +56,9 @@ export const useCourseDetails = () => {
           console.error(
             "Invalid course ID format (expected UUID):",
             normalizedCourseId,
-            "\nThe course ID must be a valid UUID format (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)"
+            "\nThe course ID must be a valid UUID format (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)",
           );
+          clearTimeout(skeletonTimer);
           setLoading(false);
           return;
         }
@@ -57,17 +71,26 @@ export const useCourseDetails = () => {
       } catch (error) {
         console.error("Could not fetch Course Details", error);
       } finally {
+        clearTimeout(skeletonTimer);
         setLoading(false);
+        setShowSkeleton(false);
       }
     };
-    
+
     // Solo ejecutar si courseId existe
     if (courseId) {
       fetchCourseDetailsData();
     } else {
       setLoading(false);
     }
+
+    // Cleanup function
+    return () => {
+      if (skeletonTimer) {
+        clearTimeout(skeletonTimer);
+      }
+    };
   }, [courseId]);
 
-  return { response, loading };
+  return { response, loading, showSkeleton };
 };

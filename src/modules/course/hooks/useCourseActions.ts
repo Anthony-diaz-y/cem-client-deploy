@@ -3,7 +3,6 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { RootState, AppDispatch } from "@shared/store/store";
-import { buyCourse } from "@shared/services/studentFeaturesAPI";
 import { addToCart } from "../store/cartSlice";
 import { ACCOUNT_TYPE } from "@shared/utils/constants";
 import { Course } from "../types";
@@ -16,12 +15,10 @@ import { invalidateInstructorCache } from "@modules/instructor/hooks/useInstruct
 import type { BuyNowTemporaryResponse } from "../types";
 import { COURSE_TEXTS } from "../constants/course.constants";
 
-/**
- * Custom hook for course actions (buy, add to cart, active sections)
- */
+/** Hook que maneja las acciones del curso: comprar, agregar al carrito, expandir/colapsar secciones */
 export const useCourseActions = (
   courseId: string | string[] | undefined,
-  course: Course | undefined
+  course: Course | undefined,
 ) => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
@@ -31,16 +28,17 @@ export const useCourseActions = (
     useState<ConfirmationModalData | null>(null);
   const [isActive, setIsActive] = useState<string[]>([]);
 
+  /** Alterna el estado de expansión de una sección del curso */
   const handleActive = (id: string) => {
-    setIsActive(
-      !isActive.includes(id)
-        ? isActive.concat([id])
-        : isActive.filter((e) => e !== id)
-    );
+    setIsActive(!isActive.includes(id) ? [id] : []);
   };
 
-  // ================ TEMPORAL: Función para inscribir directamente sin pago ================
-  // TODO: REMOVER ESTA FUNCIÓN CUANDO SE IMPLEMENTE LA PASARELA DE PAGO
+  /** Colapsa todas las secciones del curso */
+  const handleCollapseAll = () => {
+    setIsActive([]);
+  };
+
+  /** TEMPORAL: Inscribe al estudiante directamente sin pasarela de pago */
   const enrollCourseDirectly = async (coursesId: string[]) => {
     const toastId = toast.loading(COURSE_TEXTS.actions.enrollment.loading);
     dispatch(setPaymentLoading(true));
@@ -52,22 +50,21 @@ export const useCourseActions = (
         { coursesId } as Record<string, unknown>,
         {
           Authorization: `Bearer ${token}`,
-        }
+        },
       );
 
       if (!response.data.success) {
-        throw new Error(response.data.message || COURSE_TEXTS.actions.enrollment.error);
+        throw new Error(
+          response.data.message || COURSE_TEXTS.actions.enrollment.error,
+        );
       }
 
-      // Mostrar mensaje de éxito único y conciso
       toast.success(COURSE_TEXTS.actions.enrollment.success, {
         duration: 3000,
       });
 
-      // Invalidar cache del instructor para que se actualicen los datos de estudiantes
       invalidateInstructorCache();
 
-      // Disparar evento personalizado para refrescar datos del instructor
       if (typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent("instructorDataRefresh"));
       }
@@ -75,8 +72,6 @@ export const useCourseActions = (
       router.push("/dashboard/enrolled-courses");
       dispatch(resetCart());
     } catch (error: any) {
-      console.log("ERROR AL INSCRIBIR AL CURSO (TEMPORAL)....", error);
-
       // No mostrar toast si es error 401 (el interceptor ya lo maneja)
       if (error?.response?.status === 401) {
         return;
@@ -87,25 +82,22 @@ export const useCourseActions = (
         error?.message ||
         "No se pudo inscribir al curso";
 
-      // Si el error es que el estudiante ya está inscrito, tratarlo como éxito
-      // porque significa que el curso ya está en su lista
-      if (errorMessage.toLowerCase().includes("already enrolled") ||
-        errorMessage.toLowerCase().includes("ya está inscrito")) {
+      // Si el estudiante ya está inscrito, tratarlo como éxito
+      if (
+        errorMessage.toLowerCase().includes("already enrolled") ||
+        errorMessage.toLowerCase().includes("ya está inscrito")
+      ) {
         toast.success(COURSE_TEXTS.actions.enrollment.alreadyEnrolled, {
           duration: 3000,
         });
 
-        // Invalidar cache del instructor para que se actualicen los datos de estudiantes
         invalidateInstructorCache();
 
-        // Disparar evento personalizado para refreshar datos del instructor
         if (typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("instructorDataRefresh"));
         }
 
-        // Limpiar el carrito de todas formas
         dispatch(resetCart());
-        // Redirigir a cursos inscritos
         setTimeout(() => {
           router.push("/dashboard/enrolled-courses");
         }, 1000);
@@ -118,9 +110,9 @@ export const useCourseActions = (
     }
   };
 
+  /** Maneja la compra del curso (actualmente usa inscripción directa temporal) */
   const handleBuyCourse = () => {
     if (token) {
-      // Normalizar courseId a array de strings
       const normalizedCourseId = Array.isArray(courseId)
         ? courseId[0]
         : courseId;
@@ -132,25 +124,20 @@ export const useCourseActions = (
 
       const coursesId = [String(normalizedCourseId)];
 
-      // ================ MODO TEMPORAL ================
-      // TODO: REMOVER ESTE BLOQUE Y DESCOMENTAR buyCourse CUANDO SE IMPLEMENTE LA PASARELA DE PAGO
-      // Mostrar advertencia antes de proceder
+      // TEMPORAL: Mostrar advertencia antes de proceder
       const confirmed = window.confirm(
         `${COURSE_TEXTS.actions.temporary.warning}\n\n` +
-        `${COURSE_TEXTS.actions.temporary.description}\n\n` +
-        `${COURSE_TEXTS.actions.temporary.note}\n\n` +
-        `${COURSE_TEXTS.actions.temporary.confirm}`
+          `${COURSE_TEXTS.actions.temporary.description}\n\n` +
+          `${COURSE_TEXTS.actions.temporary.note}\n\n` +
+          `${COURSE_TEXTS.actions.temporary.confirm}`,
       );
 
       if (confirmed) {
         enrollCourseDirectly(coursesId);
       }
       return;
-
-      // ================ CÓDIGO ORIGINAL (COMENTADO TEMPORALMENTE) ================
-      // buyCourse(token, coursesId, user, router.push, dispatch);
-      // return;
     }
+
     setConfirmationModal({
       text1: COURSE_TEXTS.actions.errors.notAuthenticated,
       text2: COURSE_TEXTS.actions.errors.loginToBuy,
@@ -161,6 +148,7 @@ export const useCourseActions = (
     });
   };
 
+  /** Agrega el curso al carrito de compras */
   const handleAddToCart = () => {
     if (user && user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
       toast.error(COURSE_TEXTS.actions.errors.instructorCannotBuy);
@@ -178,10 +166,6 @@ export const useCourseActions = (
       btn1Handler: () => router.push("/auth/login"),
       btn2Handler: () => setConfirmationModal(null),
     });
-  };
-
-  const handleCollapseAll = () => {
-    setIsActive([]);
   };
 
   return {

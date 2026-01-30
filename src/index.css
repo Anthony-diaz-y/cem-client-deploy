@@ -42,7 +42,7 @@ body {
 }
 
 *::-webkit-scrollbar-track {
-  background: #000814;
+  background: #f1f5f9;
 }
 
 *::-webkit-scrollbar-thumb {
@@ -60,7 +60,7 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #f1f5f9;
   border-radius: 10px;
 }
 
@@ -134,8 +134,7 @@ body {
 .skeleton {
   position: relative;
   overflow: hidden;
-  background-color: #0a2955;
-  background-color: rgb(44 51 63 / 1);
+  background-color: #e5e7eb;
 }
 
 .skeleton::after {
@@ -147,10 +146,10 @@ body {
   transform: translateX(-100%);
   background-image: linear-gradient(
     90deg,
-    rgba(111, 119, 131, 0) 0,
-    rgba(143, 132, 132, 0) 20%,
-    rgba(126, 139, 151, 0.5) 60%,
-    rgba(25, 55, 99, 0)
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.5) 60%,
+    rgba(255, 255, 255, 0)
   );
   animation: shimmer 0.9s infinite;
   content: "";
@@ -246,3 +245,60 @@ body {
 .animate-infinite-scroll-triple:hover {
   animation-play-state: paused;
 }
+
+/* Smooth fade-in animations for course details page */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Course details page animations */
+.course-details-enter {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.course-hero-enter {
+  animation: fadeInDown 0.5s ease-out forwards;
+}
+
+.course-content-enter {
+  animation: fadeInUp 0.6s ease-out 0.1s forwards;
+  opacity: 0;
+}
+
+.course-sidebar-enter {
+  animation: fadeInUp 0.5s ease-out 0.15s forwards;
+  opacity: 0;
+}
+
+/* Smooth transitions for all course detail elements */
+.course-details-transition {
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
