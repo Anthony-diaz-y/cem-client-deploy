@@ -136,7 +136,7 @@ export const CoursesListSection: React.FC<CoursesListSectionProps> = ({
           >
             {courses.map((course, index) => (
               <motion.div
-                key={course.id || course._id || index}
+                key={course.id || index}
                 variants={itemVariants}
                 className="max-w-sm mx-auto w-full md:max-w-none h-full"
               >

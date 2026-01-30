@@ -24,9 +24,8 @@ export const CourseCard: React.FC<CourseCardProps> = ({
     typeof course.totalDuration === "number" ? course.totalDuration : undefined,
   );
 
-  const instructorName = course.instructor
-    ? `${course.instructor.name || ""}`
-    : "Instructor";
+  const instructor = course.instructor;
+  const category = course.category;
 
   const categoryName = (course as any).category?.name || "Categoría";
   const courseDescription =
@@ -110,7 +109,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
         </div>
 
         <p className="text-sm text-cem-neutral-gray-600 mb-3 line-clamp-2">
-          {courseDescription}
+          {course.courseDescription}
         </p>
 
         <div className="flex items-center gap-2 mb-3">
@@ -129,15 +128,15 @@ export const CourseCard: React.FC<CourseCardProps> = ({
           <div className="flex items-center gap-2.5 flex-1 min-w-0">
             <div className="w-9 h-9 rounded-full bg-cem-teal-100 flex items-center justify-center flex-shrink-0">
               <span className="text-cem-primary font-semibold text-sm">
-                {instructorName.charAt(0).toUpperCase()}
+                {instructor.name.charAt(0).toUpperCase()}
               </span>
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-cem-neutral-gray-900 truncate">
-                {instructorName}
+                {instructor.name}
               </p>
               <p className="text-xs text-cem-neutral-gray-500 truncate">
-                Instructor
+                {instructor.professional_title}
               </p>
             </div>
           </div>

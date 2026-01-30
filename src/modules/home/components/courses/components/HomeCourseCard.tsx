@@ -24,9 +24,8 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
     typeof course.totalDuration === "number" ? course.totalDuration : undefined,
   );
 
-  const instructorName = course.instructor
-    ? `${course.instructor.name || ""}`
-    : "Instructor";
+  const instructor = course.instructor;
+  const category = course.category;
 
   const animationDelay = index * 0.1;
 
@@ -89,7 +88,7 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
       <div className="p-4 flex-1 flex flex-col">
         {/* Categoría */}
         <span className="text-xs font-semibold text-cem-primary mb-1.5">
-          Biología y Biotecnología
+          {category.name}
         </span>
 
         {/* Título con flecha - min-h para alinear descripciones */}
@@ -114,7 +113,7 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
 
         {/* Descripción */}
         <p className="text-sm text-cem-neutral-gray-600 mb-3 line-clamp-2">
-          Estudio de cómo el ADN, ARN y proteínas regulan la vida celular.
+          {course.courseDescription}
         </p>
 
         {/* Rating */}
@@ -135,15 +134,15 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
           <div className="flex items-center gap-2.5 flex-1 min-w-0">
             <div className="w-9 h-9 rounded-full bg-cem-teal-100 flex items-center justify-center flex-shrink-0">
               <span className="text-cem-primary font-semibold text-sm">
-                {instructorName.charAt(0).toUpperCase()}
+                {instructor.name.charAt(0).toUpperCase()}
               </span>
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-cem-neutral-gray-900 truncate">
-                {instructorName}
+                {instructor.name}
               </p>
               <p className="text-xs text-cem-neutral-gray-500 truncate">
-                Biólogo experto
+                {instructor.professional_title}
               </p>
             </div>
           </div>

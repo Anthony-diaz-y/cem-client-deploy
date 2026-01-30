@@ -7,22 +7,26 @@ export interface Review {
 }
 
 export interface Course {
-  id?: string;  // UUID del backend PostgreSQL
-  _id?: string; // Mantener compatibilidad si se usa
+  id?: string;
   courseName: string;
+  courseDescription: string;
   price: number;
   thumbnail: string;
   instructor: {
     name: string;
+    professional_title: string;
+  };
+  category: {
+    name: string;
   };
   ratingAndReviews?: Review[] | unknown[];
   studentsEnrolled?: unknown[];
-  totalDuration?: number; // Duración total en segundos
-  averageRating?: number; // Rating promedio del backend
-  totalReviews?: number; // Total de reseñas
-  totalStudentsEnrolled?: number; // Total de estudiantes inscritos
-  reviews?: Review[]; // Campo alternativo para reviews
-  ratings?: Review[]; // Campo alternativo para ratings
+  totalDuration?: number;
+  averageRating?: number;
+  totalReviews?: number;
+  totalStudentsEnrolled?: number;
+  reviews?: Review[];
+  ratings?: Review[];
   createdAt?: string; // Para filtrar por fecha
   updatedAt?: string;
 }
