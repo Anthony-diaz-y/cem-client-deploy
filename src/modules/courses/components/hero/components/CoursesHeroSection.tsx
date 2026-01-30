@@ -63,7 +63,7 @@ export const CoursesHeroSection: React.FC<CoursesHeroSectionProps> = ({
           {/* Barra de búsqueda estilo pill */}
           <form onSubmit={handleSearch} className="w-full max-w-2xl mx-auto">
             <div className="relative flex items-center bg-white border border-gray-300 rounded-full shadow-sm hover:shadow-md transition-shadow">
-              <div className="pl-6 pr-3">
+              <div className="pl-4 md:pl-6 pr-2 md:pr-3">
                 {isLoading ? (
                   <div className="w-5 h-5 border-2 border-gray-300 border-t-cem-primary rounded-full animate-spin"></div>
                 ) : (
@@ -87,11 +87,11 @@ export const CoursesHeroSection: React.FC<CoursesHeroSectionProps> = ({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="¿Qué quieres aprender?"
-                className="flex-1 py-3 px-2 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm md:text-base"
+                className="flex-1 min-w-0 py-3 px-2 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm md:text-base"
               />
               <button
                 type="submit"
-                className="bg-cem-primary text-white px-8 py-3 rounded-full font-medium hover:bg-cem-primary-dark transition-colors m-1"
+                className="bg-cem-primary text-white px-5 md:px-8 py-3 rounded-full font-medium hover:opacity-90 transition-opacity m-1 text-sm md:text-base whitespace-nowrap"
               >
                 Buscar
               </button>
