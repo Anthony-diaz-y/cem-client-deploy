@@ -92,12 +92,12 @@ const HeroImageSection: React.FC = () => {
         className="absolute hidden md:block md:top-56 md:-right-48 lg:top-72 lg:-right-32 z-0"
       />
       <div
-        className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px] mx-auto"
+        className="relative w-[260px] h-[260px] min-[380px]:w-[300px] min-[380px]:h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px] mx-auto"
         style={{ marginTop: "30px" }}
       >
         {/* Corona circular de fondo */}
         <div
-          className="absolute z-0 w-[300px] h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px]"
+          className="absolute z-0 w-[260px] h-[260px] min-[380px]:w-[300px] min-[380px]:h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px]"
           style={{
             borderRadius: "50%",
             border: `1px solid ${brandColors.primary.DEFAULT}`,
@@ -110,7 +110,7 @@ const HeroImageSection: React.FC = () => {
 
         {/* Círculo principal con imagen */}
         <div
-          className="relative z-10 rounded-full overflow-hidden shadow-2xl w-[300px] h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px]"
+          className="relative z-10 rounded-full overflow-hidden shadow-2xl w-[260px] h-[260px] min-[380px]:w-[300px] min-[380px]:h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px]"
           style={{
             borderRadius: "50%",
             marginTop: "30px",
@@ -170,20 +170,22 @@ const HeroBadge: React.FC<HeroBadgeProps> = ({
   imageSrc,
 }) => {
   const positionClasses = {
-    "top-left": "top-28 -left-16 md:top-32 md:-left-24 lg:top-52 lg:-left-12",
-    "top-right": "-top-2 -right-12 md:-top-8 md:-right-8 lg:-top-4 lg:-right-4",
+    "top-left":
+      "top-24 -left-8 min-[380px]:top-28 min-[380px]:-left-6 sm:-left-16 md:top-32 md:-left-24 lg:top-52 lg:-left-12",
+    "top-right":
+      "-top-2 -right-4 min-[380px]:-top-2 min-[380px]:-right-6 sm:-right-12 md:-top-8 md:-right-8 lg:-top-4 lg:-right-4",
     "bottom-right":
-      "bottom-8 -right-12 md:bottom-12 md:-right-16 lg:bottom-16 lg:-right-4",
+      "bottom-4 -right-4 min-[380px]:bottom-8 min-[380px]:-right-6 sm:-right-12 md:bottom-12 md:-right-16 lg:bottom-16 lg:-right-4",
   };
 
   const isVertical = position === "top-right";
 
   return (
     <div
-      className={`absolute ${positionClasses[position]} bg-white rounded-xl md:rounded-2xl p-3 md:p-4 shadow-[0_15px_35px_-5px_rgba(0,0,0,0.3)] md:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.35)] border border-gray-100 z-20 transition-transform duration-300 hover:scale-105 ${isVertical ? "min-w-[100px] md:min-w-[120px]" : "flex items-center gap-3 md:gap-4 pr-6 md:pr-8"}`}
+      className={`absolute ${positionClasses[position]} bg-white rounded-xl md:rounded-2xl p-2 min-[380px]:p-3 md:p-4 shadow-[0_15px_35px_-5px_rgba(0,0,0,0.3)] md:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.35)] border border-gray-100 z-20 transition-transform duration-300 hover:scale-105 ${isVertical ? "min-w-[90px] min-[380px]:min-w-[100px] md:min-w-[120px]" : "flex items-center gap-2 min-[380px]:gap-3 md:gap-4 pr-4 min-[380px]:pr-6 md:pr-8"}`}
     >
       <div
-        className={`relative flex-shrink-0 ${isVertical ? "w-12 h-12 md:w-16 md:h-16 mx-auto mb-2 md:mb-3" : "w-10 h-10 md:w-14 md:h-14"}`}
+        className={`relative flex-shrink-0 ${isVertical ? "w-10 h-10 min-[380px]:w-12 min-[380px]:h-12 md:w-16 md:h-16 mx-auto mb-2 md:mb-3" : "w-8 h-8 min-[380px]:w-10 min-[380px]:h-10 md:w-14 md:h-14"}`}
       >
         <Image src={imageSrc} alt="icon" fill className="object-contain" />
       </div>
