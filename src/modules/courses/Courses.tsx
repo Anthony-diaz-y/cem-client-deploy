@@ -47,11 +47,13 @@ const Courses: React.FC<
           onSearch={onSearchChange}
           isLoading={isFetching}
         />
-        <CategoriesSection
-          categories={categories}
-          selectedCategory={category}
-          onCategorySelect={onCategoryChange || (() => {})}
-        />
+        {categories && categories.length > 0 && (
+          <CategoriesSection
+            categories={categories}
+            selectedCategory={category}
+            onCategorySelect={onCategoryChange || (() => {})}
+          />
+        )}
       </div>
 
       <CoursesListSection

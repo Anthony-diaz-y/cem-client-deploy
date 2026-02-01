@@ -39,7 +39,7 @@ export interface Category {
 
 export interface CoursesProps {
   courses: Course[];
-  categories: Category[];
+  categories?: Category[];
   search?: string;
   category?: string;
   page?: number;

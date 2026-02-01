@@ -30,9 +30,8 @@ export const studentEndpoints = {
 // COURSE ENDPOINTS
 export const courseEndpoints = {
   GET_ALL_COURSE_API: BASE_URL + "/course/getAllCourses", //usando
-  COURSE_DETAILS_API: BASE_URL + "/course/getCourseDetails",
+  COURSE_DETAILS_API: BASE_URL + "/course/getCourseDetails", //usando
   EDIT_COURSE_API: BASE_URL + "/course/editCourse",
-  COURSE_CATEGORIES_API: BASE_URL + "/category/showAllCategories",
   CREATE_COURSE_API: BASE_URL + "/course/createCourse",
   CREATE_SECTION_API: BASE_URL + "/course/addSection",
   CREATE_SUBSECTION_API: BASE_URL + "/subsection/addSubSection",
@@ -63,15 +62,14 @@ export const ratingsEndpoints = {
 
 // DOMAINS API
 export const domains = {
-  GET_ALL_DOMAINS_API: BASE_URL + "/domain/getAllDomains",
+  GET_ALL_DOMAINS_API: BASE_URL + "/domain/getAllDomains", //usando
 };
 
 // CATAGORIES API
 export const categories = {
+  GET_ALL_CATEGORIES_API: BASE_URL + "/category/showAllCategories",
   CATEGORIES_API: BASE_URL + "/category/showAllCategories",
-  GET_ALL_CATEGORY_API: BASE_URL + "/category/showAllCategories",
   CREATE_CATEGORY_API: BASE_URL + "/category/createCategory",
-  SHOW_ALL_CATEGORIES_API: BASE_URL + "/category/showAllCategories",
   UPDATE_CATEGORY_API: BASE_URL + "/category/updateCategory",
   DELETE_CATEGORY_API: BASE_URL + "/category/deleteCategory",
   GET_CATEGORY_COURSES_API: BASE_URL + "/category/getCategoryCourses",

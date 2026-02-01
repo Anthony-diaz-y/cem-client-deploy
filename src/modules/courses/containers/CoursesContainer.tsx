@@ -12,7 +12,6 @@ interface CoursesContainerProps {
 const CoursesContainer: React.FC<CoursesContainerProps> = ({ categoryId }) => {
   const {
     courses,
-    categories,
     loading,
     isFetching,
     error,
@@ -29,7 +28,6 @@ const CoursesContainer: React.FC<CoursesContainerProps> = ({ categoryId }) => {
   return (
     <Courses
       courses={courses}
-      categories={categories}
       search={search}
       category={category}
       page={page}
