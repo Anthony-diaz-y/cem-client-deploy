@@ -2,6 +2,7 @@
 
 import React, { useMemo } from "react";
 import { CourseCard } from "./CourseCard";
+import { CourseCardSkeleton } from "./CourseCardSkeleton";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Course } from "../../../types";
@@ -126,8 +127,10 @@ export const CoursesListSection: React.FC<CoursesListSectionProps> = ({
           className={`relative min-h-[400px] transition-opacity duration-300 ${loading && courses.length > 0 ? "opacity-50" : "opacity-100"}`}
         >
           {loading && courses.length === 0 && (
-            <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-sm flex items-start justify-center pt-20 transition-all duration-300">
-              <div className="custom-loader"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <CourseCardSkeleton key={i} />
+              ))}
             </div>
           )}
 

@@ -27,7 +27,7 @@ import type {
  */
 export async function createCategory(
   data: CreateCategoryRequest,
-  token: string
+  token: string,
 ): Promise<boolean> {
   const toastId = toast.loading("Creando categoría...");
   try {
@@ -38,7 +38,7 @@ export async function createCategory(
       {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-      }
+      },
     );
 
     if (!response.data.success) {
@@ -59,19 +59,17 @@ export async function createCategory(
 /**
  * Obtiene todas las categorías del sistema
  */
-export async function getAllCategories(
-  token: string
-): Promise<Category[]> {
+export async function getAllCategories(token: string): Promise<Category[]> {
   const toastId = toast.loading("Cargando categorías...");
   try {
     const response = await apiConnector<GetAllCategoriesResponse>(
       "GET",
-      categories.SHOW_ALL_CATEGORIES_API,
+      categories.GET_ALL_CATEGORIES_API,
       {},
       {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-      }
+      },
     );
 
     if (!response.data.success) {
@@ -82,14 +80,16 @@ export async function getAllCategories(
     return response.data.data || [];
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError.response?.data?.message || "Error al obtener categorías");
+    toast.error(
+      apiError.response?.data?.message || "Error al obtener categorías",
+    );
     toast.dismiss(toastId);
     return [];
   }
 }
 
 /**
- * Obtiene todas las categorías públicas 
+ * Obtiene todas las categorías públicas
  */
 export async function getPublicCategories(): Promise<Category[]> {
   try {
@@ -99,7 +99,7 @@ export async function getPublicCategories(): Promise<Category[]> {
       {},
       {
         "Content-Type": "application/json",
-      }
+      },
     );
 
     if (!response.data.success) {
@@ -109,7 +109,10 @@ export async function getPublicCategories(): Promise<Category[]> {
     return response.data.data || [];
   } catch (error) {
     const apiError = error as ApiError;
-    console.error("Error al obtener categorías públicas:", apiError.response?.data?.message || apiError.message);
+    console.error(
+      "Error al obtener categorías públicas:",
+      apiError.response?.data?.message || apiError.message,
+    );
     return [];
   }
 }
@@ -121,7 +124,7 @@ export async function updateCategory(
   categoryId: string,
   name: string,
   description: string,
-  token: string
+  token: string,
 ): Promise<Category | null> {
   const toastId = toast.loading("Actualizando categoría...");
   try {
@@ -132,19 +135,23 @@ export async function updateCategory(
       {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-      }
+      },
     );
 
     if (!response.data.success) {
       throw new Error(response.data.message);
     }
 
-    toast.success(response.data.message || "Categoría actualizada exitosamente");
+    toast.success(
+      response.data.message || "Categoría actualizada exitosamente",
+    );
     toast.dismiss(toastId);
     return response.data.data?.category || null;
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError.response?.data?.message || "Error al actualizar categoría");
+    toast.error(
+      apiError.response?.data?.message || "Error al actualizar categoría",
+    );
     toast.dismiss(toastId);
     return null;
   }
@@ -155,7 +162,7 @@ export async function updateCategory(
  */
 export async function getCategoryCourses(
   categoryId: string,
-  token: string
+  token: string,
 ): Promise<GetCategoryCoursesResponse["data"] | null> {
   try {
     const response = await apiConnector<GetCategoryCoursesResponse>(
@@ -165,7 +172,7 @@ export async function getCategoryCourses(
       {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-      }
+      },
     );
 
     if (!response.data.success) {
@@ -175,7 +182,10 @@ export async function getCategoryCourses(
     return response.data.data;
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError.response?.data?.message || "Error al obtener cursos de la categoría");
+    toast.error(
+      apiError.response?.data?.message ||
+        "Error al obtener cursos de la categoría",
+    );
     return null;
   }
 }
@@ -187,9 +197,11 @@ export async function changeCourseCategory(
   courseId: string,
   newCategoryId: string,
   token: string,
-  silent: boolean = false
+  silent: boolean = false,
 ): Promise<boolean> {
-  const toastId = silent ? undefined : toast.loading("Cambiando categoría del curso...");
+  const toastId = silent
+    ? undefined
+    : toast.loading("Cambiando categoría del curso...");
   try {
     const response = await apiConnector<ChangeCourseCategoryResponse>(
       "PUT",
@@ -198,7 +210,7 @@ export async function changeCourseCategory(
       {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-      }
+      },
     );
 
     if (!response.data.success) {
@@ -206,14 +218,19 @@ export async function changeCourseCategory(
     }
 
     if (!silent) {
-      toast.success(response.data.message || "Categoría del curso cambiada exitosamente");
+      toast.success(
+        response.data.message || "Categoría del curso cambiada exitosamente",
+      );
       toast.dismiss(toastId);
     }
     return true;
   } catch (error) {
     const apiError = error as ApiError;
     if (!silent) {
-      toast.error(apiError.response?.data?.message || "Error al cambiar categoría del curso");
+      toast.error(
+        apiError.response?.data?.message ||
+          "Error al cambiar categoría del curso",
+      );
       toast.dismiss(toastId);
     }
     return false;
@@ -227,14 +244,24 @@ export async function changeCourseCategory(
 export async function changeMultipleCoursesCategory(
   changes: Array<{ courseId: string; newCategoryId: string }>,
   token: string,
-  silent: boolean = false
-): Promise<{ success: boolean; data: ChangeMultipleCoursesCategoryResponse["data"] | null; message?: string }> {
+  silent: boolean = false,
+): Promise<{
+  success: boolean;
+  data: ChangeMultipleCoursesCategoryResponse["data"] | null;
+  message?: string;
+}> {
   if (changes.length === 0) {
     if (!silent) toast.error("No hay cambios para realizar");
-    return { success: false, data: null, message: "No hay cambios para realizar" };
+    return {
+      success: false,
+      data: null,
+      message: "No hay cambios para realizar",
+    };
   }
 
-  const toastId = silent ? undefined : toast.loading(`Cambiando categoría de ${changes.length} curso(s)...`);
+  const toastId = silent
+    ? undefined
+    : toast.loading(`Cambiando categoría de ${changes.length} curso(s)...`);
   try {
     const response = await apiConnector<ChangeMultipleCoursesCategoryResponse>(
       "PUT",
@@ -243,11 +270,13 @@ export async function changeMultipleCoursesCategory(
       {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-      }
+      },
     );
 
     if (!response.data.success) {
-      throw new Error(response.data.message || "Error al cambiar las categorías");
+      throw new Error(
+        response.data.message || "Error al cambiar las categorías",
+      );
     }
 
     const result = response.data.data;
@@ -257,10 +286,14 @@ export async function changeMultipleCoursesCategory(
       if (result.failedCount > 0) {
         toast.error(
           `${result.successfulCount} curso(s) reasignado(s) exitosamente. ${result.failedCount} curso(s) fallaron.`,
-          { id: toastId }
+          { id: toastId },
         );
       } else {
-        toast.success(response.data.message || `Todos los ${result.total} curso(s) fueron reasignados exitosamente`, { id: toastId });
+        toast.success(
+          response.data.message ||
+            `Todos los ${result.total} curso(s) fueron reasignados exitosamente`,
+          { id: toastId },
+        );
       }
     } else if (toastId) {
       toast.dismiss(toastId);
@@ -269,11 +302,17 @@ export async function changeMultipleCoursesCategory(
     return {
       success: allSuccessful,
       data: result,
-      message: response.data.message || (allSuccessful ? "Todos los cursos fueron reasignados exitosamente" : "Algunos cursos no se pudieron reasignar")
+      message:
+        response.data.message ||
+        (allSuccessful
+          ? "Todos los cursos fueron reasignados exitosamente"
+          : "Algunos cursos no se pudieron reasignar"),
     };
   } catch (error) {
     const apiError = error as ApiError;
-    const errorMessage = apiError.response?.data?.message || "Error al cambiar las categorías de los cursos";
+    const errorMessage =
+      apiError.response?.data?.message ||
+      "Error al cambiar las categorías de los cursos";
     if (!silent) {
       toast.error(errorMessage, { id: toastId });
     } else if (toastId) {
@@ -288,12 +327,18 @@ export async function changeMultipleCoursesCategory(
  */
 export async function deleteCategory(
   categoryId: string,
-  token: string
+  token: string,
 ): Promise<{
   success: boolean;
   message?: string;
   categories?: Category[];
-  courses?: Array<{ numero: number; id: string; nombre: string; estado: string; instructor: string }>;
+  courses?: Array<{
+    numero: number;
+    id: string;
+    nombre: string;
+    estado: string;
+    instructor: string;
+  }>;
   category?: { id: string; name: string; totalCourses: number };
 }> {
   const toastId = toast.loading("Eliminando categoría...");
@@ -305,27 +350,33 @@ export async function deleteCategory(
       {
         Authorization: `Bearer ${token}`,
       },
-      { categoryId } 
+      { categoryId },
     );
 
     if (response.status === 200 && response.data.success) {
-      toast.success(response.data.message || "Categoría eliminada exitosamente");
+      toast.success(
+        response.data.message || "Categoría eliminada exitosamente",
+      );
       toast.dismiss(toastId);
       return {
         success: true,
         message: response.data.message,
-        categories: response.data.data || undefined
+        categories: response.data.data || undefined,
       };
     }
 
     const responseData = response.data as DeleteCategoryResponse;
-    if (responseData.courses && Array.isArray(responseData.courses) && responseData.courses.length > 0) {
+    if (
+      responseData.courses &&
+      Array.isArray(responseData.courses) &&
+      responseData.courses.length > 0
+    ) {
       toast.dismiss(toastId);
       return {
         success: false,
         message: responseData.message,
         courses: responseData.courses,
-        category: responseData.category
+        category: responseData.category,
       };
     }
 
@@ -336,14 +387,19 @@ export async function deleteCategory(
     toast.dismiss(toastId);
 
     if (apiError.response?.status === 400) {
-      const errorData = apiError.response?.data as unknown as DeleteCategoryResponse;
+      const errorData = apiError.response
+        ?.data as unknown as DeleteCategoryResponse;
 
-      if (errorData?.courses && Array.isArray(errorData.courses) && errorData.courses.length > 0) {
+      if (
+        errorData?.courses &&
+        Array.isArray(errorData.courses) &&
+        errorData.courses.length > 0
+      ) {
         return {
           success: false,
           message: errorData.message || "Esta categoría tiene cursos asociados",
           courses: errorData.courses,
-          category: errorData.category
+          category: errorData.category,
         };
       }
 
@@ -351,17 +407,18 @@ export async function deleteCategory(
       toast.error(errorMessage);
       return {
         success: false,
-        message: errorMessage
+        message: errorMessage,
       };
     }
 
-    const errorData = apiError.response?.data as unknown as DeleteCategoryResponse;
-    const errorMessage = errorData?.message || apiError.message || "Error al eliminar categoría";
+    const errorData = apiError.response
+      ?.data as unknown as DeleteCategoryResponse;
+    const errorMessage =
+      errorData?.message || apiError.message || "Error al eliminar categoría";
     toast.error(errorMessage);
     return {
       success: false,
-      message: errorMessage
+      message: errorMessage,
     };
   }
 }
-

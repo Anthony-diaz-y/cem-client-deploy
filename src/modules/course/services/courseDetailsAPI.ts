@@ -15,6 +15,7 @@ import {
   RatingData,
   CourseDetailsResponse,
 } from "../types";
+import { categories } from "@shared/services/apis";
 
 // API Response Types
 interface ApiResponse<T = unknown> {
@@ -25,7 +26,6 @@ interface ApiResponse<T = unknown> {
 
 const {
   COURSE_DETAILS_API,
-  COURSE_CATEGORIES_API,
   GET_ALL_COURSE_API,
   CREATE_COURSE_API,
   EDIT_COURSE_API,
@@ -41,12 +41,17 @@ const {
   LECTURE_COMPLETION_API,
 } = courseEndpoints;
 
+const { GET_ALL_CATEGORIES_API } = categories;
+
 // ================ get All Courses ================
 export const getAllCourses = async () => {
   let result: unknown[] = [];
 
   try {
-    const response = await apiConnector<ApiResponse<unknown[]>>("GET", GET_ALL_COURSE_API);
+    const response = await apiConnector<ApiResponse<unknown[]>>(
+      "GET",
+      GET_ALL_COURSE_API,
+    );
     if (!response?.data?.success) {
       throw new Error("Could Not Fetch Course Categories");
     }
@@ -59,7 +64,7 @@ export const getAllCourses = async () => {
       toast.error(
         apiError.response?.data?.message ||
           apiError.message ||
-          "No se pudieron obtener los cursos"
+          "No se pudieron obtener los cursos",
       );
     }
   }
@@ -68,10 +73,11 @@ export const getAllCourses = async () => {
 
 // Función para validar UUID
 const isValidUUID = (id: string): boolean => {
-  if (!id || typeof id !== 'string') {
+  if (!id || typeof id !== "string") {
     return false;
   }
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const uuidRegex =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   return uuidRegex.test(id);
 };
 
@@ -83,7 +89,7 @@ export const fetchCourseDetails = async (courseId: string) => {
 
   try {
     // Validar que courseId existe y es un UUID válido antes de hacer la petición
-    if (!courseId || typeof courseId !== 'string') {
+    if (!courseId || typeof courseId !== "string") {
       console.error("Course ID is required and must be a string");
       return null;
     }
@@ -93,14 +99,18 @@ export const fetchCourseDetails = async (courseId: string) => {
       console.error(
         "Invalid course ID format (expected UUID):",
         courseId,
-        "\nThe course ID must be a valid UUID format (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)"
+        "\nThe course ID must be a valid UUID format (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)",
       );
       return null;
     }
 
-    const response = await apiConnector<CourseDetailsResponse>("POST", COURSE_DETAILS_API, {
-      courseId,
-    } as Record<string, unknown>);
+    const response = await apiConnector<CourseDetailsResponse>(
+      "POST",
+      COURSE_DETAILS_API,
+      {
+        courseId,
+      } as Record<string, unknown>,
+    );
     console.log("COURSE_DETAILS_API API RESPONSE............", response);
 
     // Verificar estructura de respuesta antes de desestructurar
@@ -110,7 +120,8 @@ export const fetchCourseDetails = async (courseId: string) => {
     }
 
     if (!response.data.success) {
-      const errorMessage = response.data.message || "Could not fetch course details";
+      const errorMessage =
+        response.data.message || "Could not fetch course details";
       console.error("API returned success: false", errorMessage);
       throw new Error(errorMessage);
     }
@@ -119,20 +130,22 @@ export const fetchCourseDetails = async (courseId: string) => {
     if (response.data.data && response.data.data.courseDetails) {
       result = response.data;
     } else {
-      console.error("Invalid data structure: courseDetails not found in response");
+      console.error(
+        "Invalid data structure: courseDetails not found in response",
+      );
       return null;
     }
   } catch (error) {
     const apiError = error as ApiError;
     console.error("COURSE_DETAILS_API API ERROR............", apiError);
-    
+
     // Manejo específico de errores 500
     if (apiError.response?.status === 500) {
-      console.error('Error del servidor (500):', apiError.response.data);
+      console.error("Error del servidor (500):", apiError.response.data);
       // No retornar datos en caso de error 500
       return null;
     }
-    
+
     result = apiError.response?.data || null;
     // toast.error(apiError.response?.data?.message);
   }
@@ -146,7 +159,10 @@ export const fetchCourseCategories = async () => {
   let result: unknown[] = [];
 
   try {
-    const response = await apiConnector<ApiResponse<unknown[]>>("GET", COURSE_CATEGORIES_API);
+    const response = await apiConnector<ApiResponse<unknown[]>>(
+      "GET",
+      GET_ALL_CATEGORIES_API,
+    );
     console.log("COURSE_CATEGORIES_API RESPONSE............", response);
     if (!response?.data?.success) {
       throw new Error("Could Not Fetch Course Categories");
@@ -160,7 +176,7 @@ export const fetchCourseCategories = async () => {
       toast.error(
         apiError.response?.data?.message ||
           apiError.message ||
-          "No se pudieron obtener las categorías de cursos"
+          "No se pudieron obtener las categorías de cursos",
       );
     }
   }
@@ -168,15 +184,23 @@ export const fetchCourseCategories = async () => {
 };
 
 // ================ add Course Details ================
-export const addCourseDetails = async (data: CourseFormData | Record<string, unknown>, token: string) => {
+export const addCourseDetails = async (
+  data: CourseFormData | Record<string, unknown>,
+  token: string,
+) => {
   const toastId = toast.loading("Cargando...");
   let result: unknown = null;
 
   try {
-    const response = await apiConnector<ApiResponse>("POST", CREATE_COURSE_API, data as unknown as (Record<string, unknown> | FormData), {
-      "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await apiConnector<ApiResponse>(
+      "POST",
+      CREATE_COURSE_API,
+      data as unknown as Record<string, unknown> | FormData,
+      {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    );
     console.log("CREATE COURSE API RESPONSE............", response);
 
     if (!response?.data?.success) {
@@ -193,7 +217,7 @@ export const addCourseDetails = async (data: CourseFormData | Record<string, unk
       toast.error(
         apiError.response?.data?.message ||
           apiError.message ||
-          "No se pudieron agregar los detalles del curso"
+          "No se pudieron agregar los detalles del curso",
       );
     }
   }
@@ -204,16 +228,21 @@ export const addCourseDetails = async (data: CourseFormData | Record<string, unk
 // ================ edit Course Details ================
 export const editCourseDetails = async (
   data: CourseFormData,
-  token: string
+  token: string,
 ) => {
   let result: unknown = null;
   const toastId = toast.loading("Cargando...");
 
   try {
-    const response = await apiConnector<ApiResponse>("POST", EDIT_COURSE_API, data as unknown as (Record<string, unknown> | FormData), {
-      "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await apiConnector<ApiResponse>(
+      "POST",
+      EDIT_COURSE_API,
+      data as unknown as Record<string, unknown> | FormData,
+      {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    );
     console.log("EDIT COURSE API RESPONSE............", response);
 
     if (!response?.data?.success) {
@@ -230,7 +259,7 @@ export const editCourseDetails = async (
       toast.error(
         apiError.response?.data?.message ||
           apiError.message ||
-          "No se pudieron actualizar los detalles del curso"
+          "No se pudieron actualizar los detalles del curso",
       );
     }
   }
@@ -239,12 +268,17 @@ export const editCourseDetails = async (
 };
 
 // ================ create Section ================
-export const createSection = async (data: SectionData | Record<string, unknown>, token: string) => {
+export const createSection = async (
+  data: SectionData | Record<string, unknown>,
+  token: string,
+) => {
   let result: unknown = null;
   const toastId = toast.loading("Cargando...");
 
   try {
-    const response = await apiConnector<ApiResponse<{ updatedCourseDetails?: unknown }>>("POST", CREATE_SECTION_API, data as unknown as Record<string, unknown>, {
+    const response = await apiConnector<
+      ApiResponse<{ updatedCourseDetails?: unknown }>
+    >("POST", CREATE_SECTION_API, data as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     });
     console.log("CREATE SECTION API RESPONSE............", response);
@@ -263,7 +297,7 @@ export const createSection = async (data: SectionData | Record<string, unknown>,
       toast.error(
         apiError.response?.data?.message ||
           apiError.message ||
-          "No se pudo crear la sección"
+          "No se pudo crear la sección",
       );
     }
   }
@@ -274,15 +308,20 @@ export const createSection = async (data: SectionData | Record<string, unknown>,
 // ================ create SubSection ================
 export const createSubSection = async (
   data: SubSectionData | CourseFormData,
-  token: string
+  token: string,
 ) => {
   let result: unknown = null;
   const toastId = toast.loading("Cargando...");
 
   try {
-    const response = await apiConnector<ApiResponse>("POST", CREATE_SUBSECTION_API, data as unknown as (Record<string, unknown> | FormData), {
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await apiConnector<ApiResponse>(
+      "POST",
+      CREATE_SUBSECTION_API,
+      data as unknown as Record<string, unknown> | FormData,
+      {
+        Authorization: `Bearer ${token}`,
+      },
+    );
     console.log("CREATE SUB-SECTION API RESPONSE............", response);
 
     if (!response?.data?.success) {
@@ -299,7 +338,7 @@ export const createSubSection = async (
       toast.error(
         apiError.response?.data?.message ||
           apiError.message ||
-          "No se pudo agregar la lección"
+          "No se pudo agregar la lección",
       );
     }
   }
@@ -308,14 +347,22 @@ export const createSubSection = async (
 };
 
 // ================ Update Section ================
-export const updateSection = async (data: SectionData | Record<string, unknown>, token: string) => {
+export const updateSection = async (
+  data: SectionData | Record<string, unknown>,
+  token: string,
+) => {
   let result: unknown = null;
   const toastId = toast.loading("Cargando...");
 
   try {
-    const response = await apiConnector<ApiResponse>("POST", UPDATE_SECTION_API, data as unknown as Record<string, unknown>, {
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await apiConnector<ApiResponse>(
+      "POST",
+      UPDATE_SECTION_API,
+      data as unknown as Record<string, unknown>,
+      {
+        Authorization: `Bearer ${token}`,
+      },
+    );
     console.log("UPDATE SECTION API RESPONSE............", response);
 
     if (!response?.data?.success) {
@@ -332,7 +379,7 @@ export const updateSection = async (data: SectionData | Record<string, unknown>,
       toast.error(
         apiError.response?.data?.message ||
           apiError.message ||
-          "No se pudo actualizar la sección"
+          "No se pudo actualizar la sección",
       );
     }
   }
@@ -343,15 +390,20 @@ export const updateSection = async (data: SectionData | Record<string, unknown>,
 // ================ Update SubSection ================
 export const updateSubSection = async (
   data: SubSectionData | CourseFormData,
-  token: string
+  token: string,
 ) => {
   let result: unknown = null;
   const toastId = toast.loading("Cargando...");
 
   try {
-    const response = await apiConnector<ApiResponse>("POST", UPDATE_SUBSECTION_API, data as unknown as (Record<string, unknown> | FormData), {
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await apiConnector<ApiResponse>(
+      "POST",
+      UPDATE_SUBSECTION_API,
+      data as unknown as Record<string, unknown> | FormData,
+      {
+        Authorization: `Bearer ${token}`,
+      },
+    );
     console.log("UPDATE SUB-SECTION API RESPONSE............", response);
 
     if (!response?.data?.success) {
@@ -368,7 +420,7 @@ export const updateSubSection = async (
       toast.error(
         apiError.response?.data?.message ||
           apiError.message ||
-          "No se pudo actualizar la lección"
+          "No se pudo actualizar la lección",
       );
     }
   }
@@ -377,14 +429,22 @@ export const updateSubSection = async (
 };
 
 // ================ delete Section ================
-export const deleteSection = async (data: DeleteSectionData | Record<string, unknown>, token: string) => {
+export const deleteSection = async (
+  data: DeleteSectionData | Record<string, unknown>,
+  token: string,
+) => {
   let result: unknown = null;
   const toastId = toast.loading("Cargando...");
 
   try {
-    const response = await apiConnector<ApiResponse>("POST", DELETE_SECTION_API, data as unknown as Record<string, unknown>, {
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await apiConnector<ApiResponse>(
+      "POST",
+      DELETE_SECTION_API,
+      data as unknown as Record<string, unknown>,
+      {
+        Authorization: `Bearer ${token}`,
+      },
+    );
     console.log("DELETE SECTION API RESPONSE............", response);
 
     if (!response?.data?.success) {
@@ -401,7 +461,7 @@ export const deleteSection = async (data: DeleteSectionData | Record<string, unk
       toast.error(
         apiError.response?.data?.message ||
           apiError.message ||
-          "No se pudo eliminar la sección"
+          "No se pudo eliminar la sección",
       );
     }
   }
@@ -412,14 +472,19 @@ export const deleteSection = async (data: DeleteSectionData | Record<string, unk
 // ================ delete SubSection ================
 export const deleteSubSection = async (
   data: DeleteSubSectionData | Record<string, unknown>,
-  token: string
+  token: string,
 ) => {
   let result: unknown = null;
   const toastId = toast.loading("Cargando...");
   try {
-    const response = await apiConnector<ApiResponse>("POST", DELETE_SUBSECTION_API, data as unknown as Record<string, unknown>, {
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await apiConnector<ApiResponse>(
+      "POST",
+      DELETE_SUBSECTION_API,
+      data as unknown as Record<string, unknown>,
+      {
+        Authorization: `Bearer ${token}`,
+      },
+    );
     console.log("DELETE SUB-SECTION API RESPONSE............", response);
     if (!response?.data?.success) {
       throw new Error("Could Not Delete Lecture");
@@ -434,7 +499,7 @@ export const deleteSubSection = async (
       toast.error(
         apiError.response?.data?.message ||
           apiError.message ||
-          "No se pudo eliminar la lección"
+          "No se pudo eliminar la lección",
       );
     }
   }
@@ -453,7 +518,7 @@ export const fetchInstructorCourses = async (token: string) => {
       undefined,
       {
         Authorization: `Bearer ${token}`,
-      }
+      },
     );
     console.log("INSTRUCTOR COURSES API RESPONSE", response);
     if (!response?.data?.success) {
@@ -468,7 +533,7 @@ export const fetchInstructorCourses = async (token: string) => {
       toast.error(
         apiError.response?.data?.message ||
           apiError.message ||
-          "No se pudieron obtener los cursos del instructor"
+          "No se pudieron obtener los cursos del instructor",
       );
     }
   }
@@ -476,12 +541,20 @@ export const fetchInstructorCourses = async (token: string) => {
 };
 
 // ================ delete Course ================
-export const deleteCourse = async (data: DeleteCourseData | Record<string, unknown>, token: string) => {
+export const deleteCourse = async (
+  data: DeleteCourseData | Record<string, unknown>,
+  token: string,
+) => {
   // const toastId = toast.loading("Loading...")
   try {
-    const response = await apiConnector<ApiResponse>("DELETE", DELETE_COURSE_API, data as unknown as Record<string, unknown>, {
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await apiConnector<ApiResponse>(
+      "DELETE",
+      DELETE_COURSE_API,
+      data as unknown as Record<string, unknown>,
+      {
+        Authorization: `Bearer ${token}`,
+      },
+    );
     console.log("DELETE COURSE API RESPONSE............", response);
     if (!response?.data?.success) {
       throw new Error("Could Not Delete Course");
@@ -495,7 +568,7 @@ export const deleteCourse = async (data: DeleteCourseData | Record<string, unkno
       toast.error(
         apiError.response?.data?.message ||
           apiError.message ||
-          "No se pudo eliminar el curso"
+          "No se pudo eliminar el curso",
       );
     }
   }
@@ -505,14 +578,14 @@ export const deleteCourse = async (data: DeleteCourseData | Record<string, unkno
 // ================ get Full Details Of Course ================
 export const getFullDetailsOfCourse = async (
   courseId: string,
-  token: string
+  token: string,
 ) => {
   // const toastId = toast.loading("Loading...")
   //   dispatch(setLoading(true));
   let result = null;
   try {
     // Validar que courseId existe y es un UUID válido antes de hacer la petición
-    if (!courseId || typeof courseId !== 'string') {
+    if (!courseId || typeof courseId !== "string") {
       console.error("Course ID is required and must be a string");
       return null;
     }
@@ -522,7 +595,7 @@ export const getFullDetailsOfCourse = async (
       console.error(
         "Invalid course ID format (expected UUID):",
         courseId,
-        "\nThe course ID must be a valid UUID format (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)"
+        "\nThe course ID must be a valid UUID format (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)",
       );
       return null;
     }
@@ -535,7 +608,7 @@ export const getFullDetailsOfCourse = async (
       } as Record<string, unknown>,
       {
         Authorization: `Bearer ${token}`,
-      }
+      },
     );
     console.log("COURSE_FULL_DETAILS_API API RESPONSE............", response);
 
@@ -546,7 +619,8 @@ export const getFullDetailsOfCourse = async (
     }
 
     if (!response.data.success) {
-      const errorMessage = response.data.message || "Could not fetch full course details";
+      const errorMessage =
+        response.data.message || "Could not fetch full course details";
       console.error("API returned success: false", errorMessage);
       throw new Error(errorMessage);
     }
@@ -555,20 +629,22 @@ export const getFullDetailsOfCourse = async (
     if (response.data.data && response.data.data.courseDetails) {
       result = response.data.data;
     } else {
-      console.error("Invalid data structure: courseDetails not found in response.data.data");
+      console.error(
+        "Invalid data structure: courseDetails not found in response.data.data",
+      );
       return null;
     }
   } catch (error) {
     const apiError = error as ApiError;
     console.error("COURSE_FULL_DETAILS_API API ERROR............", apiError);
-    
+
     // Manejo específico de errores 500
     if (apiError.response?.status === 500) {
-      console.error('Error del servidor (500):', apiError.response.data);
+      console.error("Error del servidor (500):", apiError.response.data);
       // No retornar datos en caso de error 500
       return null;
     }
-    
+
     result = apiError.response?.data || null;
     // toast.error(apiError.response?.data?.message);
   }
@@ -580,18 +656,23 @@ export const getFullDetailsOfCourse = async (
 // ================ mark Lecture As Complete ================
 export const markLectureAsComplete = async (
   data: LectureCompletionData,
-  token: string
+  token: string,
 ) => {
   let result = null;
   // console.log("mark complete data", data)
   const toastId = toast.loading("Cargando...");
   try {
-    const response = await apiConnector<ApiResponse & { error?: string }>("POST", LECTURE_COMPLETION_API, data as unknown as Record<string, unknown>, {
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await apiConnector<ApiResponse & { error?: string }>(
+      "POST",
+      LECTURE_COMPLETION_API,
+      data as unknown as Record<string, unknown>,
+      {
+        Authorization: `Bearer ${token}`,
+      },
+    );
     console.log(
       "MARK_LECTURE_AS_COMPLETE_API API RESPONSE............",
-      response
+      response,
     );
 
     if (!response.data.message) {
@@ -607,7 +688,7 @@ export const markLectureAsComplete = async (
       toast.error(
         apiError.response?.data?.message ||
           apiError.message ||
-          "No se pudo marcar la lección como completada"
+          "No se pudo marcar la lección como completada",
       );
     }
     result = false;
@@ -615,4 +696,3 @@ export const markLectureAsComplete = async (
   toast.dismiss(toastId);
   return result;
 };
-

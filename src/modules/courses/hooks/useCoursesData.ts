@@ -1,12 +1,11 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { getCategories, getCourses } from "../services/coursesAPI";
-import type { Category, Course } from "../types";
+import { getCourses } from "../services/coursesAPI";
+import type { Course } from "../types";
 
 /** Hook principal para gestionar el estado y filtrado de cursos mediante URL */
 export function useCoursesData(initialCategoryId?: string) {
   const [courses, setCourses] = useState<Course[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
 
   const [initialLoading, setInitialLoading] = useState<boolean>(true);
   const [isFetching, setIsFetching] = useState<boolean>(false);
@@ -42,6 +41,15 @@ export function useCoursesData(initialCategoryId?: string) {
 
   // Efecto principal: Carga cursos cuando cambian los filtros (search, category, page)
   useEffect(() => {
+    // Si no hay filtros activos (ni búsqueda ni categoría), no hacemos fetch
+    // Esto previene la llamada inicial innecesaria cuando se carga la página de categorías
+    if (!search && !category) {
+      setCourses([]);
+      setInitialLoading(false);
+      setIsFetching(false);
+      return;
+    }
+
     const fetchData = async () => {
       if (initialLoading) {
         // First load
@@ -52,22 +60,15 @@ export function useCoursesData(initialCategoryId?: string) {
       setError(false);
 
       try {
-        const [coursesRes, categoriesData] = await Promise.all([
-          getCourses({
-            search: search || undefined,
-            category: category || undefined,
-            page,
-            limit,
-          }),
-          getCategories(),
-        ]);
+        const coursesRes = await getCourses({
+          search: search || undefined,
+          category: category || undefined,
+          page,
+          limit,
+        });
 
         setCourses(coursesRes.courses || []);
         setMeta(coursesRes.meta);
-
-        if (Array.isArray(categoriesData)) {
-          setCategories(categoriesData as Category[]);
-        }
       } catch (error) {
         console.error("Error fetching courses data:", error);
         setError(true);
@@ -135,7 +136,6 @@ export function useCoursesData(initialCategoryId?: string) {
 
   return {
     courses,
-    categories,
     loading: initialLoading,
     isFetching,
     error,

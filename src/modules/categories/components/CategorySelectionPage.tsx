@@ -16,6 +16,7 @@ import {
   GiHealthNormal,
   GiChemicalDrop,
 } from "react-icons/gi";
+import CategorySkeleton from "./CategorySkeleton";
 
 /** Asigna iconos por defecto según palabras clave en el nombre de la categoría */
 const getCategoryIcon = (categoryName: string) => {
@@ -92,10 +93,16 @@ const CategorySelectionPage: React.FC = () => {
 
   if (loadingDomains) {
     return (
-      <div className="min-h-screen bg-cem-neutral-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cem-primary mx-auto mb-4"></div>
-          <p className="text-cem-neutral-gray-600">Cargando...</p>
+      <div className="min-h-screen bg-cem-neutral-white relative overflow-hidden">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 py-12">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold text-cem-neutral-gray-900 mb-8">
+              Nuestros cursos para crecer en{" "}
+              <span className="text-cem-primary relative">ciencia</span>
+            </h1>
+            <div className="max-w-xl mx-auto relative h-12 bg-cem-neutral-gray-100 rounded-full animate-pulse"></div>
+          </div>
+          <CategorySkeleton />
         </div>
       </div>
     );
