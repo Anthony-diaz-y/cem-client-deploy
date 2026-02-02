@@ -133,10 +133,10 @@ export const CourseCard: React.FC<CourseCardProps> = ({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-cem-neutral-gray-900 truncate">
-                {instructor.name}
+                {instructor?.name || "Instructor"}
               </p>
               <p className="text-xs text-cem-neutral-gray-500 truncate">
-                {instructor.professional_title}
+                {instructor?.additionalDetails?.professional_title || "Experto"}
               </p>
             </div>
           </div>

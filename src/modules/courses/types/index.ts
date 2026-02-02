@@ -14,7 +14,9 @@ export interface Course {
   thumbnail: string;
   instructor: {
     name: string;
-    professional_title: string;
+    additionalDetails: {
+      professional_title?: string | null;
+    };
   };
   category: {
     name: string;

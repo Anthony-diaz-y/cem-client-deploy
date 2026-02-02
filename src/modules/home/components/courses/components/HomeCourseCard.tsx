@@ -147,7 +147,7 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
                 {instructor?.name || "Instructor"}
               </p>
               <p className="text-xs text-cem-neutral-gray-500 truncate">
-                {instructor?.professional_title || ""}
+                {instructor?.additionalDetails?.professional_title || "Experto"}
               </p>
             </div>
           </div>

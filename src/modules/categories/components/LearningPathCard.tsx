@@ -20,12 +20,12 @@ const LearningPathCard: React.FC<LearningPathCardProps> = ({
   const courseCount = category.courses?.length || 0;
 
   return (
-    <div className="w-full bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+    <div className="w-full bg-white rounded-xl border border-cem-neutral-gray-200 hover:border-cem-primary shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden">
       {/* Card Header */}
       <div className="p-5">
         <div className="flex items-center gap-3 mb-4">
-          {/* Icon - Teal background */}
-          <div className="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center text-white text-2xl flex-shrink-0">
+          {/* Icon - Brand Primary background */}
+          <div className="w-12 h-12 bg-cem-primary rounded-lg flex items-center justify-center text-white text-2xl flex-shrink-0">
             {icon || "📚"}
           </div>
 
