@@ -61,6 +61,7 @@ const CategorySelectionPage: React.FC = () => {
     const fetchDomains = async () => {
       setLoadingDomains(true);
       const data = await getAllDomains();
+      console.log("DEBUG: Domains received from API:", data);
       setDomains(data);
       setLoadingDomains(false);
     };
