@@ -9,13 +9,15 @@ import type { Course } from "../../../../courses/types";
 import { formatDurationForBadge } from "../../../utils";
 
 interface HomeCourseCardProps {
-  course: Course;
+  course: Course | any; // Accept Course or CoursePreview
   index?: number;
+  categoryName?: string; // Optional category name override
 }
 
 export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
   course,
   index = 0,
+  categoryName,
 }) => {
   const courseId = course.id;
   const avgRating = GetAvgRating(course.ratingAndReviews || []);
@@ -26,6 +28,9 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
 
   const instructor = course.instructor;
   const category = course.category;
+
+  // Use provided categoryName or fall back to course.category.name
+  const displayCategoryName = categoryName || category?.name || "Curso";
 
   const animationDelay = index * 0.1;
 
@@ -88,7 +93,7 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
       <div className="p-4 flex-1 flex flex-col">
         {/* Categoría */}
         <span className="text-xs font-semibold text-cem-primary mb-1.5">
-          {category.name}
+          {displayCategoryName}
         </span>
 
         {/* Título con flecha - min-h para alinear descripciones */}
@@ -134,15 +139,15 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
           <div className="flex items-center gap-2.5 flex-1 min-w-0">
             <div className="w-9 h-9 rounded-full bg-cem-teal-100 flex items-center justify-center flex-shrink-0">
               <span className="text-cem-primary font-semibold text-sm">
-                {instructor.name.charAt(0).toUpperCase()}
+                {instructor?.name?.charAt(0).toUpperCase() || "I"}
               </span>
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-cem-neutral-gray-900 truncate">
-                {instructor.name}
+                {instructor?.name || "Instructor"}
               </p>
               <p className="text-xs text-cem-neutral-gray-500 truncate">
-                {instructor.professional_title}
+                {instructor?.professional_title || ""}
               </p>
             </div>
           </div>
