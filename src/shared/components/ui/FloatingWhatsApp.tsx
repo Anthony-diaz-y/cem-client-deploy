@@ -7,7 +7,7 @@ import guacamayo from "@shared/assets/hero/guacamayo.webp";
 
 const FloatingWhatsApp = () => {
   return (
-    <div className="fixed right-0 bottom-20 lg:bottom-24 z-20 flex flex-col items-center">
+    <div className="fixed right-6 bottom-20 lg:bottom-24 z-50 flex flex-col items-center group cursor-pointer transition-all duration-500 hover:scale-110 origin-bottom p-2">
       {/* Burbuja de diálogo con WhatsApp - Justo encima del guacamayo */}
       <div className="relative mb-2">
         {/* Burbuja de diálogo */}
@@ -15,7 +15,7 @@ const FloatingWhatsApp = () => {
           href="https://wa.me/51983885114"
           target="_blank"
           rel="noopener noreferrer"
-          className="relative bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer flex items-center justify-center hover:scale-105"
+          className="relative bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer flex items-center justify-center"
           style={{
             width: "45px",
             height: "45px",

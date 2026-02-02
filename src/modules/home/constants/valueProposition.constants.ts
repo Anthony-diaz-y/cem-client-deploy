@@ -5,7 +5,12 @@ export interface ValuePropositionCard {
   id: string;
   title: string;
   description: string;
-  iconName: "Formacion" | "Colaboracion" | "Acompanamiento" | "Metodologia" | "Respaldo";
+  iconName:
+    | "Formacion"
+    | "Colaboracion"
+    | "Acompanamiento"
+    | "Metodologia"
+    | "Respaldo";
   isLarge?: boolean;
   bgColor: "teal" | "white";
 }
@@ -13,18 +18,18 @@ export interface ValuePropositionCard {
 export const VALUE_PROPOSITION_CARDS: ValuePropositionCard[] = [
   {
     id: "formacion",
-    title: "Formación y desarrollo",
+    title: "Flexibilidad",
     description:
-      "Formación aplicada a la empleabilidad y al desarrollo profesional, con énfasis en tecnologías y técnicas modernas.",
+      "Estudia a tu ritmo en cursos asincrónicos o interactúa en vivo en cursos híbridos. Tú gestionas tu agenda.",
     iconName: "Formacion",
     isLarge: true,
     bgColor: "white",
   },
   {
     id: "colaboracion",
-    title: "Colaboración",
+    title: "Colaboración y Redes",
     description:
-      "Ecosistema colaborativo que conecta a empresas, investigadores, docentes y estudiantes.",
+      "Accede a un ecosistema que te conecta con empresas, instituciones y líderes del sector y amplía tus oportunidades de desarrollo.",
     iconName: "Colaboracion",
     bgColor: "white",
   },
@@ -32,7 +37,7 @@ export const VALUE_PROPOSITION_CARDS: ValuePropositionCard[] = [
     id: "acompanamiento",
     title: "Acompañamiento",
     description:
-      "Acompañamiento híbrido (asincrónico + sincrónico) con asesorías en tiempo real para resolver dudas y avanzar con confianza.",
+      "Asesoría profesional y soporte en tiempo real para garantizar tu aprendizaje.",
     iconName: "Acompanamiento",
     bgColor: "white",
   },
@@ -40,7 +45,7 @@ export const VALUE_PROPOSITION_CARDS: ValuePropositionCard[] = [
     id: "metodologia",
     title: "Metodología",
     description:
-      "Experiencia de aprendizaje distinta a los cursos virtuales tradicionales: dinámica, eficiente y centrada en el estudiante.",
+      "Formación moderna, dinámica y eficiente, diseñada para potenciar el desarrollo profesional del estudiante.",
     iconName: "Metodologia",
     bgColor: "white",
   },
@@ -48,9 +53,8 @@ export const VALUE_PROPOSITION_CARDS: ValuePropositionCard[] = [
     id: "respaldo",
     title: "Respaldo",
     description:
-      "Respaldo de aliados, concursos ganados y prestigio de los especialistas que imparten los cursos.",
+      "Certifícate con el aval de especialistas altamente calificados y alianzas institucionales de prestigio",
     iconName: "Respaldo",
     bgColor: "white",
   },
 ];
-

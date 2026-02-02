@@ -9,8 +9,13 @@ import doctor from "@shared/assets/hero/doctor.webp";
 import iconCourse from "@shared/assets/hero/icon-course.webp";
 import iconCoursesView from "@shared/assets/hero/icon-coursesView.webp";
 import iconStudent from "@shared/assets/hero/icon-student.webp";
+import { HeroContent } from "@modules/home/constants/hero.constants";
 
-export const HeroSection: React.FC = () => {
+interface HeroSectionProps {
+  hero: HeroContent;
+}
+
+export const HeroSection: React.FC<HeroSectionProps> = ({ hero }) => {
   return (
     <div className="relative w-full bg-white pt-8 md:pt-16 lg:pt-8 overflow-hidden">
       <div className="relative w-full max-w-[1400px] mx-auto px-4 md:px-8">
@@ -45,9 +50,7 @@ export const HeroSection: React.FC = () => {
             </h1>
 
             <p className="text-sm sm:text-[16px] md:text-xl text-cem-neutral-gray-600 leading-relaxed max-w-2xl relative z-10 mx-auto xl:mx-0">
-              Te ayudamos a impulsar tu carrera en ciencias, con miles de cursos
-              en línea, contenidos en video y docentes especializados, diseñada
-              para aprender de forma clara, flexible y a tu ritmo.
+              {hero.description}
             </p>
 
             <div className="flex flex-row gap-4 pt-2 md:pt-4 relative z-10 justify-center xl:justify-start">
@@ -56,7 +59,7 @@ export const HeroSection: React.FC = () => {
                   Acceder
                 </button>
               </Link>
-              <Link href="/about">
+              <Link href="/courses">
                 <button className="px-6 py-3 bg-[#BFDCE2] border border-1 border-[#9CCCD6] text-[#0B4653] font-medium text-base rounded-lg">
                   Conoce más
                 </button>

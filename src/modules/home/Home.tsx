@@ -11,12 +11,14 @@ import { TestimonialsSection } from "./components/testimonials";
 import { FAQSection } from "./components/faq";
 import { AlliesSection } from "./components/allies";
 import { NewsSection } from "./components/news";
+import { AboutSection } from "./components/about";
 import type { HomeProps } from "./types";
 import { useCombinedCourses } from "./hooks/useCombinedCourses";
 
 const Home: React.FC<HomeProps> = ({
   courses,
   token,
+  hero,
   coursesLoading = false,
   coursesError = false,
 }) => {
@@ -25,7 +27,7 @@ const Home: React.FC<HomeProps> = ({
   return (
     <div className="bg-white min-h-screen overflow-x-hidden">
       <div className="relative w-full max-w-[1400px] mx-auto px-4 md:px-8 bg-white">
-        <HeroSection />
+        <HeroSection hero={hero} />
         <PartnersSection />
       </div>
 
@@ -38,6 +40,8 @@ const Home: React.FC<HomeProps> = ({
       <ValuePropositionSection />
 
       <ExpertsSection />
+
+      <AboutSection />
 
       <TestimonialsSection />
 
