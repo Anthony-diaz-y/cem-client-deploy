@@ -1,5 +1,6 @@
 // Home Module Types
 import type { Course } from "../../courses/types";
+import type { HeroContent } from "../constants/hero.constants";
 
 export interface CategoryWithCourses {
   name: string;
@@ -16,6 +17,7 @@ export interface CatalogPageData {
 export interface HomeProps {
   courses: Course[];
   token: string | null;
+  hero: HeroContent;
   coursesLoading?: boolean;
   coursesError?: boolean;
 }
