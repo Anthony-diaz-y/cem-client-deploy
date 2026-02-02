@@ -41,6 +41,15 @@ export function useCoursesData(initialCategoryId?: string) {
 
   // Efecto principal: Carga cursos cuando cambian los filtros (search, category, page)
   useEffect(() => {
+    // Si no hay filtros activos (ni búsqueda ni categoría), no hacemos fetch
+    // Esto previene la llamada inicial innecesaria cuando se carga la página de categorías
+    if (!search && !category) {
+      setCourses([]);
+      setInitialLoading(false);
+      setIsFetching(false);
+      return;
+    }
+
     const fetchData = async () => {
       if (initialLoading) {
         // First load

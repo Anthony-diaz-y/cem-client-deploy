@@ -4,9 +4,9 @@ const BASE_URL = API_URL;
 
 // AUTH ENDPOINTS
 export const endpoints = {
-  SENDOTP_API: BASE_URL + "/auth/sendotp",
-  SIGNUP_API: BASE_URL + "/auth/signup",
-  LOGIN_API: BASE_URL + "/auth/login",
+  SENDOTP_API: BASE_URL + "/auth/sendotp", //usando
+  SIGNUP_API: BASE_URL + "/auth/signup", //usando
+  LOGIN_API: BASE_URL + "/auth/login", //usando
   RESETPASSTOKEN_API: BASE_URL + "/auth/reset-password-token",
   RESETPASSWORD_API: BASE_URL + "/auth/reset-password",
 };

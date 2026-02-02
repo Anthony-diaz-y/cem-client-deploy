@@ -145,27 +145,27 @@ export const fetchCourseDetails = async (courseId: string) => {
   return result;
 };
 
-// Obtener categorías de cursos
-export const fetchCourseCategories = async (): Promise<CourseCategory[]> => {
-  let result: CourseCategory[] = [];
+// // Obtener categorías de cursos
+// export const fetchCourseCategories = async (): Promise<CourseCategory[]> => {
+//   let result: CourseCategory[] = [];
 
-  try {
-    const response = await apiConnector<ApiResponse<CourseCategory[]>>(
-      "GET",
-      GET_ALL_CATEGORIES_API,
-    );
-    if (!response?.data?.success) {
-      throw new Error("Could Not Fetch Course Categories");
-    }
-    result = (response?.data?.data || []) as CourseCategory[];
-  } catch (error) {
-    const apiError = error as ApiError;
-    if (apiError.response?.status !== 401) {
-      toast.error(apiError.message || "No se pudieron obtener las categorías");
-    }
-  }
-  return result;
-};
+//   try {
+//     const response = await apiConnector<ApiResponse<CourseCategory[]>>(
+//       "GET",
+//       GET_ALL_CATEGORIES_API,
+//     );
+//     if (!response?.data?.success) {
+//       throw new Error("Could Not Fetch Course Categories");
+//     }
+//     result = (response?.data?.data || []) as CourseCategory[];
+//   } catch (error) {
+//     const apiError = error as ApiError;
+//     if (apiError.response?.status !== 401) {
+//       toast.error(apiError.message || "No se pudieron obtener las categorías");
+//     }
+//   }
+//   return result;
+// };
 
 // Crear curso
 export const addCourseDetails = async (
