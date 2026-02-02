@@ -203,7 +203,7 @@ const CategorySelectionPage: React.FC = () => {
             >
               {domains.map((domain) => {
                 // Ya no filtramos por search en tiempo real
-                const categoriesToShow = domain.categories;
+                const categoriesToShow = domain.categories || [];
                 if (categoriesToShow.length === 0) return null;
 
                 return (

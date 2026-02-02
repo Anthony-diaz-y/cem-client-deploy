@@ -9,10 +9,10 @@ export const NavbarLinks = [
   },
   {
     title: "Servicios",
-    path: "/services",
+    path: "#",
   },
   {
     title: "Empresas",
-    path: "/companies",
+    path: "#",
   },
 ];
