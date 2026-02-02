@@ -5,6 +5,7 @@ import EmailInput from "../components/EmailInput";
 import PasswordInput from "../components/PasswordInput";
 import FormButton from "../components/FormButton";
 import LoginLink from "../components/LoginLink";
+import RegisterWarning from "../components/RegisterWarning";
 import { RegisterFormData } from "../hooks/useRegisterForm";
 
 interface RegisterFormStepProps {
@@ -34,6 +35,7 @@ const RegisterFormStep: React.FC<RegisterFormStepProps> = ({
     correo: false,
     contraseña: false,
   });
+  const [isNameConfirmed, setIsNameConfirmed] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -69,7 +71,7 @@ const RegisterFormStep: React.FC<RegisterFormStepProps> = ({
 
       <form
         onSubmit={onSubmit}
-        className="w-full flex flex-col items-center gap-6"
+        className="w-full flex flex-col items-center gap-4"
       >
         <FormInput
           name="nombres"
@@ -79,6 +81,8 @@ const RegisterFormStep: React.FC<RegisterFormStepProps> = ({
           required
           disabled={isLoading}
         />
+
+        <RegisterWarning />
 
         <EmailInput
           name="correo"
@@ -105,8 +109,30 @@ const RegisterFormStep: React.FC<RegisterFormStepProps> = ({
           isValid={passwordIsValid}
         />
 
+        <div className="w-[296px] flex items-start gap-3 mt-2">
+          <input
+            type="checkbox"
+            id="confirmName"
+            checked={isNameConfirmed}
+            onChange={(e) => setIsNameConfirmed(e.target.checked)}
+            className="mt-1 h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 cursor-pointer"
+            disabled={isLoading}
+          />
+          <label
+            htmlFor="confirmName"
+            className="text-[11px] leading-tight text-gray-500 cursor-pointer select-none"
+          >
+            Confirmo que mi nombre es correcto y entiendo que se utilizará para
+            la emisión de mis certificados.
+          </label>
+        </div>
+
         <div className="mt-2">
-          <FormButton type="submit" disabled={!isFormValid} isLoading={isLoading}>
+          <FormButton
+            type="submit"
+            disabled={!isFormValid || !isNameConfirmed}
+            isLoading={isLoading}
+          >
             {isLoading ? "Enviando código..." : "Regístrate"}
           </FormButton>
         </div>
