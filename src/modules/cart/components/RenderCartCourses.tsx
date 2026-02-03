@@ -36,12 +36,16 @@ export default function RenderCartCourses() {
         return (
           <div
             key={courseId}
-            className={`flex w-full items-center gap-3 sm:gap-4 ${indx !== cart.length - 1 && "border-b border-b-richblack-400 pb-4"
-              } ${indx !== 0 && "pt-4"} `}
+            className={`flex w-full items-center gap-3 sm:gap-4 ${
+              indx !== cart.length - 1 && "border-b border-b-richblack-400 pb-4"
+            } ${indx !== 0 && "pt-4"} `}
           >
             {/* course thumbnail - tamaño fijo y consistente para todas las imágenes */}
             <div className="flex-shrink-0 h-[70px] w-[105px] sm:h-[80px] sm:w-[120px] rounded-md overflow-hidden bg-richblack-900 relative">
-              <CourseThumbnail thumbnail={course?.thumbnail} courseName={course?.courseName} />
+              <CourseThumbnail
+                thumbnail={course?.thumbnail}
+                courseName={course?.courseName}
+              />
             </div>
 
             {/* Información del curso - flex-1 para ocupar el espacio restante */}
@@ -53,12 +57,10 @@ export default function RenderCartCourses() {
                 {course?.category?.name}
               </p>
               <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="text-yellow-50 font-semibold text-sm">{rating.toFixed(1)}</span>
-                <StarRating
-                  rating={rating}
-                  readonly={true}
-                  starSize={14}
-                />
+                <span className="text-yellow-50 font-semibold text-sm">
+                  {rating.toFixed(1)}
+                </span>
+                <StarRating rating={rating} readonly={true} starSize={14} />
                 <span className="text-richblack-400 text-xs">
                   ({totalReviews})
                 </span>

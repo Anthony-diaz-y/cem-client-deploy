@@ -13,15 +13,19 @@ export function useCourseFilters(
   categoryFilter: string,
   instructorFilter: string,
   searchQuery: string,
-  allCategories: Category[]
+  allCategories: Category[],
 ) {
   const categoriesFromCourses = useMemo(() => {
+    const allCats = courses
+      .flatMap((course) =>
+        Array.isArray(course.category) ? course.category : [course.category],
+      )
+      .filter(Boolean);
+
     const uniqueCategories = Array.from(
-      new Map(
-        courses.map((course) => [course.category.id, course.category])
-      ).values()
+      new Map(allCats.map((cat: any) => [cat.id || cat._id, cat])).values(),
     );
-    return uniqueCategories;
+    return uniqueCategories as Category[];
   }, [courses]);
 
   const categories =
@@ -30,8 +34,8 @@ export function useCourseFilters(
   const instructors = useMemo(() => {
     const uniqueInstructors = Array.from(
       new Map(
-        courses.map((course) => [course.instructor.id, course.instructor])
-      ).values()
+        courses.map((course) => [course.instructor.id, course.instructor]),
+      ).values(),
     );
     return uniqueInstructors;
   }, [courses]);
@@ -42,8 +46,16 @@ export function useCourseFilters(
         return false;
       }
 
-      if (categoryFilter !== "all" && course.category.id !== categoryFilter) {
-        return false;
+      if (categoryFilter !== "all") {
+        const courseCats = Array.isArray(course.category)
+          ? course.category
+          : [course.category];
+
+        const hasCategory = courseCats.some(
+          (cat: any) => cat.id === categoryFilter || cat._id === categoryFilter,
+        );
+
+        if (!hasCategory) return false;
       }
 
       if (
@@ -74,5 +86,3 @@ export function useCourseFilters(
     instructors,
   };
 }
-
-

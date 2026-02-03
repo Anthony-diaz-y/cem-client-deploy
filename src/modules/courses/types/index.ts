@@ -19,8 +19,9 @@ export interface Course {
     };
   };
   category: {
+    id: string;
     name: string;
-  };
+  }[];
   ratingAndReviews?: Review[] | unknown[];
   studentsEnrolled?: unknown[];
   totalDuration?: number;

@@ -78,7 +78,14 @@ const CourseDetailsContainer = () => {
   }
 
   const { courseDetails } = response.data;
-  const { whatYouWillLearn, tag, instructor } = courseDetails;
+  const { whatYouWillLearn, category, instructor } = courseDetails;
+
+  // Ensure categories is always an array
+  const categories = Array.isArray(category)
+    ? category
+    : category
+      ? [category]
+      : [];
 
   return (
     <>
@@ -115,7 +122,7 @@ const CourseDetailsContainer = () => {
             <div className="w-full lg:max-w-[760px] space-y-8 lg:space-y-12">
               <CourseInfoSection
                 whatYouWillLearn={whatYouWillLearn}
-                tag={tag}
+                categories={categories}
               />
 
               <CourseContentSection

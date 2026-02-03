@@ -73,8 +73,11 @@ export default function EditCourseModal({
       setValue("courseName", course.courseName);
       setValue("courseDescription", course.courseDescription);
       setValue("price", course.price);
-      // Normalizar el ID de categoría
-      const categoryId = course.category.id || "";
+      // Normalizar el ID de categoría - Handle array structure by taking the first one (primary)
+      // TODO: Support multi-select for categories
+      const categoryId = Array.isArray(course.category)
+        ? course.category[0]?.id || ""
+        : (course.category as any)?.id || "";
       setValue("categoryId", categoryId);
       setValue("thumbnailImage", course.thumbnail || "");
       setThumbnailPreview(course.thumbnail || null);
@@ -114,7 +117,11 @@ export default function EditCourseModal({
 
       // Siempre enviar categoryId si está presente y es válido
       // Esto asegura que el backend reciba el cambio de categoría correctamente
-      if (newCategoryId && newCategoryId !== "undefined" && newCategoryId !== "") {
+      if (
+        newCategoryId &&
+        newCategoryId !== "undefined" &&
+        newCategoryId !== ""
+      ) {
         formData.append("categoryId", newCategoryId);
       }
 
@@ -175,7 +182,10 @@ export default function EditCourseModal({
 
           {/* Course Description */}
           <div className="flex flex-col space-y-2">
-            <label className="text-sm text-richblack-5" htmlFor="courseDescription">
+            <label
+              className="text-sm text-richblack-5"
+              htmlFor="courseDescription"
+            >
               Descripción del Curso <sup className="text-pink-200">*</sup>
             </label>
             <textarea
@@ -296,4 +306,3 @@ export default function EditCourseModal({
     </div>
   );
 }
-

@@ -32,7 +32,9 @@ export default function InstructorDetails({
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [instructor, setInstructor] = useState<Instructor | null>(null);
-  const [statistics, setStatistics] = useState<InstructorStatistics | null>(null);
+  const [statistics, setStatistics] = useState<InstructorStatistics | null>(
+    null,
+  );
   const [courses, setCourses] = useState<InstructorCourse[]>([]);
   const [confirmationModal, setConfirmationModal] = useState<{
     isOpen: boolean;
@@ -74,7 +76,11 @@ export default function InstructorDetails({
   const handleConfirm = async () => {
     if (!instructor) return;
 
-    const success = await toggleInstructorStatus(instructor.id, !instructor.active, token);
+    const success = await toggleInstructorStatus(
+      instructor.id,
+      !instructor.active,
+      token,
+    );
 
     if (success) {
       setConfirmationModal({ isOpen: false });
@@ -111,7 +117,10 @@ export default function InstructorDetails({
         <div className="bg-richblack-800 rounded-xl border border-richblack-700 p-6">
           <div className="flex items-start gap-6">
             <Img
-              src={instructor.image || `https://api.dicebear.com/5.x/initials/svg?seed=${instructor.firstName} ${instructor.lastName}`}
+              src={
+                instructor.image ||
+                `https://api.dicebear.com/5.x/initials/svg?seed=${instructor.firstName} ${instructor.lastName}`
+              }
               alt={`${instructor.firstName} ${instructor.lastName}`}
               className="h-24 w-24 rounded-full object-cover"
             />
@@ -146,20 +155,29 @@ export default function InstructorDetails({
                     <p>Género: {instructor.profile.gender}</p>
                   )}
                   {instructor.profile.dateOfBirth && (
-                    <p>Fecha de Nacimiento: {formatDate(instructor.profile.dateOfBirth)}</p>
+                    <p>
+                      Fecha de Nacimiento:{" "}
+                      {formatDate(instructor.profile.dateOfBirth)}
+                    </p>
                   )}
                   {instructor.profile.contactNumber && (
                     <p>Contacto: {instructor.profile.contactNumber}</p>
                   )}
                   {instructor.profile.about && (
-                    <p className="mt-2 text-richblack-300">{instructor.profile.about}</p>
+                    <p className="mt-2 text-richblack-300">
+                      {instructor.profile.about}
+                    </p>
                   )}
                 </div>
               )}
             </div>
             <div className="flex gap-2">
               <button
-                onClick={() => router.push(`/dashboard/admin/instructors/${instructorId}/edit`)}
+                onClick={() =>
+                  router.push(
+                    `/dashboard/admin/instructors/${instructorId}/edit`,
+                  )
+                }
                 className="px-4 py-2 bg-yellow-50 text-richblack-900 rounded-lg font-medium hover:bg-yellow-100 transition-colors flex items-center gap-2"
               >
                 <FiEdit size={18} />
@@ -193,19 +211,31 @@ export default function InstructorDetails({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
             <p className="text-sm text-richblack-400 mb-2">Total de Cursos</p>
-            <p className="text-3xl font-bold text-richblack-5">{statistics.totalCourses}</p>
+            <p className="text-3xl font-bold text-richblack-5">
+              {statistics.totalCourses}
+            </p>
           </div>
           <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
             <p className="text-sm text-richblack-400 mb-2">Cursos Publicados</p>
-            <p className="text-3xl font-bold text-green-400">{statistics.publishedCourses}</p>
+            <p className="text-3xl font-bold text-green-400">
+              {statistics.publishedCourses}
+            </p>
           </div>
           <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
-            <p className="text-sm text-richblack-400 mb-2">Cursos en Borrador</p>
-            <p className="text-3xl font-bold text-yellow-400">{statistics.draftCourses}</p>
+            <p className="text-sm text-richblack-400 mb-2">
+              Cursos en Borrador
+            </p>
+            <p className="text-3xl font-bold text-yellow-400">
+              {statistics.draftCourses}
+            </p>
           </div>
           <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
-            <p className="text-sm text-richblack-400 mb-2">Total de Estudiantes</p>
-            <p className="text-3xl font-bold text-blue-400">{statistics.totalStudents}</p>
+            <p className="text-sm text-richblack-400 mb-2">
+              Total de Estudiantes
+            </p>
+            <p className="text-3xl font-bold text-blue-400">
+              {statistics.totalStudents}
+            </p>
           </div>
           <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
             <p className="text-sm text-richblack-400 mb-2">Ingresos Totales</p>
@@ -214,14 +244,18 @@ export default function InstructorDetails({
             </p>
           </div>
           <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
-            <p className="text-sm text-richblack-400 mb-2">Calificación Promedio</p>
+            <p className="text-sm text-richblack-400 mb-2">
+              Calificación Promedio
+            </p>
             <p className="text-3xl font-bold text-yellow-400">
               ⭐ {(statistics.averageRating || 0).toFixed(1)}
             </p>
           </div>
           <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
             <p className="text-sm text-richblack-400 mb-2">Total de Reseñas</p>
-            <p className="text-3xl font-bold text-purple-400">{statistics.totalReviews}</p>
+            <p className="text-3xl font-bold text-purple-400">
+              {statistics.totalReviews}
+            </p>
           </div>
         </div>
 
@@ -234,7 +268,9 @@ export default function InstructorDetails({
           </div>
           {courses.length === 0 ? (
             <div className="p-8 text-center">
-              <p className="text-richblack-400">Este instructor no tiene cursos registrados</p>
+              <p className="text-richblack-400">
+                Este instructor no tiene cursos registrados
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -281,7 +317,9 @@ export default function InstructorDetails({
                               : "bg-gray-500/20 text-gray-400"
                           }`}
                         >
-                          {course.status === "Published" ? "Publicado" : "Borrador"}
+                          {course.status === "Published"
+                            ? "Publicado"
+                            : "Borrador"}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm text-richblack-300">
@@ -324,12 +362,10 @@ export default function InstructorDetails({
             btn1Text: instructor.active ? "Desactivar" : "Activar",
             btn2Text: "Cancelar",
             btn1Handler: handleConfirm,
-            btn2Handler: () =>
-              setConfirmationModal({ isOpen: false }),
+            btn2Handler: () => setConfirmationModal({ isOpen: false }),
           }}
         />
       )}
     </>
   );
 }
-

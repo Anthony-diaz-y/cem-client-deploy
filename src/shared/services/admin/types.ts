@@ -692,4 +692,3 @@ export interface GlobalSearchResponse {
     total: number;
   };
 }
-

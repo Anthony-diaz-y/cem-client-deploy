@@ -15,6 +15,15 @@ import { invalidateInstructorCache } from "@modules/instructor/hooks/useInstruct
 import type { BuyNowTemporaryResponse } from "../types";
 import { COURSE_TEXTS } from "../constants/course.constants";
 
+// Helper to safely extract category name
+const getCategoryName = (cat: any): string => {
+  if (!cat) return "";
+  if (Array.isArray(cat)) {
+    return cat.length > 0 ? cat[0].name : "";
+  }
+  return cat.name || "";
+};
+
 /** Hook que maneja las acciones del curso: comprar, agregar al carrito, expandir/colapsar secciones */
 export const useCourseActions = (
   courseId: string | string[] | undefined,
@@ -155,7 +164,32 @@ export const useCourseActions = (
       return;
     }
     if (token && course) {
-      dispatch(addToCart(course));
+      const cartItem = {
+        id: (course as any).id || course._id, // Handle both id formats
+        _id: course._id || (course as any).id,
+        courseName: course.courseName,
+        price: course.price,
+        thumbnail: course.thumbnail,
+        instructor: course.instructor,
+        courseDescription: course.courseDescription,
+        category: {
+          name: getCategoryName(course.category),
+        },
+        ratingAndReviews: course.ratingAndReviews,
+        averageRating:
+          typeof (course as any).averageRating === "number" ||
+          typeof (course as any).averageRating === "string"
+            ? (course as any).averageRating
+            : undefined,
+        totalReviews:
+          typeof (course as any).totalReviews === "number"
+            ? (course as any).totalReviews
+            : undefined,
+      };
+
+      // We cast to any here because CartItem might not perfectly match the ad-hoc object structure
+      // if there are optional/missing fields, but this covers the required ones.
+      dispatch(addToCart(cartItem as any));
       return;
     }
     setConfirmationModal({
