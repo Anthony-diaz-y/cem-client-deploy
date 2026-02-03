@@ -5,7 +5,14 @@ import { useRouter } from "next/navigation";
 import { AdminCourse } from "@shared/services/adminAPI";
 import { COURSE_STATUS } from "@shared/utils/constants";
 import { Img } from "@shared/components";
-import { FiEdit2, FiTrash2, FiCheckCircle, FiStar, FiXCircle, FiEye } from "react-icons/fi";
+import {
+  FiEdit2,
+  FiTrash2,
+  FiCheckCircle,
+  FiStar,
+  FiXCircle,
+  FiEye,
+} from "react-icons/fi";
 
 interface CourseCardProps {
   course: AdminCourse;
@@ -50,9 +57,7 @@ export default function CourseCard({
                 : "bg-green-500/90 text-white"
             }`}
           >
-            {course.status === COURSE_STATUS.DRAFT
-              ? "Borrador"
-              : "Publicado"}
+            {course.status === COURSE_STATUS.DRAFT ? "Borrador" : "Publicado"}
           </span>
         </div>
       </div>
@@ -60,13 +65,23 @@ export default function CourseCard({
       {/* Contenido de la tarjeta */}
       <div className="p-6 space-y-4 flex-1 flex flex-col">
         {/* Título y categoría */}
-        <div>
-          <h3 className="text-xl font-semibold text-richblack-5 line-clamp-2 mb-3">
-            {course.courseName}
-          </h3>
-          <span className="inline-flex px-3 py-1.5 text-xs font-medium rounded-md bg-richblack-700 text-richblack-300">
-            {course.category.name}
-          </span>
+        {/* Categorías */}
+        <div className="flex flex-wrap gap-2 mb-3">
+          {Array.isArray(course.category) ? (
+            course.category.map((cat: any) => (
+              <span
+                key={cat.id || cat.name}
+                className="inline-flex px-3 py-1.5 text-xs font-medium rounded-md bg-richblack-700 text-richblack-300"
+              >
+                {cat.name}
+              </span>
+            ))
+          ) : (
+            <span className="inline-flex px-3 py-1.5 text-xs font-medium rounded-md bg-richblack-700 text-richblack-300">
+              {/* Fallback for safety if backend sends single object temporarily */}
+              {(course.category as any)?.name || "Sin categoría"}
+            </span>
+          )}
         </div>
 
         {/* Instructor */}
@@ -105,9 +120,13 @@ export default function CourseCard({
 
         {/* Estadísticas */}
         <div className="flex items-center justify-between text-sm text-richblack-400 pt-3 border-t border-richblack-700">
-          <span className="font-medium">{course.totalStudentsEnrolled || 0} estudiantes</span>
+          <span className="font-medium">
+            {course.totalStudentsEnrolled || 0} estudiantes
+          </span>
           {course.averageRating && (
-            <span className="text-xs">{course.averageRating.toFixed(1)} ⭐</span>
+            <span className="text-xs">
+              {course.averageRating.toFixed(1)} ⭐
+            </span>
           )}
         </div>
 
@@ -115,9 +134,7 @@ export default function CourseCard({
         <div className="pt-4 mt-auto space-y-2">
           {/* Botón Ver Detalles - siempre visible */}
           <button
-            onClick={() =>
-              router.push(`/dashboard/admin/courses/${course.id}`)
-            }
+            onClick={() => router.push(`/dashboard/admin/courses/${course.id}`)}
             className="w-full px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-purple-500/20"
           >
             <FiEye className="text-base" />
@@ -130,9 +147,7 @@ export default function CourseCard({
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() =>
-                    router.push(
-                      `/dashboard/admin/courses/edit/${course.id}`
-                    )
+                    router.push(`/dashboard/admin/courses/edit/${course.id}`)
                   }
                   className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-blue-500/20"
                 >
@@ -161,9 +176,7 @@ export default function CourseCard({
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() =>
-                    router.push(
-                      `/dashboard/admin/courses/edit/${course.id}`
-                    )
+                    router.push(`/dashboard/admin/courses/edit/${course.id}`)
                   }
                   className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-blue-500/20"
                 >
@@ -192,4 +205,3 @@ export default function CourseCard({
     </div>
   );
 }
-

@@ -2,7 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getCourseDetailsAdmin, CourseDetailsData } from "@shared/services/adminAPI";
+import {
+  getCourseDetailsAdmin,
+  CourseDetailsData,
+} from "@shared/services/adminAPI";
 import { Loading } from "@shared/components";
 import StatisticsCards from "../components/course/StatisticsCards";
 import StudentsTable from "../components/course/StudentsTable";
@@ -42,7 +45,7 @@ export default function CourseDetailsContainer({
         }
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Error al cargar los datos"
+          err instanceof Error ? err.message : "Error al cargar los datos",
         );
       } finally {
         setLoading(false);
@@ -126,9 +129,11 @@ export default function CourseDetailsContainer({
               </div>
               {data.course.category && (
                 <div>
-                  <span className="text-richblack-400">Categoría: </span>
+                  <span className="text-richblack-400">Categoría(s): </span>
                   <span className="text-richblack-5 font-medium">
-                    {data.course.category.name}
+                    {Array.isArray(data.course.category)
+                      ? data.course.category.map((c: any) => c.name).join(", ")
+                      : (data.course.category as any)?.name}
                   </span>
                 </div>
               )}
@@ -158,9 +163,7 @@ export default function CourseDetailsContainer({
             <div className="pt-2">
               <button
                 onClick={() =>
-                  router.push(
-                    `/dashboard/admin/courses/edit/${data.courseId}`
-                  )
+                  router.push(`/dashboard/admin/courses/edit/${data.courseId}`)
                 }
                 className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 font-medium hover:shadow-lg hover:shadow-blue-500/20"
               >
@@ -207,4 +210,3 @@ export default function CourseDetailsContainer({
     </div>
   );
 }
-

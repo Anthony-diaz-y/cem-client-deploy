@@ -100,7 +100,7 @@ function CourseDetailsCard({
         {/* Action buttons */}
         <div className="flex flex-col gap-3 mb-6">
           <button
-            className="w-full py-3 px-4 rounded-lg bg-cem-primary text-white font-bold hover:bg-cem-primary-dark transition-colors shadow-sm"
+            className="w-full py-3 px-4 rounded-lg bg-cem-primary text-white font-bold shadow-sm"
             onClick={
               isEnrolled
                 ? () => router.push("/dashboard/enrolled-courses")

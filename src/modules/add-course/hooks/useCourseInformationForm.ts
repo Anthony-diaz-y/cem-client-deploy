@@ -17,7 +17,7 @@ import { CourseInformationFormData } from "../types";
 // Función para normalizar la estructura del curso (subSections -> subSection)
 const normalizeCourseStructure = (course: any): Course => {
   if (!course || !course.courseContent) return course;
-  
+
   const normalizedContent = course.courseContent.map((section: any) => {
     // Si tiene subSections (con S mayúscula), convertir a subSection
     if (section.subSections && Array.isArray(section.subSections)) {
@@ -35,11 +35,20 @@ const normalizeCourseStructure = (course: any): Course => {
     }
     return section;
   });
-  
+
   return {
     ...course,
     courseContent: normalizedContent,
   };
+};
+
+// Helper to safely extract category ID whether it's an object or array
+const getCategoryId = (cat: any): string => {
+  if (!cat) return "";
+  if (Array.isArray(cat)) {
+    return cat.length > 0 ? cat[0].id || cat[0]._id || "" : "";
+  }
+  return cat.id || cat._id || "";
 };
 
 /**
@@ -57,7 +66,7 @@ export const useCourseInformationForm = () => {
   const dispatch = useDispatch();
   const { token } = useSelector((state: RootState) => state.auth);
   const { course, editCourse } = useSelector(
-    (state: RootState) => state.course
+    (state: RootState) => state.course,
   );
   const [loading, setLoading] = useState(false);
   const [courseCategories, setCourseCategories] = useState<
@@ -81,35 +90,45 @@ export const useCourseInformationForm = () => {
 
     if (editCourse && course) {
       const courseData = course as Course;
-      
+
       // Reinicializar el formulario completamente con los datos más recientes del curso
       // Esto asegura que siempre use los datos actualizados del Redux store
-      
+
       // Normalizar y obtener todos los valores actuales del curso
-      const currentCategoryId = String((courseData.category as any)?.id || (courseData.category as any)?._id || '').trim();
-      
+      const currentCategoryId = String(
+        getCategoryId(courseData.category),
+      ).trim();
+
       // Establecer todos los valores del formulario de una vez para evitar inconsistencias
       const formValues = {
-        courseTitle: courseData.courseName || '',
-        courseShortDesc: courseData.courseDescription || '',
+        courseTitle: courseData.courseName || "",
+        courseShortDesc: courseData.courseDescription || "",
         coursePrice: courseData.price !== undefined ? courseData.price : 0,
         courseTags: courseData.tag || [],
-        courseBenefits: courseData.whatYouWillLearn || '',
-        courseCategory: (currentCategoryId && currentCategoryId !== 'undefined' && currentCategoryId !== 'null' && currentCategoryId !== '' && currentCategoryId !== 'NaN') ? currentCategoryId : '',
+        courseBenefits: courseData.whatYouWillLearn || "",
+        courseCategory:
+          currentCategoryId &&
+          currentCategoryId !== "undefined" &&
+          currentCategoryId !== "null" &&
+          currentCategoryId !== "" &&
+          currentCategoryId !== "NaN"
+            ? currentCategoryId
+            : "",
         courseRequirements: courseData.instructions || [],
-        courseImage: courseData.thumbnail || '',
+        courseImage: courseData.thumbnail || "",
       };
-      
+
       // Establecer todos los valores de una vez usando setValue múltiple
       Object.entries(formValues).forEach(([key, value]) => {
-        setValue(key as keyof CourseInformationFormData, value as any, { 
-          shouldValidate: false, 
+        setValue(key as keyof CourseInformationFormData, value as any, {
+          shouldValidate: false,
           shouldDirty: false,
-          shouldTouch: false 
+          shouldTouch: false,
         });
       });
-      
-      console.log("🔄 Formulario reinicializado con categoría:", currentCategoryId, "| Nombre categoría:", (courseData.category as any)?.name);
+
+      // Log only for debugging if needed, simplified for production
+      // console.log("Form reinitialized with category:", currentCategoryId);
     }
 
     getCategories();
@@ -126,7 +145,11 @@ export const useCourseInformationForm = () => {
       currentValues.coursePrice !== courseData.price ||
       currentValues.courseTags.toString() !== courseData.tag.toString() ||
       currentValues.courseBenefits !== courseData.whatYouWillLearn ||
-      currentValues.courseCategory !== ((courseData.category as any)?.id || courseData.category?._id) ||
+      currentValues.courseCategory !==
+        (Array.isArray(courseData.category)
+          ? (courseData.category[0] as any)?.id || courseData.category[0]?._id
+          : (courseData.category as any)?.id ||
+            (courseData.category as any)?._id) ||
       currentValues.courseRequirements.toString() !==
         courseData.instructions.toString() ||
       currentValues.courseImage !== courseData.thumbnail
@@ -140,15 +163,15 @@ export const useCourseInformationForm = () => {
       if (isFormUpdated() && course) {
         const courseData = course as Course;
         const currentValues = getValues();
-        
+
         // Obtener el ID del curso (priorizar 'id' sobre '_id' ya que PostgreSQL usa UUIDs con campo 'id')
         const courseId = (courseData as any)?.id || courseData?._id;
-        
+
         if (!courseId) {
           toast.error("ID de curso no encontrado");
           return;
         }
-        
+
         const formData = new FormData();
         formData.append("courseId", courseId);
 
@@ -169,22 +192,28 @@ export const useCourseInformationForm = () => {
         }
         // SIEMPRE enviar categoryId si está presente y es válido
         // Esto asegura que el backend reciba el cambio de categoría correctamente
-        const newCategoryId = String(data.courseCategory || '').trim();
-        const courseCategoryId = String((courseData.category as any)?.id || (courseData.category as any)?._id || '').trim();
-        
-        if (newCategoryId && newCategoryId !== 'undefined' && newCategoryId !== 'null' && newCategoryId !== '' && newCategoryId !== 'NaN') {
+        const newCategoryId = String(data.courseCategory || "").trim();
+        const courseCategoryId = String(
+          getCategoryId(courseData.category),
+        ).trim();
+
+        if (
+          newCategoryId &&
+          !["undefined", "null", "NaN"].includes(newCategoryId)
+        ) {
           // Validar formato UUID
-          const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+          const uuidRegex =
+            /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
           if (uuidRegex.test(newCategoryId)) {
-            // SIEMPRE enviar el categoryId del formulario, incluso si parece igual
-            // Esto asegura sincronización con el backend
             formData.append("categoryId", newCategoryId);
-            console.log("✅ Enviando categoryId al backend:", newCategoryId, "| Categoría actual en Redux:", courseCategoryId);
           } else {
-            console.error("❌ Invalid category ID format when editing course:", newCategoryId);
+            // console.error("Invalid category ID format:", newCategoryId);
           }
         } else {
-          console.warn("⚠️ No se puede enviar categoryId - valor inválido:", newCategoryId);
+          console.warn(
+            "⚠️ No se puede enviar categoryId - valor inválido:",
+            newCategoryId,
+          );
         }
         if (
           currentValues.courseRequirements.toString() !==
@@ -192,7 +221,7 @@ export const useCourseInformationForm = () => {
         ) {
           formData.append(
             "instructions",
-            JSON.stringify(data.courseRequirements)
+            JSON.stringify(data.courseRequirements),
           );
         }
         if (currentValues.courseImage !== courseData.thumbnail) {
@@ -208,24 +237,32 @@ export const useCourseInformationForm = () => {
             const courseId = (courseData as any)?.id || courseData?._id;
             if (courseId && token) {
               try {
-                const fullCourseDetails = await getFullDetailsOfCourse(courseId, token);
+                const fullCourseDetails = await getFullDetailsOfCourse(
+                  courseId,
+                  token,
+                );
                 if (fullCourseDetails?.courseDetails) {
                   // Normalizar la estructura del curso
-                  const normalizedCourse = normalizeCourseStructure(fullCourseDetails.courseDetails);
+                  const normalizedCourse = normalizeCourseStructure(
+                    fullCourseDetails.courseDetails,
+                  );
                   dispatch(setCourse(normalizedCourse));
                 } else {
                   // Si no se puede recargar, usar el resultado del edit
                   dispatch(setCourse(result));
                 }
               } catch (refreshError) {
-                console.error("Error refreshing course after edit:", refreshError);
+                console.error(
+                  "Error refreshing course after edit:",
+                  refreshError,
+                );
                 // Si falla la recarga, usar el resultado del edit
                 dispatch(setCourse(result));
               }
             } else {
               dispatch(setCourse(result));
             }
-            
+
             dispatch(setStep(2));
           }
         } catch (error) {
@@ -243,20 +280,33 @@ export const useCourseInformationForm = () => {
 
     // courseCategory es un string (el ID) desde el select
     const categoryId = data.courseCategory;
-    
+
     // Validar que categoryId existe y es válido
-    if (!categoryId || categoryId === '' || categoryId === 'undefined' || categoryId === 'null') {
-      console.error('Category ID is required and must be a valid UUID');
-      console.error('Received categoryId:', categoryId, 'Type:', typeof categoryId);
-      toast.error('Por favor, selecciona una categoría válida');
+    if (
+      !categoryId ||
+      categoryId === "" ||
+      categoryId === "undefined" ||
+      categoryId === "null"
+    ) {
+      console.error("Category ID is required and must be a valid UUID");
+      console.error(
+        "Received categoryId:",
+        categoryId,
+        "Type:",
+        typeof categoryId,
+      );
+      toast.error("Por favor, selecciona una categoría válida");
       return;
     }
 
     // Validar formato UUID
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(categoryId)) {
-      console.error('Invalid category ID format (expected UUID):', categoryId);
-      toast.error('ID de categoría inválido. Por favor, selecciona una categoría válida');
+      console.error("Invalid category ID format (expected UUID):", categoryId);
+      toast.error(
+        "ID de categoría inválido. Por favor, selecciona una categoría válida",
+      );
       return;
     }
 

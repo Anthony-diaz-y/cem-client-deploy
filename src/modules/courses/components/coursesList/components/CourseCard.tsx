@@ -18,16 +18,29 @@ export const CourseCard: React.FC<CourseCardProps> = ({
   index = 0,
 }) => {
   const courseId = course.id;
-  const avgRating = GetAvgRating(course.ratingAndReviews || []);
-  const reviewCount = course.ratingAndReviews?.length || 0;
+  /* Logic for ratings */
+  const avgRating =
+    typeof course.averageRating === "number"
+      ? course.averageRating
+      : GetAvgRating(course.ratingAndReviews || []);
+  const reviewCount =
+    typeof course.totalReviews === "number"
+      ? course.totalReviews
+      : course.ratingAndReviews?.length || 0;
+
   const badgeDuration = formatDurationForBadge(
     typeof course.totalDuration === "number" ? course.totalDuration : undefined,
   );
 
   const instructor = course.instructor;
-  const category = course.category;
 
-  const categoryName = (course as any).category?.name || "Categoría";
+  /* Handle categories */
+  const categories = Array.isArray(course.category)
+    ? course.category
+    : course.category
+      ? [course.category]
+      : [];
+
   const courseDescription =
     (course as any).courseDescription || "Descripción del curso no disponible.";
 
@@ -85,9 +98,34 @@ export const CourseCard: React.FC<CourseCardProps> = ({
       </div>
 
       <div className="p-4 flex-1 flex flex-col">
-        <span className="text-xs font-semibold text-cem-primary mb-1.5">
-          {categoryName}
-        </span>
+        {/* Render categories as pills */}
+        <div className="flex flex-wrap gap-1.5 mb-2">
+          {categories.slice(0, 3).map((cat: any, index: number) => {
+            const colors = [
+              "bg-pink-100 text-pink-700",
+              "bg-green-100 text-green-700",
+              "bg-blue-100 text-blue-700",
+              "bg-purple-100 text-purple-700",
+              "bg-amber-100 text-amber-700",
+              "bg-cyan-100 text-cyan-700",
+            ];
+            const colorClass = colors[index % colors.length];
+
+            return (
+              <span
+                key={cat.id || cat.name}
+                className={`inline-flex px-2 py-0.5 rounded text-[10px] font-medium ${colorClass}`}
+              >
+                {cat.name}
+              </span>
+            );
+          })}
+          {categories.length > 3 && (
+            <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-medium bg-cem-neutral-gray-100 text-cem-neutral-gray-600">
+              +{categories.length - 3}
+            </span>
+          )}
+        </div>
 
         <div className="flex items-start justify-between gap-2 mb-1.5 min-h-[48px]">
           <h3 className="text-base font-bold text-cem-neutral-gray-900 group-hover:text-cem-primary transition-colors flex-1 leading-snug line-clamp-2">

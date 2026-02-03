@@ -2,11 +2,7 @@
 import type { ConfirmationModalData } from "@shared/components";
 
 export interface CourseAuthorSectionProps {
-  instructor: Course["instructor"] & {
-    additionalDetails?: {
-      about?: string;
-    };
-  };
+  instructor: Instructor;
 }
 
 export interface CourseContentSectionProps {
@@ -20,11 +16,7 @@ export interface CourseContentSectionProps {
 export interface CourseHeroProps {
   course: Course & {
     _id: string | string[];
-    instructor: Course["instructor"] & {
-      additionalDetails?: {
-        about?: string;
-      };
-    };
+    instructor: Instructor;
   };
   avgReviewCount: number;
   onBuyCourse?: () => void;
@@ -33,7 +25,7 @@ export interface CourseHeroProps {
 
 export interface CourseInfoSectionProps {
   whatYouWillLearn: string;
-  tag: string[];
+  categories: Category[];
 }
 
 export interface Instructor {
@@ -46,6 +38,11 @@ export interface Instructor {
   professional_title?: string;
   additionalDetails?: {
     about?: string;
+    professional_title?: string;
+    biography?: string;
+    linkedin?: string;
+    orcid?: string;
+    cti_vitae?: string;
   };
   links?: {
     orcid?: string;
@@ -85,7 +82,7 @@ export interface Course {
   price: number;
   thumbnail: string;
   tag: string[];
-  category: Category;
+  category: Category | Category[];
   studentsEnrolled: string[];
   instructions: string[];
   status: string;
@@ -249,11 +246,7 @@ export interface CourseDetailsResponse {
   data: {
     courseDetails: Course & {
       _id: string | string[];
-      instructor: Instructor & {
-        additionalDetails?: {
-          about?: string;
-        };
-      };
+      instructor: Instructor;
     };
     totalDuration: string;
   };

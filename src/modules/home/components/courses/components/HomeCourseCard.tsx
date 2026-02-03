@@ -20,17 +20,27 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
   categoryName,
 }) => {
   const courseId = course.id;
-  const avgRating = GetAvgRating(course.ratingAndReviews || []);
-  const reviewCount = course.ratingAndReviews?.length || 0;
+  const avgRating =
+    typeof course.averageRating === "number"
+      ? course.averageRating
+      : GetAvgRating(course.ratingAndReviews || []);
+  const reviewCount =
+    typeof course.totalReviews === "number"
+      ? course.totalReviews
+      : course.ratingAndReviews?.length || 0;
   const badgeDuration = formatDurationForBadge(
     typeof course.totalDuration === "number" ? course.totalDuration : undefined,
   );
 
   const instructor = course.instructor;
-  const category = course.category;
-
-  // Use provided categoryName or fall back to course.category.name
-  const displayCategoryName = categoryName || category?.name || "Curso";
+  // Use provided categoryName or fall back to course.category
+  // If categoryName is provided (e.g. from a filtered view), we might want to show just that,
+  // or show all. For now, let's prioritize showing all categories if available.
+  const categories = Array.isArray(course.category)
+    ? course.category
+    : course.category
+      ? [course.category]
+      : [];
 
   const animationDelay = index * 0.1;
 
@@ -92,9 +102,38 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
       {/* Contenido de la tarjeta */}
       <div className="p-4 flex-1 flex flex-col">
         {/* Categoría */}
-        <span className="text-xs font-semibold text-cem-primary mb-1.5">
-          {displayCategoryName}
-        </span>
+        {/* Categorías */}
+        {/* Categorías */}
+        <div className="flex flex-wrap gap-1.5 mb-2">
+          {categories.slice(0, 3).map((cat: any, index: number) => {
+            const colors = [
+              "bg-pink-100 text-pink-700",
+              "bg-green-100 text-green-700",
+              "bg-blue-100 text-blue-700",
+              "bg-purple-100 text-purple-700",
+              "bg-amber-100 text-amber-700",
+              "bg-cyan-100 text-cyan-700",
+            ];
+            const colorClass =
+              categoryName === cat.name
+                ? "bg-cem-primary text-white"
+                : colors[index % colors.length];
+
+            return (
+              <span
+                key={cat.id || cat.name}
+                className={`inline-flex px-2 py-0.5 rounded text-[10px] font-medium ${colorClass}`}
+              >
+                {cat.name}
+              </span>
+            );
+          })}
+          {categories.length > 3 && (
+            <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-medium bg-cem-neutral-gray-100 text-cem-neutral-gray-600">
+              +{categories.length - 3}
+            </span>
+          )}
+        </div>
 
         {/* Título con flecha - min-h para alinear descripciones */}
         <div className="flex items-start justify-between gap-2 mb-1.5 min-h-[48px]">

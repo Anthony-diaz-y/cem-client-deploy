@@ -1,7 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { AdminCourse, publishCourse, deleteCourseAdmin } from "@shared/services/adminAPI";
+import {
+  AdminCourse,
+  publishCourse,
+  deleteCourseAdmin,
+} from "@shared/services/adminAPI";
 import { Img, ConfirmationModal } from "@shared/components";
 import { formatDate } from "@shared/utils/formatDate";
 import { COURSE_STATUS } from "@shared/utils/constants";
@@ -86,7 +90,8 @@ export default function PendingCoursesTable({
             Cursos Pendientes de Publicación
           </h2>
           <p className="text-sm text-richblack-400 mt-1">
-            {courses.length} {courses.length === 1 ? "curso" : "cursos"} esperando aprobación
+            {courses.length} {courses.length === 1 ? "curso" : "cursos"}{" "}
+            esperando aprobación
           </p>
         </div>
 
@@ -145,7 +150,8 @@ export default function PendingCoursesTable({
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div>
                       <p className="text-sm text-richblack-5">
-                        {course.instructor.firstName} {course.instructor.lastName}
+                        {course.instructor.firstName}{" "}
+                        {course.instructor.lastName}
                       </p>
                       <p className="text-xs text-richblack-400">
                         {course.instructor.email}
@@ -154,7 +160,9 @@ export default function PendingCoursesTable({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <p className="text-sm text-richblack-300">
-                      {course.category.name}
+                      {Array.isArray(course.category)
+                        ? course.category.map((c: any) => c.name).join(", ")
+                        : (course.category as any)?.name}
                     </p>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -175,7 +183,9 @@ export default function PendingCoursesTable({
                           : "bg-green-500/20 text-green-500"
                       }`}
                     >
-                      {course.status === COURSE_STATUS.DRAFT ? "Borrador" : "Publicado"}
+                      {course.status === COURSE_STATUS.DRAFT
+                        ? "Borrador"
+                        : "Publicado"}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
@@ -211,13 +221,16 @@ export default function PendingCoursesTable({
       {confirmationModal.isOpen && confirmationModal.course && (
         <ConfirmationModal
           modalData={{
-            text1: confirmationModal.type === "publish"
-              ? `¿Estás seguro de que deseas publicar el curso "${confirmationModal.course.courseName}"?`
-              : `¿Estás seguro de que deseas eliminar el curso "${confirmationModal.course.courseName}"?`,
-            text2: confirmationModal.type === "publish"
-              ? "El curso quedará disponible para los estudiantes después de la publicación."
-              : "Esta acción es irreversible. El curso será eliminado permanentemente.",
-            btn1Text: confirmationModal.type === "publish" ? "Publicar" : "Eliminar",
+            text1:
+              confirmationModal.type === "publish"
+                ? `¿Estás seguro de que deseas publicar el curso "${confirmationModal.course.courseName}"?`
+                : `¿Estás seguro de que deseas eliminar el curso "${confirmationModal.course.courseName}"?`,
+            text2:
+              confirmationModal.type === "publish"
+                ? "El curso quedará disponible para los estudiantes después de la publicación."
+                : "Esta acción es irreversible. El curso será eliminado permanentemente.",
+            btn1Text:
+              confirmationModal.type === "publish" ? "Publicar" : "Eliminar",
             btn2Text: "Cancelar",
             btn1Handler: handleConfirm,
             btn2Handler: () =>
@@ -228,4 +241,3 @@ export default function PendingCoursesTable({
     </>
   );
 }
-
