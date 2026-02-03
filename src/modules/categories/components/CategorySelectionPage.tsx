@@ -19,6 +19,7 @@ import { HomeCourseCard } from "@/modules/home/components/courses/components/Hom
 import { useCoursesData } from "../../courses/hooks/useCoursesData";
 import { FiSearch } from "react-icons/fi";
 import { CoursesListSection } from "../../courses/components/coursesList/components/CoursesListSection";
+import ExperienceSection from "@/modules/courses/components/experience/ExperienceSection";
 
 /** Asigna iconos por defecto según palabras clave en el nombre de la categoría */
 const getCategoryIcon = (categoryName: string) => {
@@ -311,6 +312,7 @@ const CategorySelectionPage: React.FC = () => {
             </motion.div>
           )}
         </AnimatePresence>
+        <ExperienceSection />
       </div>
     </div>
   );

@@ -1,8 +1,6 @@
 "use client";
 
-import React from "react";
-
-export const AboutSection: React.FC = () => {
+export default function ExperienceSection() {
   return (
     <section className="w-full bg-white py-16 md:py-20 lg:py-24">
       <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8">
@@ -13,7 +11,7 @@ export const AboutSection: React.FC = () => {
               Somos CEM
             </p>
             <h2 className="text-4xl lg:text-[48px] font-bold text-cem-neutral-gray-900 leading-tight">
-              Conoce el impacto de CEM
+              Tu experiencia en CEM paso a paso
             </h2>
           </div>
 
@@ -22,8 +20,8 @@ export const AboutSection: React.FC = () => {
             {/* YouTube Embed */}
             <iframe
               className="w-full h-full"
-              src="https://www.youtube.com/embed/l_DN3vn-K-Q" // Video de prueba
-              title="Conoce el impacto de CEM"
+              src="https://www.youtube.com/embed/ecCdpbvh5fk" // Enlace de inserción (embed)
+              title="Tu experiencia en CEM paso a paso"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
@@ -36,4 +34,4 @@ export const AboutSection: React.FC = () => {
       </div>
     </section>
   );
-};
+}
