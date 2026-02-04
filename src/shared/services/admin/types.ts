@@ -50,8 +50,7 @@ export type AdminDashboardStats = AdminDashboardCounts;
 // ================ Instructor Types ================
 export interface Instructor {
   id: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   accountType: string;
   approved: boolean;
@@ -151,8 +150,7 @@ export interface InstructorDetailsResponse {
 }
 
 export interface UpdateInstructorData {
-  firstName?: string;
-  lastName?: string;
+  name?: string;
   email?: string;
   approved?: boolean;
   contactNumber?: number | string | null;
@@ -169,8 +167,7 @@ export interface ToggleInstructorStatusResponse {
   message: string;
   data: {
     id: string;
-    firstName: string;
-    lastName: string;
+    name: string;
     email: string;
     active: boolean;
   };
@@ -182,8 +179,7 @@ export interface ApproveInstructorResponse {
   data: {
     id: string;
     email: string;
-    firstName: string;
-    lastName: string;
+    name: string;
     approved: boolean;
   };
 }
@@ -191,8 +187,7 @@ export interface ApproveInstructorResponse {
 // ================ Student Types ================
 export interface Student {
   id: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   accountType: string;
   active: boolean;
@@ -266,8 +261,7 @@ export interface StudentDetailsResponse {
 }
 
 export interface UpdateStudentData {
-  firstName?: string;
-  lastName?: string;
+  name?: string;
   email?: string;
   contactNumber?: string | number | null;
   active?: boolean;
@@ -291,8 +285,7 @@ export interface ToggleStudentStatusResponse {
 // ================ Course Types ================
 export interface CourseInstructor {
   id: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   image?: string;
 }

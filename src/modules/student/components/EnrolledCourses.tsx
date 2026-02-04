@@ -18,7 +18,7 @@ interface CourseWithId extends Course {
 
 interface SectionWithId extends Section {
   id?: string;
-  subSections?: Section['subSection'];
+  subSections?: Section["subSection"];
 }
 
 interface SubSectionWithId {
@@ -27,7 +27,10 @@ interface SubSectionWithId {
   [key: string]: unknown;
 }
 
-const CourseThumbnailSmall: React.FC<{ thumbnail?: string; courseName?: string }> = ({ thumbnail, courseName }) => {
+const CourseThumbnailSmall: React.FC<{
+  thumbnail?: string;
+  courseName?: string;
+}> = ({ thumbnail, courseName }) => {
   if (!thumbnail) {
     return (
       <div className="h-14 w-14 rounded-lg overflow-hidden bg-richblack-900 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-richblack-800 to-richblack-900 text-richblack-400">
@@ -85,7 +88,7 @@ export default function EnrolledCourses() {
     try {
       setLoading(true);
       const res = await getUserEnrolledCourses(token);
-      
+
       if (res && Array.isArray(res)) {
         setEnrolledCourses(res as Course[]);
       } else {
@@ -108,22 +111,28 @@ export default function EnrolledCourses() {
     const handleFocus = () => {
       if (token) {
         // Solo recargar si la página ha estado oculta por un tiempo
-        setRefreshKey(prev => prev + 1);
+        setRefreshKey((prev) => prev + 1);
       }
     };
 
     // Escuchar evento personalizado para recargar cursos después de compra
     const handleCoursePurchased = () => {
       console.log(STUDENT_TEXTS.events.logPurchase);
-      setRefreshKey(prev => prev + 1);
+      setRefreshKey((prev) => prev + 1);
     };
 
-    window.addEventListener('focus', handleFocus);
-    window.addEventListener(STUDENT_TEXTS.events.coursePurchased, handleCoursePurchased as EventListener);
+    window.addEventListener("focus", handleFocus);
+    window.addEventListener(
+      STUDENT_TEXTS.events.coursePurchased,
+      handleCoursePurchased as EventListener,
+    );
 
     return () => {
-      window.removeEventListener('focus', handleFocus);
-      window.removeEventListener(STUDENT_TEXTS.events.coursePurchased, handleCoursePurchased as EventListener);
+      window.removeEventListener("focus", handleFocus);
+      window.removeEventListener(
+        STUDENT_TEXTS.events.coursePurchased,
+        handleCoursePurchased as EventListener,
+      );
     };
   }, [token]);
 
@@ -166,9 +175,15 @@ export default function EnrolledCourses() {
         <div className="my-8 text-richblack-5">
           {/* Headings */}
           <div className="flex rounded-t-2xl bg-richblack-800 ">
-            <p className="w-[45%] px-5 py-3">{STUDENT_TEXTS.enrolledCourses.table.courseName}</p>
-            <p className="w-1/4 px-2 py-3">{STUDENT_TEXTS.enrolledCourses.table.duration}</p>
-            <p className="flex-1 px-2 py-3">{STUDENT_TEXTS.enrolledCourses.table.progress}</p>
+            <p className="w-[45%] px-5 py-3">
+              {STUDENT_TEXTS.enrolledCourses.table.courseName}
+            </p>
+            <p className="w-1/4 px-2 py-3">
+              {STUDENT_TEXTS.enrolledCourses.table.duration}
+            </p>
+            <p className="flex-1 px-2 py-3">
+              {STUDENT_TEXTS.enrolledCourses.table.progress}
+            </p>
           </div>
 
           {/* loading Skeleton */}
@@ -185,7 +200,7 @@ export default function EnrolledCourses() {
           {/* Course Names */}
           {enrolledCourses?.map((course: Course, i: number, arr: Course[]) => (
             <div
-              className={`flex flex-col sm:flex-row sm:items-center border border-richblack-700 ${
+              className={`flex flex-col sm:flex-row sm:items-center border border-richblack-700 bg-richblack-800 ${
                 i === arr.length - 1 ? "rounded-b-2xl" : "rounded-none"
               }`}
               key={i}
@@ -195,44 +210,61 @@ export default function EnrolledCourses() {
                 onClick={async () => {
                   const courseWithId = course as CourseWithId;
                   const courseId = getCourseId(courseWithId);
-                  
+
                   if (!courseId) {
                     console.error(STUDENT_TEXTS.errors.missingCourseId, course);
                     return;
                   }
 
-                  const firstSection = course.courseContent?.[0] as SectionWithId | undefined;
-                  const sectionId = firstSection ? getSectionId(firstSection) : undefined;
-                  
-                  const subSections = firstSection ? getSubSections(firstSection) : [];
-                  const firstSubSection = subSections.length > 0 ? subSections[0] : null;
-                  const subSectionId = firstSubSection ? getSubSectionId(firstSubSection) : undefined;
+                  const firstSection = course.courseContent?.[0] as
+                    | SectionWithId
+                    | undefined;
+                  const sectionId = firstSection
+                    ? getSectionId(firstSection)
+                    : undefined;
+
+                  const subSections = firstSection
+                    ? getSubSections(firstSection)
+                    : [];
+                  const firstSubSection =
+                    subSections.length > 0 ? subSections[0] : null;
+                  const subSectionId = firstSubSection
+                    ? getSubSectionId(firstSubSection)
+                    : undefined;
 
                   if (courseId && sectionId && subSectionId) {
                     router.push(
-                      `/view-course/${courseId}/section/${sectionId}/sub-section/${subSectionId}`
+                      `/view-course/${courseId}/section/${sectionId}/sub-section/${subSectionId}`,
                     );
                   } else {
                     if (!token) {
                       console.error(STUDENT_TEXTS.errors.tokenRequired);
                       return;
                     }
-                    
+
                     try {
-                      const courseData = await getFullDetailsOfCourse(courseId, token);
-                      
+                      const courseData = await getFullDetailsOfCourse(
+                        courseId,
+                        token,
+                      );
+
                       if (courseData?.courseDetails?.courseContent) {
-                        const courseContent = courseData.courseDetails.courseContent as SectionWithId[];
+                        const courseContent = courseData.courseDetails
+                          .courseContent as SectionWithId[];
                         const firstSec = courseContent[0];
-                        const secId = firstSec ? getSectionId(firstSec) : undefined;
-                        
+                        const secId = firstSec
+                          ? getSectionId(firstSec)
+                          : undefined;
+
                         const subs = firstSec ? getSubSections(firstSec) : [];
                         const firstSub = subs.length > 0 ? subs[0] : null;
-                        const subSecId = firstSub ? getSubSectionId(firstSub) : undefined;
-                        
+                        const subSecId = firstSub
+                          ? getSubSectionId(firstSub)
+                          : undefined;
+
                         if (secId && subSecId) {
                           router.push(
-                            `/view-course/${courseId}/section/${secId}/sub-section/${subSecId}`
+                            `/view-course/${courseId}/section/${secId}/sub-section/${subSecId}`,
                           );
                         } else {
                           router.push(`/view-course/${courseId}`);
@@ -241,14 +273,20 @@ export default function EnrolledCourses() {
                         router.push(`/view-course/${courseId}`);
                       }
                     } catch (error) {
-                      console.error(STUDENT_TEXTS.errors.loadCourseDetails, error);
+                      console.error(
+                        STUDENT_TEXTS.errors.loadCourseDetails,
+                        error,
+                      );
                       router.push(`/view-course/${courseId}`);
                     }
                   }
                 }}
               >
                 {/* Imagen del curso - tamaño fijo y consistente */}
-                <CourseThumbnailSmall thumbnail={course.thumbnail} courseName={course.courseName} />
+                <CourseThumbnailSmall
+                  thumbnail={course.thumbnail}
+                  courseName={course.courseName}
+                />
 
                 <div className="flex max-w-xs flex-col gap-2">
                   <p className="font-semibold">{course.courseName}</p>
@@ -263,14 +301,25 @@ export default function EnrolledCourses() {
               <div className="sm:hidden">
                 {(() => {
                   const totalDuration = course?.totalDuration;
-                  const totalDurationNumber = typeof totalDuration === 'string' 
-                    ? (isNaN(Number(totalDuration)) ? undefined : Number(totalDuration))
-                    : totalDuration;
-                  return <div className="px-2 py-3">{formatTotalDuration(totalDurationNumber)}</div>;
+                  const totalDurationNumber =
+                    typeof totalDuration === "string"
+                      ? isNaN(Number(totalDuration))
+                        ? undefined
+                        : Number(totalDuration)
+                      : totalDuration;
+                  return (
+                    <div className="px-2 py-3">
+                      {formatTotalDuration(totalDurationNumber)}
+                    </div>
+                  );
                 })()}
 
                 <div className="flex sm:w-2/5 flex-col gap-2 px-2 py-3">
-                  <p>{STUDENT_TEXTS.enrolledCourses.table.progressLabel(course.progressPercentage || 0)}</p>
+                  <p>
+                    {STUDENT_TEXTS.enrolledCourses.table.progressLabel(
+                      course.progressPercentage || 0,
+                    )}
+                  </p>
                   <ProgressBar
                     completed={course.progressPercentage || 0}
                     height="8px"
@@ -284,14 +333,21 @@ export default function EnrolledCourses() {
               <div className="hidden w-1/5 sm:flex px-2 py-3">
                 {(() => {
                   const totalDuration = course?.totalDuration;
-                  const totalDurationNumber = typeof totalDuration === 'string' 
-                    ? (isNaN(Number(totalDuration)) ? undefined : Number(totalDuration))
-                    : totalDuration;
+                  const totalDurationNumber =
+                    typeof totalDuration === "string"
+                      ? isNaN(Number(totalDuration))
+                        ? undefined
+                        : Number(totalDuration)
+                      : totalDuration;
                   return formatTotalDuration(totalDurationNumber);
                 })()}
               </div>
               <div className="hidden sm:flex w-1/5 flex-col gap-2 px-2 py-3">
-                <p>{STUDENT_TEXTS.enrolledCourses.table.progressLabel(course.progressPercentage || 0)}</p>
+                <p>
+                  {STUDENT_TEXTS.enrolledCourses.table.progressLabel(
+                    course.progressPercentage || 0,
+                  )}
+                </p>
                 <ProgressBar
                   completed={course.progressPercentage || 0}
                   height="8px"

@@ -150,11 +150,10 @@ export default function PendingCoursesTable({
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div>
                       <p className="text-sm text-richblack-5">
-                        {course.instructor.firstName}{" "}
-                        {course.instructor.lastName}
+                        {course.instructor?.name}
                       </p>
                       <p className="text-xs text-richblack-400">
-                        {course.instructor.email}
+                        {course.instructor?.email}
                       </p>
                     </div>
                   </td>

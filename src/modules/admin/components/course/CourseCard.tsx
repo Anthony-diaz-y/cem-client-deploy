@@ -87,15 +87,14 @@ export default function CourseCard({
         {/* Instructor */}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-richblack-700 flex items-center justify-center text-richblack-400 text-sm font-medium flex-shrink-0">
-            {course.instructor.firstName[0]}
-            {course.instructor.lastName[0]}
+            {course.instructor?.name?.[0] || "?"}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-richblack-5 truncate">
-              {course.instructor.firstName} {course.instructor.lastName}
+              {course.instructor?.name}
             </p>
             <p className="text-xs text-richblack-400 truncate">
-              {course.instructor.email}
+              {course.instructor?.email}
             </p>
           </div>
         </div>
