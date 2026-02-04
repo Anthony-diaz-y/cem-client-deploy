@@ -33,7 +33,7 @@ const ScrollToTop = () => {
   return (
     <button
       onClick={() => typeof window !== "undefined" && window.scrollTo(0, 0)}
-      className={`bg-yellow-25 hover:bg-yellow-50 hover:scale-110 p-3 text-lg text-black rounded-2xl fixed right-3 z-10 duration-500 ease-in-out ${
+      className={`bg-cem-primary hover:bg-cem-primary/90 hover:scale-110 p-3 text-lg text-white rounded-2xl fixed right-3 z-10 duration-500 ease-in-out ${
         showArrow ? "bottom-6" : "-bottom-24"
       }`}
     >

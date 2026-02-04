@@ -20,6 +20,8 @@ import { useCoursesData } from "../../courses/hooks/useCoursesData";
 import { FiSearch } from "react-icons/fi";
 import { CoursesListSection } from "../../courses/components/coursesList/components/CoursesListSection";
 import ExperienceSection from "@/modules/courses/components/experience/ExperienceSection";
+import Footer from "../../../shared/components/navigation/Footer";
+import ScrollToTop from "../../../shared/components/navigation/ScrollToTop";
 
 /** Asigna iconos por defecto según palabras clave en el nombre de la categoría */
 const getCategoryIcon = (categoryName: string) => {
@@ -313,7 +315,9 @@ const CategorySelectionPage: React.FC = () => {
           )}
         </AnimatePresence>
         <ExperienceSection />
+        <ScrollToTop />
       </div>
+      <Footer />
     </div>
   );
 };
