@@ -123,8 +123,7 @@ export default function CourseDetailsContainer({
               <div>
                 <span className="text-richblack-400">Instructor: </span>
                 <span className="text-richblack-5 font-medium">
-                  {data.course.instructor.firstName}{" "}
-                  {data.course.instructor.lastName}
+                  {data.course.instructor.name}
                 </span>
               </div>
               {data.course.category && (

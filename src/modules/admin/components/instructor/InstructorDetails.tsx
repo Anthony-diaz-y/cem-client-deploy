@@ -119,14 +119,14 @@ export default function InstructorDetails({
             <Img
               src={
                 instructor.image ||
-                `https://api.dicebear.com/5.x/initials/svg?seed=${instructor.firstName} ${instructor.lastName}`
+                `https://api.dicebear.com/5.x/initials/svg?seed=${instructor.name}`
               }
-              alt={`${instructor.firstName} ${instructor.lastName}`}
+              alt={`${instructor.name}`}
               className="h-24 w-24 rounded-full object-cover"
             />
             <div className="flex-1">
               <h1 className="text-3xl font-bold text-richblack-5 mb-2">
-                {instructor.firstName} {instructor.lastName}
+                {instructor.name}
               </h1>
               <p className="text-richblack-300 mb-4">{instructor.email}</p>
               <div className="flex gap-3 mb-4">
@@ -354,8 +354,8 @@ export default function InstructorDetails({
         <ConfirmationModal
           modalData={{
             text1: instructor.active
-              ? `¿Estás seguro de desactivar a ${instructor.firstName} ${instructor.lastName}?`
-              : `¿Estás seguro de activar a ${instructor.firstName} ${instructor.lastName}?`,
+              ? `¿Estás seguro de desactivar a ${instructor.name}?`
+              : `¿Estás seguro de activar a ${instructor.name}?`,
             text2: instructor.active
               ? "El instructor no podrá iniciar sesión hasta que sea activado nuevamente."
               : "El instructor podrá iniciar sesión después de la activación.",

@@ -1,7 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { CourseReview, createReviewAdmin, updateReviewAdmin, deleteReviewAdmin } from "@shared/services/adminAPI";
+import {
+  CourseReview,
+  createReviewAdmin,
+  updateReviewAdmin,
+  deleteReviewAdmin,
+} from "@shared/services/adminAPI";
 import { Img, RatingStars, ConfirmationModal } from "@shared/components";
 import { FiStar, FiUser, FiEdit2, FiTrash2, FiPlus } from "react-icons/fi";
 
@@ -64,7 +69,7 @@ export default function ReviewsList({
         rating: newReview.rating,
         review: newReview.review,
       },
-      token
+      token,
     );
 
     if (result) {
@@ -85,7 +90,7 @@ export default function ReviewsList({
         rating: editReview.rating,
         review: editReview.review,
       },
-      token
+      token,
     );
 
     if (result) {
@@ -115,7 +120,9 @@ export default function ReviewsList({
     return (
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-richblack-5">Reseñas del Curso</h2>
+          <h2 className="text-2xl font-bold text-richblack-5">
+            Reseñas del Curso
+          </h2>
           <button
             onClick={() => setShowCreateModal(true)}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 font-medium"
@@ -140,7 +147,9 @@ export default function ReviewsList({
     <div className="space-y-4">
       {/* Header con botón Agregar */}
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-richblack-5">Reseñas del Curso</h2>
+        <h2 className="text-2xl font-bold text-richblack-5">
+          Reseñas del Curso
+        </h2>
         <button
           onClick={() => setShowCreateModal(true)}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 font-medium hover:shadow-lg hover:shadow-blue-500/20"
@@ -163,7 +172,7 @@ export default function ReviewsList({
                 <div className="w-12 h-12 rounded-full overflow-hidden bg-richblack-700 border border-richblack-600">
                   <Img
                     src={review.user.image}
-                    alt={`${review.user.firstName} ${review.user.lastName}`}
+                    alt={`${review.user.name}`}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -174,7 +183,7 @@ export default function ReviewsList({
                 <div className="flex items-start justify-between mb-2">
                   <div>
                     <h4 className="font-semibold text-richblack-5 mb-1">
-                      {review.user.firstName} {review.user.lastName}
+                      {review.user.name}
                     </h4>
                     <p className="text-xs text-richblack-400">
                       {review.user.email}
@@ -381,7 +390,8 @@ export default function ReviewsList({
         <ConfirmationModal
           modalData={{
             text1: "¿Estás seguro de que deseas eliminar esta reseña?",
-            text2: "Esta acción no se puede deshacer. La reseña será eliminada permanentemente.",
+            text2:
+              "Esta acción no se puede deshacer. La reseña será eliminada permanentemente.",
             btn1Text: "Eliminar",
             btn2Text: "Cancelar",
             btn1Handler: () => handleDeleteReview(deleteConfirm),

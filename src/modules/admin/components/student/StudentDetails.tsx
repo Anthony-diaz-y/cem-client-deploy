@@ -112,21 +112,25 @@ export default function StudentDetails({
         <div className="bg-richblack-800 rounded-xl border border-richblack-700 p-6">
           <div className="flex items-start gap-6">
             <Img
-              src={student.image || `https://api.dicebear.com/5.x/initials/svg?seed=${student.firstName} ${student.lastName}`}
-              alt={`${student.firstName} ${student.lastName}`}
+              src={
+                student.image ||
+                `https://api.dicebear.com/5.x/initials/svg?seed=${student.name}`
+              }
+              alt={`${student.name}`}
               className="h-24 w-24 rounded-full object-cover"
             />
             <div className="flex-1">
               <h1 className="text-3xl font-bold text-richblack-5 mb-2">
-                {student.firstName} {student.lastName}
+                {student.name}
               </h1>
               <p className="text-richblack-300 mb-4">{student.email}</p>
               <div className="flex gap-3 mb-4">
                 <span
-                  className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${student.active
-                    ? "bg-green-500/20 text-green-400"
-                    : "bg-gray-500/20 text-gray-400"
-                    }`}
+                  className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${
+                    student.active
+                      ? "bg-green-500/20 text-green-400"
+                      : "bg-gray-500/20 text-gray-400"
+                  }`}
                 >
                   {student.active ? "Activo" : "Inactivo"}
                 </span>
@@ -137,13 +141,23 @@ export default function StudentDetails({
                   <p>Género: {student.additionalDetails.gender}</p>
                 )}
                 {student.additionalDetails?.dateOfBirth && (
-                  <p>Fecha de Nacimiento: {formatDate(student.additionalDetails.dateOfBirth)}</p>
+                  <p>
+                    Fecha de Nacimiento:{" "}
+                    {formatDate(student.additionalDetails.dateOfBirth)}
+                  </p>
                 )}
-                {(student.contactNumber || student.additionalDetails?.contactNumber) && (
-                  <p>Contacto: {student.contactNumber || student.additionalDetails?.contactNumber}</p>
+                {(student.contactNumber ||
+                  student.additionalDetails?.contactNumber) && (
+                  <p>
+                    Contacto:{" "}
+                    {student.contactNumber ||
+                      student.additionalDetails?.contactNumber}
+                  </p>
                 )}
                 {student.additionalDetails?.about && (
-                  <p className="mt-2 text-richblack-300">{student.additionalDetails.about}</p>
+                  <p className="mt-2 text-richblack-300">
+                    {student.additionalDetails.about}
+                  </p>
                 )}
               </div>
             </div>
@@ -157,10 +171,11 @@ export default function StudentDetails({
               </button>
               <button
                 onClick={handleToggleStatus}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${student.active
-                  ? "bg-orange-600 text-white hover:bg-orange-700"
-                  : "bg-green-600 text-white hover:bg-green-700"
-                  }`}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${
+                  student.active
+                    ? "bg-orange-600 text-white hover:bg-orange-700"
+                    : "bg-green-600 text-white hover:bg-green-700"
+                }`}
               >
                 {student.active ? (
                   <>
@@ -182,11 +197,17 @@ export default function StudentDetails({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
             <p className="text-sm text-richblack-400 mb-2">Cursos Inscritos</p>
-            <p className="text-3xl font-bold text-richblack-5">{statistics.enrolledCourses}</p>
+            <p className="text-3xl font-bold text-richblack-5">
+              {statistics.enrolledCourses}
+            </p>
           </div>
           <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
-            <p className="text-sm text-richblack-400 mb-2">Cursos Completados</p>
-            <p className="text-3xl font-bold text-green-400">{statistics.completedCourses}</p>
+            <p className="text-sm text-richblack-400 mb-2">
+              Cursos Completados
+            </p>
+            <p className="text-3xl font-bold text-green-400">
+              {statistics.completedCourses}
+            </p>
           </div>
           <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
             <p className="text-sm text-richblack-400 mb-2">Progreso Promedio</p>
@@ -205,7 +226,9 @@ export default function StudentDetails({
           </div>
           {courses.length === 0 ? (
             <div className="p-8 text-center">
-              <p className="text-richblack-400">Este estudiante no tiene cursos inscritos</p>
+              <p className="text-richblack-400">
+                Este estudiante no tiene cursos inscritos
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -231,7 +254,10 @@ export default function StudentDetails({
                 </thead>
                 <tbody className="divide-y divide-richblack-700">
                   {courses.map((course) => (
-                    <tr key={course.id} className="hover:bg-richblack-900/50 transition-colors">
+                    <tr
+                      key={course.id}
+                      className="hover:bg-richblack-900/50 transition-colors"
+                    >
                       <td className="px-6 py-4">
                         <div className="flex items-start gap-4">
                           <div className="relative h-[60px] w-[100px] flex-shrink-0 rounded-lg overflow-hidden border border-richblack-700">
@@ -245,7 +271,9 @@ export default function StudentDetails({
                             <p className="text-sm font-semibold text-richblack-5 mb-1 line-clamp-2">
                               {course.courseName}
                             </p>
-                            <p className="text-xs text-richblack-400">ID: {course.id.substring(0, 8)}...</p>
+                            <p className="text-xs text-richblack-400">
+                              ID: {course.id.substring(0, 8)}...
+                            </p>
                           </div>
                         </div>
                       </td>
@@ -260,15 +288,20 @@ export default function StudentDetails({
                       <td className="px-6 py-4">
                         <div className="w-full">
                           <div className="flex justify-between items-center mb-1.5">
-                            <span className="text-xs font-medium text-richblack-300">{course.progressPercentage}%</span>
-                            <span className="text-xs text-richblack-400">Completado</span>
+                            <span className="text-xs font-medium text-richblack-300">
+                              {course.progressPercentage}%
+                            </span>
+                            <span className="text-xs text-richblack-400">
+                              Completado
+                            </span>
                           </div>
                           <div className="w-full bg-richblack-700 rounded-full h-2.5 overflow-hidden">
                             <div
-                              className={`h-full rounded-full transition-all duration-500 ease-out ${course.progressPercentage === 100
+                              className={`h-full rounded-full transition-all duration-500 ease-out ${
+                                course.progressPercentage === 100
                                   ? "bg-gradient-to-r from-green-500 to-emerald-400"
                                   : "bg-gradient-to-r from-yellow-50 to-yellow-200"
-                                }`}
+                              }`}
                               style={{ width: `${course.progressPercentage}%` }}
                             ></div>
                           </div>
@@ -276,10 +309,11 @@ export default function StudentDetails({
                       </td>
                       <td className="px-6 py-4">
                         <span
-                          className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full border ${course.completed
-                            ? "bg-green-900/30 text-green-400 border-green-900"
-                            : "bg-blue-900/30 text-blue-400 border-blue-900"
-                            }`}
+                          className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full border ${
+                            course.completed
+                              ? "bg-green-900/30 text-green-400 border-green-900"
+                              : "bg-blue-900/30 text-blue-400 border-blue-900"
+                          }`}
                         >
                           {course.completed ? "Completado" : "En curso"}
                         </span>
@@ -298,16 +332,15 @@ export default function StudentDetails({
         <ConfirmationModal
           modalData={{
             text1: student.active
-              ? `¿Estás seguro de desactivar a ${student.firstName} ${student.lastName}?`
-              : `¿Estás seguro de activar a ${student.firstName} ${student.lastName}?`,
+              ? `¿Estás seguro de desactivar a ${student.name}?`
+              : `¿Estás seguro de activar a ${student.name}?`,
             text2: student.active
               ? "El estudiante no podrá iniciar sesión hasta que sea activado nuevamente."
               : "El estudiante podrá iniciar sesión después de la activación.",
             btn1Text: student.active ? "Desactivar" : "Activar",
             btn2Text: "Cancelar",
             btn1Handler: handleConfirm,
-            btn2Handler: () =>
-              setConfirmationModal({ isOpen: false }),
+            btn2Handler: () => setConfirmationModal({ isOpen: false }),
           }}
         />
       )}

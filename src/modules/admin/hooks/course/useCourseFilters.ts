@@ -70,9 +70,7 @@ export function useCourseFilters(
         return (
           course.courseName.toLowerCase().includes(query) ||
           course.courseDescription.toLowerCase().includes(query) ||
-          `${course.instructor.firstName} ${course.instructor.lastName}`
-            .toLowerCase()
-            .includes(query)
+          course.instructor.name.toLowerCase().includes(query)
         );
       }
 

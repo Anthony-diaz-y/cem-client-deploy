@@ -47,7 +47,7 @@ export default function AllInstructorsTable({
     const success = await toggleInstructorStatus(
       confirmationModal.instructor.id,
       newActiveStatus,
-      token
+      token,
     );
 
     if (success) {
@@ -104,14 +104,14 @@ export default function AllInstructorsTable({
                       <Img
                         src={
                           instructor.image ||
-                          `https://api.dicebear.com/5.x/initials/svg?seed=${instructor.firstName} ${instructor.lastName}`
+                          `https://api.dicebear.com/5.x/initials/svg?seed=${instructor.name}`
                         }
-                        alt={`${instructor.firstName} ${instructor.lastName}`}
+                        alt={`${instructor.name}`}
                         className="h-10 w-10 rounded-full object-cover"
                       />
                       <div>
                         <p className="text-sm font-medium text-richblack-5">
-                          {instructor.firstName} {instructor.lastName}
+                          {instructor.name}
                         </p>
                       </div>
                     </div>
@@ -153,7 +153,7 @@ export default function AllInstructorsTable({
                       <button
                         onClick={() =>
                           router.push(
-                            `/dashboard/admin/instructors/${instructor.id}`
+                            `/dashboard/admin/instructors/${instructor.id}`,
                           )
                         }
                         className="p-2 rounded-md bg-blue-600/20 text-blue-400 hover:bg-blue-600/30 transition-colors"
@@ -164,7 +164,7 @@ export default function AllInstructorsTable({
                       <button
                         onClick={() =>
                           router.push(
-                            `/dashboard/admin/instructors/${instructor.id}/edit`
+                            `/dashboard/admin/instructors/${instructor.id}/edit`,
                           )
                         }
                         className="p-2 rounded-md bg-yellow-600/20 text-yellow-400 hover:bg-yellow-600/30 transition-colors"
@@ -201,8 +201,8 @@ export default function AllInstructorsTable({
         <ConfirmationModal
           modalData={{
             text1: confirmationModal.instructor.active
-              ? `¿Estás seguro de desactivar a ${confirmationModal.instructor.firstName} ${confirmationModal.instructor.lastName}?`
-              : `¿Estás seguro de activar a ${confirmationModal.instructor.firstName} ${confirmationModal.instructor.lastName}?`,
+              ? `¿Estás seguro de desactivar a ${confirmationModal.instructor.name}?`
+              : `¿Estás seguro de activar a ${confirmationModal.instructor.name}?`,
             text2: confirmationModal.instructor.active
               ? "El instructor no podrá iniciar sesión hasta que sea activado nuevamente."
               : "El instructor podrá iniciar sesión después de la activación.",

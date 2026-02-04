@@ -13,6 +13,29 @@ import {
 } from "@shared/services/adminAPI";
 import type { CourseItem } from "../../components/category/types";
 
+function mapApiCoursesToCourseItems(
+  courses: Array<{
+    id: string;
+    courseName: string;
+    status: "Published" | "Draft";
+    instructor: { id: string; name: string; email: string };
+    createdAt: string;
+  }>
+): CourseItem[] {
+  return courses.map((c) => ({
+    id: c.id,
+    courseName: c.courseName,
+    status: c.status,
+    instructor: {
+      id: c.instructor.id,
+      firstName: c.instructor.name.split(" ")[0] || "",
+      lastName: c.instructor.name.split(" ").slice(1).join(" ") || "",
+      email: c.instructor.email,
+    },
+    createdAt: c.createdAt,
+  }));
+}
+
 interface UseDeleteCategoryModalProps {
   category: Category | null;
   token: string;
@@ -54,7 +77,7 @@ export function useDeleteCategoryModal({
       ]);
 
       if (coursesResult) {
-        setCourses(coursesResult.courses);
+        setCourses(mapApiCoursesToCourseItems(coursesResult.courses));
       }
 
       if (categoriesResult) {
@@ -174,7 +197,7 @@ export function useDeleteCategoryModal({
           if (category) {
             const updatedCoursesResult = await getCategoryCourses(category.id, token);
             if (updatedCoursesResult) {
-              setCourses(updatedCoursesResult.courses);
+              setCourses(mapApiCoursesToCourseItems(updatedCoursesResult.courses));
 
               if (updatedCoursesResult.courses.length === 0) {
               } else {
@@ -200,7 +223,7 @@ export function useDeleteCategoryModal({
           if (category) {
             const updatedCoursesResult = await getCategoryCourses(category.id, token);
             if (updatedCoursesResult) {
-              setCourses(updatedCoursesResult.courses);
+              setCourses(mapApiCoursesToCourseItems(updatedCoursesResult.courses));
             }
           }
         }
@@ -211,7 +234,7 @@ export function useDeleteCategoryModal({
         if (category) {
           const updatedCoursesResult = await getCategoryCourses(category.id, token);
           if (updatedCoursesResult) {
-            setCourses(updatedCoursesResult.courses);
+            setCourses(mapApiCoursesToCourseItems(updatedCoursesResult.courses));
           }
         }
       }
@@ -221,7 +244,7 @@ export function useDeleteCategoryModal({
         try {
           const updatedCoursesResult = await getCategoryCourses(category.id, token);
           if (updatedCoursesResult) {
-            setCourses(updatedCoursesResult.courses);
+            setCourses(mapApiCoursesToCourseItems(updatedCoursesResult.courses));
           }
         } catch {
         }
@@ -244,7 +267,7 @@ export function useDeleteCategoryModal({
       if (category) {
         const verifyCourses = await getCategoryCourses(category.id, token);
         if (verifyCourses && verifyCourses.courses.length > 0) {
-          setCourses(verifyCourses.courses);
+          setCourses(mapApiCoursesToCourseItems(verifyCourses.courses));
 
           if (otherCategories.length === 0) {
             const categoriesResult = await getAllCategories(token);
@@ -344,7 +367,7 @@ export function useDeleteCategoryModal({
         if (category) {
           const updatedCourses = await getCategoryCourses(category.id, token);
           if (updatedCourses) {
-            setCourses(updatedCourses.courses);
+            setCourses(mapApiCoursesToCourseItems(updatedCourses.courses));
 
             if (updatedCourses.courses.length === 0) {
               toast.success("Todos los cursos fueron eliminados. Ahora puedes eliminar la categoría.");

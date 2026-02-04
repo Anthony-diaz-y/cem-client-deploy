@@ -35,9 +35,10 @@ export default function StudentsTable({ students }: StudentsTableProps) {
       // Búsqueda por nombre/email
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
-        const fullName = `${student.firstName} ${student.lastName}`.toLowerCase();
+        const fullName = `${student.name}`.toLowerCase();
         return (
-          fullName.includes(query) || student.email.toLowerCase().includes(query)
+          fullName.includes(query) ||
+          student.email.toLowerCase().includes(query)
         );
       }
 
@@ -93,7 +94,7 @@ export default function StudentsTable({ students }: StudentsTableProps) {
                 | "all"
                 | "completed"
                 | "in-progress"
-                | "not-started"
+                | "not-started",
             )
           }
           className="px-4 py-2 bg-richblack-700 border border-richblack-600 rounded-lg text-richblack-5 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -164,12 +165,12 @@ export default function StudentsTable({ students }: StudentsTableProps) {
                       <div className="w-10 h-10 rounded-full overflow-hidden bg-richblack-700 flex-shrink-0">
                         <Img
                           src={student.image}
-                          alt={`${student.firstName} ${student.lastName}`}
+                          alt={`${student.name}`}
                           className="w-full h-full object-cover"
                         />
                       </div>
                       <span className="text-sm font-medium text-richblack-5">
-                        {student.firstName} {student.lastName}
+                        {student.name}
                       </span>
                     </div>
                   </td>
@@ -216,4 +217,3 @@ export default function StudentsTable({ students }: StudentsTableProps) {
     </div>
   );
 }
-

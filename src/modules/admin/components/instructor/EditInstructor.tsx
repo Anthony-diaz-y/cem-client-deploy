@@ -2,7 +2,11 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { getInstructorDetails, updateInstructor, UpdateInstructorData } from "@shared/services/adminAPI";
+import {
+  getInstructorDetails,
+  updateInstructor,
+  UpdateInstructorData,
+} from "@shared/services/adminAPI";
 import { Loading } from "@shared/components";
 import { FiArrowLeft } from "react-icons/fi";
 
@@ -15,18 +19,20 @@ interface EditInstructorProps {
  * Componente para editar información de un instructor
  * Permite modificar nombre, email, número de contacto y estado de aprobación
  */
-export default function EditInstructor({ instructorId, token }: EditInstructorProps) {
+export default function EditInstructor({
+  instructorId,
+  token,
+}: EditInstructorProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<UpdateInstructorData>({
-    firstName: "",
-    lastName: "",
+    name: "",
     email: "",
     approved: false,
     contactNumber: null,
   });
-  
+
   // Estado local para el input del teléfono (siempre string)
   const [contactNumberInput, setContactNumberInput] = useState<string>("");
 
@@ -39,8 +45,7 @@ export default function EditInstructor({ instructorId, token }: EditInstructorPr
       if (data?.instructor) {
         const contactNumber = data.instructor.profile?.contactNumber;
         setFormData({
-          firstName: data.instructor.firstName,
-          lastName: data.instructor.lastName,
+          name: data.instructor.name,
           email: data.instructor.email,
           approved: data.instructor.approved || false,
           contactNumber: contactNumber || null,
@@ -67,28 +72,31 @@ export default function EditInstructor({ instructorId, token }: EditInstructorPr
     setSaving(true);
     try {
       // Construir el valor del número de contacto
-      const contactNumberValue = contactNumberInput.trim() === "" 
-        ? null 
-        : (contactNumberInput.trim() ? parseInt(contactNumberInput.trim(), 10) : null);
-      
+      const contactNumberValue =
+        contactNumberInput.trim() === ""
+          ? null
+          : contactNumberInput.trim()
+            ? parseInt(contactNumberInput.trim(), 10)
+            : null;
+
       // Validar que el número sea válido
-      const finalContactNumber = (contactNumberValue !== null && !isNaN(contactNumberValue)) 
-        ? contactNumberValue 
-        : null;
-      
+      const finalContactNumber =
+        contactNumberValue !== null && !isNaN(contactNumberValue)
+          ? contactNumberValue
+          : null;
+
       // Construir el objeto de actualización explícitamente
       const updates: UpdateInstructorData = {};
-      
-      if (formData.firstName) updates.firstName = formData.firstName;
-      if (formData.lastName) updates.lastName = formData.lastName;
+
+      if (formData.name) updates.name = formData.name;
       if (formData.email) updates.email = formData.email;
       if (formData.approved !== undefined) updates.approved = formData.approved;
-      
+
       // Incluir contactNumber incluso si es null (para eliminar el número)
       updates.contactNumber = finalContactNumber;
-      
+
       const result = await updateInstructor(instructorId, updates, token);
-      
+
       if (result) {
         router.push(`/dashboard/admin/instructors/${instructorId}`);
       }
@@ -107,7 +115,9 @@ export default function EditInstructor({ instructorId, token }: EditInstructorPr
     <div className="space-y-6">
       {/* Botón volver */}
       <button
-        onClick={() => router.push(`/dashboard/admin/instructors/${instructorId}`)}
+        onClick={() =>
+          router.push(`/dashboard/admin/instructors/${instructorId}`)
+        }
         className="flex items-center gap-2 text-richblack-300 hover:text-richblack-5 transition-colors"
       >
         <FiArrowLeft size={20} />
@@ -115,7 +125,9 @@ export default function EditInstructor({ instructorId, token }: EditInstructorPr
       </button>
 
       <div className="bg-richblack-800 rounded-xl border border-richblack-700 p-6">
-        <h1 className="text-3xl font-bold text-richblack-5 mb-6">Editar Instructor</h1>
+        <h1 className="text-3xl font-bold text-richblack-5 mb-6">
+          Editar Instructor
+        </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -125,9 +137,9 @@ export default function EditInstructor({ instructorId, token }: EditInstructorPr
               </label>
               <input
                 type="text"
-                value={formData.firstName}
+                value={formData.name}
                 onChange={(e) =>
-                  setFormData({ ...formData, firstName: e.target.value })
+                  setFormData({ ...formData, name: e.target.value })
                 }
                 required
                 className="w-full px-4 py-3 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -140,9 +152,9 @@ export default function EditInstructor({ instructorId, token }: EditInstructorPr
               </label>
               <input
                 type="text"
-                value={formData.lastName}
+                value={formData.name}
                 onChange={(e) =>
-                  setFormData({ ...formData, lastName: e.target.value })
+                  setFormData({ ...formData, name: e.target.value })
                 }
                 required
                 className="w-full px-4 py-3 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -168,7 +180,9 @@ export default function EditInstructor({ instructorId, token }: EditInstructorPr
           <div>
             <label className="block text-sm font-medium text-richblack-300 mb-2">
               Número de Contacto
-              <span className="text-richblack-500 text-xs ml-2">(Opcional)</span>
+              <span className="text-richblack-500 text-xs ml-2">
+                (Opcional)
+              </span>
             </label>
             <input
               type="tel"
@@ -187,7 +201,8 @@ export default function EditInstructor({ instructorId, token }: EditInstructorPr
               className="w-full px-4 py-3 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 placeholder-richblack-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
             />
             <p className="text-xs text-richblack-400 mt-1">
-              Ingresa solo números. Déjalo vacío para eliminar el número de contacto.
+              Ingresa solo números. Déjalo vacío para eliminar el número de
+              contacto.
             </p>
           </div>
 
@@ -210,7 +225,9 @@ export default function EditInstructor({ instructorId, token }: EditInstructorPr
           <div className="flex gap-3 pt-4">
             <button
               type="button"
-              onClick={() => router.push(`/dashboard/admin/instructors/${instructorId}`)}
+              onClick={() =>
+                router.push(`/dashboard/admin/instructors/${instructorId}`)
+              }
               className="px-6 py-3 bg-richblack-700 text-richblack-300 rounded-lg font-medium hover:bg-richblack-600 transition-colors"
             >
               Cancelar
@@ -228,4 +245,3 @@ export default function EditInstructor({ instructorId, token }: EditInstructorPr
     </div>
   );
 }
-

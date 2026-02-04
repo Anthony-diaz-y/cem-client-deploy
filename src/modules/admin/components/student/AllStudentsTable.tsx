@@ -61,7 +61,7 @@ export default function AllStudentsTable({
 
     const success = await toggleStudentStatus(
       confirmationModal.student.id,
-      token
+      token,
     );
 
     if (success) {
@@ -115,14 +115,14 @@ export default function AllStudentsTable({
                       <Img
                         src={
                           student.image ||
-                          `https://api.dicebear.com/5.x/initials/svg?seed=${student.firstName} ${student.lastName}`
+                          `https://api.dicebear.com/5.x/initials/svg?seed=${student.name}`
                         }
-                        alt={`${student.firstName} ${student.lastName}`}
+                        alt={`${student.name}`}
                         className="h-10 w-10 rounded-full object-cover"
                       />
                       <div>
                         <p className="text-sm font-medium text-richblack-5">
-                          {student.firstName} {student.lastName}
+                          {student.name}
                         </p>
                       </div>
                     </div>
@@ -134,10 +134,11 @@ export default function AllStudentsTable({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${student.active
-                        ? "bg-green-500/20 text-green-400"
-                        : "bg-gray-500/20 text-gray-400"
-                        }`}
+                      className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                        student.active
+                          ? "bg-green-500/20 text-green-400"
+                          : "bg-gray-500/20 text-gray-400"
+                      }`}
                     >
                       {student.active ? "Activo" : "Inactivo"}
                     </span>
@@ -152,7 +153,9 @@ export default function AllStudentsTable({
                       <button
                         onClick={() => {
                           if (student.id) {
-                            router.push(`/dashboard/admin/students/${student.id}`);
+                            router.push(
+                              `/dashboard/admin/students/${student.id}`,
+                            );
                           } else {
                             console.error("Student ID is missing:", student);
                           }
@@ -171,10 +174,11 @@ export default function AllStudentsTable({
                       </button>
                       <button
                         onClick={() => handleToggleStatus(student)}
-                        className={`p-2 rounded-md transition-colors ${student.active
-                          ? "bg-orange-600/20 text-orange-400 hover:bg-orange-600/30"
-                          : "bg-green-600/20 text-green-400 hover:bg-green-600/30"
-                          }`}
+                        className={`p-2 rounded-md transition-colors ${
+                          student.active
+                            ? "bg-orange-600/20 text-orange-400 hover:bg-orange-600/30"
+                            : "bg-green-600/20 text-green-400 hover:bg-green-600/30"
+                        }`}
                         title={student.active ? "Desactivar" : "Activar"}
                       >
                         {student.active ? (
@@ -197,8 +201,8 @@ export default function AllStudentsTable({
         <ConfirmationModal
           modalData={{
             text1: confirmationModal.student.active
-              ? `¿Estás seguro de desactivar a ${confirmationModal.student.firstName} ${confirmationModal.student.lastName}?`
-              : `¿Estás seguro de activar a ${confirmationModal.student.firstName} ${confirmationModal.student.lastName}?`,
+              ? `¿Estás seguro de desactivar a ${confirmationModal.student.name}?`
+              : `¿Estás seguro de activar a ${confirmationModal.student.name}?`,
             text2: confirmationModal.student.active
               ? "El estudiante no podrá iniciar sesión hasta que sea activado nuevamente."
               : "El estudiante podrá iniciar sesión después de la activación.",

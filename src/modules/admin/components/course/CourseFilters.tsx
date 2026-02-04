@@ -12,8 +12,7 @@ interface Category {
 
 interface Instructor {
   id: string;
-  firstName: string;
-  lastName: string;
+  name: string;
 }
 
 interface CourseFiltersProps {
@@ -76,9 +75,7 @@ export default function CourseFilters({
         <CustomDropdown
           label="Estado"
           value={statusFilter}
-          onChange={(value) =>
-            onStatusChange(value as typeof statusFilter)
-          }
+          onChange={(value) => onStatusChange(value as typeof statusFilter)}
           options={[
             { value: "all", label: "Todos" },
             { value: COURSE_STATUS.DRAFT, label: "Borrador" },
@@ -114,7 +111,7 @@ export default function CourseFilters({
             { value: "all", label: "Todos" },
             ...instructors.map((instructor) => ({
               value: instructor.id,
-              label: `${instructor.firstName} ${instructor.lastName}`,
+              label: instructor.name,
             })),
           ]}
           placeholder="Seleccionar instructor"
@@ -123,4 +120,3 @@ export default function CourseFilters({
     </div>
   );
 }
-

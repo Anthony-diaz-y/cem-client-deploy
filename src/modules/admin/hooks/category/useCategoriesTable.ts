@@ -88,7 +88,19 @@ export function useCategoriesTable({
       try {
         const result = await getCategoryCourses(categoryId, token);
         if (result) {
-          const coursesList = result.courses || [];
+          const rawCourses = result.courses || [];
+          const coursesList: CourseItem[] = rawCourses.map((c) => ({
+            id: c.id,
+            courseName: c.courseName,
+            status: c.status,
+            instructor: {
+              id: c.instructor.id,
+              firstName: c.instructor.name.split(" ")[0] || "",
+              lastName: c.instructor.name.split(" ").slice(1).join(" ") || "",
+              email: c.instructor.email,
+            },
+            createdAt: c.createdAt,
+          }));
           setCategoriesWithCourses((prev) =>
             prev.map((cat) =>
               cat.id === categoryId

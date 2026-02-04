@@ -38,10 +38,12 @@ export default function EditStudentModal({
 
   useEffect(() => {
     if (student) {
-      setValue("firstName", student.firstName);
-      setValue("lastName", student.lastName);
+      setValue("firstName", student.name);
       setValue("email", student.email);
-      setValue("contactNumber", student.contactNumber || student.additionalDetails?.contactNumber || "");
+      setValue(
+        "contactNumber",
+        student.contactNumber || student.additionalDetails?.contactNumber || "",
+      );
       setValue("active", student.active);
     }
   }, [student, setValue]);
@@ -51,12 +53,11 @@ export default function EditStudentModal({
       const result = await updateStudent(
         student.id,
         {
-          firstName: data.firstName,
-          lastName: data.lastName,
+          name: data.firstName,
           email: data.email,
           contactNumber: data.contactNumber,
         },
-        token
+        token,
       );
 
       if (result) {

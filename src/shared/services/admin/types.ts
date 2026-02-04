@@ -370,8 +370,7 @@ export interface CourseDetailsCourseInfo {
   updatedAt: string;
   instructor: {
     id: string;
-    firstName: string;
-    lastName: string;
+    name: string;
     email: string;
     image: string;
     accountType: "Instructor";
@@ -399,8 +398,7 @@ export interface CourseDetailsStatistics {
 
 export interface EnrolledStudent {
   id: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   image: string;
   enrolledAt: string | null;
@@ -450,8 +448,7 @@ export interface CourseReview {
   userId: string;
   user: {
     id: string;
-    firstName: string;
-    lastName: string;
+    name: string;
     email: string;
     image: string;
   };
@@ -566,8 +563,7 @@ export interface GetCategoryCoursesResponse {
       status: "Published" | "Draft";
       instructor: {
         id: string;
-        firstName: string;
-        lastName: string;
+        name: string;
         email: string;
       };
       createdAt: string;
@@ -660,8 +656,7 @@ export interface DeleteReviewResponse {
     courseId: string;
     user: {
       id: string;
-      firstName: string;
-      lastName: string;
+      name: string;
       email: string;
     };
   };

@@ -82,7 +82,9 @@ export default function PendingInstructorsTable({
             Instructores Pendientes de Aprobación
           </h2>
           <p className="text-sm text-richblack-400 mt-1">
-            {instructors.length} {instructors.length === 1 ? "instructor" : "instructores"} esperando aprobación
+            {instructors.length}{" "}
+            {instructors.length === 1 ? "instructor" : "instructores"} esperando
+            aprobación
           </p>
         </div>
 
@@ -113,19 +115,24 @@ export default function PendingInstructorsTable({
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <Img
-                        src={instructor.image || `https://api.dicebear.com/5.x/initials/svg?seed=${instructor.firstName} ${instructor.lastName}`}
-                        alt={`${instructor.firstName} ${instructor.lastName}`}
+                        src={
+                          instructor.image ||
+                          `https://api.dicebear.com/5.x/initials/svg?seed=${instructor.name}`
+                        }
+                        alt={`${instructor.name}`}
                         className="h-10 w-10 rounded-full object-cover"
                       />
                       <div>
                         <p className="text-sm font-medium text-richblack-5">
-                          {instructor.firstName} {instructor.lastName}
+                          {instructor.name}
                         </p>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="text-sm text-richblack-300">{instructor.email}</p>
+                    <p className="text-sm text-richblack-300">
+                      {instructor.email}
+                    </p>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <p className="text-sm text-richblack-300">
@@ -158,22 +165,34 @@ export default function PendingInstructorsTable({
       {/* Modal de confirmación */}
       {confirmationModal.isOpen && confirmationModal.instructor && (
         <ConfirmationModal
-          modalData={confirmationModal.instructor ? {
-            text1: confirmationModal.type === "approve"
-              ? `¿Estás seguro de que deseas aprobar a ${confirmationModal.instructor.firstName} ${confirmationModal.instructor.lastName}?`
-              : `¿Estás seguro de que deseas rechazar a ${confirmationModal.instructor.firstName} ${confirmationModal.instructor.lastName}?`,
-            text2: confirmationModal.type === "approve"
-              ? "El instructor podrá iniciar sesión y crear cursos después de la aprobación."
-              : "El instructor no podrá iniciar sesión hasta que sea aprobado nuevamente.",
-            btn1Text: confirmationModal.type === "approve" ? "Aprobar" : "Rechazar",
-            btn2Text: "Cancelar",
-            btn1Handler: handleConfirm,
-            btn2Handler: () =>
-              setConfirmationModal({ isOpen: false, type: null, instructor: null }),
-          } : null}
+          modalData={
+            confirmationModal.instructor
+              ? {
+                  text1:
+                    confirmationModal.type === "approve"
+                      ? `¿Estás seguro de que deseas aprobar a ${confirmationModal.instructor.name}?`
+                      : `¿Estás seguro de que deseas rechazar a ${confirmationModal.instructor.name}?`,
+                  text2:
+                    confirmationModal.type === "approve"
+                      ? "El instructor podrá iniciar sesión y crear cursos después de la aprobación."
+                      : "El instructor no podrá iniciar sesión hasta que sea aprobado nuevamente.",
+                  btn1Text:
+                    confirmationModal.type === "approve"
+                      ? "Aprobar"
+                      : "Rechazar",
+                  btn2Text: "Cancelar",
+                  btn1Handler: handleConfirm,
+                  btn2Handler: () =>
+                    setConfirmationModal({
+                      isOpen: false,
+                      type: null,
+                      instructor: null,
+                    }),
+                }
+              : null
+          }
         />
       )}
     </>
   );
 }
-

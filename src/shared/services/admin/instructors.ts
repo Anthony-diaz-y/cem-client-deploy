@@ -278,11 +278,8 @@ export async function updateInstructor(
   try {
     const body: UpdateInstructorData = {};
 
-    if (updates.firstName !== undefined) {
-      body.firstName = updates.firstName;
-    }
-    if (updates.lastName !== undefined) {
-      body.lastName = updates.lastName;
+    if (updates.name !== undefined) {
+      body.name = updates.name;
     }
     if (updates.email !== undefined) {
       body.email = updates.email;
