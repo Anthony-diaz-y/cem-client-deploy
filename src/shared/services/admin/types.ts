@@ -305,7 +305,7 @@ export interface AdminCourse {
   createdAt: string;
   updatedAt: string;
   instructor: CourseInstructor;
-  category: CourseCategory;
+  category: CourseCategory | CourseCategory[];
   totalStudentsEnrolled?: number;
   averageRating?: number;
   totalReviews?: number;

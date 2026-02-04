@@ -65,6 +65,9 @@ export default function CourseCard({
       {/* Contenido de la tarjeta */}
       <div className="p-6 space-y-4 flex-1 flex flex-col">
         {/* Título y categoría */}
+        <h3 className="text-lg font-bold text-richblack-5 line-clamp-2 min-h-[56px] mb-2">
+          {course.courseName}
+        </h3>
         {/* Categorías */}
         <div className="flex flex-wrap gap-2 mb-3">
           {Array.isArray(course.category) ? (
