@@ -26,7 +26,7 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
   if (error) return <CoursesError />;
 
   return (
-    <div className="w-full bg-white py-16">
+    <div className="w-full bg-white ">
       <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8">
         <CoursesSectionHeader />
 

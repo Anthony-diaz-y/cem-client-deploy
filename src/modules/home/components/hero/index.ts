@@ -1,3 +1,3 @@
 // Hero - Public API
-export { HeroSection } from "./components/HeroSection";
+export { HeroSection } from "./HeroSection";
 
