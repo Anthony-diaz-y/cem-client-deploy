@@ -10,7 +10,7 @@ import starUp from "@shared/assets/allies/starUp.webp";
 
 export const PartnersSection: React.FC = () => {
   return (
-    <div className="border-cem-neutral-gray-200 relative pb-8">
+    <div className="border-cem-neutral-gray-200 relative ">
       <div className="max-w-[1200px] mx-auto">
         {/* Línea horizontal decorativa */}
         <div className="relative mb-6 z-30 w-full" style={{ height: "6px" }}>

@@ -92,7 +92,7 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className={`z-[100] flex h-16 w-full items-center justify-center bg-cem-neutral-white border-b-cem-neutral-gray-200 translate-y-0 transition-all ${showNavbar}`}
+        className={`z-[100] pt-2 pb-2 xl:px-16 fixed flex h-16 w-full items-center justify-center bg-cem-neutral-white border-b-cem-neutral-gray-200 translate-y-0 transition-all `}
       >
         <div className="flex w-11/12 max-w-maxContent items-center justify-between gap-6">
           {/* Logo CEM */}
