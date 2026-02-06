@@ -20,6 +20,8 @@ import { useCourseDetails } from "../hooks/useCourseDetails";
 import { useCourseCalculations } from "../hooks/useCourseCalculations";
 import { useCourseActions } from "../hooks/useCourseActions";
 
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+
 /**
  * CourseDetailsContainer - Container component for Course Details page
  */
@@ -88,11 +90,10 @@ const CourseDetailsContainer = () => {
       : [];
 
   return (
-    <>
+    <PayPalScriptProvider options={{ "clientId": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "test", currency: "USD" }}>
       <div
-        className={`relative min-h-screen bg-cem-neutral-white course-details-enter ${
-          isContentReady ? "opacity-100" : "opacity-0"
-        } course-details-transition`}
+        className={`relative min-h-screen bg-cem-neutral-white course-details-enter ${isContentReady ? "opacity-100" : "opacity-0"
+          } course-details-transition`}
       >
         {/* 1. Top Section - Blue Background (Hero) */}
         <div className="w-full bg-cem-celeste-light mt-16 border-b border-transparent course-hero-enter">
@@ -159,7 +160,7 @@ const CourseDetailsContainer = () => {
       <Footer />
       <FloatingWhatsApp />
       {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
-    </>
+    </PayPalScriptProvider>
   );
 };
 

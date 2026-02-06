@@ -133,6 +133,7 @@ export const useCourseActions = (
 
       const coursesId = [String(normalizedCourseId)];
 
+      /*
       // TEMPORAL: Mostrar advertencia antes de proceder
       const confirmed = window.confirm(
         `${COURSE_TEXTS.actions.temporary.warning}\n\n` +
@@ -144,6 +145,9 @@ export const useCourseActions = (
       if (confirmed) {
         enrollCourseDirectly(coursesId);
       }
+      */
+      console.log("handleBuyCourse desactivado. Favor de usar el carrito para pagar con PayPal.");
+      router.push("/cart");
       return;
     }
 
@@ -178,7 +182,7 @@ export const useCourseActions = (
         ratingAndReviews: course.ratingAndReviews,
         averageRating:
           typeof (course as any).averageRating === "number" ||
-          typeof (course as any).averageRating === "string"
+            typeof (course as any).averageRating === "string"
             ? (course as any).averageRating
             : undefined,
         totalReviews:

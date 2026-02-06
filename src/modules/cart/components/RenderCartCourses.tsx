@@ -1,5 +1,12 @@
 import React from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { PayPalButtons } from "@paypal/react-paypal-js";
+import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { removeFromCart } from "@modules/course/store/cartSlice";
+import { apiConnector } from "@shared/services/apiConnector";
+import { studentEndpoints } from "@shared/services/apis";
 import { StarRating } from "@shared/components";
 import { CartItem } from "@modules/course/types";
 import { useCartCourses } from "../hooks/useCartCourses";
@@ -15,6 +22,9 @@ export default function RenderCartCourses() {
     calculateRating,
     formatPrice,
   } = useCartCourses();
+
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   // Validar que cart existe y tiene elementos
   if (!cart || cart.length === 0) {
@@ -70,12 +80,62 @@ export default function RenderCartCourses() {
             <div className="flex flex-col items-end justify-between gap-2 flex-shrink-0">
               <div className="flex items-center gap-2">
                 {/* Botón Buy Now individual */}
-                <button
-                  onClick={() => handleBuyCourse(course)}
-                  className="flex items-center gap-x-1 rounded-md bg-yellow-50 text-richblack-900 py-1.5 px-3 hover:bg-yellow-100 transition-colors text-xs sm:text-sm font-semibold"
-                >
-                  <span>{CART_TEXTS.buy}</span>
-                </button>
+                {/* Botón Buy Now individual (PayPal) -> COMPRAR SOLO ESTE CURSO */}
+                <div style={{ width: "150px", position: "relative", zIndex: 1 }}>
+                  <PayPalButtons
+                    style={{ layout: "horizontal", height: 35, tagline: false }}
+                    createOrder={(data, actions) => {
+                      console.log("Creando orden individual PayPal para:", courseId);
+                      return apiConnector<{ orderId: string }>("POST", studentEndpoints.CREATE_PAYPAL_ORDER_API, {
+                        coursesId: [courseId],
+                      })
+                        .then((response) => {
+                          const orderId = response.data.orderId;
+                          if (orderId) return orderId;
+                          throw new Error("Order ID not found in response");
+                        })
+                        .catch((err) => {
+                          console.error("Error creating individual order:", err);
+
+                          const errorData = err.response?.data;
+                          const errorMessage = errorData?.message || "";
+
+                          if (
+                            typeof errorMessage === "string" &&
+                            (errorMessage.toLowerCase().includes("already enrolled") || errorMessage.toLowerCase().includes("ya está inscrito"))
+                          ) {
+                            toast.success("¡Ya estás inscrito! Redirigiendo...");
+                            dispatch(removeFromCart(courseId));
+                            router.push("/dashboard/enrolled-courses");
+                            return Promise.reject("ALREADY_ENROLLED");
+                          }
+
+                          if (err.response?.status === 401) {
+                            toast.error("Sesión expirada.");
+                          } else {
+                            toast.error("Error al iniciar pago individual");
+                          }
+                          throw err;
+                        });
+                    }}
+                    onApprove={(data, actions) => {
+                      return apiConnector("POST", studentEndpoints.CAPTURE_PAYPAL_ORDER_API, {
+                        orderId: data.orderID
+                      })
+                        .then((response) => {
+                          toast.success("¡Compra exitosa!");
+                          // Solo removemos ESTE curso del carrito
+                          dispatch(removeFromCart(courseId));
+                          router.push("/dashboard/enrolled-courses");
+                        })
+                        .catch((err) => {
+                          console.error("Error capturing individual order:", err);
+                          toast.error("El pago falló");
+                          throw err;
+                        });
+                    }}
+                  />
+                </div>
 
                 {/* Botón Remove */}
                 <button
