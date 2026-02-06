@@ -33,7 +33,7 @@ function CourseDetailsCard({
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  const { thumbnail, price } = course;
+  const { thumbnail, price, priceUSD } = course;
   // Asegurar que tenemos un ID válido, probando ambas propiedades comunes
   const courseIdToBuy = course._id || (course as any).id;
 
@@ -96,7 +96,7 @@ function CourseDetailsCard({
           </div>
           <div className="flex items-center gap-2 text-cem-neutral-gray-600">
             <p className="text-xl font-semibold">
-              $ {(price / 3.75).toFixed(2)}
+              $ {priceUSD ? Number(priceUSD).toFixed(2) : (price / 3.75).toFixed(2)}
             </p>
             <span className="text-xs font-medium text-cem-neutral-gray-400">
               USD (aprox.)

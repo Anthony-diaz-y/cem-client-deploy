@@ -80,6 +80,7 @@ export interface Course {
   courseContent: Section[];
   ratingAndReviews: Review[];
   price: number;
+  priceUSD?: number;
   thumbnail: string;
   tag: string[];
   category: Category | Category[];
@@ -220,6 +221,7 @@ export interface CourseDetailsCardProps {
     | "_id"
     | "thumbnail"
     | "price"
+    | "priceUSD"
     | "courseName"
     | "studentsEnrolled"
     | "instructions"
