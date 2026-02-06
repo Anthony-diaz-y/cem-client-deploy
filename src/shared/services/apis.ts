@@ -23,8 +23,10 @@ export const studentEndpoints = {
   COURSE_PAYMENT_API: BASE_URL + "/payment/capturePayment",
   COURSE_VERIFY_API: BASE_URL + "/payment/verifyPayment",
   SEND_PAYMENT_SUCCESS_EMAIL_API: BASE_URL + "/payment/sendPaymentSuccessEmail",
-  // ⚠️ TEMPORAL: Endpoint para comprar cursos sin pasarela de pago - REMOVER cuando se implemente la pasarela
   BUY_NOW_TEMPORARY_API: BASE_URL + "/payment/buyNowTemporary",
+  // PayPal Endpoints
+  CREATE_PAYPAL_ORDER_API: BASE_URL + "/payment/create-order",
+  CAPTURE_PAYPAL_ORDER_API: BASE_URL + "/payment/capture-order",
 };
 
 // COURSE ENDPOINTS
@@ -149,3 +151,9 @@ export const subsectionDiscussionsEndpoints = {
   UPDATE_REPLY: `${API_URL}/discussion/subsection-discussion/reply`,
   DELETE_REPLY: `${API_URL}/discussion/subsection-discussion/reply`,
 };
+
+
+//crear payments 
+export const paymentsEndpoints = {
+  CREATE_PAYMENT_INTENT_API: BASE_URL + "",
+}
