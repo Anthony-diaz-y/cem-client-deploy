@@ -5,5 +5,9 @@ export const dynamic = 'force-static';
 export const revalidate = 3600; // Revalidar cada hora
 
 export default function About() {
-  return <AboutContainer />;
+  return(
+    <section className="flex justify-center items-center">
+      <AboutContainer />
+    </section>
+  )
 }

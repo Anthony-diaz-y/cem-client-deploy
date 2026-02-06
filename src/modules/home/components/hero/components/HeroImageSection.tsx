@@ -24,7 +24,7 @@ export const HeroImageSection: React.FC = () => {
             >
                 {/* Corona circular de fondo */}
                 <div
-                    className="absolute z-0 w-[260px] h-[260px] min-[380px]:w-[300px] min-[380px]:h-[300px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px]"
+                    className="absolute z-0 w-[260px] h-[260px] min-[380px]:w-[300px] min-[380px]:h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px]"
                     style={{
                         borderRadius: "50%",
                         border: `1px solid ${brandColors.primary.DEFAULT}`,
@@ -37,7 +37,7 @@ export const HeroImageSection: React.FC = () => {
 
                 {/* Círculo principal con imagen */}
                 <div
-                    className="relative z-10 rounded-full overflow-hidden shadow-2xl w-[260px] h-[260px] sm:w-[300px] sm:h-[300px] md:w-[400px] md:h-[400px] lg:w-[450px] lg:h-[450px]"
+                    className="relative z-10 rounded-full overflow-hidden shadow-2xl w-[260px] h-[260px] sm:w-[300px] sm:h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px]"
                     style={{
                         borderRadius: "50%",
                         marginTop: "30px",
