@@ -21,13 +21,13 @@ export const CART_TEXTS = {
   noCoursesInCart: "No hay cursos en el carrito",
   enrollmentError: "No se pudieron inscribir los cursos",
   buyError: "No se pudo comprar el curso",
-  temporaryMode: {
-    title: "⚠️ MODO TEMPORAL",
-    message: "Esta compra no requiere pago real. Solo para pruebas y desarrollo.",
-    note: "Esto será removido cuando se implemente la pasarela de pago.",
-    question: "¿Deseas continuar?",
-    singleCourse: "¿Deseas comprar este curso?",
-  },
+  //temporaryMode: {
+  //  title: "⚠️ MODO TEMPORAL",
+  //  message: "Esta compra no requiere pago real. Solo para pruebas y desarrollo.",
+  //  note: "Esto será removido cuando se implemente la pasarela de pago.",
+  //  question: "¿Deseas continuar?",
+  //  singleCourse: "¿Deseas comprar este curso?",
+  //},
   placeholder: {
     noImage: "Sin imagen",
   },

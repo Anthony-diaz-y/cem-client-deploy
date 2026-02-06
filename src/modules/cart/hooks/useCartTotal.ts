@@ -17,6 +17,7 @@ export interface UseCartTotalReturn {
   user: unknown;
   formattedTotal: string;
   handleBuyCourse: () => Promise<void>;
+  courseIds: string[];
 }
 
 export function useCartTotal(): UseCartTotalReturn {
@@ -109,12 +110,14 @@ export function useCartTotal(): UseCartTotalReturn {
     }
   };
 
+  // Exposed for external use (PayPal) and internal use
+  const courseIds = (Array.isArray(cart) ? cart : []).map((course: CartItem) => {
+    const courseId = (course as { id?: string })?.id || course?._id;
+    return courseId ? String(courseId) : null;
+  }).filter(Boolean) as string[];
+
   const handleBuyCourse = async () => {
-    // Normalizar los IDs de los cursos (priorizar 'id' sobre '_id')
-    const courses = (Array.isArray(cart) ? cart : []).map((course: CartItem) => {
-      const courseId = (course as { id?: string })?.id || course?._id;
-      return courseId ? String(courseId) : null;
-    }).filter(Boolean) as string[];
+    const courses = courseIds;
 
     console.log("Cursos a comprar:", courses);
     console.log("Cart completo:", cart);
@@ -166,6 +169,7 @@ export function useCartTotal(): UseCartTotalReturn {
     user,
     formattedTotal,
     handleBuyCourse,
+    courseIds,
   };
 }
 

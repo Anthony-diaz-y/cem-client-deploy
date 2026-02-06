@@ -36,9 +36,8 @@ export default function RenderCartCourses() {
         return (
           <div
             key={courseId}
-            className={`flex w-full items-center gap-3 sm:gap-4 ${
-              indx !== cart.length - 1 && "border-b border-b-richblack-400 pb-4"
-            } ${indx !== 0 && "pt-4"} `}
+            className={`flex w-full items-center gap-3 sm:gap-4 ${indx !== cart.length - 1 && "border-b border-b-richblack-400 pb-4"
+              } ${indx !== 0 && "pt-4"} `}
           >
             {/* course thumbnail - tamaño fijo y consistente para todas las imágenes */}
             <div className="flex-shrink-0 h-[70px] w-[105px] sm:h-[80px] sm:w-[120px] rounded-md overflow-hidden bg-richblack-900 relative">
