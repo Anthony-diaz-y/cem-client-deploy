@@ -91,7 +91,7 @@ const CategorySelectionPage: React.FC = () => {
 
   if (loadingDomains) {
     return (
-      <div className="min-h-screen bg-cem-neutral-white relative overflow-hidden">
+      <div className="min-h-screen bg-cem-neutral-white relative mt-20 overflow-hidden">
         <div className="relative z-10 max-w-7xl mx-auto px-4 py-12">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-cem-neutral-gray-900 mb-8">
@@ -106,7 +106,7 @@ const CategorySelectionPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-cem-neutral-white relative overflow-hidden">
+    <div className="min-h-screen bg-cem-neutral-white mt-20 relative overflow-hidden">
       {/* Decoración de fondo: Círculos Concéntricos */}
       <ConcentricCircles
         size={500}

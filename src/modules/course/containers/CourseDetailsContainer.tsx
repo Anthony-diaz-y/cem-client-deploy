@@ -95,7 +95,7 @@ const CourseDetailsContainer = () => {
         } course-details-transition`}
       >
         {/* 1. Top Section - Blue Background (Hero) */}
-        <div className="w-full bg-cem-celeste-light border-b border-transparent course-hero-enter">
+        <div className="w-full bg-cem-celeste-light mt-16 border-b border-transparent course-hero-enter">
           <div className="mx-auto max-w-[1260px] px-4 pt-10 pb-10 lg:pt-14 lg:pb-14">
             <div className="w-full lg:max-w-[760px]">
               <CourseHero
