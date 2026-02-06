@@ -13,7 +13,7 @@ interface HeroSectionProps {
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ hero }) => {
   return (
-    <div className="relative w-full pt-8 md:pt-16 lg:pt-8 xl:px-10">
+    <div className="relative w-full pt-8 md:pt-16 lg:pt-8 xl:px-10 mb-14">
       <div className="relative w-full max-w-[1400px] mx-auto xl:px-4 md:px-5">
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 xl:gap-8 h-200 items-stretch xl:justify-center xl:items-center max-w-[1200px] mx-auto">
 
@@ -46,7 +46,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ hero }) => {
               </span>
             </h1>
 
-            <p className="text-[12px] text-center  lg:text-left sm:text-[16px] md:text-md text-cem-neutral-gray-600 leading-relaxed max-w-md z-10 mx-auto xl:mx-0">
+            <p className="text-[12px] text-center  lg:text-left sm:text-[16px] md:text-xl text-cem-neutral-gray-600 leading-relaxed max-w-xl z-10 mx-auto xl:mx-0">
               {hero.description}
             </p>
 
@@ -72,10 +72,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ hero }) => {
               borderColor={brandColors.primary.light}
               className="absolute bottom-0 -right-24 block md:hidden z-0"
             />
-            <div className="xl:-ml-9">
               <HeroImageSection />
 
-            </div>
           </div>
         </div>
       </div>
