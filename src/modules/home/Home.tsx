@@ -25,7 +25,7 @@ const Home: React.FC<HomeProps> = ({
   const displayCourses = useCombinedCourses(courses || []);
 
   return (
-    <div className="bg-white min-h-screen overflow-x-hidden px-5 mt-16 ">
+    <div className="bg-white min-h-screen overflow-x-hidden  mt-16 ">
       <div className="relative w-full max-w-[1400px] mx-auto px-4 md:px-8 flex flex-col">
         <HeroSection hero={hero} />
         <PartnersSection />
