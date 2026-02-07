@@ -248,7 +248,7 @@ export default function EnrolledCourses() {
         </div>
 
         {/* loading Skeleton */}
-        {loading && (
+        {loading ? (
           <div>
             {sklItem()}
             {sklItem()}
@@ -256,10 +256,7 @@ export default function EnrolledCourses() {
             {sklItem()}
             {sklItem()}
           </div>
-        )}
-
-        {/* Course Names */}
-        {!loading && filteredAndSortedCourses.length === 0 ? (
+        ) : filteredAndSortedCourses.length === 0 ? (
           <div className="border border-richblack-700 bg-richblack-800 p-8 text-center text-richblack-100 rounded-b-2xl">
             {searchTerm || filterStatus !== "all"
               ? "No se han encontrado cursos que coincidan con tu búsqueda."
