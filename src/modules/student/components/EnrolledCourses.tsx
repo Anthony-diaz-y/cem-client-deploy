@@ -79,7 +79,9 @@ export default function EnrolledCourses() {
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState<"all" | "pending" | "completed">("all");
+  const [filterStatus, setFilterStatus] = useState<
+    "all" | "pending" | "completed"
+  >("all");
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
 
   const getEnrolledCourses = useCallback(async () => {
@@ -143,19 +145,28 @@ export default function EnrolledCourses() {
     if (!enrolledCourses) return [];
 
     const filtered = enrolledCourses.filter((course) => {
-      const matchesSearch = course.courseName.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = course.courseName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
       if (filterStatus === "all") return matchesSearch;
 
       const isCompleted = (course.progressPercentage || 0) === 100;
       if (filterStatus === "completed") return matchesSearch && isCompleted;
-      if (filterStatus === "pending") return matchesSearch && !isCompleted;
+      if (filterStatus === "pending")
+        return (
+          matchesSearch && !isCompleted && (course.progressPercentage || 0) > 0
+        );
 
       return matchesSearch;
     });
 
     return [...filtered].sort((a, b) => {
-      const dateA = new Date((a as any).createdAt || (a as any)._id?.getTimestamp?.() || 0).getTime();
-      const dateB = new Date((b as any).createdAt || (b as any)._id?.getTimestamp?.() || 0).getTime();
+      const dateA = new Date(
+        (a as any).createdAt || (a as any)._id?.getTimestamp?.() || 0,
+      ).getTime();
+      const dateB = new Date(
+        (b as any).createdAt || (b as any)._id?.getTimestamp?.() || 0,
+      ).getTime();
       return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
     });
   }, [enrolledCourses, searchTerm, filterStatus, sortOrder]);
@@ -183,25 +194,10 @@ export default function EnrolledCourses() {
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="text-4xl text-richblack-5 font-boogaloo text-center sm:text-left">
-          {STUDENT_TEXTS.enrolledCourses.title}
-        </div>
-
-        {/* Search Bar */}
-        <div className="relative w-full sm:w-[300px]">
-          <input
-            type="text"
-            placeholder={STUDENT_TEXTS.enrolledCourses.filters.searchPlaceholder}
-            className="w-full bg-richblack-800 text-richblack-5 rounded-full py-2 pl-10 pr-4 border border-richblack-700 focus:outline-none focus:border-cem-primary transition-colors text-sm"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <HiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-richblack-400" size={18} />
-        </div>
+      <div className="text-4xl text-richblack-5 font-boogaloo text-center sm:text-left">
+        {STUDENT_TEXTS.enrolledCourses.title}
       </div>
 
-      {/* Filter and Sort bar */}
       <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Filter Tabs */}
         <div className="flex items-center gap-2 p-1 bg-richblack-800 rounded-lg w-fit">
@@ -209,27 +205,55 @@ export default function EnrolledCourses() {
             <button
               key={status}
               onClick={() => setFilterStatus(status)}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${filterStatus === status
-                ? "bg-richblack-900 text-richblack-5 shadow-sm"
-                : "text-richblack-400 hover:text-richblack-200"
-                }`}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
+                filterStatus === status
+                  ? "bg-richblack-900 text-richblack-5 shadow-sm"
+                  : "text-richblack-400 hover:text-richblack-200"
+              }`}
             >
               {STUDENT_TEXTS.enrolledCourses.filters[status]}
             </button>
           ))}
         </div>
 
-        {/* Sort Selector */}
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-richblack-400">{STUDENT_TEXTS.enrolledCourses.sort.label}:</span>
-          <select
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value as "newest" | "oldest")}
-            className="bg-richblack-800 text-richblack-5 text-sm rounded-md px-3 py-1.5 border border-richblack-700 focus:outline-none focus:border-cem-primary cursor-pointer transition-colors"
-          >
-            <option value="newest">{STUDENT_TEXTS.enrolledCourses.sort.newest}</option>
-            <option value="oldest">{STUDENT_TEXTS.enrolledCourses.sort.oldest}</option>
-          </select>
+        <div className="flex flex-col sm:flex-row gap-4 items-center w-full sm:w-auto">
+          {/* Search Bar */}
+          <div className="relative w-full sm:w-[300px]">
+            <input
+              type="text"
+              placeholder={
+                STUDENT_TEXTS.enrolledCourses.filters.searchPlaceholder
+              }
+              className="w-full bg-richblack-800 text-richblack-5 rounded-full py-2 pl-10 pr-4 border border-richblack-700 focus:outline-none focus:border-cem-primary transition-colors text-sm"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <HiMagnifyingGlass
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-richblack-400"
+              size={18}
+            />
+          </div>
+
+          {/* Sort Selector */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-richblack-400">
+              {STUDENT_TEXTS.enrolledCourses.sort.label}:
+            </span>
+            <select
+              value={sortOrder}
+              onChange={(e) =>
+                setSortOrder(e.target.value as "newest" | "oldest")
+              }
+              className="bg-richblack-800 text-richblack-5 text-sm rounded-md px-3 py-1.5 border border-richblack-700 focus:outline-none focus:border-cem-primary cursor-pointer transition-colors"
+            >
+              <option value="newest">
+                {STUDENT_TEXTS.enrolledCourses.sort.newest}
+              </option>
+              <option value="oldest">
+                {STUDENT_TEXTS.enrolledCourses.sort.oldest}
+              </option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -263,122 +287,155 @@ export default function EnrolledCourses() {
               : STUDENT_TEXTS.enrolledCourses.emptyState}
           </div>
         ) : (
-          filteredAndSortedCourses.map((course: Course, i: number, arr: Course[]) => (
-            <div
-              className={`flex flex-col sm:flex-row sm:items-center border border-richblack-700 bg-richblack-800 ${i === arr.length - 1 ? "rounded-b-2xl" : "rounded-none"
-                }`}
-              key={i}
-            >
+          filteredAndSortedCourses.map(
+            (course: Course, i: number, arr: Course[]) => (
               <div
-                className="flex sm:w-[45%] cursor-pointer items-center gap-4 px-5 py-3 hover:bg-richblack-700 transition-colors rounded"
-                onClick={async () => {
-                  const courseWithId = course as CourseWithId;
-                  const courseId = getCourseId(courseWithId);
+                className={`flex flex-col sm:flex-row sm:items-center border border-richblack-700 bg-richblack-800 ${
+                  i === arr.length - 1 ? "rounded-b-2xl" : "rounded-none"
+                }`}
+                key={i}
+              >
+                <div
+                  className="flex sm:w-[45%] cursor-pointer items-center gap-4 px-5 py-3 hover:bg-richblack-700 transition-colors rounded"
+                  onClick={async () => {
+                    const courseWithId = course as CourseWithId;
+                    const courseId = getCourseId(courseWithId);
 
-                  if (!courseId) {
-                    console.error(STUDENT_TEXTS.errors.missingCourseId, course);
-                    return;
-                  }
-
-                  const firstSection = course.courseContent?.[0] as
-                    | SectionWithId
-                    | undefined;
-                  const sectionId = firstSection
-                    ? getSectionId(firstSection)
-                    : undefined;
-
-                  const subSections = firstSection
-                    ? getSubSections(firstSection)
-                    : [];
-                  const firstSubSection =
-                    subSections.length > 0 ? subSections[0] : null;
-                  const subSectionId = firstSubSection
-                    ? getSubSectionId(firstSubSection)
-                    : undefined;
-
-                  if (courseId && sectionId && subSectionId) {
-                    router.push(
-                      `/view-course/${courseId}/section/${sectionId}/sub-section/${subSectionId}`,
-                    );
-                  } else {
-                    if (!token) {
-                      console.error(STUDENT_TEXTS.errors.tokenRequired);
+                    if (!courseId) {
+                      console.error(
+                        STUDENT_TEXTS.errors.missingCourseId,
+                        course,
+                      );
                       return;
                     }
 
-                    try {
-                      const courseData = await getFullDetailsOfCourse(
-                        courseId,
-                        token,
+                    const firstSection = course.courseContent?.[0] as
+                      | SectionWithId
+                      | undefined;
+                    const sectionId = firstSection
+                      ? getSectionId(firstSection)
+                      : undefined;
+
+                    const subSections = firstSection
+                      ? getSubSections(firstSection)
+                      : [];
+                    const firstSubSection =
+                      subSections.length > 0 ? subSections[0] : null;
+                    const subSectionId = firstSubSection
+                      ? getSubSectionId(firstSubSection)
+                      : undefined;
+
+                    if (courseId && sectionId && subSectionId) {
+                      router.push(
+                        `/view-course/${courseId}/section/${sectionId}/sub-section/${subSectionId}`,
                       );
+                    } else {
+                      if (!token) {
+                        console.error(STUDENT_TEXTS.errors.tokenRequired);
+                        return;
+                      }
 
-                      if (courseData?.courseDetails?.courseContent) {
-                        const courseContent = courseData.courseDetails
-                          .courseContent as SectionWithId[];
-                        const firstSec = courseContent[0];
-                        const secId = firstSec
-                          ? getSectionId(firstSec)
-                          : undefined;
+                      try {
+                        const courseData = await getFullDetailsOfCourse(
+                          courseId,
+                          token,
+                        );
 
-                        const subs = firstSec ? getSubSections(firstSec) : [];
-                        const firstSub = subs.length > 0 ? subs[0] : null;
-                        const subSecId = firstSub
-                          ? getSubSectionId(firstSub)
-                          : undefined;
+                        if (courseData?.courseDetails?.courseContent) {
+                          const courseContent = courseData.courseDetails
+                            .courseContent as SectionWithId[];
+                          const firstSec = courseContent[0];
+                          const secId = firstSec
+                            ? getSectionId(firstSec)
+                            : undefined;
 
-                        if (secId && subSecId) {
-                          router.push(
-                            `/view-course/${courseId}/section/${secId}/sub-section/${subSecId}`,
-                          );
+                          const subs = firstSec ? getSubSections(firstSec) : [];
+                          const firstSub = subs.length > 0 ? subs[0] : null;
+                          const subSecId = firstSub
+                            ? getSubSectionId(firstSub)
+                            : undefined;
+
+                          if (secId && subSecId) {
+                            router.push(
+                              `/view-course/${courseId}/section/${secId}/sub-section/${subSecId}`,
+                            );
+                          } else {
+                            router.push(`/view-course/${courseId}`);
+                          }
                         } else {
                           router.push(`/view-course/${courseId}`);
                         }
-                      } else {
+                      } catch (error) {
+                        console.error(
+                          STUDENT_TEXTS.errors.loadCourseDetails,
+                          error,
+                        );
                         router.push(`/view-course/${courseId}`);
                       }
-                    } catch (error) {
-                      console.error(
-                        STUDENT_TEXTS.errors.loadCourseDetails,
-                        error,
-                      );
-                      router.push(`/view-course/${courseId}`);
                     }
-                  }
-                }}
-              >
-                {/* Imagen del curso - tamaño fijo y consistente */}
-                <CourseThumbnailSmall
-                  thumbnail={course.thumbnail}
-                  courseName={course.courseName}
-                />
+                  }}
+                >
+                  {/* Imagen del curso - tamaño fijo y consistente */}
+                  <CourseThumbnailSmall
+                    thumbnail={course.thumbnail}
+                    courseName={course.courseName}
+                  />
 
-                <div className="flex max-w-xs flex-col gap-2">
-                  <p className="font-semibold">{course.courseName}</p>
-                  <p className="text-xs text-richblack-300">
-                    {course.courseDescription.length > 50
-                      ? `${course.courseDescription.slice(0, 50)}...`
-                      : course.courseDescription}
-                  </p>
+                  <div className="flex max-w-xs flex-col gap-2">
+                    <p className="font-semibold">{course.courseName}</p>
+                    <p className="text-xs text-richblack-300">
+                      {course.courseDescription.length > 50
+                        ? `${course.courseDescription.slice(0, 50)}...`
+                        : course.courseDescription}
+                    </p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="sm:hidden">
-                {(() => {
-                  const totalDuration = course?.totalDuration;
-                  const totalDurationNumber =
-                    typeof totalDuration === "string"
-                      ? isNaN(Number(totalDuration))
-                        ? undefined
-                        : Number(totalDuration)
-                      : totalDuration;
-                  return (
-                    <div className="px-2 py-3">
-                      {formatTotalDuration(totalDurationNumber)}
-                    </div>
-                  );
-                })()}
+                <div className="sm:hidden">
+                  {(() => {
+                    const totalDuration = course?.totalDuration;
+                    const totalDurationNumber =
+                      typeof totalDuration === "string"
+                        ? isNaN(Number(totalDuration))
+                          ? undefined
+                          : Number(totalDuration)
+                        : totalDuration;
+                    return (
+                      <div className="px-2 py-3">
+                        {formatTotalDuration(totalDurationNumber)}
+                      </div>
+                    );
+                  })()}
 
-                <div className="flex sm:w-2/5 flex-col gap-2 px-2 py-3">
+                  <div className="flex sm:w-2/5 flex-col gap-2 px-2 py-3">
+                    <p>
+                      {STUDENT_TEXTS.enrolledCourses.table.progressLabel(
+                        course.progressPercentage || 0,
+                      )}
+                    </p>
+                    <ProgressBar
+                      completed={course.progressPercentage || 0}
+                      height="8px"
+                      isLabelVisible={false}
+                    />
+                  </div>
+                </div>
+
+                {/* only for larger devices */}
+                {/* duration -  progress */}
+                <div className="hidden w-1/5 sm:flex px-2 py-3">
+                  {(() => {
+                    const totalDuration = course?.totalDuration;
+                    const totalDurationNumber =
+                      typeof totalDuration === "string"
+                        ? isNaN(Number(totalDuration))
+                          ? undefined
+                          : Number(totalDuration)
+                        : totalDuration;
+                    return formatTotalDuration(totalDurationNumber);
+                  })()}
+                </div>
+                <div className="hidden sm:flex w-1/5 flex-col gap-2 px-2 py-3">
                   <p>
                     {STUDENT_TEXTS.enrolledCourses.table.progressLabel(
                       course.progressPercentage || 0,
@@ -391,35 +448,8 @@ export default function EnrolledCourses() {
                   />
                 </div>
               </div>
-
-              {/* only for larger devices */}
-              {/* duration -  progress */}
-              <div className="hidden w-1/5 sm:flex px-2 py-3">
-                {(() => {
-                  const totalDuration = course?.totalDuration;
-                  const totalDurationNumber =
-                    typeof totalDuration === "string"
-                      ? isNaN(Number(totalDuration))
-                        ? undefined
-                        : Number(totalDuration)
-                      : totalDuration;
-                  return formatTotalDuration(totalDurationNumber);
-                })()}
-              </div>
-              <div className="hidden sm:flex w-1/5 flex-col gap-2 px-2 py-3">
-                <p>
-                  {STUDENT_TEXTS.enrolledCourses.table.progressLabel(
-                    course.progressPercentage || 0,
-                  )}
-                </p>
-                <ProgressBar
-                  completed={course.progressPercentage || 0}
-                  height="8px"
-                  isLabelVisible={false}
-                />
-              </div>
-            </div>
-          ))
+            ),
+          )
         )}
       </div>
     </>

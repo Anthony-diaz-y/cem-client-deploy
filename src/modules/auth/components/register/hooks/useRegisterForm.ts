@@ -34,13 +34,17 @@ export const useRegisterForm = () => {
   };
 
   const handleRegister = async (): Promise<boolean> => {
-    if (!formData.nombres.trim() || !validateEmail(formData.correo) || !validatePassword(formData.contraseña)) {
+    if (
+      !formData.nombres.trim() ||
+      !validateEmail(formData.correo) ||
+      !validatePassword(formData.contraseña)
+    ) {
       return false;
     }
 
     setIsLoading(true);
     try {
-      await dispatch(sendOtpForSignup(formData.correo));
+      await dispatch(sendOtpForSignup(formData.correo, formData.nombres));
       setStep("verify");
       return true;
     } catch (error) {
@@ -64,8 +68,8 @@ export const useRegisterForm = () => {
           formData.correo,
           formData.contraseña,
           otp,
-          router.push as (path: string) => void
-        )
+          router.push as (path: string) => void,
+        ),
       );
       return true;
     } catch (error) {
@@ -79,7 +83,7 @@ export const useRegisterForm = () => {
   const handleResendOtp = async (): Promise<void> => {
     setIsLoading(true);
     try {
-      await dispatch(sendOtpForSignup(formData.correo));
+      await dispatch(sendOtpForSignup(formData.correo, formData.nombres));
     } catch (error) {
       console.error("Error al reenviar OTP:", error);
     } finally {
@@ -107,4 +111,3 @@ export const useRegisterForm = () => {
     isValidPassword: validatePassword,
   };
 };
-

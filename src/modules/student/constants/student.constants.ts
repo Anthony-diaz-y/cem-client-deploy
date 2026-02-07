@@ -10,24 +10,24 @@ export const STUDENT_TEXTS = {
     },
   },
   enrolledCourses: {
-    title: "Enrolled Courses",
-    emptyState: "You have not enrolled in any course yet.",
+    title: "Cursos Inscritos",
+    emptyState: "Aún no te has inscrito en ningún curso.",
     table: {
-      courseName: "Course Name",
-      duration: "Duration",
-      progress: "Progress",
-      progressLabel: (percentage: number) => `Progress: ${percentage}%`,
+      courseName: "Nombre del Curso",
+      duration: "Duración",
+      progress: "Progreso",
+      progressLabel: (percentage: number) => `Progreso: ${percentage}%`,
     },
     filters: {
-      searchPlaceholder: "Search your courses...",
-      all: "All Courses",
-      pending: "In Progress",
-      completed: "Completed",
+      searchPlaceholder: "Buscar tus cursos...",
+      all: "Todos",
+      pending: "En Progreso",
+      completed: "Completados",
     },
     sort: {
-      label: "Sort by",
-      newest: "Newest first",
-      oldest: "Oldest first",
+      label: "Ordenar por",
+      newest: "Más recientes",
+      oldest: "Más antiguos",
     },
   },
   errors: {
@@ -42,4 +42,3 @@ export const STUDENT_TEXTS = {
     logPurchase: "Evento de compra detectado, recargando cursos...",
   },
 } as const;
-
