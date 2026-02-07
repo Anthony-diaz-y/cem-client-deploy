@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { Toaster } from "react-hot-toast";
 import StoreProvider from "@shared/store/Provider";
 import { checkAndInitializeDemo } from "@shared/data/demoHelper";
@@ -17,17 +18,19 @@ export default function GlobalProviders({
 
   return (
     <StoreProvider>
-      <Toaster 
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-        }}
-        containerStyle={{
-          top: 20,
-          right: 20,
-        }}
-      />
-      {children}
+      <PayPalScriptProvider options={{ "clientId": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "test", currency: "USD", intent: "capture" }}>
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+          }}
+          containerStyle={{
+            top: 20,
+            right: 20,
+          }}
+        />
+        {children}
+      </PayPalScriptProvider>
     </StoreProvider>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "../../store/hooks";
 import { MOCK_MODE } from "../../services/apiConnector";
@@ -13,7 +13,10 @@ const ProtectedRoute = ({
   const router = useRouter();
   const { token } = useAppSelector((state) => state.auth);
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     if (MOCK_MODE) {
       return;
     }
@@ -22,6 +25,8 @@ const ProtectedRoute = ({
       router.push("/");
     }
   }, [token, router]);
+
+  if (!mounted) return null;
 
   if (MOCK_MODE) {
     return <>{children}</>;

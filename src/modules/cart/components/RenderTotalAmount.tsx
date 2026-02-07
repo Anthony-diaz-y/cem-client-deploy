@@ -24,69 +24,69 @@ export default function RenderTotalAmount() {
       {isPending ? (
         <div className="w-full h-[45px] bg-richblack-700 animate-pulse rounded-md" />
       ) : (
-        <PayPalButtons
-          createOrder={(data, actions) => {
-            console.log("Creando orden de PayPal...", { courseIds });
-            // No pasamos headers manualmente, el apiConnector ya tiene interceptores para el token
-            if (!courseIds || courseIds.length === 0) {
-              console.error("No hay cursos para comprar");
-              toast.error("El carrito está vacío");
-              return Promise.reject("El carrito está vacío");
-            }
+        <div className="relative w-full h-[48px] rounded-lg overflow-hidden bg-[#008396] group">
+          {/* Capa Visual */}
+          <div className="absolute inset-0 flex items-center justify-center text-white font-bold pointer-events-none group-hover:bg-[#007485] transition-all">
+            Comprar ahora
+          </div>
 
-            return apiConnector<{ orderId: string }>("POST", studentEndpoints.CREATE_PAYPAL_ORDER_API, {
-              coursesId: courseIds,
-            })
-              .then((response) => {
-                console.log("Respuesta creación orden:", response.data);
-                const orderId = response.data.orderId;
-                if (orderId) return orderId;
-                throw new Error("Order ID not found in response");
-              })
-              .catch((err) => {
-                console.error("Error creating order:", err);
-
-                const errorData = err.response?.data;
-                const errorMessage = errorData?.message || "";
-
-                // Manejo específico: Usuario ya inscrito (Backend validation)
-                if (
-                  typeof errorMessage === "string" &&
-                  (errorMessage.toLowerCase().includes("already enrolled") || errorMessage.toLowerCase().includes("ya está inscrito"))
-                ) {
-                  toast.success("¡Ya estás inscrito en este curso! Redirigiendo...");
-                  dispatch(resetCart());
-                  router.push("/dashboard/enrolled-courses");
-                  // Retornamos una promesa rechazada controlada para detener PayPal sin error visual
-                  return Promise.reject("ALREADY_ENROLLED");
+          {/* Capa Funcional (PayPal Invisible) */}
+          <div className="absolute inset-x-0 inset-y-0 z-20 opacity-[0.01] scale-[1.5] cursor-pointer">
+            <PayPalButtons
+              forceReRender={[courseIds, formattedTotal]}
+              style={{
+                layout: "horizontal",
+                height: 48,
+                tagline: false
+              }}
+              createOrder={(data, actions) => {
+                console.log("Creando orden de PayPal...", { courseIds });
+                if (!courseIds || courseIds.length === 0) {
+                  console.error("No hay cursos para comprar");
+                  toast.error("El carrito está vacío");
+                  return Promise.reject("El carrito está vacío");
                 }
 
-                // Verificar si es error de autenticación
-                if (err.response?.status === 401) {
-                  toast.error("Sesión expirada. Por favor inicie sesión nuevamente.");
-                } else {
-                  toast.error(errorMessage || "No se pudo iniciar el pago");
-                }
-                throw err;
-              });
-          }}
-          onApprove={(data, actions) => {
-            return apiConnector("POST", studentEndpoints.CAPTURE_PAYPAL_ORDER_API, {
-              orderId: data.orderID
-            })
-              .then((response) => {
-                toast.success("Payment Successful!");
-                dispatch(resetCart());
-                router.push("/dashboard/enrolled-courses");
-              })
-              .catch((err) => {
-                console.error("Error capturing order:", err);
-                toast.error("Payment failed");
-                throw err;
-              });
-          }}
-          style={{ layout: "vertical" }}
-        />
+                return apiConnector<{ orderId: string }>("POST", studentEndpoints.CREATE_PAYPAL_ORDER_API, {
+                  coursesId: courseIds,
+                })
+                  .then((response) => {
+                    const orderId = response.data.orderId;
+                    if (orderId) return orderId;
+                    throw new Error("Order ID not found in response");
+                  })
+                  .catch((err) => {
+                    const errorMessage = err.response?.data?.message || "";
+                    if (
+                      errorMessage.toLowerCase().includes("already enrolled") ||
+                      errorMessage.toLowerCase().includes("ya está inscrito")
+                    ) {
+                      toast.success("¡Ya estás inscrito! Redirigiendo...");
+                      dispatch(resetCart());
+                      router.push("/dashboard/enrolled-courses");
+                      return Promise.reject("ALREADY_ENROLLED");
+                    }
+                    toast.error(errorMessage || "No se pudo iniciar el pago");
+                    throw err;
+                  });
+              }}
+              onApprove={(data, actions) => {
+                return apiConnector("POST", studentEndpoints.CAPTURE_PAYPAL_ORDER_API, {
+                  orderId: data.orderID
+                })
+                  .then((response) => {
+                    toast.success("Payment Successful!");
+                    dispatch(resetCart());
+                    router.push("/dashboard/enrolled-courses");
+                  })
+                  .catch((err) => {
+                    toast.error("Payment failed");
+                    throw err;
+                  });
+              }}
+            />
+          </div>
+        </div>
       )}
     </div>
   );

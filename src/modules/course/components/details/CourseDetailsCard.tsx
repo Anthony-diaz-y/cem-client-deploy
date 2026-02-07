@@ -117,76 +117,86 @@ function CourseDetailsCard({
           ) : (
             <div className="w-full flex flex-col gap-3">
               {/* PayPal Button for Direct Purchase */}
-              <div className="relative z-0">
+              <div className="relative z-0 group">
                 {isPending ? (
-                  <div className="w-full h-[45px] bg-cem-neutral-gray-100 animate-pulse rounded-lg" />
+                  <div className="w-full h-[48px] bg-cem-neutral-gray-100 animate-pulse rounded-lg" />
                 ) : (
-                  <PayPalButtons
-                    style={{ layout: "horizontal", height: 45, tagline: false }}
-                    createOrder={(data, actions) => {
-                      if (user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
-                        toast.error(COURSE_TEXTS.actions.errors.instructorCannotBuy);
-                        return Promise.reject("Instructor cannot buy");
-                      }
-                      if (!token) {
-                        toast.error("Por favor, inicia sesión para comprar");
-                        router.push("/auth/login");
-                        return Promise.reject("Not authenticated");
-                      }
+                  <div className="relative w-full h-[48px] rounded-lg overflow-hidden bg-[#008396]">
+                    {/* 1. CAPA VISUAL: El diseño que tú pediste */}
+                    <div className="absolute inset-0 flex items-center justify-center text-white font-bold pointer-events-none">
+                      Comprar ahora
+                    </div>
 
-                      const coursesToBuy = [courseIdToBuy];
-                      console.log("Iniciando compra PayPal para curso:", { name: course.courseName, id: courseIdToBuy });
-
-                      return apiConnector<{ orderId: string }>("POST", studentEndpoints.CREATE_PAYPAL_ORDER_API, {
-                        coursesId: coursesToBuy,
-                      })
-                        .then((response) => {
-                          console.log("Orden creada con éxito:", response.data);
-                          const orderId = response.data.orderId;
-                          if (orderId) return orderId;
-                          throw new Error("Order ID not found");
-                        })
-                        .catch((err) => {
-                          console.error("Error creating individual order:", err);
-
-                          const errorData = err.response?.data;
-                          const errorMessage = errorData?.message || "";
-
-                          if (
-                            typeof errorMessage === "string" &&
-                            (errorMessage.toLowerCase().includes("already enrolled") || errorMessage.toLowerCase().includes("ya está inscrito"))
-                          ) {
-                            toast.success("¡Ya estás inscrito! Redirigiendo...");
-                            // Forzar recarga completa para intentar sincronizar datos visuales
-                            window.location.href = "/dashboard/enrolled-courses";
-                            return Promise.reject("ALREADY_ENROLLED");
+                    {/* 2. CAPA FUNCIONAL (cuando acabe la configuracion poner opacity-[0.01]) */}
+                    <div className="absolute inset-x-0 inset-y-0 z-20 opacity-[0.01] scale-[1.5] cursor-pointer">
+                      <PayPalButtons
+                        style={{
+                          layout: "horizontal",
+                          height: 48,
+                          tagline: false,
+                          shape: "rect",
+                        }}
+                        createOrder={(data, actions) => {
+                          if (user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
+                            toast.error(COURSE_TEXTS.actions.errors.instructorCannotBuy);
+                            return Promise.reject("Instructor cannot buy");
+                          }
+                          if (!token) {
+                            toast.error("Por favor, inicia sesión para comprar");
+                            router.push("/auth/login");
+                            return Promise.reject("Not authenticated");
                           }
 
-                          if (err.response?.status === 401) {
-                            toast.error("Sesión expirada.");
-                          } else {
-                            toast.error("No se pudo iniciar el pago");
-                          }
-                          throw err;
-                        });
-                    }}
-                    onApprove={(data, actions) => {
-                      console.log("Pago aprobado por PayPal. Capturando orden en backend...", data);
-                      return apiConnector("POST", studentEndpoints.CAPTURE_PAYPAL_ORDER_API, {
-                        orderId: data.orderID
-                      })
-                        .then((response) => {
-                          console.log("Captura exitosa:", response.data);
-                          toast.success("¡Compra exitosa!");
-                          router.push("/dashboard/enrolled-courses");
-                        })
-                        .catch((err) => {
-                          console.error("PayPal Capture Error:", err);
-                          toast.error("Hubo un problema procesando la inscripción.");
-                          throw err; // Importante para que PayPal sepa que falló
-                        });
-                    }}
-                  />
+                          const coursesToBuy = [courseIdToBuy];
+                          console.log("Iniciando compra PayPal para curso:", { name: course.courseName, id: courseIdToBuy });
+
+                          return apiConnector<{ orderId: string }>("POST", studentEndpoints.CREATE_PAYPAL_ORDER_API, {
+                            coursesId: coursesToBuy,
+                          })
+                            .then((response) => {
+                              console.log("Orden creada con éxito:", response.data);
+                              const orderId = response.data.orderId;
+                              if (orderId) return orderId;
+                              throw new Error("Order ID not found");
+                            })
+                            .catch((err) => {
+                              console.error("Error creating individual order:", err);
+                              const errorData = err.response?.data;
+                              const errorMessage = errorData?.message || "";
+
+                              if (typeof errorMessage === "string" && (errorMessage.toLowerCase().includes("already enrolled") || errorMessage.toLowerCase().includes("ya está inscrito"))) {
+                                toast.success("¡Ya estás inscrito! Redirigiendo...");
+                                window.location.href = "/dashboard/enrolled-courses";
+                                return Promise.reject("ALREADY_ENROLLED");
+                              }
+
+                              if (err.response?.status === 401) {
+                                toast.error("Sesión expirada.");
+                              } else {
+                                toast.error("No se pudo iniciar el pago");
+                              }
+                              throw err;
+                            });
+                        }}
+                        onApprove={(data, actions) => {
+                          console.log("Pago aprobado por PayPal. Capturando orden en backend...", data);
+                          return apiConnector("POST", studentEndpoints.CAPTURE_PAYPAL_ORDER_API, {
+                            orderId: data.orderID
+                          })
+                            .then((response) => {
+                              console.log("Captura exitosa:", response.data);
+                              toast.success("¡Compra exitosa!");
+                              router.push("/dashboard/enrolled-courses");
+                            })
+                            .catch((err) => {
+                              console.error("PayPal Capture Error:", err);
+                              toast.error("Hubo un problema procesando la inscripción.");
+                              throw err;
+                            });
+                        }}
+                      />
+                    </div>
+                  </div>
                 )}
               </div>
 
