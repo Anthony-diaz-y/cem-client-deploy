@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { HiBookOpen } from "react-icons/hi2";
+import { HiBookOpen, HiMagnifyingGlass } from "react-icons/hi2";
 import { ProgressBar, Img } from "@shared/components";
 import { Course, Section } from "../types";
 import { RootState } from "@shared/store/store";
@@ -78,6 +78,9 @@ export default function EnrolledCourses() {
   const [enrolledCourses, setEnrolledCourses] = useState<Course[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState<"all" | "pending" | "completed">("all");
+  const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
 
   const getEnrolledCourses = useCallback(async () => {
     if (!token) {
@@ -136,6 +139,27 @@ export default function EnrolledCourses() {
     };
   }, [token]);
 
+  const filteredAndSortedCourses = useMemo(() => {
+    if (!enrolledCourses) return [];
+
+    const filtered = enrolledCourses.filter((course) => {
+      const matchesSearch = course.courseName.toLowerCase().includes(searchTerm.toLowerCase());
+      if (filterStatus === "all") return matchesSearch;
+
+      const isCompleted = (course.progressPercentage || 0) === 100;
+      if (filterStatus === "completed") return matchesSearch && isCompleted;
+      if (filterStatus === "pending") return matchesSearch && !isCompleted;
+
+      return matchesSearch;
+    });
+
+    return [...filtered].sort((a, b) => {
+      const dateA = new Date((a as any).createdAt || (a as any)._id?.getTimestamp?.() || 0).getTime();
+      const dateB = new Date((b as any).createdAt || (b as any)._id?.getTimestamp?.() || 0).getTime();
+      return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
+    });
+  }, [enrolledCourses, searchTerm, filterStatus, sortOrder]);
+
   // Loading Skeleton
   const sklItem = () => {
     return (
@@ -157,52 +181,92 @@ export default function EnrolledCourses() {
     );
   };
 
-  // return if data is null
-  if (enrolledCourses?.length == 0) {
-    return (
-      <p className="grid h-[50vh] w-full place-content-center text-center text-richblack-5 text-3xl">
-        {STUDENT_TEXTS.enrolledCourses.emptyState}
-      </p>
-    );
-  }
-
   return (
     <>
-      <div className="text-4xl text-richblack-5 font-boogaloo text-center sm:text-left">
-        {STUDENT_TEXTS.enrolledCourses.title}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="text-4xl text-richblack-5 font-boogaloo text-center sm:text-left">
+          {STUDENT_TEXTS.enrolledCourses.title}
+        </div>
+
+        {/* Search Bar */}
+        <div className="relative w-full sm:w-[300px]">
+          <input
+            type="text"
+            placeholder={STUDENT_TEXTS.enrolledCourses.filters.searchPlaceholder}
+            className="w-full bg-richblack-800 text-richblack-5 rounded-full py-2 pl-10 pr-4 border border-richblack-700 focus:outline-none focus:border-cem-primary transition-colors text-sm"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <HiMagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-richblack-400" size={18} />
+        </div>
       </div>
-      {
-        <div className="my-8 text-richblack-5">
-          {/* Headings */}
-          <div className="flex rounded-t-2xl bg-richblack-800 ">
-            <p className="w-[45%] px-5 py-3">
-              {STUDENT_TEXTS.enrolledCourses.table.courseName}
-            </p>
-            <p className="w-1/4 px-2 py-3">
-              {STUDENT_TEXTS.enrolledCourses.table.duration}
-            </p>
-            <p className="flex-1 px-2 py-3">
-              {STUDENT_TEXTS.enrolledCourses.table.progress}
-            </p>
+
+      {/* Filter and Sort bar */}
+      <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Filter Tabs */}
+        <div className="flex items-center gap-2 p-1 bg-richblack-800 rounded-lg w-fit">
+          {(["all", "pending", "completed"] as const).map((status) => (
+            <button
+              key={status}
+              onClick={() => setFilterStatus(status)}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${filterStatus === status
+                ? "bg-richblack-900 text-richblack-5 shadow-sm"
+                : "text-richblack-400 hover:text-richblack-200"
+                }`}
+            >
+              {STUDENT_TEXTS.enrolledCourses.filters[status]}
+            </button>
+          ))}
+        </div>
+
+        {/* Sort Selector */}
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-richblack-400">{STUDENT_TEXTS.enrolledCourses.sort.label}:</span>
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as "newest" | "oldest")}
+            className="bg-richblack-800 text-richblack-5 text-sm rounded-md px-3 py-1.5 border border-richblack-700 focus:outline-none focus:border-cem-primary cursor-pointer transition-colors"
+          >
+            <option value="newest">{STUDENT_TEXTS.enrolledCourses.sort.newest}</option>
+            <option value="oldest">{STUDENT_TEXTS.enrolledCourses.sort.oldest}</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="my-8 text-richblack-5">
+        {/* Headings */}
+        <div className="flex rounded-t-2xl bg-richblack-800 ">
+          <p className="w-[45%] px-5 py-3">
+            {STUDENT_TEXTS.enrolledCourses.table.courseName}
+          </p>
+          <p className="w-1/4 px-2 py-3">
+            {STUDENT_TEXTS.enrolledCourses.table.duration}
+          </p>
+          <p className="flex-1 px-2 py-3">
+            {STUDENT_TEXTS.enrolledCourses.table.progress}
+          </p>
+        </div>
+
+        {/* loading Skeleton */}
+        {loading ? (
+          <div>
+            {sklItem()}
+            {sklItem()}
+            {sklItem()}
+            {sklItem()}
+            {sklItem()}
           </div>
-
-          {/* loading Skeleton */}
-          {loading && (
-            <div>
-              {sklItem()}
-              {sklItem()}
-              {sklItem()}
-              {sklItem()}
-              {sklItem()}
-            </div>
-          )}
-
-          {/* Course Names */}
-          {enrolledCourses?.map((course: Course, i: number, arr: Course[]) => (
+        ) : filteredAndSortedCourses.length === 0 ? (
+          <div className="border border-richblack-700 bg-richblack-800 p-8 text-center text-richblack-100 rounded-b-2xl">
+            {searchTerm || filterStatus !== "all"
+              ? "No se han encontrado cursos que coincidan con tu búsqueda."
+              : STUDENT_TEXTS.enrolledCourses.emptyState}
+          </div>
+        ) : (
+          filteredAndSortedCourses.map((course: Course, i: number, arr: Course[]) => (
             <div
-              className={`flex flex-col sm:flex-row sm:items-center border border-richblack-700 bg-richblack-800 ${
-                i === arr.length - 1 ? "rounded-b-2xl" : "rounded-none"
-              }`}
+              className={`flex flex-col sm:flex-row sm:items-center border border-richblack-700 bg-richblack-800 ${i === arr.length - 1 ? "rounded-b-2xl" : "rounded-none"
+                }`}
               key={i}
             >
               <div
@@ -355,9 +419,9 @@ export default function EnrolledCourses() {
                 />
               </div>
             </div>
-          ))}
-        </div>
-      }
+          ))
+        )}
+      </div>
     </>
   );
 }

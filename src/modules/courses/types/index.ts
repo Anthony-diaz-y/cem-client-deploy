@@ -11,6 +11,7 @@ export interface Course {
   courseName: string;
   courseDescription: string;
   price: number;
+  priceUSD?: number;
   thumbnail: string;
   instructor: {
     name: string;

@@ -18,6 +18,17 @@ export const STUDENT_TEXTS = {
       progress: "Progress",
       progressLabel: (percentage: number) => `Progress: ${percentage}%`,
     },
+    filters: {
+      searchPlaceholder: "Search your courses...",
+      all: "All Courses",
+      pending: "In Progress",
+      completed: "Completed",
+    },
+    sort: {
+      label: "Sort by",
+      newest: "Newest first",
+      oldest: "Oldest first",
+    },
   },
   errors: {
     fetchCourses: "Error fetching courses:",
