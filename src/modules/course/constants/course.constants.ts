@@ -66,6 +66,12 @@ export const COURSE_TEXTS = {
       note: "Esto será removido cuando se implemente la pasarela de pago.",
       confirm: "¿Deseas continuar?",
     },
+    paymentModal: {
+      title: "Pagar por:",
+      paypal: "PayPal",
+      izipay: "Izipay (Próximamente)",
+      cancel: "Cancelar",
+    },
   },
 } as const;
 
