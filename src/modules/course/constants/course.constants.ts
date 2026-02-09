@@ -35,11 +35,12 @@ export const COURSE_TEXTS = {
   detailsCard: {
     pricePrefix: "S/",
     buyNow: "Comprar Ahora",
-    goToCourse: "Ir al Curso",
+    goToCourse: "Ver Cursos",
     addToCart: "Agregar al Carrito",
     share: "Compartir",
     requirements: "Requisitos del curso",
     shareSuccess: "Enlace copiado al portapapeles",
+    alreadyEnrolled: "Ya estás inscrito",
   },
   actions: {
     errors: {

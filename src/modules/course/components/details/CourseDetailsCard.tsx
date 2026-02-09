@@ -27,6 +27,7 @@ function CourseDetailsCard({
   setConfirmationModal,
   handleBuyCourse,
   handleAddToCart,
+  isEnrolled,
 }: CourseDetailsCardProps) {
   const { user } = useSelector((state: RootState) => state.profile);
   const { token } = useSelector((state: RootState) => state.auth);
@@ -64,7 +65,7 @@ function CourseDetailsCard({
     });
   };
 
-  const isEnrolled = user && course?.studentsEnrolled?.includes(user?._id);
+  const isEnrolledInCourse = isEnrolled || (user && course?.studentsEnrolled?.includes((user as any)?._id || (user as any)?.id));
 
   return (
     <div className="rounded-xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] overflow-hidden">
@@ -107,13 +108,21 @@ function CourseDetailsCard({
 
         {/* Action buttons */}
         <div className="flex flex-col gap-3 mb-6">
-          {isEnrolled ? (
-            <button
-              className="w-full py-3 px-4 rounded-lg bg-cem-primary text-white font-bold shadow-sm"
-              onClick={() => router.push("/dashboard/enrolled-courses")}
-            >
-              {COURSE_TEXTS.detailsCard.goToCourse}
-            </button>
+          {isEnrolledInCourse ? (
+            <div className="flex flex-col gap-3">
+              {/* Status Indicator with Primary Style */}
+              <div className="w-full py-3 px-4 rounded-lg bg-[#008396] text-white font-bold text-center shadow-sm">
+                {COURSE_TEXTS.detailsCard.alreadyEnrolled}
+              </div>
+
+              {/* Navigation button with Secondary Style */}
+              <button
+                className="w-full py-3 px-4 rounded-lg border border-cem-neutral-gray-200 bg-white text-cem-neutral-gray-900 font-bold hover:bg-gray-50 transition-colors"
+                onClick={() => router.push("/dashboard/enrolled-courses")}
+              >
+                {COURSE_TEXTS.detailsCard.goToCourse}
+              </button>
+            </div>
           ) : (
             <div className="w-full flex flex-col gap-3">
               {/* PayPal Button for Direct Purchase */}
