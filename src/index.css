@@ -5,6 +5,9 @@
 html,
 body {
   scroll-behavior: smooth;
+}
+
+body {
   overflow-x: hidden;
   width: 100%;
 }
@@ -91,11 +94,9 @@ body {
   inset: 0;
   border-radius: 50%;
   padding: 3px;
-  background: conic-gradient(
-    from 180deg at 50% 50%,
-    #14b8a6 0deg,
-    transparent 120deg
-  );
+  background: conic-gradient(from 180deg at 50% 50%,
+      #14b8a6 0deg,
+      transparent 120deg);
   -webkit-mask: content-box, border-box;
   -webkit-mask-composite: source-out;
   mask-composite: subtract;
@@ -144,13 +145,11 @@ body {
   bottom: 0;
   left: 0;
   transform: translateX(-100%);
-  background-image: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0,
-    rgba(255, 255, 255, 0.2) 20%,
-    rgba(255, 255, 255, 0.5) 60%,
-    rgba(255, 255, 255, 0)
-  );
+  background-image: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0,
+      rgba(255, 255, 255, 0.2) 20%,
+      rgba(255, 255, 255, 0.5) 60%,
+      rgba(255, 255, 255, 0));
   animation: shimmer 0.9s infinite;
   content: "";
 }
@@ -186,6 +185,7 @@ body {
 
   background-color: #111927;
 }
+
 /* code block card glass background */
 .glass {
   background: rgba(255, 255, 255, 0);
@@ -205,6 +205,7 @@ body {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -212,10 +213,12 @@ body {
 
 /* Floating animation for course cards */
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
@@ -230,6 +233,7 @@ body {
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(calc(-100% / 3));
   }
@@ -251,6 +255,7 @@ body {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -261,6 +266,7 @@ body {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -272,6 +278,7 @@ body {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -301,4 +308,3 @@ body {
 .course-details-transition {
   transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
-

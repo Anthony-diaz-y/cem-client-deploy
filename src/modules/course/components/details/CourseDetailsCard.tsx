@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import copy from "copy-to-clipboard";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,10 +11,11 @@ import { addToCart } from "../../store/cartSlice";
 import { ACCOUNT_TYPE } from "@shared/utils/constants";
 import { CourseDetailsCardProps } from "../../types";
 import { RootState, AppDispatch } from "@shared/store/store";
-import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import { usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { COURSE_TEXTS } from "../../constants/course.constants";
 import { studentEndpoints } from "@shared/services/apis";
 import { apiConnector } from "@shared/services/apiConnector";
+import PaymentModal from "./PaymentModal";
 import { resetCart } from "@modules/course/store/cartSlice"; // Used to clear cart if needed, though for single buy we might not need to reset EVERYTHING unless intent is clear. For consistency with other flows, we'll see. Actually, for single buy here, we might just want to enroll.
 
 
@@ -34,6 +35,7 @@ function CourseDetailsCard({
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const [{ isPending }] = usePayPalScriptReducer();
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const { thumbnail, price, priceUSD } = course;
   // Asegurar que tenemos un ID válido, probando ambas propiedades comunes
@@ -65,10 +67,68 @@ function CourseDetailsCard({
     });
   };
 
+  const createPayPalOrder = async () => {
+    if (user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
+      toast.error(COURSE_TEXTS.actions.errors.instructorCannotBuy);
+      return Promise.reject("Instructor cannot buy");
+    }
+    if (!token) {
+      toast.error("Por favor, inicia sesión para comprar");
+      router.push("/auth/login");
+      return Promise.reject("Not authenticated");
+    }
+
+    const coursesToBuy = [courseIdToBuy];
+    console.log("Iniciando compra PayPal para curso:", { name: course.courseName, id: courseIdToBuy });
+
+    try {
+      const response = await apiConnector<{ orderId: string }>("POST", studentEndpoints.CREATE_PAYPAL_ORDER_API, {
+        coursesId: coursesToBuy,
+      });
+      console.log("Orden creada con éxito:", response.data);
+      const orderId = response.data.orderId;
+      if (orderId) return orderId;
+      throw new Error("Order ID not found");
+    } catch (err: any) {
+      console.error("Error creating individual order:", err);
+      const errorData = err.response?.data;
+      const errorMessage = errorData?.message || "";
+
+      if (typeof errorMessage === "string" && (errorMessage.toLowerCase().includes("already enrolled") || errorMessage.toLowerCase().includes("ya está inscrito"))) {
+        toast.success("¡Ya estás inscrito! Redirigiendo...");
+        window.location.href = "/dashboard/enrolled-courses";
+        return Promise.reject("ALREADY_ENROLLED");
+      }
+
+      if (err.response?.status === 401) {
+        toast.error("Sesión expirada.");
+      } else {
+        toast.error("No se pudo iniciar el pago");
+      }
+      throw err;
+    }
+  };
+
+  const onPayPalApprove = async (data: any) => {
+    console.log("Pago aprobado por PayPal. Capturando orden en backend...", data);
+    try {
+      const response: any = await apiConnector("POST", studentEndpoints.CAPTURE_PAYPAL_ORDER_API, {
+        orderId: data.orderID
+      });
+      console.log("Captura exitosa:", response.data);
+      toast.success("¡Compra exitosa!");
+      router.push("/dashboard/enrolled-courses");
+    } catch (err) {
+      console.error("PayPal Capture Error:", err);
+      toast.error("Hubo un problema procesando la inscripción.");
+      throw err;
+    }
+  };
+
   const isEnrolledInCourse = isEnrolled || (user && course?.studentsEnrolled?.includes((user as any)?._id || (user as any)?.id));
 
   return (
-    <div className="rounded-xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] overflow-hidden">
+    <div className="rounded-xl bg-cem-cardbackground shadow-[0_20px_50px_rgba(0,0,0,0.12)] overflow-hidden border border-cem-neutral-gray-100/50">
       {/* Video thumbnail with play button */}
       <div className="relative aspect-video bg-cem-neutral-gray-100 overflow-hidden group">
         <Img
@@ -77,7 +137,7 @@ function CourseDetailsCard({
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/20 transition-colors cursor-pointer">
-          <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-lg transition-transform group-hover:scale-110">
+          <div className="w-16 h-16 rounded-full bg-cem-cardbackground flex items-center justify-center shadow-lg transition-transform group-hover:scale-110">
             <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[18px] border-l-cem-primary border-b-[10px] border-b-transparent ml-1" />
           </div>
         </div>
@@ -111,13 +171,13 @@ function CourseDetailsCard({
           {isEnrolledInCourse ? (
             <div className="flex flex-col gap-3">
               {/* Status Indicator with Primary Style */}
-              <div className="w-full py-3 px-4 rounded-lg bg-[#008396] text-white font-bold text-center shadow-sm">
+              <div className="w-full py-3 px-4 rounded-lg bg-cem-primary text-white font-bold text-center shadow-sm">
                 {COURSE_TEXTS.detailsCard.alreadyEnrolled}
               </div>
 
               {/* Navigation button with Secondary Style */}
               <button
-                className="w-full py-3 px-4 rounded-lg border border-cem-neutral-gray-200 bg-white text-cem-neutral-gray-900 font-bold hover:bg-gray-50 transition-colors"
+                className="w-full py-3 px-4 rounded-lg border border-cem-neutral-gray-200 bg-cem-cardbackground text-cem-neutral-gray-900 font-bold hover:bg-cem-neutral-gray-50 transition-colors"
                 onClick={() => router.push("/dashboard/enrolled-courses")}
               >
                 {COURSE_TEXTS.detailsCard.goToCourse}
@@ -125,92 +185,16 @@ function CourseDetailsCard({
             </div>
           ) : (
             <div className="w-full flex flex-col gap-3">
-              {/* PayPal Button for Direct Purchase */}
-              <div className="relative z-0 group">
-                {isPending ? (
-                  <div className="w-full h-[48px] bg-cem-neutral-gray-100 animate-pulse rounded-lg" />
-                ) : (
-                  <div className="relative w-full h-[48px] rounded-lg overflow-hidden bg-[#008396]">
-                    {/* 1. CAPA VISUAL: El diseño que tú pediste */}
-                    <div className="absolute inset-0 flex items-center justify-center text-white font-bold pointer-events-none">
-                      Comprar ahora
-                    </div>
-
-                    {/* 2. CAPA FUNCIONAL (cuando acabe la configuracion poner opacity-[0.01]) */}
-                    <div className="absolute inset-x-0 inset-y-0 z-20 opacity-[0.01] scale-[1.5] cursor-pointer">
-                      <PayPalButtons
-                        style={{
-                          layout: "horizontal",
-                          height: 48,
-                          tagline: false,
-                          shape: "rect",
-                        }}
-                        createOrder={(data, actions) => {
-                          if (user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
-                            toast.error(COURSE_TEXTS.actions.errors.instructorCannotBuy);
-                            return Promise.reject("Instructor cannot buy");
-                          }
-                          if (!token) {
-                            toast.error("Por favor, inicia sesión para comprar");
-                            router.push("/auth/login");
-                            return Promise.reject("Not authenticated");
-                          }
-
-                          const coursesToBuy = [courseIdToBuy];
-                          console.log("Iniciando compra PayPal para curso:", { name: course.courseName, id: courseIdToBuy });
-
-                          return apiConnector<{ orderId: string }>("POST", studentEndpoints.CREATE_PAYPAL_ORDER_API, {
-                            coursesId: coursesToBuy,
-                          })
-                            .then((response) => {
-                              console.log("Orden creada con éxito:", response.data);
-                              const orderId = response.data.orderId;
-                              if (orderId) return orderId;
-                              throw new Error("Order ID not found");
-                            })
-                            .catch((err) => {
-                              console.error("Error creating individual order:", err);
-                              const errorData = err.response?.data;
-                              const errorMessage = errorData?.message || "";
-
-                              if (typeof errorMessage === "string" && (errorMessage.toLowerCase().includes("already enrolled") || errorMessage.toLowerCase().includes("ya está inscrito"))) {
-                                toast.success("¡Ya estás inscrito! Redirigiendo...");
-                                window.location.href = "/dashboard/enrolled-courses";
-                                return Promise.reject("ALREADY_ENROLLED");
-                              }
-
-                              if (err.response?.status === 401) {
-                                toast.error("Sesión expirada.");
-                              } else {
-                                toast.error("No se pudo iniciar el pago");
-                              }
-                              throw err;
-                            });
-                        }}
-                        onApprove={(data, actions) => {
-                          console.log("Pago aprobado por PayPal. Capturando orden en backend...", data);
-                          return apiConnector("POST", studentEndpoints.CAPTURE_PAYPAL_ORDER_API, {
-                            orderId: data.orderID
-                          })
-                            .then((response) => {
-                              console.log("Captura exitosa:", response.data);
-                              toast.success("¡Compra exitosa!");
-                              router.push("/dashboard/enrolled-courses");
-                            })
-                            .catch((err) => {
-                              console.error("PayPal Capture Error:", err);
-                              toast.error("Hubo un problema procesando la inscripción.");
-                              throw err;
-                            });
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
+              {/* Buy Now Button that opens Modal */}
+              <button
+                className="w-full h-[48px] rounded-lg bg-cem-primary text-white font-bold flex items-center justify-center hover:bg-cem-primary-dark transition-colors shadow-sm active:scale-[0.98]"
+                onClick={() => setShowPaymentModal(true)}
+              >
+                {COURSE_TEXTS.detailsCard.buyNow}
+              </button>
 
               <button
-                className="w-full py-3 px-4 rounded-lg border border-cem-neutral-gray-200 bg-white text-cem-neutral-gray-900 font-bold hover:bg-gray-50 transition-colors"
+                className="w-full py-3 px-4 rounded-lg border border-cem-neutral-gray-200 bg-cem-cardbackground text-cem-neutral-gray-900 font-bold hover:bg-cem-neutral-gray-50 transition-colors"
                 onClick={onAddToCart}
               >
                 {COURSE_TEXTS.hero.actions.addToCart}
@@ -218,6 +202,17 @@ function CourseDetailsCard({
             </div>
           )}
         </div>
+
+        {/* Modal Pago */}
+        {showPaymentModal && (
+          <PaymentModal
+            onClose={() => setShowPaymentModal(false)}
+            createPayPalOrder={createPayPalOrder}
+            onPayPalApprove={onPayPalApprove}
+            price={price}
+            priceUSD={priceUSD}
+          />
+        )}
 
         {/* Requirements */}
         {course?.instructions?.length > 0 && (

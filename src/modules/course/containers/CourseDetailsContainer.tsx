@@ -142,14 +142,13 @@ const CourseDetailsContainer = () => {
         <div className="hidden lg:block absolute top-0 left-0 w-full h-full pointer-events-none z-30 course-sidebar-enter">
           <div className="mx-auto max-w-[1260px] px-4 h-full relative">
             {/* Position Sidebar on the right */}
-            <div className="absolute right-4 top-0 h-full">
+            <div className="absolute right-4 top-0 bottom-5">
               <div className="sticky top-24 pt-14 w-[380px] pointer-events-auto">
                 <CourseDetailsCard
                   course={courseDetails}
                   setConfirmationModal={setConfirmationModal}
                   handleBuyCourse={handleBuyCourse}
                   handleAddToCart={handleAddToCart}
-                  isEnrolled={response.data.isEnrolled}
                 />
               </div>
             </div>

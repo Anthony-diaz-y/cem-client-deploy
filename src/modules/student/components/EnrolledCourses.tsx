@@ -33,14 +33,14 @@ const CourseThumbnailSmall: React.FC<{
 }> = ({ thumbnail, courseName }) => {
   if (!thumbnail) {
     return (
-      <div className="h-14 w-14 rounded-lg overflow-hidden bg-richblack-900 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-richblack-800 to-richblack-900 text-richblack-400">
+      <div className="h-14 w-14 rounded-lg overflow-hidden bg-cem-neutral-gray-100 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-cem-neutral-gray-50 to-cem-neutral-gray-100 text-cem-neutral-gray-400">
         <HiBookOpen size={20} className="opacity-60" />
       </div>
     );
   }
 
   return (
-    <div className="h-14 w-14 rounded-lg overflow-hidden bg-richblack-900 relative flex-shrink-0">
+    <div className="h-14 w-14 rounded-lg overflow-hidden bg-cem-neutral-gray-100 relative flex-shrink-0">
       <Img
         src={thumbnail}
         alt={courseName || "course_img"}
@@ -194,22 +194,21 @@ export default function EnrolledCourses() {
 
   return (
     <>
-      <div className="text-4xl text-richblack-5 font-boogaloo text-center sm:text-left">
+      <div className="text-4xl text-cem-neutral-gray-900 font-bold font-boogaloo text-center sm:text-left">
         {STUDENT_TEXTS.enrolledCourses.title}
       </div>
 
       <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Filter Tabs */}
-        <div className="flex items-center gap-2 p-1 bg-richblack-800 rounded-lg w-fit">
+        <div className="flex items-center gap-2 p-1 bg-white border border-cem-neutral-gray-100 rounded-lg w-fit shadow-sm">
           {(["all", "pending", "completed"] as const).map((status) => (
             <button
               key={status}
               onClick={() => setFilterStatus(status)}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
-                filterStatus === status
-                  ? "bg-richblack-900 text-richblack-5 shadow-sm"
-                  : "text-richblack-400 hover:text-richblack-200"
-              }`}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${filterStatus === status
+                  ? "bg-cem-primary text-white shadow-sm"
+                  : "text-cem-neutral-gray-500 hover:text-cem-primary"
+                }`}
             >
               {STUDENT_TEXTS.enrolledCourses.filters[status]}
             </button>
@@ -224,19 +223,19 @@ export default function EnrolledCourses() {
               placeholder={
                 STUDENT_TEXTS.enrolledCourses.filters.searchPlaceholder
               }
-              className="w-full bg-richblack-800 text-richblack-5 rounded-full py-2 pl-10 pr-4 border border-richblack-700 focus:outline-none focus:border-cem-primary transition-colors text-sm"
+              className="w-full bg-white text-cem-neutral-gray-900 rounded-full py-2 pl-10 pr-4 border border-cem-neutral-gray-200 focus:outline-none focus:border-cem-primary transition-colors text-sm shadow-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <HiMagnifyingGlass
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-richblack-400"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-cem-neutral-gray-400"
               size={18}
             />
           </div>
 
           {/* Sort Selector */}
           <div className="flex items-center gap-2">
-            <span className="text-sm text-richblack-400">
+            <span className="text-sm text-cem-neutral-gray-500">
               {STUDENT_TEXTS.enrolledCourses.sort.label}:
             </span>
             <select
@@ -244,7 +243,7 @@ export default function EnrolledCourses() {
               onChange={(e) =>
                 setSortOrder(e.target.value as "newest" | "oldest")
               }
-              className="bg-richblack-800 text-richblack-5 text-sm rounded-md px-3 py-1.5 border border-richblack-700 focus:outline-none focus:border-cem-primary cursor-pointer transition-colors"
+              className="bg-white text-cem-neutral-gray-900 text-sm rounded-md px-3 py-1.5 border border-cem-neutral-gray-200 focus:outline-none focus:border-cem-primary cursor-pointer transition-colors shadow-sm"
             >
               <option value="newest">
                 {STUDENT_TEXTS.enrolledCourses.sort.newest}
@@ -257,16 +256,16 @@ export default function EnrolledCourses() {
         </div>
       </div>
 
-      <div className="my-8 text-richblack-5">
+      <div className="my-8 text-cem-neutral-gray-900 overflow-hidden rounded-2xl border border-cem-neutral-gray-100 shadow-sm">
         {/* Headings */}
-        <div className="flex rounded-t-2xl bg-richblack-800 ">
-          <p className="w-[45%] px-5 py-3">
+        <div className="flex bg-cem-neutral-gray-50 font-bold text-cem-neutral-gray-700 border-b border-cem-neutral-gray-100">
+          <p className="w-[45%] px-5 py-4">
             {STUDENT_TEXTS.enrolledCourses.table.courseName}
           </p>
-          <p className="w-1/4 px-2 py-3">
+          <p className="w-1/4 px-2 py-4">
             {STUDENT_TEXTS.enrolledCourses.table.duration}
           </p>
-          <p className="flex-1 px-2 py-3">
+          <p className="flex-1 px-2 py-4">
             {STUDENT_TEXTS.enrolledCourses.table.progress}
           </p>
         </div>
@@ -281,7 +280,7 @@ export default function EnrolledCourses() {
             {sklItem()}
           </div>
         ) : filteredAndSortedCourses.length === 0 ? (
-          <div className="border border-richblack-700 bg-richblack-800 p-8 text-center text-richblack-100 rounded-b-2xl">
+          <div className="bg-cem-cardbackground p-12 text-center text-cem-neutral-gray-400">
             {searchTerm || filterStatus !== "all"
               ? "No se han encontrado cursos que coincidan con tu búsqueda."
               : STUDENT_TEXTS.enrolledCourses.emptyState}
@@ -290,13 +289,11 @@ export default function EnrolledCourses() {
           filteredAndSortedCourses.map(
             (course: Course, i: number, arr: Course[]) => (
               <div
-                className={`flex flex-col sm:flex-row sm:items-center border border-richblack-700 bg-richblack-800 ${
-                  i === arr.length - 1 ? "rounded-b-2xl" : "rounded-none"
-                }`}
+                className={`flex flex-col sm:flex-row sm:items-center border-b border-cem-neutral-gray-50 bg-cem-cardbackground last:border-b-0 transition-colors hover:bg-cem-neutral-gray-50/50`}
                 key={i}
               >
                 <div
-                  className="flex sm:w-[45%] cursor-pointer items-center gap-4 px-5 py-3 hover:bg-richblack-700 transition-colors rounded"
+                  className="flex sm:w-[45%] cursor-pointer items-center gap-4 px-5 py-4"
                   onClick={async () => {
                     const courseWithId = course as CourseWithId;
                     const courseId = getCourseId(courseWithId);
@@ -381,12 +378,10 @@ export default function EnrolledCourses() {
                     courseName={course.courseName}
                   />
 
-                  <div className="flex max-w-xs flex-col gap-2">
-                    <p className="font-semibold">{course.courseName}</p>
-                    <p className="text-xs text-richblack-300">
-                      {course.courseDescription.length > 50
-                        ? `${course.courseDescription.slice(0, 50)}...`
-                        : course.courseDescription}
+                  <div className="flex max-w-xs flex-col gap-1.5">
+                    <p className="font-bold text-cem-neutral-gray-900 group-hover:text-cem-primary transition-colors">{course.courseName}</p>
+                    <p className="text-xs text-cem-neutral-gray-500 line-clamp-2">
+                      {course.courseDescription}
                     </p>
                   </div>
                 </div>

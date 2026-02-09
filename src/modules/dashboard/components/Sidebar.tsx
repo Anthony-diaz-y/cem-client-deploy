@@ -53,7 +53,7 @@ export default function Sidebar() {
 
   if (profileLoading || authLoading) {
     return (
-      <div className="grid h-[calc(100vh-3.5rem)] min-w-[220px] items-center border-r-[1px] border-r-richblack-700 bg-richblack-800">
+      <div className="grid h-[calc(100vh-3.5rem)] min-w-[220px] items-center border-r-[1px] border-r-cem-neutral-gray-100 bg-cem-cardbackground">
         <Loading />
       </div>
     );
@@ -61,12 +61,11 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Botón de menú móvil - usar suppressHydrationWarning porque solo se muestra en móviles después del mount */}
+      {/* Botón de menú móvil */}
       <div
         suppressHydrationWarning
-        className={`sm:hidden text-white absolute left-7 top-3 cursor-pointer ${
-          mounted ? "" : "hidden"
-        }`}
+        className={`sm:hidden text-cem-primary absolute left-7 top-3 cursor-pointer ${mounted ? "" : "hidden"
+          }`}
         onClick={() => dispatch(setOpenSideMenu(!openSideMenu))}
       >
         {mounted && (openSideMenu ? <IoMdClose size={33} /> : <HiMenuAlt1 size={33} />)}
@@ -80,17 +79,15 @@ export default function Sidebar() {
         />
       )}
 
-      {/* Sidebar: visible en pantallas grandes siempre, en móviles solo si openSideMenu es true (después de montar) */}
-      {/* Usar suppressHydrationWarning porque las clases cambian después del mount en móviles */}
+      {/* Sidebar */}
       <div
         suppressHydrationWarning
-        className={`${
-          mounted && screenSize !== undefined && screenSize <= DASHBOARD_TEXTS.breakpoints.mobile
+        className={`${mounted && screenSize !== undefined && screenSize <= DASHBOARD_TEXTS.breakpoints.mobile
             ? openSideMenu
               ? "flex fixed left-0 top-[3.5rem] z-50"
               : "hidden"
             : "hidden sm:flex"
-        } h-[calc(100vh-3.5rem)] min-w-[220px] max-w-[220px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800 py-10 flex-shrink-0`}
+          } h-[calc(100vh-3.5rem)] min-w-[220px] max-w-[220px] flex-col border-r-[1px] border-r-cem-neutral-gray-200 bg-cem-cardbackground py-10 flex-shrink-0 shadow-sm`}
       >
         <div className="flex flex-col mt-6">
           {sidebarLinks.map((link) => {
@@ -106,7 +103,7 @@ export default function Sidebar() {
           })}
         </div>
 
-        <div className="mx-auto mt-6 mb-6 h-[1px] w-10/12 bg-richblack-700" />
+        <div className="mx-auto mt-6 mb-6 h-[1px] w-10/12 bg-cem-neutral-gray-100" />
 
         <div className="flex flex-col">
           <SidebarLink
