@@ -174,7 +174,7 @@ export default function EnrolledCourses() {
   // Loading Skeleton
   const sklItem = () => {
     return (
-      <div className="flex border border-richblack-700 px-5 py-3 w-full">
+      <div className="flex border border-cem-neutral-gray-200 px-5 py-3 w-full">
         <div className="flex flex-1 gap-x-4 ">
           <div className="h-14 w-14 rounded-lg skeleton "></div>
 
@@ -200,14 +200,14 @@ export default function EnrolledCourses() {
 
       <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Filter Tabs */}
-        <div className="flex items-center gap-2 p-1 bg-white border border-cem-neutral-gray-100 rounded-lg w-fit shadow-sm">
+        <div className="flex items-center gap-2 p-1 bg-cem-cardbackground border border-cem-neutral-gray-100 rounded-lg w-fit shadow-sm">
           {(["all", "pending", "completed"] as const).map((status) => (
             <button
               key={status}
               onClick={() => setFilterStatus(status)}
               className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${filterStatus === status
-                  ? "bg-cem-primary text-white shadow-sm"
-                  : "text-cem-neutral-gray-500 hover:text-cem-primary"
+                ? "bg-cem-primary text-white shadow-sm"
+                : "text-cem-neutral-gray-500 hover:text-cem-primary"
                 }`}
             >
               {STUDENT_TEXTS.enrolledCourses.filters[status]}
@@ -223,7 +223,7 @@ export default function EnrolledCourses() {
               placeholder={
                 STUDENT_TEXTS.enrolledCourses.filters.searchPlaceholder
               }
-              className="w-full bg-white text-cem-neutral-gray-900 rounded-full py-2 pl-10 pr-4 border border-cem-neutral-gray-200 focus:outline-none focus:border-cem-primary transition-colors text-sm shadow-sm"
+              className="w-full bg-cem-cardbackground text-cem-neutral-gray-900 rounded-full py-2 pl-10 pr-4 border border-cem-neutral-gray-200 focus:outline-none focus:border-cem-primary transition-colors text-sm shadow-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -243,7 +243,7 @@ export default function EnrolledCourses() {
               onChange={(e) =>
                 setSortOrder(e.target.value as "newest" | "oldest")
               }
-              className="bg-white text-cem-neutral-gray-900 text-sm rounded-md px-3 py-1.5 border border-cem-neutral-gray-200 focus:outline-none focus:border-cem-primary cursor-pointer transition-colors shadow-sm"
+              className="bg-cem-cardbackground text-cem-neutral-gray-900 text-sm rounded-md px-3 py-1.5 border border-cem-neutral-gray-200 focus:outline-none focus:border-cem-primary cursor-pointer transition-colors shadow-sm"
             >
               <option value="newest">
                 {STUDENT_TEXTS.enrolledCourses.sort.newest}
