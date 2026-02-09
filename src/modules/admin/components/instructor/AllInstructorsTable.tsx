@@ -58,9 +58,15 @@ export default function AllInstructorsTable({
 
   if (instructors.length === 0) {
     return (
-      <div className="bg-richblack-800 rounded-xl p-8 border border-richblack-700 text-center">
-        <p className="text-richblack-400 text-lg">
-          No hay instructores registrados
+      <div className="bg-white rounded-[2.5rem] p-16 border border-cem-neutral-gray-100 text-center shadow-sm">
+        <div className="w-24 h-24 bg-cem-neutral-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+          <FiEye className="text-4xl text-cem-neutral-gray-200" />
+        </div>
+        <p className="text-cem-neutral-gray-900 text-2xl font-black mb-2">
+          Sin registros encontrados
+        </p>
+        <p className="text-cem-neutral-gray-500 font-medium italic">
+          No hay instructores que coincidan con los criterios actuales.
         </p>
       </div>
     );
@@ -68,98 +74,105 @@ export default function AllInstructorsTable({
 
   return (
     <>
-      <div className="bg-richblack-800 rounded-xl border border-richblack-700 overflow-hidden">
+      <div className="bg-white rounded-[2.5rem] border border-cem-neutral-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-richblack-900">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider">
-                  Instructor
+          <table className="w-full text-left">
+            <thead>
+              <tr className="bg-cem-neutral-gray-50/50 border-b border-cem-neutral-gray-100">
+                <th className="px-8 py-6 text-[10px] font-black text-cem-neutral-gray-400 uppercase tracking-[0.2em]">
+                  Instructor perfiL
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider">
-                  Email
+                <th className="px-8 py-6 text-[10px] font-black text-cem-neutral-gray-400 uppercase tracking-[0.2em]">
+                  Contacto
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider">
-                  Estado Aprobación
+                <th className="px-8 py-6 text-[10px] font-black text-cem-neutral-gray-400 uppercase tracking-[0.2em]">
+                  Validación
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider">
-                  Estado Activo
+                <th className="px-8 py-6 text-[10px] font-black text-cem-neutral-gray-400 uppercase tracking-[0.2em]">
+                  Estado cuenta
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider">
-                  Fecha de Registro
+                <th className="px-8 py-6 text-[10px] font-black text-cem-neutral-gray-400 uppercase tracking-[0.2em]">
+                  Registro
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-richblack-400 uppercase tracking-wider">
-                  Acciones
+                <th className="px-8 py-6 text-[10px] font-black text-cem-neutral-gray-400 uppercase tracking-[0.2em] text-right">
+                  Operaciones
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-richblack-700">
+            <tbody className="divide-y divide-cem-neutral-gray-50">
               {instructors.map((instructor) => (
                 <tr
                   key={instructor.id}
-                  className="hover:bg-richblack-900/50 transition-colors"
+                  className="hover:bg-cem-neutral-gray-50/30 transition-all group"
                 >
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-3">
-                      <Img
-                        src={
-                          instructor.image ||
-                          `https://api.dicebear.com/5.x/initials/svg?seed=${instructor.name}`
-                        }
-                        alt={`${instructor.name}`}
-                        className="h-10 w-10 rounded-full object-cover"
-                      />
+                  <td className="px-8 py-5">
+                    <div className="flex items-center gap-4">
+                      <div className="relative">
+                        <Img
+                          src={
+                            instructor.image ||
+                            `https://api.dicebear.com/5.x/initials/svg?seed=${instructor.name}`
+                          }
+                          alt={`${instructor.name}`}
+                          className="h-12 w-12 rounded-2xl object-cover shadow-sm ring-2 ring-white"
+                        />
+                        {instructor.active && (
+                          <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-caribbeangreen-400 border-2 border-white rounded-full"></span>
+                        )}
+                      </div>
                       <div>
-                        <p className="text-sm font-medium text-richblack-5">
+                        <p className="text-sm font-black text-cem-neutral-gray-900 group-hover:text-cem-primary transition-colors">
                           {instructor.name}
+                        </p>
+                        <p className="text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-widest mt-0.5">
+                          ID: {instructor.id.slice(-8).toUpperCase()}
                         </p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="text-sm text-richblack-300">
+                  <td className="px-8 py-5">
+                    <p className="text-sm font-bold text-cem-neutral-gray-700">
                       {instructor.email}
                     </p>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-8 py-5">
                     <span
-                      className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        instructor.approved
-                          ? "bg-green-500/20 text-green-400"
-                          : "bg-yellow-500/20 text-yellow-400"
-                      }`}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${instructor.approved
+                          ? "bg-caribbeangreen-400/10 text-caribbeangreen-400 border border-caribbeangreen-400/20"
+                          : "bg-cem-primary/10 text-cem-primary border border-cem-primary/20"
+                        }`}
                     >
-                      {instructor.approved ? "Aprobado" : "Pendiente"}
+                      <span className={`w-1.5 h-1.5 rounded-full ${instructor.approved ? "bg-caribbeangreen-400" : "bg-cem-primary"}`}></span>
+                      {instructor.approved ? "Verificado" : "Revision"}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-8 py-5">
                     <span
-                      className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        instructor.active
-                          ? "bg-green-500/20 text-green-400"
-                          : "bg-gray-500/20 text-gray-400"
-                      }`}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${instructor.active
+                          ? "bg-caribbeangreen-400/10 text-caribbeangreen-400 border border-caribbeangreen-400/20"
+                          : "bg-cem-neutral-gray-100 text-cem-neutral-gray-400 border border-cem-neutral-gray-200"
+                        }`}
                     >
                       {instructor.active ? "Activo" : "Inactivo"}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="text-sm text-richblack-300">
+                  <td className="px-8 py-5">
+                    <p className="text-xs font-bold text-cem-neutral-gray-500">
                       {formatDate(instructor.createdAt)}
                     </p>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className="flex justify-end gap-2">
+                  <td className="px-8 py-5 text-right">
+                    <div className="flex justify-end gap-2.5">
                       <button
                         onClick={() =>
                           router.push(
                             `/dashboard/admin/instructors/${instructor.id}`,
                           )
                         }
-                        className="p-2 rounded-md bg-blue-600/20 text-blue-400 hover:bg-blue-600/30 transition-colors"
-                        title="Ver detalles"
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-cem-neutral-gray-100 text-cem-primary hover:bg-cem-primary hover:text-white transition-all shadow-sm"
+                        title="Ver ficha técnica"
                       >
-                        <FiEye size={16} />
+                        <FiEye size={18} />
                       </button>
                       <button
                         onClick={() =>
@@ -167,24 +180,23 @@ export default function AllInstructorsTable({
                             `/dashboard/admin/instructors/${instructor.id}/edit`,
                           )
                         }
-                        className="p-2 rounded-md bg-yellow-600/20 text-yellow-400 hover:bg-yellow-600/30 transition-colors"
-                        title="Editar"
+                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-cem-neutral-gray-100 text-yellow-500 hover:bg-yellow-500 hover:text-white transition-all shadow-sm"
+                        title="Editar perfil"
                       >
-                        <FiEdit size={16} />
+                        <FiEdit size={18} />
                       </button>
                       <button
                         onClick={() => handleToggleStatus(instructor)}
-                        className={`p-2 rounded-md transition-colors ${
-                          instructor.active
-                            ? "bg-orange-600/20 text-orange-400 hover:bg-orange-600/30"
-                            : "bg-green-600/20 text-green-400 hover:bg-green-600/30"
-                        }`}
-                        title={instructor.active ? "Desactivar" : "Activar"}
+                        className={`w-10 h-10 flex items-center justify-center rounded-xl border transition-all shadow-sm ${instructor.active
+                            ? "bg-white border-red-50 text-red-500 hover:bg-red-500 hover:text-white"
+                            : "bg-white border-caribbeangreen-50 text-caribbeangreen-400 hover:bg-caribbeangreen-400 hover:text-white"
+                          }`}
+                        title={instructor.active ? "Suspender acceso" : "Restaurar acceso"}
                       >
                         {instructor.active ? (
-                          <FiXCircle size={16} />
+                          <FiXCircle size={18} />
                         ) : (
-                          <FiCheckCircle size={16} />
+                          <FiCheckCircle size={18} />
                         )}
                       </button>
                     </div>

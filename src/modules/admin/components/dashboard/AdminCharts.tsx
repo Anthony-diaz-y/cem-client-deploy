@@ -38,9 +38,10 @@ export default function AdminCharts({ charts }: AdminChartsProps) {
       {
         label: "Estudiantes Inscritos",
         data: charts.topCoursesByStudents.map((c) => c.studentsCount),
-        backgroundColor: "rgba(255, 214, 10, 0.6)", // yellow-50
-        borderColor: "rgba(255, 214, 10, 1)",
-        borderWidth: 1,
+        backgroundColor: "rgba(2, 129, 158, 0.7)", // cem-primary with opacity
+        borderColor: "rgba(2, 129, 158, 1)",
+        borderWidth: 2,
+        borderRadius: 8,
       },
     ],
   };
@@ -48,22 +49,35 @@ export default function AdminCharts({ charts }: AdminChartsProps) {
   const studentsChartOptions = {
     indexAxis: "y" as const,
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "top" as const,
-        labels: { color: "#999DAA" }, // richblack-300
+        labels: {
+          color: "#4b5563", // cem-neutral-gray-600
+          font: { weight: 'bold' as any }
+        },
       },
-      title: {
-        display: false,
-      },
+      tooltip: {
+        backgroundColor: '#ffffff',
+        titleColor: '#111827',
+        bodyColor: '#4b5563',
+        borderColor: '#e5e7eb',
+        borderWidth: 1,
+        padding: 12,
+        displayColors: true,
+      }
     },
     scales: {
       x: {
-        ticks: { color: "#838894" }, // richblack-400
-        grid: { color: "#2C333F" }, // richblack-700
+        ticks: { color: "#6b7280" }, // cem-neutral-gray-500
+        grid: { color: "#f3f4f6" }, // cem-neutral-gray-100
       },
       y: {
-        ticks: { color: "#838894" },
+        ticks: {
+          color: "#111827", // cem-neutral-gray-900
+          font: { weight: '600' as any }
+        },
         grid: { display: false },
       },
     },
@@ -79,60 +93,75 @@ export default function AdminCharts({ charts }: AdminChartsProps) {
         label: "Ingresos Generados",
         data: charts.topCoursesByRevenue.map((c) => c.revenue),
         backgroundColor: [
-          "rgba(255, 99, 132, 0.6)",
-          "rgba(54, 162, 235, 0.6)",
-          "rgba(255, 206, 86, 0.6)",
-          "rgba(75, 192, 192, 0.6)",
-          "rgba(153, 102, 255, 0.6)",
+          "#02819E", // cem-primary
+          "#ffd60a", // yellow
+          "#0d9488", // primary-dark
+          "#3b82f6", // blue-500
+          "#8b5cf6", // purple-500
         ],
-        borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-        ],
-        borderWidth: 1,
+        borderColor: "#ffffff",
+        borderWidth: 4,
+        hoverOffset: 15,
       },
     ],
   };
 
   const revenueChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "right" as const,
-        labels: { color: "#999DAA" },
+        labels: {
+          color: "#4b5563",
+          padding: 20,
+          font: { weight: '600' as any }
+        },
       },
+      tooltip: {
+        backgroundColor: '#ffffff',
+        titleColor: '#111827',
+        bodyColor: '#4b5563',
+        borderColor: '#e5e7eb',
+        borderWidth: 1,
+        padding: 12,
+      }
     },
+    cutout: '65%',
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
       {/* Gráfico 1: Top Estudiantes */}
-      <div className="bg-richblack-800 p-6 rounded-xl border border-richblack-700">
-        <h3 className="text-xl font-bold text-richblack-5 mb-4">
+      <div className="bg-white p-8 rounded-3xl border border-cem-neutral-gray-100 shadow-sm hover:shadow-md transition-shadow">
+        <h3 className="text-xl font-extrabold text-cem-neutral-gray-900 mb-6 flex items-center gap-2">
+          <span className="w-1.5 h-6 bg-cem-primary rounded-full"></span>
           Cursos Más Populares
         </h3>
-        <div className="h-[300px] flex items-center justify-center">
+        <div className="h-[350px]">
           {charts.topCoursesByStudents.length > 0 ? (
             <Bar data={studentsChartData} options={studentsChartOptions} />
           ) : (
-            <p className="text-richblack-400">No hay datos disponibles</p>
+            <div className="h-full flex items-center justify-center">
+              <p className="text-cem-neutral-gray-400 font-medium">No hay datos disponibles</p>
+            </div>
           )}
         </div>
       </div>
 
       {/* Gráfico 2: Top Ingresos */}
-      <div className="bg-richblack-800 p-6 rounded-xl border border-richblack-700">
-        <h3 className="text-xl font-bold text-richblack-5 mb-4">
+      <div className="bg-white p-8 rounded-3xl border border-cem-neutral-gray-100 shadow-sm hover:shadow-md transition-shadow">
+        <h3 className="text-xl font-extrabold text-cem-neutral-gray-900 mb-6 flex items-center gap-2">
+          <span className="w-1.5 h-6 bg-yellow-400 rounded-full"></span>
           Mayores Ingresos
         </h3>
-        <div className="h-[300px] flex items-center justify-center">
+        <div className="h-[350px]">
           {charts.topCoursesByRevenue.length > 0 ? (
             <Doughnut data={revenueChartData} options={revenueChartOptions} />
           ) : (
-            <p className="text-richblack-400">No hay datos disponibles</p>
+            <div className="h-full flex items-center justify-center">
+              <p className="text-cem-neutral-gray-400 font-medium">No hay datos disponibles</p>
+            </div>
           )}
         </div>
       </div>

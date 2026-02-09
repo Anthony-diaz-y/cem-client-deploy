@@ -89,11 +89,11 @@ export default function AdminClassFilters({
   };
 
   return (
-    <div className="bg-cem-cardbackground rounded-xl p-6 border border-cem-neutral-gray-200 space-y-4 shadow-sm">
+    <div className="bg-white rounded-[2.5rem] p-8 border border-cem-neutral-gray-100 space-y-8 shadow-sm hover:shadow-md transition-shadow">
       {/* Búsqueda */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
-          <label className="block text-sm font-semibold text-cem-neutral-gray-700 mb-2">
+          <label className="block text-[10px] font-black text-cem-neutral-gray-900 uppercase tracking-widest mb-3 ml-1">
             🔍 Buscar por nombre
           </label>
           <input
@@ -101,25 +101,30 @@ export default function AdminClassFilters({
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             placeholder="Buscar clases por título o descripción..."
-            className="w-full px-4 py-2 bg-cem-background border border-cem-neutral-gray-200 rounded-lg text-cem-neutral-gray-900 placeholder-cem-neutral-gray-400 focus:ring-2 focus:ring-cem-primary focus:border-transparent transition-all"
+            className="w-full px-5 py-4 bg-cem-neutral-gray-50/50 border border-cem-neutral-gray-100 rounded-2xl text-cem-neutral-gray-900 font-bold placeholder-cem-neutral-gray-300 focus:outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary transition-all"
           />
         </div>
 
         {(onCreatedByChange || onInstructorChange) && (
-          <InstructorCreatorSearch
-            value={instructorCreatorValue}
-            onChange={setInstructorCreatorValue}
-            onSelect={handleInstructorSelect}
-            onClear={handleInstructorClear}
-            instructors={instructors}
-          />
+          <div className="flex flex-col">
+            <label className="block text-[10px] font-black text-cem-neutral-gray-900 uppercase tracking-widest mb-3 ml-1">
+              👤 Instructor / Creador
+            </label>
+            <InstructorCreatorSearch
+              value={instructorCreatorValue}
+              onChange={setInstructorCreatorValue}
+              onSelect={handleInstructorSelect}
+              onClear={handleInstructorClear}
+              instructors={instructors}
+            />
+          </div>
         )}
       </div>
 
       {/* Filtros */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div>
-          <label className="block text-sm font-semibold text-cem-neutral-gray-700 mb-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="flex flex-col">
+          <label className="block text-[10px] font-black text-cem-neutral-gray-900 uppercase tracking-widest mb-3 ml-1">
             Plataforma
           </label>
           <select
@@ -129,7 +134,7 @@ export default function AdminClassFilters({
               setPlatform(value);
               onPlatformChange(value);
             }}
-            className="w-full px-4 py-2 bg-cem-background border border-cem-neutral-gray-200 rounded-lg text-cem-neutral-gray-900 focus:ring-2 focus:ring-cem-primary focus:border-transparent transition-all"
+            className="w-full px-5 py-4 bg-cem-neutral-gray-50/50 border border-cem-neutral-gray-100 rounded-2xl text-cem-neutral-gray-900 font-bold outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary cursor-pointer transition-all appearance-none"
           >
             <option value="all">Todas las plataformas</option>
             {PLATAFORMAS.map((plat) => (
@@ -140,8 +145,8 @@ export default function AdminClassFilters({
           </select>
         </div>
 
-        <div>
-          <label className="block text-sm font-semibold text-cem-neutral-gray-700 mb-2">
+        <div className="flex flex-col">
+          <label className="block text-[10px] font-black text-cem-neutral-gray-900 uppercase tracking-widest mb-3 ml-1">
             Estado
           </label>
           <select
@@ -159,7 +164,7 @@ export default function AdminClassFilters({
               setStatus(newStatus);
               onStatusChange(newStatus);
             }}
-            className="w-full px-4 py-2 bg-cem-background border border-cem-neutral-gray-200 rounded-lg text-cem-neutral-gray-900 focus:ring-2 focus:ring-cem-primary focus:border-transparent transition-all"
+            className="w-full px-5 py-4 bg-cem-neutral-gray-50/50 border border-cem-neutral-gray-100 rounded-2xl text-cem-neutral-gray-900 font-bold outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary cursor-pointer transition-all appearance-none"
           >
             <option value="all">Todas</option>
             <option value="active">Solo Activas</option>
@@ -168,8 +173,8 @@ export default function AdminClassFilters({
         </div>
 
         {onDateChange && (
-          <div>
-            <label className="block text-sm font-semibold text-cem-neutral-gray-700 mb-2">
+          <div className="flex flex-col">
+            <label className="block text-[10px] font-black text-cem-neutral-gray-900 uppercase tracking-widest mb-3 ml-1">
               📅 Filtrar por fecha
             </label>
             <input
@@ -180,7 +185,7 @@ export default function AdminClassFilters({
                 setSelectedDate(dateValue);
                 onDateChange(dateValue || null);
               }}
-              className="w-full px-4 py-2 bg-cem-background border border-cem-neutral-gray-200 rounded-lg text-cem-neutral-gray-900 focus:ring-2 focus:ring-cem-primary focus:border-transparent transition-all"
+              className="w-full px-5 py-4 bg-cem-neutral-gray-50/50 border border-cem-neutral-gray-100 rounded-2xl text-cem-neutral-gray-900 font-bold outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary cursor-pointer transition-all"
             />
           </div>
         )}
@@ -188,12 +193,13 @@ export default function AdminClassFilters({
 
       {/* Botón limpiar filtros */}
       {hasActiveFilters && (
-        <div className="flex justify-end">
+        <div className="flex justify-end pt-2">
           <button
             onClick={handleClearFilters}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium text-sm shadow-md"
+            className="px-6 py-3 bg-white text-red-500 border-2 border-red-50 rounded-xl hover:bg-red-50 transition-all font-black text-[10px] uppercase tracking-widest flex items-center gap-2 group shadow-sm"
           >
-            🗑️ Limpiar Filtros
+            <span className="group-hover:rotate-12 transition-transform">🗑️</span>
+            Limpiar Filtros
           </button>
         </div>
       )}

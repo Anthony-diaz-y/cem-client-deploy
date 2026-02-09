@@ -245,7 +245,7 @@ export default function CoursesTable({
                           router.push(`/dashboard/edit-course/${courseId}`);
                         }}
                         title="Edit"
-                        className="px-2 transition-all duration-200 hover:scale-110 hover:text-caribbeangreen-300"
+                        className="px-2 transition-all duration-200 hover:scale-110 hover:text-cem-primary"
                       >
                         <FiEdit2 size={20} />
                       </button>
@@ -269,7 +269,7 @@ export default function CoursesTable({
                           });
                         }}
                         title="Delete"
-                        className="px-1 transition-all duration-200 hover:scale-110 hover:text-[#ff0000]"
+                        className="px-1 transition-all duration-200 hover:scale-110 hover:text-red-600"
                       >
                         <RiDeleteBin6Line size={20} />
                       </button>

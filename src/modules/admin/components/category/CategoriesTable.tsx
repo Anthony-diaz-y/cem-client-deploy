@@ -7,6 +7,7 @@ import EditCategoryModal from "./EditCategoryModal";
 import CategoryCard from "./components/CategoryCard";
 import { useCategoriesTable } from "../../hooks/category/useCategoriesTable";
 import { useAutoScroll } from "../../hooks/category/useAutoScroll";
+import { FiChevronRight } from "react-icons/fi";
 
 interface CategoriesTableProps {
   categories: Category[];
@@ -79,9 +80,15 @@ export default function CategoriesTable({
 
   if (categories.length === 0) {
     return (
-      <div className="bg-richblack-800 rounded-xl p-8 border border-richblack-700 text-center">
-        <p className="text-richblack-400 text-lg">
+      <div className="bg-white rounded-3xl p-12 border border-cem-neutral-gray-100 text-center shadow-sm">
+        <div className="bg-cem-neutral-gray-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <FiChevronRight className="text-3xl text-cem-neutral-gray-300" />
+        </div>
+        <p className="text-cem-neutral-gray-800 text-xl font-bold">
           No hay categorías registradas
+        </p>
+        <p className="text-cem-neutral-gray-500 mt-2">
+          Comienza creando una nueva categoría para organizar tus cursos.
         </p>
       </div>
     );
@@ -89,8 +96,8 @@ export default function CategoriesTable({
 
   return (
     <>
-      <div className="bg-richblack-800 rounded-xl border border-richblack-700 overflow-hidden">
-        <div className="space-y-2 p-4">
+      <div className="bg-white rounded-[2.5rem] border border-cem-neutral-gray-100 overflow-hidden shadow-sm">
+        <div className="space-y-4 p-6">
           {categoriesWithCourses.map((category) => (
             <CategoryCard
               key={category.id}

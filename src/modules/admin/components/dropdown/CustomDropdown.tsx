@@ -57,40 +57,46 @@ export default function CustomDropdown({
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <label className="block text-sm font-medium text-richblack-300 mb-2">
+      <label className="block text-[10px] font-black text-cem-neutral-gray-900 uppercase tracking-widest mb-2.5 ml-1">
         {label}
       </label>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-4 py-2 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 focus:outline-none focus:ring-2 focus:ring-yellow-500 flex items-center justify-between hover:border-richblack-600 transition-colors"
+        className="w-full px-6 py-4 bg-cem-neutral-gray-50/50 border border-cem-neutral-gray-100 rounded-2xl text-cem-neutral-gray-900 font-bold focus:outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary flex items-center justify-between hover:bg-white hover:border-cem-primary/30 transition-all shadow-sm"
       >
         <span className="truncate">
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <FiChevronDown
-          className={`ml-2 text-richblack-400 transition-transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`ml-2 text-cem-neutral-gray-400 transition-transform duration-300 ${isOpen ? "rotate-180 text-cem-primary" : ""
+            }`}
+          size={20}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 w-full mt-1 bg-richblack-900 border border-richblack-700 rounded-lg shadow-xl max-h-60 overflow-auto">
-          {options.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => handleSelect(option.value)}
-              className={`w-full px-4 py-2 text-left text-sm hover:bg-richblack-800 transition-colors ${
-                value === option.value
-                  ? "bg-yellow-500/20 text-yellow-50 font-medium"
-                  : "text-richblack-5"
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
+        <div className="absolute z-50 w-full mt-2 bg-white border border-cem-neutral-gray-100 rounded-2xl shadow-2xl max-h-60 overflow-hidden animate-scaleIn origin-top">
+          <div className="flex flex-col py-2 max-h-60 overflow-y-auto custom-scrollbar">
+            {options.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => handleSelect(option.value)}
+                className={`w-full px-6 py-3 text-left text-sm transition-all ${value === option.value
+                    ? "bg-cem-primary/10 text-cem-primary font-black"
+                    : "text-cem-neutral-gray-600 font-bold hover:bg-cem-neutral-gray-50 hover:text-cem-neutral-gray-900"
+                  }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span>{option.label}</span>
+                  {value === option.value && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-cem-primary"></span>
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>

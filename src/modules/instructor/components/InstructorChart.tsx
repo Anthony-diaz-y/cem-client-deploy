@@ -44,8 +44,8 @@ export default function InstructorChart({ courses }: InstructorChartProps) {
           {
             label: 'Estudiantes Inscritos',
             data: studentsData,
-            backgroundColor: 'rgba(59, 130, 246, 0.6)', // Azul
-            borderColor: 'rgba(59, 130, 246, 1)',
+            backgroundColor: 'rgba(2, 129, 158, 0.6)', // cem-primary con opacidad
+            borderColor: 'rgba(2, 129, 158, 1)', // cem-primary
             borderWidth: 1,
           },
         ],
@@ -77,10 +77,10 @@ export default function InstructorChart({ courses }: InstructorChartProps) {
             label: 'Ingresos Generados',
             data: incomeData,
             backgroundColor: incomeData.map((income: number) => 
-              income > 0 ? 'rgba(16, 185, 129, 0.6)' : 'rgba(239, 68, 68, 0.6)'
-            ), // Verde para ingresos positivos, rojo para cero
+              income > 0 ? 'rgba(2, 129, 158, 0.6)' : 'rgba(239, 68, 68, 0.6)'
+            ), // cem-primary para ingresos positivos, rojo para cero
             borderColor: incomeData.map((income: number) => 
-              income > 0 ? 'rgba(16, 185, 129, 1)' : 'rgba(239, 68, 68, 1)'
+              income > 0 ? 'rgba(2, 129, 158, 1)' : 'rgba(239, 68, 68, 1)'
             ),
             borderWidth: 1,
           },
@@ -98,9 +98,9 @@ export default function InstructorChart({ courses }: InstructorChartProps) {
       legend: {
         display: true,
         position: 'top' as const,
-        labels: {
-          color: '#E5E7EB', // richblack-5 equivalent
-        },
+      labels: {
+        color: '#111827', // cem-neutral-gray-900
+      },
       },
       tooltip: {
         callbacks: {
@@ -114,16 +114,16 @@ export default function InstructorChart({ courses }: InstructorChartProps) {
       y: {
         beginAtZero: true,
         ticks: {
-          color: '#9CA3AF', // richblack-300
+          color: '#6b7280', // cem-neutral-gray-500
           stepSize: 1,
         },
         grid: {
-          color: 'rgba(255, 255, 255, 0.1)',
+          color: 'rgba(0, 0, 0, 0.05)', // cem-neutral-gray-200 con opacidad
         },
       },
       x: {
         ticks: {
-          color: '#9CA3AF',
+          color: '#6b7280', // cem-neutral-gray-500
           maxRotation: 45,
           minRotation: 45,
         },
@@ -142,9 +142,9 @@ export default function InstructorChart({ courses }: InstructorChartProps) {
       legend: {
         display: true,
         position: 'top' as const,
-        labels: {
-          color: '#E5E7EB',
-        },
+      labels: {
+        color: '#111827', // cem-neutral-gray-900
+      },
       },
       tooltip: {
         callbacks: {
@@ -164,12 +164,12 @@ export default function InstructorChart({ courses }: InstructorChartProps) {
           },
         },
         grid: {
-          color: 'rgba(255, 255, 255, 0.1)',
+          color: 'rgba(0, 0, 0, 0.05)', // cem-neutral-gray-200 con opacidad
         },
       },
       x: {
         ticks: {
-          color: '#9CA3AF',
+          color: '#6b7280', // cem-neutral-gray-500
           maxRotation: 45,
           minRotation: 45,
         },
@@ -181,8 +181,8 @@ export default function InstructorChart({ courses }: InstructorChartProps) {
   }), []);
 
   return (
-    <div className="flex flex-1 flex-col gap-y-4 rounded-md bg-richblack-800 p-6">
-      <p className="text-lg font-bold text-richblack-5">Visualize</p>
+    <div className="flex flex-1 flex-col gap-y-4 rounded-md bg-cem-cardbackground border border-cem-neutral-gray-200 p-6">
+      <p className="text-lg font-bold text-cem-neutral-gray-900">Visualize</p>
 
       <div className="space-x-4 font-semibold">
         {/* Button to switch to the "students" chart */}
@@ -190,8 +190,8 @@ export default function InstructorChart({ courses }: InstructorChartProps) {
           onClick={() => setCurrChart("students")}
           className={`rounded-sm p-1 px-3 transition-all duration-200 ${
             currChart === "students"
-              ? "bg-richblack-700 text-yellow-50"
-              : "text-yellow-400"
+              ? "bg-cem-primary text-cem-neutral-white"
+              : "text-cem-neutral-gray-600 hover:text-cem-primary"
           }`}
         >
           Students
@@ -202,8 +202,8 @@ export default function InstructorChart({ courses }: InstructorChartProps) {
           onClick={() => setCurrChart("income")}
           className={`rounded-sm p-1 px-3 transition-all duration-200 ${
             currChart === "income"
-              ? "bg-richblack-700 text-yellow-50"
-              : "text-yellow-400"
+              ? "bg-cem-primary text-cem-neutral-white"
+              : "text-cem-neutral-gray-600 hover:text-cem-primary"
           }`}
         >
           Income
@@ -219,7 +219,7 @@ export default function InstructorChart({ courses }: InstructorChartProps) {
           />
         ) : (
           <div className="flex items-center justify-center h-full">
-            <p className="text-richblack-400">No hay datos para mostrar</p>
+            <p className="text-cem-neutral-gray-500">No hay datos para mostrar</p>
           </div>
         )}
       </div>

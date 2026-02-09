@@ -21,10 +21,10 @@ export default function AdminStats({ stats, loading }: AdminStatsProps) {
         {[1, 2, 3, 4, 5].map((i) => (
           <div
             key={i}
-            className="bg-richblack-800 rounded-xl p-6 border border-richblack-700 animate-pulse"
+            className="bg-white rounded-2xl p-6 border border-cem-neutral-gray-100 animate-pulse shadow-sm"
           >
-            <div className="h-4 bg-richblack-700 rounded w-3/4 mb-4"></div>
-            <div className="h-8 bg-richblack-700 rounded w-1/2"></div>
+            <div className="h-4 bg-cem-neutral-gray-100 rounded w-3/4 mb-4"></div>
+            <div className="h-8 bg-cem-neutral-gray-100 rounded w-1/2"></div>
           </div>
         ))}
       </div>
@@ -33,8 +33,8 @@ export default function AdminStats({ stats, loading }: AdminStatsProps) {
 
   if (!stats) {
     return (
-      <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700 text-center">
-        <p className="text-richblack-400">No se pudieron cargar las estadísticas</p>
+      <div className="bg-white rounded-2xl p-6 border border-cem-neutral-gray-200 text-center shadow-sm">
+        <p className="text-cem-neutral-gray-500">No se pudieron cargar las estadísticas</p>
       </div>
     );
   }
@@ -43,37 +43,37 @@ export default function AdminStats({ stats, loading }: AdminStatsProps) {
     {
       title: "Instructores Totales",
       value: stats.totalInstructors,
-      color: "text-blue-400",
-      bgColor: "bg-blue-500/10",
-      borderColor: "border-blue-500/20",
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+      borderColor: "border-blue-100",
     },
     {
       title: "Aprobados",
       value: stats.approvedInstructors,
-      color: "text-green-400",
-      bgColor: "bg-green-500/10",
-      borderColor: "border-green-500/20",
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+      borderColor: "border-green-100",
     },
     {
       title: "Pendientes",
       value: stats.pendingInstructors,
-      color: "text-yellow-400",
-      bgColor: "bg-yellow-500/10",
-      borderColor: "border-yellow-500/20",
+      color: "text-yellow-600",
+      bgColor: "bg-yellow-50/50",
+      borderColor: "border-yellow-200/50",
     },
     {
       title: "Estudiantes",
       value: stats.totalStudents,
-      color: "text-purple-400",
-      bgColor: "bg-purple-500/10",
-      borderColor: "border-purple-500/20",
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
+      borderColor: "border-purple-100",
     },
     {
       title: "Mensajes No Leídos",
       value: stats.unreadMessages || 0,
-      color: "text-pink-400",
-      bgColor: "bg-pink-500/10",
-      borderColor: "border-pink-500/20",
+      color: "text-pink-600",
+      bgColor: "bg-pink-50",
+      borderColor: "border-pink-100",
       link: "/dashboard/admin/contact-messages",
       highlight: (stats.unreadMessages || 0) > 0,
     },
@@ -85,19 +85,22 @@ export default function AdminStats({ stats, loading }: AdminStatsProps) {
         return (
           <div
             key={index}
-            className={`bg-richblack-800 rounded-xl p-6 border ${stat.borderColor} ${stat.bgColor} transition-all hover:scale-105 ${stat.highlight ? "border-l-4 border-l-yellow-50" : ""
-              }`}
+            className={`bg-white rounded-2xl p-6 border ${stat.borderColor} transition-all hover:shadow-md hover:-translate-y-1 ${stat.highlight ? "ring-2 ring-yellow-400 ring-offset-2" : "border-cem-neutral-gray-100"
+              } shadow-sm`}
           >
-            <p className="text-sm font-medium text-richblack-400 mb-2">{stat.title}</p>
-            <p className={`text-3xl font-bold ${stat.color}`}>
-              <CountUp end={stat.value} duration={2} />
-            </p>
+            <p className="text-sm font-semibold text-cem-neutral-gray-500 mb-2 uppercase tracking-wider">{stat.title}</p>
+            <div className="flex items-baseline gap-2">
+              <p className={`text-4xl font-extrabold ${stat.color}`}>
+                <CountUp end={stat.value} duration={2} />
+              </p>
+            </div>
             {stat.link && stat.value > 0 && (
               <Link
                 href={stat.link}
-                className="mt-2 text-xs text-caribbeangreen-200 hover:underline block"
+                className="mt-4 text-xs font-bold text-cem-primary hover:text-cem-primary-dark transition-colors flex items-center gap-1 group"
               >
-                Ver detalles →
+                Ver detalles
+                <span className="group-hover:translate-x-1 transition-transform">→</span>
               </Link>
             )}
           </div>

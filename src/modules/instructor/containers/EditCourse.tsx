@@ -83,7 +83,7 @@ export default function EditCourse() {
   return (
     <div className="flex w-full items-start gap-x-6">
       <div className="flex flex-1 flex-col">
-        <h1 className="mb-14 text-3xl font-medium text-richblack-5 text-center sm:text-left">
+        <h1 className="mb-14 text-3xl font-medium text-cem-neutral-gray-900 text-center sm:text-left">
           {INSTRUCTOR_TEXTS.editCourse.title}
         </h1>
 
@@ -94,7 +94,7 @@ export default function EditCourse() {
             {course ? (
               <RenderSteps />
             ) : (
-              <p className="mt-14 text-center text-3xl font-semibold text-richblack-100">
+              <p className="mt-14 text-center text-3xl font-semibold text-cem-neutral-gray-500">
                 {INSTRUCTOR_TEXTS.editCourse.notFound}
               </p>
             )}

@@ -25,7 +25,7 @@ export default function AllScheduledClassesContainer() {
   const { token } = useAppSelector((state) => state.auth);
   const { user } = useAppSelector((state) => state.profile);
   const [mostrarFormularioCrear, setMostrarFormularioCrear] = useState(false);
-  
+
   // Estado local de las clases para actualizar sin recargar
   const [localClasses, setLocalClasses] = useState<ClaseProgramada[]>([]);
 
@@ -70,7 +70,7 @@ export default function AllScheduledClassesContainer() {
   // No recarga toda la página, solo actualiza el estado local del componente
   const handleToggleActiveWrapper = useCallback(async (classId: string, isActive: boolean) => {
     if (!token) return;
-    
+
     try {
       // Actualizar el estado local inmediatamente para feedback visual
       setLocalClasses((prevClasses) =>
@@ -78,7 +78,7 @@ export default function AllScheduledClassesContainer() {
           clase.id === classId ? { ...clase, isActive } : clase
         )
       );
-      
+
       // Llamar al hook para actualizar en el backend
       await handleToggleActiveFromHook(classId, isActive, token, user?.accountType);
     } catch (error) {
@@ -100,15 +100,15 @@ export default function AllScheduledClassesContainer() {
   // Wrapper para confirmDelete que actualiza el estado local sin recargar
   const confirmDeleteWrapper = useCallback(async () => {
     if (!deleteModal.classId) return;
-    
+
     try {
       await eliminarClaseProgramada(deleteModal.classId, token);
-      
+
       // Remover la clase eliminada del estado local
       setLocalClasses((prevClasses) =>
         prevClasses.filter((clase) => clase.id !== deleteModal.classId)
       );
-      
+
       toast.success("Clase eliminada exitosamente");
       closeDeleteModal();
       // No llamar a refreshClasses para evitar recargar toda la página
@@ -158,13 +158,14 @@ export default function AllScheduledClassesContainer() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-4">
-        <h1 className="text-3xl font-bold text-richblack-5">
-          📊 Panel de Administración - Clases Programadas
+    <div className="space-y-8 animate-fadeIn">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-black text-cem-neutral-gray-900 tracking-tight flex items-center gap-3">
+          <span className="p-2 bg-cem-primary/10 rounded-2xl">📊</span>
+          Panel de Administración - Clases Programadas
         </h1>
-        <p className="text-richblack-400">
-          Gestiona todas las clases programadas del sistema
+        <p className="text-cem-neutral-gray-600 font-medium max-w-3xl leading-relaxed">
+          Gestiona todas las clases programadas del sistema. Monitorea estados, plataformas y participantes de manera centralizada.
         </p>
       </div>
 
@@ -187,22 +188,41 @@ export default function AllScheduledClassesContainer() {
         instructors={creators}
       />
 
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-richblack-5">
-            📋 Lista de Clases
-          </h2>
-          <div className="flex items-center gap-4">
-            <p className="text-sm text-richblack-400">
-              Mostrando {startIndex}-{endIndex} de {meta.total} clases
-            </p>
-            <button
-              onClick={() => setMostrarFormularioCrear(!mostrarFormularioCrear)}
-              className="px-6 py-2.5 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg hover:from-green-700 hover:to-teal-700 transition-all font-semibold shadow-lg"
-            >
-              {mostrarFormularioCrear ? '✕ Cancelar' : '➕ Crear Nueva Clase'}
-            </button>
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-cem-primary/10 flex items-center justify-center">
+              <span className="text-lg">📋</span>
+            </div>
+            <div>
+              <h2 className="text-xl font-black text-cem-neutral-gray-900">
+                Lista de Clases
+              </h2>
+              <p className="text-xs font-bold text-cem-neutral-gray-400 uppercase tracking-widest mt-0.5">
+                Mostrando {startIndex}-{endIndex} de {meta.total} clases
+              </p>
+            </div>
           </div>
+
+          <button
+            onClick={() => setMostrarFormularioCrear(!mostrarFormularioCrear)}
+            className={`px-8 py-3.5 rounded-2xl transition-all font-black text-xs uppercase tracking-[0.15em] flex items-center gap-3 group shadow-lg ${mostrarFormularioCrear
+              ? "bg-white text-red-500 border-2 border-red-50 hover:bg-red-50"
+              : "bg-cem-primary text-white hover:bg-cem-primary-dark shadow-cem-primary/20"
+              }`}
+          >
+            {mostrarFormularioCrear ? (
+              <>
+                <span className="text-lg">✕</span>
+                Cancelar creación
+              </>
+            ) : (
+              <>
+                <span className="text-lg group-hover:scale-125 transition-transform">➕</span>
+                Crear Nueva Clase
+              </>
+            )}
+          </button>
         </div>
 
         <AnimatePresence>
@@ -211,9 +231,12 @@ export default function AllScheduledClassesContainer() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="bg-richblack-800 rounded-lg shadow-lg p-6 border border-richblack-700"
+              className="bg-white rounded-[2.5rem] shadow-xl p-10 border border-cem-neutral-gray-100 overflow-hidden"
             >
-              <h2 className="text-2xl font-bold text-richblack-5 mb-6">Nueva Clase Programada</h2>
+              <h2 className="text-2xl font-black text-cem-neutral-gray-900 mb-8 flex items-center gap-3">
+                <span className="p-2 bg-cem-primary/10 rounded-xl text-xl">✨</span>
+                Nueva Clase Programada
+              </h2>
               <CreateClassForm
                 token={token}
                 userRole={user?.accountType || 'Admin'}
@@ -228,17 +251,20 @@ export default function AllScheduledClassesContainer() {
         </AnimatePresence>
 
         {isFiltering && classes.length === 0 ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500"></div>
-            <span className="ml-3 text-richblack-400">Buscando clases...</span>
+          <div className="flex flex-col items-center justify-center py-24 bg-white rounded-[2.5rem] border border-cem-neutral-gray-100 shadow-sm animate-pulse">
+            <div className="w-12 h-12 border-4 border-cem-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p className="text-xs font-black text-cem-neutral-gray-400 uppercase tracking-[0.2em]">Buscando clases...</p>
           </div>
         ) : !initialLoading && !isFiltering && classes.length === 0 ? (
-          <div className="bg-richblack-800 rounded-xl p-12 border border-richblack-700 text-center">
-            <p className="text-richblack-400 text-lg mb-2">
-              No se encontraron clases con los filtros seleccionados
+          <div className="bg-white rounded-[2.5rem] p-16 border border-cem-neutral-gray-100 text-center shadow-sm">
+            <div className="w-24 h-24 bg-cem-neutral-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+              <span className="text-5xl opacity-40">🔍</span>
+            </div>
+            <p className="text-cem-neutral-gray-900 text-2xl font-black mb-3">
+              No se encontraron clases
             </p>
-            <p className="text-richblack-500 text-sm">
-              Intenta ajustar los filtros o limpiarlos para ver más resultados
+            <p className="text-cem-neutral-gray-500 font-medium italic max-w-sm mx-auto leading-relaxed">
+              Intenta ajustar los filtros o limpiarlos para ver más resultados del calendario.
             </p>
           </div>
         ) : (
@@ -270,11 +296,14 @@ export default function AllScheduledClassesContainer() {
       {editModalAbierto && claseSeleccionada && (() => {
         // Obtener la versión actualizada de la clase del estado local
         const claseActualizada = localClasses.find(c => c.id === claseSeleccionada.id) || claseSeleccionada;
-        
+
         return (
-          <div key={claseActualizada.id} className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50">
-            <div className="bg-richblack-800 rounded-2xl shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto border border-richblack-700">
-              <h2 className="text-2xl font-bold mb-6 text-richblack-5">Editar Clase</h2>
+          <div key={claseActualizada.id} className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-cem-neutral-gray-900/40 backdrop-blur-sm animate-fadeIn">
+            <div className="bg-white rounded-[2.5rem] shadow-2xl max-w-2xl w-full p-10 max-h-[90vh] overflow-y-auto border border-cem-neutral-gray-100 animate-slideUp">
+              <h2 className="text-2xl font-black mb-8 text-cem-neutral-gray-900 flex items-center gap-3">
+                <span className="p-2 bg-yellow-500/10 rounded-xl text-xl">✏️</span>
+                Editar Clase Programada
+              </h2>
               <EditClassForm
                 clase={claseActualizada}
                 token={token}

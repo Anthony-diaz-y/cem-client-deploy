@@ -54,24 +54,24 @@ export default function DeleteCategoryModal({
   const isProcessing = processingCourse !== null;
 
   return (
-    <div className="fixed inset-0 z-[1000] !mt-0 grid place-items-center overflow-auto bg-white bg-opacity-10">
-      <div className="w-11/12 max-w-3xl rounded-lg border border-richblack-400 bg-richblack-800 p-6 my-8">
+    <div className="fixed inset-0 z-[1000] !mt-0 grid place-items-center overflow-auto bg-cem-neutral-gray-900/40 backdrop-blur-sm p-4">
+      <div className="w-11/12 max-w-3xl rounded-[2.5rem] border border-cem-neutral-gray-100 bg-white p-8 my-8 shadow-2xl animate-scaleIn">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center">
-              <FiTrash2 className="text-xl text-pink-400" />
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center shadow-sm">
+              <FiTrash2 className="text-2xl text-red-500" />
             </div>
             <div>
-              <h2 className="text-2xl font-semibold text-richblack-5">
+              <h2 className="text-2xl font-black text-cem-neutral-gray-900 leading-tight">
                 Eliminar Categoría
               </h2>
-              <p className="text-sm text-richblack-400 mt-1">{category.name}</p>
+              <p className="text-sm text-cem-neutral-gray-500 font-bold uppercase tracking-widest mt-0.5">{category.name}</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-richblack-400 hover:text-richblack-5 transition-colors"
+            className="w-10 h-10 rounded-full flex items-center justify-center text-cem-neutral-gray-400 hover:bg-cem-neutral-gray-50 hover:text-cem-neutral-gray-900 transition-all border border-transparent hover:border-cem-neutral-gray-100"
             disabled={isProcessing}
           >
             <IoMdClose className="text-2xl" />
@@ -79,27 +79,27 @@ export default function DeleteCategoryModal({
         </div>
 
         {/* Contenido */}
-        <div className="space-y-6">
+        <div className="space-y-8">
           {loading ? (
-            <div className="bg-richblack-700/50 rounded-lg p-8 text-center">
-              <FiRefreshCw className="animate-spin text-2xl text-richblack-400 mx-auto mb-2" />
-              <p className="text-richblack-300">Cargando información...</p>
+            <div className="bg-cem-neutral-gray-50/50 rounded-2xl p-12 text-center border border-cem-neutral-gray-100 border-dashed">
+              <FiRefreshCw className="animate-spin text-3xl text-cem-primary mx-auto mb-4" />
+              <p className="text-sm font-bold text-cem-neutral-gray-400 uppercase tracking-widest">Cargando información segura...</p>
             </div>
           ) : hasCourses ? (
             <>
               {/* Advertencia */}
-              <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-yellow-400 font-bold text-lg">!</span>
+              <div className="bg-yellow-400/5 border-l-4 border-l-yellow-400 rounded-2xl p-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-yellow-400 flex items-center justify-center flex-shrink-0 text-richblack-900 shadow-lg shadow-yellow-400/20">
+                    <span className="font-black text-xl">!</span>
                   </div>
                   <div className="flex-1">
-                    <p className="text-yellow-400 font-semibold mb-1">
-                      Esta categoría tiene {courses.length} curso(s) asociado(s)
+                    <p className="text-yellow-700 font-black text-lg mb-1">
+                      Acción requerida: {courses.length} curso(s) detectado(s)
                     </p>
-                    <p className="text-sm text-richblack-300">
-                      Para eliminar esta categoría, primero debes mover o eliminar
-                      todos los cursos asociados.
+                    <p className="text-sm text-yellow-600 font-medium leading-relaxed">
+                      Para eliminar esta categoría, primero debes reubicar o dar de baja
+                      todos los cursos asociados para evitar pérdida de datos.
                     </p>
                   </div>
                 </div>
@@ -120,36 +120,37 @@ export default function DeleteCategoryModal({
               )}
 
               {/* Lista de cursos */}
-              <CourseList
-                courses={courses}
-                otherCategories={otherCategories}
-                courseCategoryMap={courseCategoryMap}
-                processingCourse={processingCourse}
-                isProcessing={isProcessing}
-                onCategoryChange={(courseId, categoryId) => {
-                  setCourseCategoryMap((prev) => ({
-                    ...prev,
-                    [courseId]: categoryId,
-                  }));
-                }}
-                onMoveCourse={handleChangeCourseCategory}
-                onDeleteCourse={handleDeleteCourseClick}
-              />
+              <div className="mt-6">
+                <CourseList
+                  courses={courses}
+                  otherCategories={otherCategories}
+                  courseCategoryMap={courseCategoryMap}
+                  processingCourse={processingCourse}
+                  isProcessing={isProcessing}
+                  onCategoryChange={(courseId, categoryId) => {
+                    setCourseCategoryMap((prev) => ({
+                      ...prev,
+                      [courseId]: categoryId,
+                    }));
+                  }}
+                  onMoveCourse={handleChangeCourseCategory}
+                  onDeleteCourse={handleDeleteCourseClick}
+                />
+              </div>
             </>
           ) : (
             /* Sin cursos - Puede eliminar */
-            <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <span className="text-green-400 font-bold">✓</span>
+            <div className="bg-caribbeangreen-400/5 border-l-4 border-l-caribbeangreen-400 rounded-2xl p-6">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-caribbeangreen-400 flex items-center justify-center flex-shrink-0 text-white shadow-lg shadow-caribbeangreen-400/20">
+                  <span className="font-black text-xl">✓</span>
                 </div>
                 <div>
-                  <p className="text-green-400 font-semibold mb-1">
-                    Esta categoría no tiene cursos asociados
+                  <p className="text-caribbeangreen-600 font-black text-lg mb-1">
+                    Categoría lista para eliminación
                   </p>
-                  <p className="text-sm text-richblack-300">
-                    Puedes eliminar esta categoría de forma segura. Esta acción es
-                    irreversible.
+                  <p className="text-sm text-caribbeangreen-600/80 font-medium leading-relaxed">
+                    Esta categoría está vacía. Puedes proceder con su eliminación permanente del sistema.
                   </p>
                 </div>
               </div>
@@ -158,29 +159,29 @@ export default function DeleteCategoryModal({
         </div>
 
         {/* Acciones */}
-        <div className="flex items-center justify-end gap-4 mt-6 pt-6 border-t border-richblack-700">
+        <div className="flex flex-wrap items-center justify-end gap-4 mt-8 pt-8 border-t border-cem-neutral-gray-100">
           <button
             onClick={onClose}
             disabled={isProcessing}
-            className="px-6 py-2 bg-richblack-700 text-richblack-5 rounded-lg hover:bg-richblack-600 transition-colors font-medium disabled:opacity-50"
+            className="flex-1 md:flex-none px-8 py-4 bg-white text-cem-neutral-gray-500 border border-cem-neutral-gray-100 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-cem-neutral-gray-50 transition-all disabled:opacity-50"
           >
-            {hasCourses ? "Cerrar" : "Cancelar"}
+            {hasCourses ? "Entendido" : "Cancelar"}
           </button>
           {!hasCourses && (
             <button
               onClick={handleDeleteCategory}
               disabled={isProcessing}
-              className="px-6 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="flex-1 md:flex-none px-10 py-4 bg-red-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-red-600 transition-all shadow-lg shadow-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform active:scale-95"
             >
               {processingCourse === "category" ? (
                 <>
-                  <FiRefreshCw className="animate-spin" />
-                  Eliminando...
+                  <FiRefreshCw className="animate-spin text-lg" />
+                  Ejecutando...
                 </>
               ) : (
                 <>
-                  <FiTrash2 />
-                  Eliminar Categoría
+                  <FiTrash2 className="text-lg" />
+                  Confirmar Eliminación
                 </>
               )}
             </button>

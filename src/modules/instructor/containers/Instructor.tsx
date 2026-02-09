@@ -32,10 +32,10 @@ export default function Instructor() {
   return (
     <div>
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold text-richblack-5 text-center sm:text-left">
+        <h1 className="text-2xl font-bold text-cem-neutral-gray-900 text-center sm:text-left">
           {INSTRUCTOR_TEXTS.dashboard.greeting.hi} {user?.firstName} {INSTRUCTOR_TEXTS.dashboard.greeting.emoji}
         </h1>
-        <p className="font-medium text-richblack-200 text-center sm:text-left">
+        <p className="font-medium text-cem-neutral-gray-600 text-center sm:text-left">
           {INSTRUCTOR_TEXTS.dashboard.greeting.subtitle}
         </p>
       </div>
@@ -48,9 +48,9 @@ export default function Instructor() {
             {courses.length > 0 ? (
               <InstructorChart courses={courses} />
             ) : (
-              <div className="flex-1 rounded-md bg-richblack-800 p-6">
-                <p className="text-lg font-bold text-richblack-5">{INSTRUCTOR_TEXTS.dashboard.chart.title}</p>
-                <p className="mt-4 text-xl font-medium text-richblack-50">
+              <div className="flex-1 rounded-md bg-cem-cardbackground border border-cem-neutral-gray-200 p-6">
+                <p className="text-lg font-bold text-cem-neutral-gray-900">{INSTRUCTOR_TEXTS.dashboard.chart.title}</p>
+                <p className="mt-4 text-xl font-medium text-cem-neutral-gray-500">
                   {INSTRUCTOR_TEXTS.dashboard.chart.noData}
                 </p>
               </div>
