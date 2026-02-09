@@ -32,7 +32,7 @@ export default function RevenueCard({ revenue, loading }: RevenueCardProps) {
   const periodText = periodMap[revenue.period] || revenue.period;
 
   return (
-    <div className="bg-gradient-to-br from-cem-primary to-[#036d85] rounded-3xl p-8 mb-8 relative overflow-hidden group shadow-lg shadow-cem-primary/10 transition-all hover:shadow-xl hover:shadow-cem-primary/20">
+    <div className="bg-gradient-to-br from-cem-primary to-[#036d85] rounded-[2rem] p-8 relative overflow-hidden group shadow-lg shadow-cem-primary/10 transition-all hover:shadow-xl hover:shadow-cem-primary/20 h-full flex flex-col justify-between">
       {/* Decorative background circle */}
       <div className="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700"></div>
 
