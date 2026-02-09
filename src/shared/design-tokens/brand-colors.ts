@@ -7,7 +7,7 @@ export const brandColors = {
     DEFAULT: '#02819E',
     light: '#C4EBDF',
     dark: '#0d9488', 
-    darker: '#0f766e',  
+    darker: '#0f766e',
   },
 
   // Fondo celeste para hero/header de detalle de curso

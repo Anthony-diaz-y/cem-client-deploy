@@ -48,7 +48,7 @@ export default function Instructor() {
             {courses.length > 0 ? (
               <InstructorChart courses={courses} />
             ) : (
-              <div className="flex-1 rounded-md bg-richblack-800 p-6">
+              <div className="flex-1 rounded-md bg-cem-primary p-6">
                 <p className="text-lg font-bold text-richblack-5">{INSTRUCTOR_TEXTS.dashboard.chart.title}</p>
                 <p className="mt-4 text-xl font-medium text-richblack-50">
                   {INSTRUCTOR_TEXTS.dashboard.chart.noData}
