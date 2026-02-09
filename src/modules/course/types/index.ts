@@ -232,6 +232,7 @@ export interface CourseDetailsCardProps {
   >;
   handleBuyCourse: () => void;
   handleAddToCart: () => void;
+  isEnrolled?: boolean;
 }
 
 export interface CourseAccordionBarProps {
@@ -251,5 +252,6 @@ export interface CourseDetailsResponse {
       instructor: Instructor;
     };
     totalDuration: string;
+    isEnrolled?: boolean;
   };
 }

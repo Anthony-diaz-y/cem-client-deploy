@@ -96,7 +96,10 @@ export const getAllCourses = async () => {
 };
 
 // Obtener detalles de un curso
-export const fetchCourseDetails = async (courseId: string) => {
+export const fetchCourseDetails = async (
+  courseId: string,
+  token?: string,
+) => {
   let result = null;
 
   try {
@@ -116,6 +119,7 @@ export const fetchCourseDetails = async (courseId: string) => {
       "POST",
       COURSE_DETAILS_API,
       { courseId } as Record<string, unknown>,
+      token ? { Authorization: `Bearer ${token}` } : undefined,
     );
 
     if (!response?.data) {
@@ -284,13 +288,13 @@ export const deleteCourse = async (
     } else if (apiError.response?.status === 500) {
       toast.error(
         apiError.response?.data?.message ||
-          "Server error. Please try again later.",
+        "Server error. Please try again later.",
       );
     } else {
       toast.error(
         apiError.response?.data?.message ||
-          apiError.message ||
-          "Could Not Delete Course",
+        apiError.message ||
+        "Could Not Delete Course",
       );
     }
   }
