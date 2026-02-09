@@ -111,24 +111,24 @@ body {
 }
 
 .lable-style {
-  @apply text-[14px] text-richblack-5;
+  @apply text-[14px] font-bold uppercase tracking-tight text-cem-neutral-gray-500;
 }
 
 .form-style {
-  @apply rounded-lg bg-richblack-700 p-3 text-[16px] leading-[24px] text-richblack-5 shadow-[0_1px_0_0] shadow-white/30 placeholder:text-richblack-400 focus:outline-none;
+  @apply rounded-xl bg-cem-background px-4 py-3 text-[15px] leading-[24px] text-cem-neutral-gray-900 border border-cem-neutral-gray-200 placeholder:text-cem-neutral-gray-400 focus:outline-none focus:border-cem-primary transition-all shadow-sm;
 }
 
 .section_heading {
-  @apply text-2xl font-bold text-richblack-5 lg:text-4xl;
+  @apply text-2xl font-bold text-cem-neutral-gray-900 lg:text-4xl;
 }
 
 /* Buttons */
 .yellowButton {
-  @apply cursor-pointer rounded-md bg-yellow-50 px-[20px] py-[8px] font-semibold text-richblack-900 hover:bg-black hover:text-yellow-50 duration-300;
+  @apply cursor-pointer rounded-xl bg-cem-primary px-[24px] py-[10px] font-bold text-white hover:bg-cem-primary-dark duration-300 shadow-md hover:shadow-lg hover:shadow-cem-primary/20 transition-all;
 }
 
 .blackButton {
-  @apply cursor-pointer rounded-md bg-richblack-800 px-[20px] py-[8px] font-semibold text-richblack-5 hover:bg-richblack-5 hover:text-richblack-800 duration-300;
+  @apply cursor-pointer rounded-xl bg-cem-neutral-gray-700 px-[24px] py-[10px] font-bold text-white hover:bg-cem-neutral-gray-900 duration-300 shadow-sm transition-all;
 }
 
 /* Loading skeleton */

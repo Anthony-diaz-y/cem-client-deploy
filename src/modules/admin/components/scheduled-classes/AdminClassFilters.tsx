@@ -89,11 +89,11 @@ export default function AdminClassFilters({
   };
 
   return (
-    <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700 space-y-4">
+    <div className="bg-cem-cardbackground rounded-xl p-6 border border-cem-neutral-gray-200 space-y-4 shadow-sm">
       {/* Búsqueda */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-semibold text-richblack-300 mb-2">
+          <label className="block text-sm font-semibold text-cem-neutral-gray-700 mb-2">
             🔍 Buscar por nombre
           </label>
           <input
@@ -101,7 +101,7 @@ export default function AdminClassFilters({
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             placeholder="Buscar clases por título o descripción..."
-            className="w-full px-4 py-2 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 placeholder-richblack-500 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+            className="w-full px-4 py-2 bg-cem-background border border-cem-neutral-gray-200 rounded-lg text-cem-neutral-gray-900 placeholder-cem-neutral-gray-400 focus:ring-2 focus:ring-cem-primary focus:border-transparent transition-all"
           />
         </div>
 
@@ -119,7 +119,7 @@ export default function AdminClassFilters({
       {/* Filtros */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div>
-          <label className="block text-sm font-semibold text-richblack-300 mb-2">
+          <label className="block text-sm font-semibold text-cem-neutral-gray-700 mb-2">
             Plataforma
           </label>
           <select
@@ -129,7 +129,7 @@ export default function AdminClassFilters({
               setPlatform(value);
               onPlatformChange(value);
             }}
-            className="w-full px-4 py-2 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+            className="w-full px-4 py-2 bg-cem-background border border-cem-neutral-gray-200 rounded-lg text-cem-neutral-gray-900 focus:ring-2 focus:ring-cem-primary focus:border-transparent transition-all"
           >
             <option value="all">Todas las plataformas</option>
             {PLATAFORMAS.map((plat) => (
@@ -141,7 +141,7 @@ export default function AdminClassFilters({
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-richblack-300 mb-2">
+          <label className="block text-sm font-semibold text-cem-neutral-gray-700 mb-2">
             Estado
           </label>
           <select
@@ -159,7 +159,7 @@ export default function AdminClassFilters({
               setStatus(newStatus);
               onStatusChange(newStatus);
             }}
-            className="w-full px-4 py-2 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+            className="w-full px-4 py-2 bg-cem-background border border-cem-neutral-gray-200 rounded-lg text-cem-neutral-gray-900 focus:ring-2 focus:ring-cem-primary focus:border-transparent transition-all"
           >
             <option value="all">Todas</option>
             <option value="active">Solo Activas</option>
@@ -169,7 +169,7 @@ export default function AdminClassFilters({
 
         {onDateChange && (
           <div>
-            <label className="block text-sm font-semibold text-richblack-300 mb-2">
+            <label className="block text-sm font-semibold text-cem-neutral-gray-700 mb-2">
               📅 Filtrar por fecha
             </label>
             <input
@@ -180,7 +180,7 @@ export default function AdminClassFilters({
                 setSelectedDate(dateValue);
                 onDateChange(dateValue || null);
               }}
-              className="w-full px-4 py-2 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+              className="w-full px-4 py-2 bg-cem-background border border-cem-neutral-gray-200 rounded-lg text-cem-neutral-gray-900 focus:ring-2 focus:ring-cem-primary focus:border-transparent transition-all"
             />
           </div>
         )}
@@ -191,7 +191,7 @@ export default function AdminClassFilters({
         <div className="flex justify-end">
           <button
             onClick={handleClearFilters}
-            className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium text-sm"
+            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium text-sm shadow-md"
           >
             🗑️ Limpiar Filtros
           </button>

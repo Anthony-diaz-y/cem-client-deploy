@@ -42,7 +42,7 @@ export default function CalendarFilters({
               type="checkbox"
               checked={showActiveOnly}
               onChange={onActiveToggle}
-              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              className="w-4 h-4 text-cem-primary border-gray-300 rounded focus:ring-cem-primary"
             />
             <span className="ml-2 text-sm font-medium text-gray-700">
               Solo clases activas
@@ -56,7 +56,7 @@ export default function CalendarFilters({
               onPlatformChange('all');
               if (showActiveOnly) onActiveToggle();
             }}
-            className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            className="text-sm text-cem-primary hover:text-cem-primary-dark font-medium"
           >
             Limpiar filtros
           </button>

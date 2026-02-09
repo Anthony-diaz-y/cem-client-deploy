@@ -73,13 +73,13 @@ export default function EnrolledUsersList({ classId, token, isOpen, onClose }: E
                     </svg>
                   </button>
                 </div>
-                <p className="text-blue-100 mt-1">Total: {usuarios.length} personas</p>
+                <p className="text-white mt-1">Total: {usuarios.length} personas</p>
               </div>
 
               <div className="p-6 overflow-y-auto max-h-[60vh]">
                 {cargando ? (
                   <div className="flex items-center justify-center py-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cem-primary"></div>
                   </div>
                 ) : usuarios.length === 0 ? (
                   <div className="text-center py-12">

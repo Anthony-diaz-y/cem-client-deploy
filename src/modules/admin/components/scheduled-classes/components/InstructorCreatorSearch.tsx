@@ -70,7 +70,7 @@ export default function InstructorCreatorSearch({
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <label className="block text-sm font-semibold text-richblack-300 mb-2">
+      <label className="block text-sm font-semibold text-cem-neutral-gray-700 mb-2">
         👤 Instructor / Creador
       </label>
       <div className="relative">
@@ -84,12 +84,12 @@ export default function InstructorCreatorSearch({
           }}
           onFocus={() => setIsDropdownOpen(true)}
           placeholder={placeholder}
-          className="w-full px-4 py-2 pr-10 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 placeholder-richblack-500 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+          className="w-full px-4 py-2 pr-10 bg-cem-background border border-cem-neutral-gray-200 rounded-lg text-cem-neutral-gray-900 placeholder-cem-neutral-gray-400 focus:ring-2 focus:ring-cem-primary focus:border-transparent transition-all"
         />
         {value && (
           <button
             onClick={handleClear}
-            className="absolute right-8 top-1/2 transform -translate-y-1/2 text-richblack-400 hover:text-richblack-200 transition-colors"
+            className="absolute right-8 top-1/2 transform -translate-y-1/2 text-cem-neutral-gray-400 hover:text-cem-neutral-gray-600 transition-colors"
             type="button"
           >
             <FiX size={18} />
@@ -97,7 +97,7 @@ export default function InstructorCreatorSearch({
         )}
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-richblack-400 hover:text-richblack-200 transition-colors"
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-cem-neutral-gray-400 hover:text-cem-neutral-gray-600 transition-colors"
           type="button"
         >
           <FiChevronDown
@@ -111,19 +111,19 @@ export default function InstructorCreatorSearch({
         </button>
       </div>
       {isDropdownOpen && instructors.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-richblack-900 border border-richblack-700 rounded-lg shadow-xl max-h-60 overflow-y-auto">
+        <div className="absolute z-50 w-full mt-1 bg-white border border-cem-neutral-gray-200 rounded-lg shadow-xl max-h-60 overflow-y-auto">
           {filteredCreators.length > 0 ? (
             filteredCreators.map((creator) => (
               <button
                 key={creator.id}
                 onClick={() => handleCreatorSelect(creator)}
-                className="w-full px-4 py-2 text-left text-richblack-5 hover:bg-richblack-800 transition-colors flex items-center justify-between"
+                className="w-full px-4 py-2 text-left text-cem-neutral-gray-900 hover:bg-cem-neutral-gray-50 transition-colors flex items-center justify-between"
                 type="button"
               >
                 <span>
                   {creator.firstName} {creator.lastName}
                   {creator.accountType && (
-                    <span className="ml-2 text-xs text-richblack-400">
+                    <span className="ml-2 text-xs text-cem-neutral-gray-500">
                       ({creator.accountType === "Admin" ? "Admin" : "Instructor"})
                     </span>
                   )}
@@ -131,7 +131,7 @@ export default function InstructorCreatorSearch({
               </button>
             ))
           ) : (
-            <div className="px-4 py-2 text-richblack-400 text-sm">
+            <div className="px-4 py-2 text-cem-neutral-gray-500 text-sm">
               No se encontraron creadores
             </div>
           )}

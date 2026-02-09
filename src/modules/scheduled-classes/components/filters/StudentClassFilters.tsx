@@ -55,7 +55,7 @@ export default function StudentClassFilters({
               onPlatformChange('all');
               onEnrolledFilterChange('all');
             }}
-            className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            className="text-sm text-cem-primary hover:text-cem-primary-dark font-medium"
           >
             {SCHEDULED_CLASSES_TEXTS.components.filters.student.clearFilters}
           </button>

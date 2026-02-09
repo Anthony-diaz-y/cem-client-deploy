@@ -73,7 +73,7 @@ export default function ChangeProfilePicture() {
 
   return (
     <>
-      <div className="flex items-center justify-between rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-8 px-3 sm:px-12 text-richblack-5">
+      <div className="flex items-center justify-between rounded-2xl border border-cem-neutral-gray-100 bg-cem-cardbackground p-8 px-3 sm:px-12 text-cem-neutral-gray-900 shadow-sm">
         <div className="flex items-center gap-x-4">
           <Img
             src={previewSource || user?.image}
@@ -82,7 +82,7 @@ export default function ChangeProfilePicture() {
           />
 
           <div className="space-y-2">
-            <p className="font-medium">{SETTINGS_TEXTS.changeProfilePicture.title}</p>
+            <p className="font-bold text-lg text-cem-neutral-gray-900">{SETTINGS_TEXTS.changeProfilePicture.title}</p>
             <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="file"
@@ -95,7 +95,7 @@ export default function ChangeProfilePicture() {
               <button
                 onClick={handleClick}
                 disabled={loading}
-                className="cursor-pointer rounded-md py-2 px-5 font-semibold bg-richblack-200 text-richblack-900 hover:bg-richblack-900 hover:text-richblack-200 duration-300"
+                className="cursor-pointer rounded-xl py-2.5 px-6 font-bold bg-cem-neutral-gray-100 text-cem-neutral-gray-700 hover:bg-cem-neutral-gray-200 border border-cem-neutral-gray-200 duration-300 transition-all shadow-sm"
               >
                 {SETTINGS_TEXTS.changeProfilePicture.buttons.select}
               </button>

@@ -145,28 +145,28 @@ function PurchaseHistory() {
     switch (status) {
       case "Completed":
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-green-500/20 text-green-400 border border-green-500/30">
-            <FiCheckCircle className="w-3.5 h-3.5" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-cem-teal-50 text-cem-primary border border-cem-teal-100">
+            <FiCheckCircle className="w-3 h-3" />
             Completado
           </span>
         );
       case "Pending":
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">
-            <FiClock className="w-3.5 h-3.5" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-yellow-50 text-yellow-600 border border-yellow-100">
+            <FiClock className="w-3 h-3" />
             Pendiente
           </span>
         );
       case "Refunded":
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/30">
-            <FiXCircle className="w-3.5 h-3.5" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-red-50 text-red-600 border border-red-100">
+            <FiXCircle className="w-3 h-3" />
             Reembolsado
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-richblack-700 text-richblack-300 border border-richblack-600">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-cem-neutral-gray-50 text-cem-neutral-gray-500 border border-cem-neutral-gray-100">
             {status}
           </span>
         );
@@ -265,10 +265,10 @@ function PurchaseHistory() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-richblack-5 mb-2">
+          <h1 className="text-4xl font-bold text-cem-neutral-gray-900 mb-2 font-boogaloo">
             Mis Compras
           </h1>
-          <p className="text-richblack-400 text-sm">
+          <p className="text-cem-neutral-gray-500 text-sm font-medium">
             {purchases && purchases.length > 0
               ? `${purchases.length} curso${purchases.length !== 1 ? "s" : ""} comprado${purchases.length !== 1 ? "s" : ""}`
               : "Gestiona tus compras y accede a tus cursos"}
@@ -278,24 +278,24 @@ function PurchaseHistory() {
 
       {/* Content */}
       {!purchases ? (
-        <div className="bg-richblack-800 rounded-xl border border-richblack-700 p-12 text-center">
-          <p className="text-richblack-300">Cargando...</p>
+        <div className="bg-cem-cardbackground rounded-2xl border border-cem-neutral-gray-100 p-12 text-center shadow-sm">
+          <p className="text-cem-neutral-gray-400 font-medium">Cargando compras...</p>
         </div>
       ) : purchases.length === 0 ? (
-        <div className="bg-richblack-800 rounded-xl border border-richblack-700 p-12 text-center">
+        <div className="bg-cem-cardbackground rounded-2xl border border-cem-neutral-gray-100 p-12 text-center shadow-sm">
           <div className="max-w-md mx-auto">
-            <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-richblack-700 flex items-center justify-center">
-              <FiDollarSign className="w-10 h-10 text-richblack-400" />
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-cem-neutral-gray-50 flex items-center justify-center border border-cem-neutral-gray-100">
+              <FiDollarSign className="w-10 h-10 text-cem-primary/40" />
             </div>
-            <h3 className="text-xl font-semibold text-richblack-5 mb-2">
+            <h3 className="text-2xl font-bold text-cem-neutral-gray-900 mb-2">
               No hay compras aún
             </h3>
-            <p className="text-richblack-400 mb-6">
+            <p className="text-cem-neutral-gray-500 mb-8">
               Tus compras aparecerán aquí cuando adquieras un curso.
             </p>
             <button
               onClick={() => router.push("/courses")}
-              className="px-6 py-3 bg-yellow-50 hover:bg-yellow-100 text-richblack-900 rounded-lg font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-yellow-500/20"
+              className="px-8 py-3 bg-cem-primary hover:bg-cem-primary-dark text-white rounded-xl font-bold transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-cem-primary/20"
             >
               Explorar Cursos
             </button>
@@ -306,75 +306,73 @@ function PurchaseHistory() {
           {purchases.map((purchase) => (
             <div
               key={purchase._id}
-              className="bg-richblack-800 rounded-xl border border-richblack-700 overflow-hidden hover:border-richblack-600 transition-all duration-200 hover:shadow-lg"
+              className="bg-cem-cardbackground rounded-2xl border border-cem-neutral-gray-100 overflow-hidden hover:border-cem-primary/30 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] group/card"
             >
               <div className="p-6">
                 <div className="flex flex-col lg:flex-row gap-6">
                   {/* Course Image and Info */}
                   <div
-                    className="flex gap-4 flex-1 cursor-pointer group"
+                    className="flex flex-col sm:flex-row gap-6 flex-1 cursor-pointer group"
                     onClick={() => handleCourseClick(purchase)}
                   >
                     <div className="flex-shrink-0">
-                      <div className="w-24 h-24 rounded-xl overflow-hidden bg-richblack-900 border border-richblack-700 group-hover:border-yellow-50/30 transition-colors">
+                      <div className="w-40 h-24 sm:w-48 sm:h-28 rounded-xl overflow-hidden bg-cem-neutral-gray-100 border border-cem-neutral-gray-100 group-hover:border-cem-primary/20 transition-all shadow-inner">
                         <Img
                           src={purchase.thumbnail}
                           alt={purchase.courseName}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-bold text-richblack-5 mb-2 group-hover:text-yellow-50 transition-colors line-clamp-2">
+                      <h3 className="text-xl font-bold text-cem-neutral-gray-900 mb-2 group-hover:text-cem-primary transition-colors line-clamp-2">
                         {purchase.courseName}
                       </h3>
-                      <p className="text-sm text-richblack-400 line-clamp-2 mb-3">
-                        {purchase.courseDescription.length > 100
-                          ? `${purchase.courseDescription.slice(0, 100)}...`
-                          : purchase.courseDescription}
+                      <p className="text-sm text-cem-neutral-gray-500 line-clamp-2 mb-4 leading-relaxed">
+                        {purchase.courseDescription}
                       </p>
-                      <div className="flex items-center gap-2 text-xs text-richblack-500">
+                      <div className="flex items-center gap-2 text-xs font-bold text-cem-primary uppercase tracking-tight">
                         <FiExternalLink className="w-3.5 h-3.5" />
-                        <span>Haz clic para ver el curso</span>
+                        <span>Ir al curso</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Purchase Details */}
-                  <div className="lg:w-80 flex flex-col gap-4 lg:border-l lg:border-richblack-700 lg:pl-6">
+                  <div className="lg:w-72 flex flex-col gap-5 lg:border-l lg:border-cem-neutral-gray-100 lg:pl-8">
                     {/* Price */}
-                    <div className="flex items-center gap-2">
-                      <div className="p-2 rounded-lg bg-yellow-500/10">
-                        <FiDollarSign className="w-4 h-4 text-yellow-50" />
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 rounded-xl bg-cem-teal-50 text-cem-primary">
+                        <FiDollarSign size={18} />
                       </div>
                       <div>
-                        <p className="text-xs text-richblack-400">Precio</p>
-                        <p className="text-lg font-bold text-yellow-50">
-                          Rs. {formatPrice(purchase.price)}
+                        <p className="text-[11px] font-bold text-cem-neutral-gray-400 uppercase tracking-tight">Precio</p>
+                        <p className="text-xl font-black text-cem-primary">
+                          S/ {formatPrice(purchase.price)}
                         </p>
                       </div>
                     </div>
 
                     {/* Date */}
-                    <div className="flex items-center gap-2">
-                      <div className="p-2 rounded-lg bg-blue-500/10">
-                        <FiCalendar className="w-4 h-4 text-blue-400" />
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 rounded-xl bg-cem-neutral-gray-50 text-cem-neutral-gray-400">
+                        <FiCalendar size={18} />
                       </div>
                       <div>
-                        <p className="text-xs text-richblack-400">Fecha</p>
-                        <p className="text-sm font-medium text-richblack-300">
+                        <p className="text-[11px] font-bold text-cem-neutral-gray-400 uppercase tracking-tight">Fecha</p>
+                        <p className="text-sm font-bold text-cem-neutral-gray-700">
                           {formatDate(purchase.purchaseDate)}
                         </p>
                       </div>
                     </div>
 
                     {/* Status */}
-                    <div className="flex items-center gap-2">
-                      <div className="p-2 rounded-lg bg-green-500/10">
-                        <FiCheckCircle className="w-4 h-4 text-green-400" />
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 rounded-xl bg-cem-neutral-gray-50 text-cem-neutral-gray-400">
+                        <FiCheckCircle size={18} />
                       </div>
-                      <div>
-                        <p className="text-xs text-richblack-400 mb-1">
+                      <div className="flex flex-col gap-1">
+                        <p className="text-[11px] font-bold text-cem-neutral-gray-400 uppercase tracking-tight">
                           Estado
                         </p>
                         {getStatusBadge(purchase.status)}
@@ -382,15 +380,15 @@ function PurchaseHistory() {
                     </div>
 
                     {/* Transaction ID */}
-                    <div className="flex items-start gap-2">
-                      <div className="p-2 rounded-lg bg-purple-500/10 mt-0.5">
-                        <FiHash className="w-4 h-4 text-purple-400" />
+                    <div className="flex items-start gap-3">
+                      <div className="p-2.5 rounded-xl bg-cem-neutral-gray-50 text-cem-neutral-gray-400 mt-0.5">
+                        <FiHash size={18} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-richblack-400 mb-1">
+                        <p className="text-[11px] font-bold text-cem-neutral-gray-400 uppercase tracking-tight mb-1">
                           ID de Transacción
                         </p>
-                        <p className="text-xs font-mono text-richblack-400 break-all bg-richblack-900/50 px-2 py-1.5 rounded border border-richblack-700">
+                        <p className="text-[10px] font-mono text-cem-neutral-gray-500 break-all bg-cem-neutral-gray-50 px-3 py-2 rounded-lg border border-cem-neutral-gray-100">
                           {purchase.transactionId}
                         </p>
                       </div>
