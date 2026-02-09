@@ -11,6 +11,7 @@ export const brandColors = {
   },
   background: '#fdfdfd',
   cardbackground: '#ffffff',
+  accent:'#A6EFFF4D',
 
   // Fondo celeste para hero/header de detalle de curso
   celeste: {
