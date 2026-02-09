@@ -46,12 +46,12 @@ export default function InstructorCourses() {
   return (
     <div>
       <div className="mb-14 flex items-center justify-between">
-        <h1 className="text-3xl font-medium text-richblack-5">{INSTRUCTOR_TEXTS.courses.title}</h1>
+        <h1 className="text-3xl font-medium text-cem-neutral-gray-900">{INSTRUCTOR_TEXTS.courses.title}</h1>
         <button
           onClick={() => {
             router.push(INSTRUCTOR_TEXTS.links.addCourse);
           }}
-          className="flex items-center gap-x-1 rounded-md bg-yellow-50 px-4 py-2 font-semibold text-richblack-900 transition-all duration-200 hover:scale-95"
+          className="flex items-center gap-x-1 rounded-md bg-cem-primary px-4 py-2 font-semibold text-cem-neutral-white transition-all duration-200 hover:bg-cem-primary-dark hover:scale-95"
         >
           {INSTRUCTOR_TEXTS.courses.addCourse}
         </button>

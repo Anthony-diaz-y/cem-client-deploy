@@ -160,24 +160,27 @@ export default function ContactMessagesTable({
 
   if (loading) {
     return (
-      <div className="text-center text-richblack-300 py-8">
-        Cargando mensajes...
+      <div className="flex flex-col items-center justify-center py-20 animate-pulse">
+        <div className="w-12 h-12 border-4 border-cem-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-cem-neutral-gray-500 font-bold uppercase tracking-widest text-sm">
+          Cargando mensajes...
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Selector de ordenamiento */}
       <div className="flex items-center justify-end">
-        <div className="flex items-center gap-2">
-          <label className="text-sm text-richblack-400">
-            Ordenar:
+        <div className="flex items-center gap-3 bg-white p-2 rounded-2xl border border-cem-neutral-gray-100 shadow-sm">
+          <label className="text-xs font-black text-cem-neutral-gray-900 uppercase tracking-wider ml-2">
+            Ordenar por:
           </label>
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value as "ASC" | "DESC")}
-            className="px-3 py-1.5 text-sm bg-richblack-800 border border-richblack-700 rounded-md text-richblack-200 focus:outline-none focus:ring-1 focus:ring-yellow-500/50 transition-all hover:border-richblack-600"
+            className="px-4 py-2 text-sm bg-cem-neutral-gray-50/50 border-none rounded-xl text-cem-neutral-gray-900 font-bold focus:ring-2 focus:ring-cem-primary/20 cursor-pointer outline-none"
           >
             <option value="DESC">Más recientes</option>
             <option value="ASC">Más antiguos</option>
@@ -187,35 +190,38 @@ export default function ContactMessagesTable({
 
       {/* Lista de mensajes */}
       {messages.length === 0 ? (
-        <div className="text-center text-richblack-300 py-8 bg-richblack-800 rounded-lg">
-          No hay mensajes.
+        <div className="text-center py-20 bg-white rounded-[2.5rem] border border-cem-neutral-gray-100 shadow-sm">
+          <div className="bg-cem-neutral-gray-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <FaEnvelopeOpen className="text-3xl text-cem-neutral-gray-300" />
+          </div>
+          <h3 className="text-2xl font-black text-cem-neutral-gray-900 mb-2">Bandeja de entrada vacía</h3>
+          <p className="text-cem-neutral-gray-400 font-medium">No se han encontrado mensajes de contacto.</p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`bg-richblack-800 rounded-lg border ${
-                message.replies && message.replies.length > 0
-                  ? "border-l-4 border-l-caribbeangreen-200"
+              className={`bg-white rounded-[2rem] border transition-all duration-300 hover:shadow-xl hover:shadow-cem-primary/5 ${message.replies && message.replies.length > 0
+                  ? "border-l-[6px] border-l-caribbeangreen-400 border-cem-neutral-gray-100"
                   : !message.isRead
-                  ? "border-l-4 border-l-yellow-50 bg-richblack-800/50"
-                  : "border-richblack-700"
-              } p-6 transition-all hover:shadow-lg`}
+                    ? "border-l-[6px] border-l-yellow-400 border-cem-neutral-gray-100 ring-4 ring-yellow-400/5"
+                    : "border-cem-neutral-gray-100"
+                } p-8`}
             >
-              <div className="flex justify-between items-start mb-4">
+              <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-6">
                 <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-lg font-semibold text-richblack-5">
+                  <div className="flex flex-wrap items-center gap-3 mb-3">
+                    <h3 className="text-xl font-black text-cem-neutral-gray-900">
                       {message.name}
                     </h3>
                     {!message.isRead && (
-                      <span className="px-2 py-0.5 bg-yellow-50 text-richblack-900 text-xs font-bold rounded-full">
+                      <span className="px-3 py-1 bg-yellow-400 text-richblack-900 text-[10px] font-black uppercase tracking-widest rounded-full shadow-sm">
                         Nuevo
                       </span>
                     )}
                     {message.replies && message.replies.length > 0 && (
-                      <span className="px-2 py-0.5 bg-caribbeangreen-200 text-richblack-900 text-xs font-bold rounded-full">
+                      <span className="px-3 py-1 bg-caribbeangreen-400 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-sm">
                         {message.replies.length}{" "}
                         {message.replies.length === 1
                           ? "respuesta"
@@ -223,25 +229,34 @@ export default function ContactMessagesTable({
                       </span>
                     )}
                     {message.isArchived && (
-                      <span className="px-2 py-0.5 bg-richblack-600 text-richblack-300 text-xs font-medium rounded-full">
+                      <span className="px-3 py-1 bg-cem-neutral-gray-100 text-cem-neutral-gray-500 text-[10px] font-black uppercase tracking-widest rounded-full">
                         Archivado
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-richblack-300">{message.email}</p>
-                  {message.phone && (
-                    <p className="text-sm text-richblack-300 mt-1 flex items-center gap-2">
-                      <FaPhone size={12} />
-                      <span>{message.phone}</span>
+
+                  <div className="flex flex-wrap gap-x-6 gap-y-2">
+                    <p className="text-sm font-bold text-cem-primary hover:underline cursor-pointer">
+                      {message.email}
                     </p>
-                  )}
+                    {message.phone && (
+                      <p className="text-sm text-cem-neutral-gray-500 font-medium flex items-center gap-2">
+                        <FaPhone className="text-cem-primary/60" size={12} />
+                        <span>{message.phone}</span>
+                      </p>
+                    )}
+                  </div>
+
                   {message.subject && (
-                    <p className="text-sm font-medium text-richblack-200 mt-1">
-                      Asunto: {message.subject}
-                    </p>
+                    <div className="mt-4 inline-block px-4 py-1.5 bg-cem-celeste-light rounded-xl border border-cem-celeste-DEFAULT">
+                      <p className="text-sm font-bold text-cem-primary">
+                        Asunto: {message.subject}
+                      </p>
+                    </div>
                   )}
                 </div>
-                <div className="flex gap-2 ml-4">
+
+                <div className="flex gap-2 w-full md:w-auto mt-2 md:mt-0">
                   <button
                     onClick={() => {
                       setShowReplyForm(
@@ -252,103 +267,99 @@ export default function ContactMessagesTable({
                       }
                     }}
                     disabled={actionLoading}
-                    className="p-2 rounded-md bg-richblack-700 text-caribbeangreen-200 hover:bg-richblack-600 transition-colors disabled:opacity-50"
-                    title={
-                      message.replies && message.replies.length > 0
-                        ? "Agregar otra respuesta"
-                        : "Responder"
-                    }
+                    className={`flex-1 md:flex-none p-3 rounded-2xl transition-all duration-300 shadow-sm border ${showReplyForm === message.id
+                        ? "bg-cem-primary text-white border-cem-primary shadow-cem-primary/20 scale-95"
+                        : "bg-white text-cem-primary border-cem-neutral-gray-100 hover:bg-cem-primary hover:text-white"
+                      } disabled:opacity-50`}
+                    title="Responder"
                   >
-                    <FaReply size={16} />
+                    <FaReply size={18} />
                   </button>
+
                   {!message.isRead && (
                     <button
                       onClick={() => handleMarkAsRead(message.id)}
                       disabled={actionLoading}
-                      className="p-2 rounded-md bg-richblack-700 text-caribbeangreen-200 hover:bg-richblack-600 transition-colors disabled:opacity-50"
+                      className="flex-1 md:flex-none p-3 rounded-2xl bg-white text-caribbeangreen-400 border border-cem-neutral-gray-100 hover:bg-caribbeangreen-50 hover:border-caribbeangreen-100 transition-all shadow-sm disabled:opacity-50"
                       title="Marcar como leído"
                     >
-                      <FaEnvelopeOpen size={16} />
+                      <FaEnvelopeOpen size={18} />
                     </button>
                   )}
-                  {message.isArchived ? (
-                    <button
-                      onClick={() => handleUnarchive(message.id)}
-                      disabled={actionLoading}
-                      className="p-2 rounded-md bg-richblack-700 text-blue-300 hover:bg-richblack-600 transition-colors disabled:opacity-50"
-                      title="Desarchivar"
-                    >
-                      <FaArchive size={16} />
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleArchive(message.id)}
-                      disabled={actionLoading}
-                      className="p-2 rounded-md bg-richblack-700 text-blue-300 hover:bg-richblack-600 transition-colors disabled:opacity-50"
-                      title="Archivar"
-                    >
-                      <FaArchive size={16} />
-                    </button>
-                  )}
+
+                  <button
+                    onClick={() => message.isArchived ? handleUnarchive(message.id) : handleArchive(message.id)}
+                    disabled={actionLoading}
+                    className={`flex-1 md:flex-none p-3 rounded-2xl border transition-all shadow-sm disabled:opacity-50 ${message.isArchived
+                        ? "bg-cem-neutral-gray-900 text-white border-cem-neutral-gray-900"
+                        : "bg-white text-cem-neutral-gray-600 border-cem-neutral-gray-100 hover:bg-cem-neutral-gray-50"
+                      }`}
+                    title={message.isArchived ? "Desarchivar" : "Archivar"}
+                  >
+                    <FaArchive size={18} />
+                  </button>
+
                   <button
                     onClick={() => handleDeleteClick(message)}
                     disabled={actionLoading}
-                    className="p-2 rounded-md bg-richblack-700 text-pink-300 hover:bg-richblack-600 transition-colors disabled:opacity-50"
+                    className="flex-1 md:flex-none p-3 rounded-2xl bg-white text-red-500 border border-red-50 hover:bg-red-50 hover:border-red-100 transition-all shadow-sm disabled:opacity-50"
                     title="Eliminar"
                   >
-                    <FaTrash size={16} />
+                    <FaTrash size={18} />
                   </button>
                 </div>
               </div>
 
-              <div className="mb-4">
-                <p className="text-richblack-200 whitespace-pre-wrap">
+              <div className="mb-8 p-6 bg-cem-neutral-gray-50/50 rounded-2xl border border-cem-neutral-gray-100/50">
+                <p className="text-cem-neutral-gray-800 font-medium whitespace-pre-wrap leading-relaxed text-lg">
                   {message.message}
                 </p>
               </div>
 
               {/* Respuestas colapsables */}
               {message.replies && message.replies.length > 0 && (
-                <div className="mb-4">
+                <div className="mb-6">
                   <button
                     onClick={() => toggleReplies(message.id)}
-                    className="w-full flex items-center justify-between px-4 py-3 bg-richblack-900/50 rounded-lg border border-richblack-700 hover:bg-richblack-900 transition-colors"
+                    className="w-full flex items-center justify-between px-6 py-4 bg-white rounded-2xl border border-cem-neutral-gray-100 hover:bg-cem-neutral-gray-50/50 transition-all duration-300 group"
                   >
-                    <span className="text-sm font-semibold text-richblack-200">
-                      {expandedReplies.has(message.id) ? "Ocultar" : "Ver"}{" "}
-                      {message.replies.length}{" "}
-                      {message.replies.length === 1
-                        ? "Respuesta"
-                        : "Respuestas"}
-                    </span>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-caribbeangreen-50 flex items-center justify-center">
+                        <FaReply size={12} className="text-caribbeangreen-400" />
+                      </div>
+                      <span className="text-sm font-extrabold text-cem-neutral-gray-900 uppercase tracking-widest">
+                        {message.replies.length}{" "}
+                        {message.replies.length === 1
+                          ? "Respuesta enviada"
+                          : "Respuestas enviadas"}
+                      </span>
+                    </div>
                     <span
-                      className={`text-richblack-400 transition-transform duration-300 ${
-                        expandedReplies.has(message.id) ? "rotate-180" : ""
-                      }`}
+                      className={`text-cem-neutral-gray-400 transition-transform duration-500 ${expandedReplies.has(message.id) ? "rotate-180" : ""
+                        }`}
                     >
                       <FaChevronDown size={14} />
                     </span>
                   </button>
+
                   {expandedReplies.has(message.id) && (
-                    <div className="mt-3 space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar">
+                    <div className="mt-4 space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar animate-fadeIn">
                       {message.replies.map((reply, index) => (
                         <div
                           key={reply.id}
-                          className="p-4 bg-richblack-900/50 rounded-lg border border-richblack-700 border-l-4 border-l-yellow-50"
+                          className="p-6 bg-caribbeangreen-50/20 rounded-[1.5rem] border border-caribbeangreen-100/50 border-l-4 border-l-caribbeangreen-400"
                         >
-                          <div className="flex items-center justify-between mb-2 pb-2 border-b border-richblack-700">
-                            <span className="text-xs font-bold text-yellow-50">
-                              Respuesta #{index + 1}
+                          <div className="flex items-center justify-between mb-4 pb-3 border-b border-caribbeangreen-100/30">
+                            <span className="text-[10px] font-black text-caribbeangreen-500 uppercase tracking-[0.2em]">
+                              Réplica #{index + 1}
                             </span>
-                            <span className="text-xs text-richblack-400">
+                            <span className="text-[10px] font-bold text-cem-neutral-gray-400">
                               {formatDateTimeUTC(reply.createdAt)}
                             </span>
                           </div>
-                          <div className="bg-richblack-800 p-3 rounded-md mt-2">
-                            <p className="text-richblack-200 whitespace-pre-wrap leading-relaxed">
-                              {reply.replyMessage}
-                            </p>
-                          </div>
+                          <p className="text-cem-neutral-gray-700 font-medium whitespace-pre-wrap leading-relaxed">
+                            {reply.replyMessage}
+                          </p>
                         </div>
                       ))}
                     </div>
@@ -358,40 +369,56 @@ export default function ContactMessagesTable({
 
               {/* Formulario de respuesta */}
               {showReplyForm === message.id && (
-                <div className="mb-4 p-4 bg-richblack-900 rounded-lg border border-richblack-700">
-                  <label className="block text-sm font-medium text-richblack-300 mb-2">
-                    Escribe tu respuesta:
-                  </label>
+                <div className="mb-6 p-8 bg-cem-primary/[0.03] rounded-[2rem] border-2 border-dashed border-cem-primary/20 animate-slideDown">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 rounded-xl bg-cem-primary text-white flex items-center justify-center">
+                      <FaReply size={16} />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-black text-cem-neutral-gray-900">Responder a {message.name}</h4>
+                      <p className="text-xs text-cem-neutral-gray-500 font-bold uppercase tracking-widest mt-0.5">La respuesta se enviará por correo electrónico</p>
+                    </div>
+                  </div>
+
                   <textarea
                     value={replyMessage}
                     onChange={(e) => setReplyMessage(e.target.value)}
-                    placeholder="Escribe tu respuesta aquí..."
-                    rows={4}
-                    className="w-full px-3 py-2 bg-richblack-800 border border-richblack-700 rounded-md text-richblack-200 placeholder-richblack-500 focus:outline-none focus:ring-2 focus:ring-yellow-50"
+                    placeholder="Escribe tu respuesta con detalle y profesionalismo..."
+                    rows={5}
+                    className="w-full px-6 py-4 bg-white border border-cem-neutral-gray-100 rounded-[1.5rem] text-cem-neutral-gray-900 font-medium placeholder-cem-neutral-gray-300 focus:outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary transition-all shadow-sm"
                   />
-                  <div className="flex gap-2 mt-3">
+
+                  <div className="flex flex-wrap gap-3 mt-6">
                     <button
                       onClick={() => handleReply(message.id)}
                       disabled={replying || !replyMessage.trim()}
-                      className="px-4 py-2 bg-yellow-50 text-richblack-900 rounded-md font-medium hover:bg-yellow-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 md:flex-none px-10 py-4 bg-cem-primary text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-cem-primary-dark transition-all shadow-lg shadow-cem-primary/20 disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95"
                     >
-                      {replying ? "Enviando..." : "Enviar Respuesta"}
+                      {replying ? "Enviando..." : "Enviar Respuesta Directa"}
                     </button>
                     <button
                       onClick={() => {
                         setShowReplyForm(null);
                         setReplyMessage("");
                       }}
-                      className="px-4 py-2 bg-richblack-700 text-richblack-300 rounded-md hover:bg-richblack-600 transition-colors"
+                      className="flex-1 md:flex-none px-8 py-4 bg-white text-cem-neutral-gray-500 border border-cem-neutral-gray-100 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-cem-neutral-gray-50 transition-all"
                     >
-                      Cancelar
+                      Omitir
                     </button>
                   </div>
                 </div>
               )}
 
-              <div className="flex justify-between items-center text-xs text-richblack-400 pt-4 border-t border-richblack-700">
-                <span>{formatDateTimeUTC(message.createdAt)}</span>
+              <div className="flex justify-between items-center pt-5 border-t border-cem-neutral-gray-100/50">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-cem-neutral-gray-200"></div>
+                  <span className="text-[10px] font-black text-cem-neutral-gray-400 uppercase tracking-widest">
+                    Recibido el {formatDateTimeUTC(message.createdAt)}
+                  </span>
+                </div>
+                <span className="text-[10px] font-bold text-cem-neutral-gray-300 uppercase italic">
+                  ID: {message.id.substring(0, 12)}
+                </span>
               </div>
             </div>
           ))}

@@ -34,7 +34,7 @@ export default function RenderCartCourses() {
   if (!cart || cart.length === 0) {
     return (
       <div className="flex flex-1 flex-col">
-        <p className="text-center text-richblack-400 py-8">
+        <p className="text-center text-cem-neutral-gray-400 py-8">
           {CART_TEXTS.noCourses}
         </p>
       </div>
@@ -140,7 +140,7 @@ export default function RenderCartCourses() {
                 {/* Botón Remove */}
                 <button
                   onClick={() => handleRemoveCourse(course)}
-                  className="flex items-center gap-x-1 rounded-md border border-cem-neutral-gray-200 bg-white py-1.5 px-2.5 text-red-500 hover:bg-red-50 transition-colors text-xs sm:text-sm"
+                  className="flex items-center gap-x-1 rounded-md border border-cem-neutral-gray-200 bg-cem-cardbackground py-1.5 px-2.5 text-red-500 hover:bg-red-50 transition-colors text-xs sm:text-sm"
                 >
                   <RiDeleteBin6Line size={14} />
                   <span className="hidden sm:inline">{CART_TEXTS.remove}</span>

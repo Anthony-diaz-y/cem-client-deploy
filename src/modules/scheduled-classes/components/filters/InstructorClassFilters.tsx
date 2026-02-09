@@ -99,9 +99,9 @@ export default function InstructorClassFilters({
   const hasActiveFilters = searchValue || platform !== 'all' || status !== null || selectedDate || createdByValue;
 
   return (
-    <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700 space-y-4">
+    <div className="bg-cem-cardbackground rounded-xl p-6 border border-cem-neutral-gray-200 space-y-4 shadow-sm">
       <div>
-        <label className="block text-sm font-semibold text-richblack-300 mb-2">
+        <label className="block text-sm font-semibold text-cem-neutral-gray-700 mb-2">
           🔍 Buscar por nombre
         </label>
         <input
@@ -109,13 +109,13 @@ export default function InstructorClassFilters({
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           placeholder="Buscar clases por título..."
-          className="w-full px-4 py-2 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 placeholder-richblack-500 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+          className="w-full px-4 py-2 bg-cem-background border border-cem-neutral-gray-200 rounded-lg text-cem-neutral-gray-900 placeholder-cem-neutral-gray-400 focus:ring-2 focus:ring-cem-primary focus:border-transparent transition-all"
         />
       </div>
 
       {onCreatedByChange && (
         <div>
-          <label className="block text-sm font-semibold text-richblack-300 mb-2">
+          <label className="block text-sm font-semibold text-cem-neutral-gray-700 mb-2">
             👤 Buscar por creador
           </label>
           <input
@@ -123,14 +123,14 @@ export default function InstructorClassFilters({
             value={createdByValue}
             onChange={(e) => setCreatedByValue(e.target.value)}
             placeholder="Buscar por nombre o apellido del creador..."
-            className="w-full px-4 py-2 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 placeholder-richblack-500 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+            className="w-full px-4 py-2 bg-cem-background border border-cem-neutral-gray-200 rounded-lg text-cem-neutral-gray-900 placeholder-cem-neutral-gray-400 focus:ring-2 focus:ring-cem-primary focus:border-transparent transition-all"
           />
         </div>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div>
-          <label className="block text-sm font-semibold text-richblack-300 mb-2">
+          <label className="block text-sm font-semibold text-cem-neutral-gray-700 mb-2">
             Plataforma
           </label>
           <select
@@ -140,7 +140,7 @@ export default function InstructorClassFilters({
               setPlatform(value);
               onPlatformChange(value);
             }}
-            className="w-full px-4 py-2 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+            className="w-full px-4 py-2 bg-cem-background border border-cem-neutral-gray-200 rounded-lg text-cem-neutral-gray-900 focus:ring-2 focus:ring-cem-primary focus:border-transparent transition-all"
           >
             <option value="all">Todas las plataformas</option>
             {PLATAFORMAS.map((plat) => (
@@ -152,7 +152,7 @@ export default function InstructorClassFilters({
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-richblack-300 mb-2">
+          <label className="block text-sm font-semibold text-cem-neutral-gray-700 mb-2">
             Estado
           </label>
           <select
@@ -170,7 +170,7 @@ export default function InstructorClassFilters({
               setStatus(newStatus);
               onStatusChange(newStatus);
             }}
-            className="w-full px-4 py-2 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+            className="w-full px-4 py-2 bg-cem-background border border-cem-neutral-gray-200 rounded-lg text-cem-neutral-gray-900 focus:ring-2 focus:ring-cem-primary focus:border-transparent transition-all"
           >
             <option value="all">Todas</option>
             <option value="active">Solo Activas</option>
@@ -180,7 +180,7 @@ export default function InstructorClassFilters({
 
         {onDateChange && (
           <div>
-            <label className="block text-sm font-semibold text-richblack-300 mb-2">
+            <label className="block text-sm font-semibold text-cem-neutral-gray-700 mb-2">
               📅 Filtrar por fecha
             </label>
             <input
@@ -191,7 +191,7 @@ export default function InstructorClassFilters({
                 setSelectedDate(dateValue);
                 onDateChange(dateValue || null);
               }}
-              className="w-full px-4 py-2 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+              className="w-full px-4 py-2 bg-cem-background border border-cem-neutral-gray-200 rounded-lg text-cem-neutral-gray-900 focus:ring-2 focus:ring-cem-primary focus:border-transparent transition-all"
             />
           </div>
         )}
@@ -201,7 +201,7 @@ export default function InstructorClassFilters({
         <div className="flex justify-end">
           <button
             onClick={handleClearFilters}
-            className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium text-sm"
+            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium text-sm shadow-md"
           >
             🗑️ Limpiar Filtros
           </button>

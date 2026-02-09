@@ -44,30 +44,30 @@ export default function CalendarView({ token, userRole, userId, refreshKey }: Ca
 
       const reagruparPorFechaLocal = (datos: DatosCalendario): DatosCalendario => {
         const reagrupado: DatosCalendario = {};
-        
+
         Object.keys(datos).forEach(fechaKey => {
           datos[fechaKey].forEach(clase => {
             if (!clase || !clase.scheduledDate) {
               return;
             }
-            
+
             const fechaClase = new Date(clase.scheduledDate);
             if (isNaN(fechaClase.getTime())) {
               return;
             }
-            
+
             const año = fechaClase.getFullYear();
             const mes = String(fechaClase.getMonth() + 1).padStart(2, '0');
             const dia = String(fechaClase.getDate()).padStart(2, '0');
             const fechaLocal = `${año}-${mes}-${dia}`;
-            
+
             if (!reagrupado[fechaLocal]) {
               reagrupado[fechaLocal] = [];
             }
             reagrupado[fechaLocal].push(clase);
           });
         });
-        
+
         return reagrupado;
       };
 
@@ -116,7 +116,7 @@ export default function CalendarView({ token, userRole, userId, refreshKey }: Ca
 
   const navegarMes = (direccion: 'anterior' | 'siguiente') => {
     setDireccionAnimacion(direccion === 'anterior' ? 'izquierda' : 'derecha');
-    
+
     const [año, mes] = mesActual.split('-').map(Number);
     let nuevoMes = mes;
     let nuevoAño = año;
@@ -142,13 +142,13 @@ export default function CalendarView({ token, userRole, userId, refreshKey }: Ca
     const mesHoy = obtenerMesActual();
     const [añoActual, mesActualNum] = mesActual.split('-').map(Number);
     const [añoHoy, mesHoyNum] = mesHoy.split('-').map(Number);
-    
+
     if (añoHoy > añoActual || (añoHoy === añoActual && mesHoyNum > mesActualNum)) {
       setDireccionAnimacion('derecha');
     } else if (añoHoy < añoActual || (añoHoy === añoActual && mesHoyNum < mesActualNum)) {
       setDireccionAnimacion('izquierda');
     }
-    
+
     setMesActual(mesHoy);
   };
 
@@ -187,7 +187,7 @@ export default function CalendarView({ token, userRole, userId, refreshKey }: Ca
   if (cargando) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cem-primary"></div>
       </div>
     );
   }

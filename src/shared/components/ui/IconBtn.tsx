@@ -21,14 +21,13 @@ const IconBtn = ({
     <button
       disabled={disabled}
       onClick={onclick}
-      className={`flex items-center justify-center outline-none ${
-        outline ? "border border-yellow-50 bg-transparent" : "bg-yellow-50"
-      } cursor-pointer gap-x-2 rounded-md py-2 px-5 font-semibold text-richblack-900 hover:bg-black hover:text-yellow-50 duration-300 ${customClasses}`}
+      className={`flex items-center justify-center outline-none ${outline ? "border-2 border-cem-primary bg-transparent text-cem-primary" : "bg-cem-primary text-white"
+        } cursor-pointer gap-x-2 rounded-xl py-2.5 px-6 font-bold hover:bg-cem-primary-dark hover:shadow-lg hover:shadow-cem-primary/20 duration-300 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed ${customClasses}`}
       type={type}
     >
       {children ? (
         <>
-          <span className={`${outline && "text-yellow-50"}`}>{text}</span>
+          <span>{text}</span>
           {children}
         </>
       ) : (

@@ -15,13 +15,13 @@ export default function CalendarHeader({
 }: CalendarHeaderProps) {
   return (
     <div className="mb-6">
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg p-6 mb-4">
+      <div className="bg-gradient-to-r from-cem-primary to-cem-primary-dark rounded-xl shadow-lg p-6 mb-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-4xl font-bold text-white capitalize mb-1 tracking-tight">
               {mesActual}
             </h2>
-            <p className="text-blue-100 text-sm font-medium">
+            <p className="text-white text-sm font-medium">
               Calendario de Clases Programadas
             </p>
           </div>
@@ -29,7 +29,7 @@ export default function CalendarHeader({
           <div className="flex items-center space-x-3">
             <button
               onClick={onHoy}
-              className="px-5 py-2.5 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-all duration-200 font-semibold text-sm shadow-md hover:shadow-lg"
+              className="px-5 py-2.5 bg-white text-cem-primary rounded-lg hover:bg-cem-teal-50 transition-all duration-200 font-semibold text-sm shadow-md hover:shadow-lg"
             >
               Hoy
             </button>

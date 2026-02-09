@@ -34,10 +34,11 @@ export default function CourseList({
 
   return (
     <div>
-      <p className="text-sm font-medium text-richblack-5 mb-3">
-        Gestionar cursos individualmente:
+      <p className="text-xs font-black text-cem-neutral-gray-900 uppercase tracking-widest mb-4 flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-cem-primary"></span>
+        Gestión individual de cursos:
       </p>
-      <div className="space-y-2 max-h-80 overflow-y-auto">
+      <div className="space-y-3 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
         {courses.map((course) => {
           const isProcessingThis = processingCourse === course.id;
           const selectedCategoryId = courseCategoryMap[course.id] || otherCategories[0]?.id || "";
@@ -45,26 +46,31 @@ export default function CourseList({
           return (
             <div
               key={course.id}
-              className="bg-richblack-700/50 border border-richblack-600 rounded-lg p-4"
+              className="bg-white border border-cem-neutral-gray-100 rounded-[1.5rem] p-5 shadow-sm hover:shadow-md transition-all group"
             >
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-6">
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-richblack-5 mb-1">
+                  <p className="text-sm font-black text-cem-neutral-gray-900 mb-1 group-hover:text-cem-primary transition-colors">
                     {course.courseName}
                   </p>
-                  <p className="text-xs text-richblack-400">
-                    {course.instructor.firstName} {course.instructor.lastName} •{" "}
-                    {course.status === "Published" ? "Publicado" : "Borrador"}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-widest">
+                      {course.instructor.firstName} {course.instructor.lastName}
+                    </p>
+                    <span className="w-1 h-1 rounded-full bg-cem-neutral-gray-200"></span>
+                    <span className={`text-[10px] font-black uppercase tracking-widest ${course.status === "Published" ? "text-caribbeangreen-400" : "text-yellow-400"}`}>
+                      {course.status === "Published" ? "Publicado" : "Borrador"}
+                    </span>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex flex-wrap items-center gap-2 flex-shrink-0">
                   {/* Selector de categoría */}
                   {otherCategories.length > 0 && (
                     <select
                       value={selectedCategoryId}
                       onChange={(e) => onCategoryChange(course.id, e.target.value)}
-                      className="form-style text-xs py-1.5 px-2 min-w-[140px]"
+                      className="text-[11px] font-bold px-4 py-2 bg-cem-neutral-gray-50 border border-cem-neutral-gray-100 rounded-xl text-cem-neutral-gray-900 focus:outline-none focus:ring-2 focus:ring-cem-primary/20 min-w-[150px] cursor-pointer"
                       disabled={isProcessingThis || isProcessing}
                     >
                       {otherCategories.map((cat) => (
@@ -75,33 +81,35 @@ export default function CourseList({
                     </select>
                   )}
 
-                  {/* Botón cambiar categoría */}
-                  {otherCategories.length > 0 && (
-                    <button
-                      onClick={() => onMoveCourse(course.id)}
-                      disabled={isProcessingThis || isProcessing || !selectedCategoryId}
-                      className="px-3 py-1.5 text-xs font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
-                      title="Cambiar categoría"
-                    >
-                      {isProcessingThis ? (
-                        <FiRefreshCw className="animate-spin" />
-                      ) : (
-                        <FiArrowRight />
-                      )}
-                      Mover
-                    </button>
-                  )}
+                  <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+                    {/* Botón cambiar categoría */}
+                    {otherCategories.length > 0 && (
+                      <button
+                        onClick={() => onMoveCourse(course.id)}
+                        disabled={isProcessingThis || isProcessing || !selectedCategoryId}
+                        className="flex-1 sm:flex-none px-4 py-2 text-[10px] font-black uppercase tracking-widest bg-cem-primary text-white rounded-xl hover:bg-cem-primary-dark transition-all shadow-sm disabled:opacity-50 flex items-center justify-center gap-2"
+                        title="Cambiar categoría"
+                      >
+                        {isProcessingThis ? (
+                          <FiRefreshCw className="animate-spin" />
+                        ) : (
+                          <FiArrowRight />
+                        )}
+                        Mover
+                      </button>
+                    )}
 
-                  {/* Botón eliminar curso */}
-                  <button
-                    onClick={() => onDeleteCourse(course.id)}
-                    disabled={isProcessingThis || isProcessing}
-                    className="px-3 py-1.5 text-xs font-medium bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
-                    title="Eliminar curso"
-                  >
-                    <FiTrash2 />
-                    Eliminar
-                  </button>
+                    {/* Botón eliminar curso */}
+                    <button
+                      onClick={() => onDeleteCourse(course.id)}
+                      disabled={isProcessingThis || isProcessing}
+                      className="flex-1 sm:flex-none px-4 py-2 text-[10px] font-black uppercase tracking-widest bg-white text-red-500 border border-red-50 rounded-xl hover:bg-red-50 transition-all shadow-sm disabled:opacity-50 flex items-center justify-center gap-2"
+                      title="Eliminar curso"
+                    >
+                      <FiTrash2 />
+                      Baja
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

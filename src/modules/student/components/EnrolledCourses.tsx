@@ -50,6 +50,27 @@ const CourseThumbnailSmall: React.FC<{
   );
 };
 
+// Loading Skeleton Component - Isolated
+const EnrolledCoursesSkeleton = () => {
+  return (
+    <div className="flex border border-cem-neutral-gray-200 px-5 py-3 w-full">
+      <div className="flex flex-1 gap-x-4 ">
+        <div className="h-14 w-14 rounded-lg skeleton "></div>
+
+        <div className="flex flex-col w-[40%] ">
+          <p className="h-2 w-[50%] rounded-xl  skeleton"></p>
+          <p className="h-2 w-[70%] rounded-xl mt-3 skeleton"></p>
+        </div>
+      </div>
+
+      <div className="flex flex-[0.4] flex-col ">
+        <p className="h-2 w-[20%] rounded-xl skeleton mt-2"></p>
+        <p className="h-2 w-[40%] rounded-xl skeleton mt-3"></p>
+      </div>
+    </div>
+  );
+};
+
 const getCourseId = (course: CourseWithId): string | undefined => {
   return course.id || course._id;
 };
@@ -171,27 +192,6 @@ export default function EnrolledCourses() {
     });
   }, [enrolledCourses, searchTerm, filterStatus, sortOrder]);
 
-  // Loading Skeleton
-  const sklItem = () => {
-    return (
-      <div className="flex border border-richblack-700 px-5 py-3 w-full">
-        <div className="flex flex-1 gap-x-4 ">
-          <div className="h-14 w-14 rounded-lg skeleton "></div>
-
-          <div className="flex flex-col w-[40%] ">
-            <p className="h-2 w-[50%] rounded-xl  skeleton"></p>
-            <p className="h-2 w-[70%] rounded-xl mt-3 skeleton"></p>
-          </div>
-        </div>
-
-        <div className="flex flex-[0.4] flex-col ">
-          <p className="h-2 w-[20%] rounded-xl skeleton mt-2"></p>
-          <p className="h-2 w-[40%] rounded-xl skeleton mt-3"></p>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <>
       <div className="text-4xl text-cem-neutral-gray-900 font-bold font-boogaloo text-center sm:text-left">
@@ -200,14 +200,14 @@ export default function EnrolledCourses() {
 
       <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Filter Tabs */}
-        <div className="flex items-center gap-2 p-1 bg-white border border-cem-neutral-gray-100 rounded-lg w-fit shadow-sm">
+        <div className="flex items-center gap-2 p-1 bg-cem-cardbackground border border-cem-neutral-gray-100 rounded-lg w-fit shadow-sm">
           {(["all", "pending", "completed"] as const).map((status) => (
             <button
               key={status}
               onClick={() => setFilterStatus(status)}
               className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${filterStatus === status
-                  ? "bg-cem-primary text-white shadow-sm"
-                  : "text-cem-neutral-gray-500 hover:text-cem-primary"
+                ? "bg-cem-primary text-white shadow-sm"
+                : "text-cem-neutral-gray-500 hover:text-cem-primary"
                 }`}
             >
               {STUDENT_TEXTS.enrolledCourses.filters[status]}
@@ -223,7 +223,7 @@ export default function EnrolledCourses() {
               placeholder={
                 STUDENT_TEXTS.enrolledCourses.filters.searchPlaceholder
               }
-              className="w-full bg-white text-cem-neutral-gray-900 rounded-full py-2 pl-10 pr-4 border border-cem-neutral-gray-200 focus:outline-none focus:border-cem-primary transition-colors text-sm shadow-sm"
+              className="w-full bg-cem-cardbackground text-cem-neutral-gray-900 rounded-full py-2 pl-10 pr-4 border border-cem-neutral-gray-200 focus:outline-none focus:border-cem-primary transition-colors text-sm shadow-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -243,7 +243,7 @@ export default function EnrolledCourses() {
               onChange={(e) =>
                 setSortOrder(e.target.value as "newest" | "oldest")
               }
-              className="bg-white text-cem-neutral-gray-900 text-sm rounded-md px-3 py-1.5 border border-cem-neutral-gray-200 focus:outline-none focus:border-cem-primary cursor-pointer transition-colors shadow-sm"
+              className="bg-cem-cardbackground text-cem-neutral-gray-900 text-sm rounded-md px-3 py-1.5 border border-cem-neutral-gray-200 focus:outline-none focus:border-cem-primary cursor-pointer transition-colors shadow-sm"
             >
               <option value="newest">
                 {STUDENT_TEXTS.enrolledCourses.sort.newest}
@@ -256,7 +256,7 @@ export default function EnrolledCourses() {
         </div>
       </div>
 
-      <div className="my-8 text-cem-neutral-gray-900 overflow-hidden rounded-2xl border border-cem-neutral-gray-100 shadow-sm">
+      <div className="my-8 text-cem-neutral-gray-900 overflow-hidden rounded-2xl border border-cem-neutral-gray-100 shadow-sm bg-cem-cardbackground">
         {/* Headings */}
         <div className="flex bg-cem-neutral-gray-50 font-bold text-cem-neutral-gray-700 border-b border-cem-neutral-gray-100">
           <p className="w-[45%] px-5 py-4">
@@ -273,11 +273,11 @@ export default function EnrolledCourses() {
         {/* loading Skeleton */}
         {loading ? (
           <div>
-            {sklItem()}
-            {sklItem()}
-            {sklItem()}
-            {sklItem()}
-            {sklItem()}
+            <EnrolledCoursesSkeleton />
+            <EnrolledCoursesSkeleton />
+            <EnrolledCoursesSkeleton />
+            <EnrolledCoursesSkeleton />
+            <EnrolledCoursesSkeleton />
           </div>
         ) : filteredAndSortedCourses.length === 0 ? (
           <div className="bg-cem-cardbackground p-12 text-center text-cem-neutral-gray-400">

@@ -54,7 +54,7 @@ export default function InstructorClassesManagementContainer() {
     closeEditModal,
     closeDeleteModal,
   } = useClassModals(user);
-  
+
   // Wrapper para handleToggleActive que adapta la firma del componente AdminClassCard
   const handleToggleActiveWrapper = useCallback(async (classId: string, isActive: boolean) => {
     if (!token) return;
@@ -66,7 +66,7 @@ export default function InstructorClassesManagementContainer() {
 
   if (!token) {
     return (
-      <div className="text-center text-richblack-300 py-8">
+      <div className="text-center text-cem-neutral-gray-500 py-8">
         {SCHEDULED_CLASSES_TEXTS.containers.instructorClasses.unauthorized}
       </div>
     );
@@ -80,16 +80,16 @@ export default function InstructorClassesManagementContainer() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold text-richblack-5">
+          <h1 className="text-3xl font-bold text-cem-neutral-gray-900">
             {SCHEDULED_CLASSES_TEXTS.containers.instructorClasses.title}
           </h1>
-          <p className="text-richblack-400">
+          <p className="text-cem-neutral-gray-600">
             {SCHEDULED_CLASSES_TEXTS.containers.instructorClasses.description}
           </p>
         </div>
         <button
           onClick={() => setMostrarFormularioCrear(!mostrarFormularioCrear)}
-          className="px-6 py-2.5 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg hover:from-green-700 hover:to-teal-700 transition-all font-semibold shadow-lg"
+          className="px-6 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all font-semibold shadow-lg"
         >
           {mostrarFormularioCrear ? SCHEDULED_CLASSES_TEXTS.containers.instructorClasses.buttons.cancel : SCHEDULED_CLASSES_TEXTS.containers.instructorClasses.buttons.createNew}
         </button>
@@ -101,9 +101,9 @@ export default function InstructorClassesManagementContainer() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-richblack-800 rounded-lg shadow-lg p-6 border border-richblack-700"
+            className="bg-cem-cardbackground rounded-lg shadow-lg p-6 border border-cem-neutral-gray-200"
           >
-            <h2 className="text-2xl font-bold text-richblack-5 mb-6">{SCHEDULED_CLASSES_TEXTS.containers.instructorClasses.formTitle}</h2>
+            <h2 className="text-2xl font-bold text-cem-neutral-gray-900 mb-6">{SCHEDULED_CLASSES_TEXTS.containers.instructorClasses.formTitle}</h2>
             <CreateClassForm
               token={token}
               userRole={user?.accountType || 'Instructor'}
@@ -135,25 +135,25 @@ export default function InstructorClassesManagementContainer() {
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-richblack-5">
+          <h2 className="text-xl font-bold text-cem-neutral-gray-900">
             {SCHEDULED_CLASSES_TEXTS.containers.instructorClasses.listTitle}
           </h2>
-          <p className="text-sm text-richblack-400">
+          <p className="text-sm text-cem-neutral-gray-600">
             {SCHEDULED_CLASSES_TEXTS.containers.instructorClasses.showing} {startIndex}-{endIndex} {SCHEDULED_CLASSES_TEXTS.containers.instructorClasses.of} {meta.total} {SCHEDULED_CLASSES_TEXTS.containers.instructorClasses.classes}
           </p>
         </div>
 
         {isFiltering && classes.length === 0 ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500"></div>
-            <span className="ml-3 text-richblack-400">{SCHEDULED_CLASSES_TEXTS.containers.instructorClasses.searching}</span>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cem-primary"></div>
+            <span className="ml-3 text-cem-neutral-gray-600">{SCHEDULED_CLASSES_TEXTS.containers.instructorClasses.searching}</span>
           </div>
         ) : !initialLoading && !isFiltering && classes.length === 0 ? (
-          <div className="bg-richblack-800 rounded-xl p-12 border border-richblack-700 text-center">
-            <p className="text-richblack-400 text-lg mb-2">
+          <div className="bg-cem-cardbackground rounded-xl p-12 border border-cem-neutral-gray-200 text-center shadow-sm">
+            <p className="text-cem-neutral-gray-700 text-lg mb-2">
               {SCHEDULED_CLASSES_TEXTS.containers.instructorClasses.noResults.message}
             </p>
-            <p className="text-richblack-500 text-sm">
+            <p className="text-cem-neutral-gray-500 text-sm">
               {SCHEDULED_CLASSES_TEXTS.containers.instructorClasses.noResults.suggestion}
             </p>
           </div>
@@ -190,8 +190,8 @@ export default function InstructorClassesManagementContainer() {
 
       {editModalAbierto && claseSeleccionada && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50">
-          <div className="bg-richblack-800 rounded-2xl shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto border border-richblack-700">
-            <h2 className="text-2xl font-bold mb-6 text-richblack-5">{SCHEDULED_CLASSES_TEXTS.containers.instructorClasses.editTitle}</h2>
+          <div className="bg-cem-cardbackground rounded-2xl shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto border border-cem-neutral-gray-200">
+            <h2 className="text-2xl font-bold mb-6 text-cem-neutral-gray-900">{SCHEDULED_CLASSES_TEXTS.containers.instructorClasses.editTitle}</h2>
             <EditClassForm
               clase={claseSeleccionada}
               token={token}

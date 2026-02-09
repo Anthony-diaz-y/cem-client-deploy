@@ -18,15 +18,15 @@ export default function DayCell({ fecha, clases, esHoy, esMesActual, onClassClic
   return (
     <div
       className={`min-h-[180px] border-r border-b border-gray-200 p-2.5 ${!esMesActual ? 'bg-gray-50/50' : 'bg-white'
-        } ${esHoy ? 'ring-2 ring-blue-500 ring-inset bg-blue-50/30' : ''} transition-colors hover:bg-gray-50/80`}
+        } ${esHoy ? 'ring-2 ring-cem-primary ring-inset bg-cem-teal-50/30' : ''} transition-colors hover:bg-gray-50/80`}
     >
       <div className="flex items-center justify-between mb-2.5">
         <span
           className={`text-sm font-semibold ${esHoy
-              ? 'bg-blue-600 text-white w-7 h-7 rounded-full flex items-center justify-center shadow-md'
-              : esMesActual
-                ? 'text-gray-900'
-                : 'text-gray-400'
+            ? 'bg-cem-primary text-white w-7 h-7 rounded-full flex items-center justify-center shadow-md'
+            : esMesActual
+              ? 'text-gray-900'
+              : 'text-gray-400'
             }`}
         >
           {numeroDia}
