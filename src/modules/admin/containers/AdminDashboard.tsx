@@ -55,26 +55,25 @@ export default function AdminDashboard() {
 
   return (
     <div className="bg-cem-background text-cem-neutral-gray-900">
-      {/* Header Section */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-cem-neutral-gray-900 mb-2">
-          Dashboard de Administración
-        </h1>
-        <p className="text-cem-neutral-gray-600">
-          Vista general de estadísticas y métricas de rendimiento.
-        </p>
-      </div>
+      {/* Header & Filter Section Combined */}
+      <div className="flex flex-col md:flex-row justify-between items-end gap-4 mb-8 animate-fadeIn">
+        <div>
+          <h1 className="text-3xl font-black text-cem-neutral-gray-900 mb-2 tracking-tight">
+            Dashboard de Administración
+          </h1>
+          <p className="text-cem-neutral-gray-600 font-medium">
+            Vista general de estadísticas y métricas de rendimiento.
+          </p>
+        </div>
 
-      {/* Filter Section */}
-      <div className="mb-8 flex justify-end">
-        <div className="bg-cem-cardbackground p-1 rounded-lg border border-cem-neutral-gray-200 flex">
+        <div className="bg-white p-1.5 rounded-xl border border-cem-neutral-gray-100 flex shadow-sm">
           {filterOptions.map((option) => (
             <button
               key={option.id}
               onClick={() => setFilter(option.id)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${filter === option.id
-                ? "bg-cem-primary-light text-cem-primary shadow-sm"
-                : "text-cem-neutral-gray-600 hover:text-cem-primary hover:bg-cem-celeste-light"
+              className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${filter === option.id
+                ? "bg-cem-primary/10 text-cem-primary shadow-sm"
+                : "text-cem-neutral-gray-400 hover:text-cem-neutral-gray-600 hover:bg-cem-neutral-gray-50"
                 }`}
             >
               {option.name}
@@ -83,14 +82,21 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Sección 1: Tarjetas de Resumen (Counts) */}
-      <AdminStats stats={dashboardData?.counts || null} loading={loading} />
+      {/* Sección Combinada: Ingresos y Estadísticas */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8">
+        {/* Columna Izquierda: Ingresos */}
+        <div className="lg:col-span-2 h-full">
+          <RevenueCard
+            revenue={dashboardData?.revenue || { total: 0, period: filter }}
+            loading={loading}
+          />
+        </div>
 
-      {/* Sección 2: Ingresos */}
-      <RevenueCard
-        revenue={dashboardData?.revenue || { total: 0, period: filter }}
-        loading={loading}
-      />
+        {/* Columna Derecha: Tarjetas de Resumen (Counts) */}
+        <div className="lg:col-span-3 h-full">
+          <AdminStats stats={dashboardData?.counts || null} loading={loading} />
+        </div>
+      </div>
 
       {/* Sección 3: Gráficos */}
       {dashboardData?.charts && !loading && (

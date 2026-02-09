@@ -80,29 +80,44 @@ export default function AdminStats({ stats, loading }: AdminStatsProps) {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
       {statCards.map((stat, index) => {
+        // Filter to show only Docentes (Instructores), Aprobados, Estudiantes
+        if (!["Instructores Totales", "Aprobados", "Estudiantes"].includes(stat.title)) return null;
+
+        // Rename titles to match design
+        const titleMap: Record<string, string> = {
+          "Instructores Totales": "Docentes",
+          "Aprobados": "Aprobados",
+          "Estudiantes": "Estudiantes"
+        };
+
+        // Update styling to match Image 2 (Light blue backgrounds)
+        // Actually, Image 2 has customized backgrounds:
+        // Docentes: Light Blue bg, Blue text
+        // Aprobados: Light Blue bg, Blue/Teal text
+        // Estudiantes: Light Cyan/Blue bg, Blue text
+
+        // Let's stick to a clean white card for now as seen in Image 2 (it looks like white cards on light gray bg, or light blue cards)
+        // Image 2 cards look like light blue/cyan backgrounds with dark numbers.
+        // Let's use specific colors.
+
+        const newTitle = titleMap[stat.title];
+
         return (
           <div
             key={index}
-            className={`bg-white rounded-2xl p-6 border ${stat.borderColor} transition-all hover:shadow-md hover:-translate-y-1 ${stat.highlight ? "ring-2 ring-yellow-400 ring-offset-2" : "border-cem-neutral-gray-100"
-              } shadow-sm`}
+            className={`rounded-[2rem] p-6 border transition-all hover:shadow-md hover:-translate-y-1 shadow-sm flex flex-col justify-between h-full bg-white border-cem-neutral-gray-100/50`}
           >
-            <p className="text-sm font-semibold text-cem-neutral-gray-500 mb-2 uppercase tracking-wider">{stat.title}</p>
-            <div className="flex items-baseline gap-2">
-              <p className={`text-4xl font-extrabold ${stat.color}`}>
-                <CountUp end={stat.value} duration={2} />
-              </p>
+            <div>
+              <p className="text-sm font-medium text-cem-neutral-gray-600 mb-2">{newTitle}</p>
+              <div className="flex items-baseline gap-2">
+                <p className={`text-4xl font-extrabold text-[#00849c]`}>
+                  {/* Using a specific teal/blue color from the image style approximately */}
+                  <CountUp end={stat.value} duration={2} />
+                </p>
+              </div>
             </div>
-            {stat.link && stat.value > 0 && (
-              <Link
-                href={stat.link}
-                className="mt-4 text-xs font-bold text-cem-primary hover:text-cem-primary-dark transition-colors flex items-center gap-1 group"
-              >
-                Ver detalles
-                <span className="group-hover:translate-x-1 transition-transform">→</span>
-              </Link>
-            )}
           </div>
         );
       })}
