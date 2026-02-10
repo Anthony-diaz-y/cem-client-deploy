@@ -1,54 +1,50 @@
 /**
  * COLORES DE MARCA CEM
-*/
+ */
 
 export const brandColors = {
   primary: {
-    DEFAULT: '#02819E',
-    light: '#C4EBDF',
-<<<<<<< HEAD
-    dark: '#0d9488', 
-=======
-    dark: '#0d9488',
->>>>>>> d70e610433852c6b926393c496f598a2af78d0f4
-    darker: '#0f766e',
+    DEFAULT: "#02819E",
+    light: "#C4EBDF",
+    dark: "#0d9488",
+    darker: "#0f766e",
   },
-  background: '#fdfdfd',
-  cardbackground: '#ffffff',
-  accent:'#A6EFFF4D',
+  background: "#fdfdfd",
+  cardbackground: "#ffffff",
+  accent: "#A6EFFF4D",
 
   // Fondo celeste para hero/header de detalle de curso
   celeste: {
-    light: '#E8F8FD',
-    DEFAULT: '#D4EEF7',
+    light: "#E8F8FD",
+    DEFAULT: "#D4EEF7",
   },
 
   teal: {
-    50: '#f0fdfa',
-    100: '#ccfbf1',
-    200: '#99f6e4',
-    300: '#5eead4',
-    400: '#2dd4bf',
-    500: '#14b8a6',
-    600: '#0d9488',
-    700: '#0f766e',
-    800: '#115e59',
-    900: '#134e4a',
+    50: "#f0fdfa",
+    100: "#ccfbf1",
+    200: "#99f6e4",
+    300: "#5eead4",
+    400: "#2dd4bf",
+    500: "#14b8a6",
+    600: "#0d9488",
+    700: "#0f766e",
+    800: "#115e59",
+    900: "#134e4a",
   },
 
   neutral: {
-    white: '#ffffff',
+    white: "#ffffff",
     gray: {
-      50: '#f9fafb',
-      100: '#f3f4f6',
-      200: '#e5e7eb',
-      300: '#d1d5db',
-      400: '#9ca3af',
-      500: '#6b7280',
-      600: '#4b5563',
-      700: '#374151',
-      800: '#1f2937',
-      900: '#111827',
+      50: "#f9fafb",
+      100: "#f3f4f6",
+      200: "#e5e7eb",
+      300: "#d1d5db",
+      400: "#9ca3af",
+      500: "#6b7280",
+      600: "#4b5563",
+      700: "#374151",
+      800: "#1f2937",
+      900: "#111827",
     },
   },
 } as const;
