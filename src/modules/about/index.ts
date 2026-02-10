@@ -1,17 +1,25 @@
 // About Module - Public API
 // Scream Modular Architecture: Feature-based organization
 
-// Types
-export type { LearningGridItem, StatItem } from "./types";
+// Interfaces
+export * from "./interfaces/about.interfaces";
 
 // Constants
-export { LEARNING_GRID_ITEMS, STATS_DATA } from "./constants/about.constants";
+export * from "./constants/about.constants";
 
 // Components
-export { default as ContactFormSection } from "./components/ContactFormSection";
-export { default as LearningGrid } from "./components/LearningGrid";
-export { default as Quote } from "./components/Quote";
-export { default as Stats } from "./components/Stats";
+export { default as AboutHero } from "./components/AboutHero";
+export { default as AboutHistory } from "./components/AboutHistory";
+export { default as AboutStats } from "./components/AboutStats";
+export { default as AboutTestimonials } from "./components/AboutTestimonials";
+export { default as AboutTeam } from "./components/AboutTeam";
+export { default as StaffCard } from "./components/StaffCard";
+
+// Hooks
+export * from "./hooks/useTeamFilter";
+
+// Animations
+export * from "./animations";
 
 // Container
 export { default as AboutContainer } from "./containers/AboutContainer";
