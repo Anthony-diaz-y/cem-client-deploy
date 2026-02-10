@@ -132,7 +132,7 @@ const PaymentModal = ({
                     {/* Izipay Option (Disabled) */}
                     <div className="space-y-3">
                         <p className="text-sm font-bold text-cem-neutral-gray-700 ml-1">
-                            Izipay
+                            Izipay (PEN)
                         </p>
                         <button
                             disabled

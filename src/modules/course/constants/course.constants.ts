@@ -68,7 +68,7 @@ export const COURSE_TEXTS = {
     },
     paymentModal: {
       title: "Pagar por:",
-      paypal: "PayPal",
+      paypal: "PayPal (USD)",
       izipay: "Izipay (Próximamente)",
       cancel: "Cancelar",
     },
