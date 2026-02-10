@@ -50,8 +50,6 @@ const Home: React.FC<HomeProps> = ({
       <AlliesSection />
 
       <NewsSection />
-
-      <Footer />
     </div>
   );
 };

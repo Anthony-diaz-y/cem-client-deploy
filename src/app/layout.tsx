@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import GlobalProviders from "./providers";
 import { DemoBanner, ScrollToTop } from "@shared/components";
 import ConditionalNavbar from "@shared/components/navigation/ConditionalNavbar";
+import ConditionalFooter from "@shared/components/navigation/ConditionalFooter";
 import "../index.css";
 
 export const metadata: Metadata = {
@@ -25,6 +26,8 @@ export default function RootLayout({
             <ScrollToTop />
 
             {children}
+
+            <ConditionalFooter />
 
             {/* Demo Mode Banner */}
             <DemoBanner />
