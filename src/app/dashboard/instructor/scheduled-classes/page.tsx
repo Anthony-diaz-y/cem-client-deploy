@@ -17,7 +17,7 @@ export default function InstructorScheduledClassesPage() {
   if (user?.accountType !== ACCOUNT_TYPE.INSTRUCTOR) {
     return (
       <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
-        <p className="text-richblack-5 text-3xl">Acceso Denegado</p>
+        <p className="text-cem-neutral-gray-900 text-3xl">Acceso Denegado</p>
       </div>
     );
   }

@@ -25,6 +25,7 @@ export interface FullCourseDetailsResponse {
     [key: string]: unknown;
   };
   completedVideos?: string[];
+  isEnrolled?: boolean;
   [key: string]: unknown;
 }
 

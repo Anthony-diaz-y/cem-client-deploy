@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <GlobalProviders>
-          <div className="w-screen min-h-screen bg-white text-cem-neutral-gray-900 flex flex-col font-inter">
+          <div className="w-full min-h-screen bg-white text-cem-neutral-gray-900 flex flex-col font-inter">
             <ConditionalNavbar />
 
             {/* ScrollToTop logic will be handled here or inside a client component */}

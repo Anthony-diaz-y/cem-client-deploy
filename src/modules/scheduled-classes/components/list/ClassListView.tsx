@@ -31,7 +31,7 @@ export default function ClassListView({ token, userRole, userId, refreshKey }: C
   const [plataformaSeleccionada, setPlataformaSeleccionada] = useState<Platform | 'all'>('all');
   const [soloActivas, setSoloActivas] = useState(false);
   const [filtroInscripcion, setFiltroInscripcion] = useState<'all' | 'enrolled' | 'not-enrolled'>('all');
-  
+
   const esEstudiante = userRole === 'Student';
   const esInstructor = userRole === 'Instructor';
   const esAdmin = userRole === 'Admin';
@@ -147,7 +147,7 @@ export default function ClassListView({ token, userRole, userId, refreshKey }: C
   if (cargando) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cem-primary"></div>
       </div>
     );
   }

@@ -66,9 +66,17 @@ export default function PendingInstructorsTable({
 
   if (instructors.length === 0) {
     return (
-      <div className="bg-richblack-800 rounded-xl p-8 border border-richblack-700 text-center">
-        <p className="text-richblack-400 text-lg">
-          No hay instructores pendientes de aprobación
+      <div className="bg-white rounded-3xl p-12 border border-cem-neutral-gray-100 text-center shadow-sm">
+        <div className="bg-cem-celeste-light w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg className="w-10 h-10 text-cem-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <p className="text-cem-neutral-gray-800 text-xl font-bold">
+          Todo al día
+        </p>
+        <p className="text-cem-neutral-gray-500 mt-2">
+          No hay instructores pendientes de aprobación en este momento.
         </p>
       </div>
     );
@@ -76,80 +84,86 @@ export default function PendingInstructorsTable({
 
   return (
     <>
-      <div className="bg-richblack-800 rounded-xl border border-richblack-700 overflow-hidden">
-        <div className="px-6 py-4 border-b border-richblack-700">
-          <h2 className="text-xl font-semibold text-richblack-5">
-            Instructores Pendientes de Aprobación
+      <div className="bg-white rounded-3xl border border-cem-neutral-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+        <div className="px-8 py-6 border-b border-cem-neutral-gray-100 bg-cem-neutral-gray-50/30">
+          <h2 className="text-xl font-extrabold text-cem-neutral-gray-900">
+            Solicitudes Recientes
           </h2>
-          <p className="text-sm text-richblack-400 mt-1">
-            {instructors.length}{" "}
+          <p className="text-sm text-cem-neutral-gray-500 font-medium mt-1">
+            Tienes {instructors.length}{" "}
             {instructors.length === 1 ? "instructor" : "instructores"} esperando
-            aprobación
+            tu validación.
           </p>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-richblack-900">
+            <thead className="bg-cem-neutral-gray-50/50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider">
+                <th className="px-8 py-4 text-left text-xs font-bold text-cem-neutral-gray-500 uppercase tracking-widest border-b border-cem-neutral-gray-100">
                   Instructor
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider">
+                <th className="px-8 py-4 text-left text-xs font-bold text-cem-neutral-gray-500 uppercase tracking-widest border-b border-cem-neutral-gray-100">
                   Email
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider">
-                  Fecha de Registro
+                <th className="px-8 py-4 text-left text-xs font-bold text-cem-neutral-gray-500 uppercase tracking-widest border-b border-cem-neutral-gray-100">
+                  Registro
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-richblack-400 uppercase tracking-wider">
+                <th className="px-8 py-4 text-right text-xs font-bold text-cem-neutral-gray-500 uppercase tracking-widest border-b border-cem-neutral-gray-100">
                   Acciones
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-richblack-700">
+            <tbody className="divide-y divide-cem-neutral-gray-100">
               {instructors.map((instructor) => (
                 <tr
                   key={instructor.id}
-                  className="hover:bg-richblack-900/50 transition-colors"
+                  className="hover:bg-cem-celeste-light/30 transition-colors group"
                 >
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-3">
-                      <Img
-                        src={
-                          instructor.image ||
-                          `https://api.dicebear.com/5.x/initials/svg?seed=${instructor.name}`
-                        }
-                        alt={`${instructor.name}`}
-                        className="h-10 w-10 rounded-full object-cover"
-                      />
+                  <td className="px-8 py-5 whitespace-nowrap">
+                    <div className="flex items-center gap-4">
+                      <div className="relative">
+                        <Img
+                          src={
+                            instructor.image ||
+                            `https://api.dicebear.com/5.x/initials/svg?seed=${instructor.name}`
+                          }
+                          alt={`${instructor.name}`}
+                          className="h-12 w-12 rounded-2xl object-cover shadow-sm ring-2 ring-white"
+                        />
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-yellow-400 border-2 border-white rounded-full"></div>
+                      </div>
                       <div>
-                        <p className="text-sm font-medium text-richblack-5">
+                        <p className="text-sm font-bold text-cem-neutral-gray-900 group-hover:text-cem-primary transition-colors">
                           {instructor.name}
+                        </p>
+                        <p className="text-xs text-cem-neutral-gray-400">
+                          ID: {instructor.id.substring(0, 8)}...
                         </p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="text-sm text-richblack-300">
+                  <td className="px-8 py-5 whitespace-nowrap">
+                    <p className="text-sm text-cem-neutral-gray-600 font-medium">
                       {instructor.email}
                     </p>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="text-sm text-richblack-300">
+                  <td className="px-8 py-5 whitespace-nowrap">
+                    <p className="text-sm text-cem-neutral-gray-600 font-medium">
                       {formatDate(instructor.createdAt)}
                     </p>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className="flex justify-end gap-2">
+                  <td className="px-8 py-5 whitespace-nowrap text-right">
+                    <div className="flex justify-end gap-3">
                       <button
                         onClick={() => handleApproveClick(instructor)}
-                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                        className="px-5 py-2 bg-cem-primary text-white rounded-xl hover:bg-cem-primary-dark transition-all text-sm font-bold shadow-sm hover:shadow-cem-primary/20"
                       >
                         Aprobar
                       </button>
                       <button
                         onClick={() => handleRejectClick(instructor)}
-                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                        className="px-5 py-2 bg-white text-red-500 border border-red-100 rounded-xl hover:bg-red-50 transition-all text-sm font-bold"
                       >
                         Rechazar
                       </button>
@@ -168,27 +182,27 @@ export default function PendingInstructorsTable({
           modalData={
             confirmationModal.instructor
               ? {
-                  text1:
-                    confirmationModal.type === "approve"
-                      ? `¿Estás seguro de que deseas aprobar a ${confirmationModal.instructor.name}?`
-                      : `¿Estás seguro de que deseas rechazar a ${confirmationModal.instructor.name}?`,
-                  text2:
-                    confirmationModal.type === "approve"
-                      ? "El instructor podrá iniciar sesión y crear cursos después de la aprobación."
-                      : "El instructor no podrá iniciar sesión hasta que sea aprobado nuevamente.",
-                  btn1Text:
-                    confirmationModal.type === "approve"
-                      ? "Aprobar"
-                      : "Rechazar",
-                  btn2Text: "Cancelar",
-                  btn1Handler: handleConfirm,
-                  btn2Handler: () =>
-                    setConfirmationModal({
-                      isOpen: false,
-                      type: null,
-                      instructor: null,
-                    }),
-                }
+                text1:
+                  confirmationModal.type === "approve"
+                    ? `¿Estás seguro de que deseas aprobar a ${confirmationModal.instructor.name}?`
+                    : `¿Estás seguro de que deseas rechazar a ${confirmationModal.instructor.name}?`,
+                text2:
+                  confirmationModal.type === "approve"
+                    ? "El instructor podrá iniciar sesión y crear cursos después de la aprobación."
+                    : "El instructor no podrá iniciar sesión hasta que sea aprobado nuevamente.",
+                btn1Text:
+                  confirmationModal.type === "approve"
+                    ? "Aprobar"
+                    : "Rechazar",
+                btn2Text: "Cancelar",
+                btn1Handler: handleConfirm,
+                btn2Handler: () =>
+                  setConfirmationModal({
+                    isOpen: false,
+                    type: null,
+                    instructor: null,
+                  }),
+              }
               : null
           }
         />

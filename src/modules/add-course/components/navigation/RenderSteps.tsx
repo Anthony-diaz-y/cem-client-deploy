@@ -17,15 +17,14 @@ export default function RenderSteps() {
             <div className="flex flex-col items-center ">
               <div
                 className={`grid  aspect-square w-[34px] place-items-center rounded-full border-[1px] 
-                    ${
-                      step === item.id
-                        ? "border-yellow-50 bg-yellow-900 text-yellow-50"
-                        : "border-richblack-700 bg-richblack-800 text-richblack-300"
-                    }
-                    ${step > item.id && "bg-yellow-50 text-yellow-50"}} `}
+                    ${step === item.id
+                    ? "border-cem-primary bg-cem-primary text-white"
+                    : "border-cem-neutral-gray-300 bg-cem-background text-cem-neutral-gray-500"
+                  }
+                    ${step > item.id && "bg-cem-primary text-white"}} `}
               >
                 {step > item.id ? (
-                  <FaCheck className="font-bold text-richblack-900" />
+                  <FaCheck className="font-bold text-white" />
                 ) : (
                   item.id
                 )}
@@ -34,9 +33,8 @@ export default function RenderSteps() {
 
             {item.id !== COURSE_STEPS.length && (
               <div
-                className={`h-[calc(34px/2)] w-[33%] border-dashed border-b-2 ${
-                  step > item.id ? "border-yellow-50" : "border-richblack-500"
-                } `}
+                className={`h-[calc(34px/2)] w-[33%] border-dashed border-b-2 ${step > item.id ? "border-cem-primary" : "border-cem-neutral-gray-300"
+                  } `}
               ></div>
             )}
           </React.Fragment>
@@ -46,15 +44,13 @@ export default function RenderSteps() {
       <div className="relative mb-16 flex w-full select-none justify-between">
         {COURSE_STEPS.map((item) => (
           <div
-            className={`sm:min-w-[130px] flex flex-col items-center gap-y-2 ${
-              editCourse && "sm:min-w-[270px]"
-            }`}
+            className={`sm:min-w-[130px] flex flex-col items-center gap-y-2 ${editCourse && "sm:min-w-[270px]"
+              }`}
             key={item.id}
           >
             <p
-              className={`text-sm ${
-                step >= item.id ? "text-richblack-5" : "text-richblack-500"
-              }`}
+              className={`text-sm ${step >= item.id ? "text-cem-neutral-gray-900 font-medium" : "text-cem-neutral-gray-500"
+                }`}
             >
               {item.title}
             </p>

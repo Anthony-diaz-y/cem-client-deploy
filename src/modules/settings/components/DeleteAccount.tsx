@@ -20,19 +20,19 @@ export default function DeleteAccount() {
 
   return (
     <>
-      <div className="my-10 flex flex-row gap-x-5 rounded-md border-[1px] border-pink-700 bg-pink-900 p-8 px-6 sm:px-12">
-        <div className="flex aspect-square h-14 w-14 items-center justify-center rounded-full bg-pink-700">
-          <FiTrash2 className="text-3xl text-pink-200" />
+      <div className="my-10 flex flex-row gap-x-5 rounded-2xl border-2 border-red-200 bg-red-50 p-8 px-6 sm:px-12 shadow-sm">
+        <div className="flex aspect-square h-14 w-14 items-center justify-center rounded-full bg-red-100 border-2 border-red-200">
+          <FiTrash2 className="text-3xl text-red-600" />
         </div>
 
         <div className="flex flex-col ">
-          <h2 className="text-lg font-semibold text-richblack-5 ">
+          <h2 className="text-2xl font-bold text-red-700 ">
             {SETTINGS_TEXTS.deleteAccount.title}
           </h2>
 
-          <div className="sm:w-3/5 text-pink-25 flex flex-col gap-3 mt-1">
+          <div className="sm:w-3/5 text-red-700 flex flex-col gap-3 mt-2 font-medium">
             <p>{SETTINGS_TEXTS.deleteAccount.message}</p>
-            <p>
+            <p className="font-bold">
               {SETTINGS_TEXTS.deleteAccount.warning}
             </p>
           </div>
@@ -47,7 +47,7 @@ export default function DeleteAccount() {
 
             <button
               type="button"
-              className="w-fit italic text-pink-300  "
+              className="w-fit italic text-red-600 font-bold hover:text-red-800 transition-colors"
               onClick={() =>
                 check &&
                 token &&

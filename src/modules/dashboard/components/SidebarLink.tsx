@@ -57,8 +57,8 @@ export default function SidebarLink({ link, iconName }: SidebarLinkProps) {
   const baseClasses =
     "relative px-8 py-2 text-sm font-medium transition-all flex items-center gap-x-2";
   const activeClasses = isActive
-    ? "bg-yellow-800 text-yellow-50"
-    : "text-richblack-300 hover:bg-richblack-700 duration-200";
+    ? "bg-[#E8F8FD] text-cem-primary font-bold"
+    : "text-cem-neutral-gray-600 hover:bg-cem-neutral-gray-50 hover:text-cem-primary duration-200";
 
   return (
     <Link
@@ -67,9 +67,8 @@ export default function SidebarLink({ link, iconName }: SidebarLinkProps) {
       className={`${baseClasses} ${activeClasses}`}
     >
       <span
-        className={`absolute left-0 top-0 h-full w-[0.15rem] bg-yellow-50 ${
-          isActive ? "opacity-100" : "opacity-0"
-        }`}
+        className={`absolute left-0 top-0 h-full w-[3px] bg-cem-primary ${isActive ? "opacity-100" : "opacity-0"
+          }`}
       ></span>
 
       <Icon className="text-lg" />

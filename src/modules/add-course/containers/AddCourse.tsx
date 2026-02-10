@@ -7,7 +7,7 @@ export default function AddCourse() {
   return (
     <div className="flex w-full items-start gap-x-6">
       <div className="flex flex-1 flex-col">
-        <h1 className="mb-14 text-3xl font-medium text-richblack-5 font-boogaloo text-center lg:text-left">
+        <h1 className="mb-14 text-3xl font-medium text-cem-neutral-gray-900 font-boogaloo text-center lg:text-left">
           Agregar Curso
         </h1>
 
@@ -17,10 +17,10 @@ export default function AddCourse() {
       </div>
 
       {/* Course Upload Tips */}
-      <div className="sticky top-10 hidden lg:block max-w-[400px] flex-1 rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-6 ">
-        <p className="mb-8 text-lg text-richblack-5">⚡ Consejos para Subir Cursos</p>
+      <div className="sticky top-10 hidden lg:block max-w-[400px] flex-1 rounded-md border-[1px] border-cem-neutral-gray-200 bg-cem-cardbackground p-6 shadow-sm">
+        <p className="mb-8 text-lg text-cem-neutral-gray-900 font-semibold">⚡ Consejos para Subir Cursos</p>
 
-        <ul className="ml-5 list-item list-disc space-y-4 text-xs text-richblack-5">
+        <ul className="ml-5 list-item list-disc space-y-4 text-xs text-cem-neutral-gray-700">
           <li>Establece el precio del curso o hazlo gratuito.</li>
           <li>El tamaño estándar para la miniatura del curso es 1024x576.</li>
           <li>La sección de video controla el video de resumen del curso.</li>

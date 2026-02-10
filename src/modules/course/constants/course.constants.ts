@@ -35,11 +35,12 @@ export const COURSE_TEXTS = {
   detailsCard: {
     pricePrefix: "S/",
     buyNow: "Comprar Ahora",
-    goToCourse: "Ir al Curso",
+    goToCourse: "Ver Cursos",
     addToCart: "Agregar al Carrito",
     share: "Compartir",
     requirements: "Requisitos del curso",
     shareSuccess: "Enlace copiado al portapapeles",
+    alreadyEnrolled: "Ya estás inscrito",
   },
   actions: {
     errors: {
@@ -64,6 +65,12 @@ export const COURSE_TEXTS = {
       description: "Esta compra no requiere pago real. Solo para pruebas y desarrollo.",
       note: "Esto será removido cuando se implemente la pasarela de pago.",
       confirm: "¿Deseas continuar?",
+    },
+    paymentModal: {
+      title: "Pagar por:",
+      paypal: "PayPal (USD)",
+      izipay: "Izipay (Próximamente)",
+      cancel: "Cancelar",
     },
   },
 } as const;

@@ -24,14 +24,14 @@ export default function InstructorDetailsPage() {
   if (user?.accountType !== ACCOUNT_TYPE.ADMIN) {
     return (
       <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
-        <p className="text-richblack-5 text-3xl">Acceso Denegado</p>
+        <p className="text-cem-neutral-gray-900 text-3xl">Acceso Denegado</p>
       </div>
     );
   }
 
   if (!token || !instructorId) {
     return (
-      <div className="text-center text-richblack-300 py-8">
+      <div className="text-center text-cem-neutral-gray-600 py-8">
         <p className="text-lg">Datos no disponibles</p>
       </div>
     );

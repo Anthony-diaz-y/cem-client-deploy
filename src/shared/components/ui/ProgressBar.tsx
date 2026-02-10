@@ -16,8 +16,8 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   height = "8px",
   isLabelVisible = false,
   className = "",
-  bgColor = "bg-richblack-700",
-  completedColor = "bg-yellow-50",
+  bgColor = "bg-cem-background border border-cem-neutral-gray-100",
+  completedColor = "bg-cem-primary shadow-[0_1px_3px_rgba(2,129,158,0.3)]",
 }) => {
   const percentage = Math.min(Math.max(completed, 0), 100);
 
@@ -33,7 +33,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         aria-label={`Progress: ${percentage}%`}
       >
         {isLabelVisible && (
-          <span className="text-xs text-richblack-900 font-semibold px-2">
+          <span className="text-xs text-cem-neutral-gray-900 font-semibold px-2">
             {percentage}%
           </span>
         )}

@@ -10,10 +10,10 @@ import { SETTINGS_TEXTS } from "../constants/settings.constants";
 
 export default function Settings() {
   const { user } = useAppSelector((state) => state.profile);
-  
+
   return (
     <>
-      <h1 className="mb-14 text-3xl font-medium text-richblack-5 font-boogaloo text-center sm:text-left">
+      <h1 className="mb-14 text-4xl font-bold text-cem-neutral-gray-900 font-boogaloo text-center sm:text-left">
         {SETTINGS_TEXTS.settings.title}
       </h1>
       {/* Change Profile Picture */}

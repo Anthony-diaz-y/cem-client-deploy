@@ -55,7 +55,7 @@ export default function AllScheduledClassesTable({
         { isActive: newActiveStatus },
         token
       );
-      
+
       // Actualizar solo la clase modificada en el estado local
       setLocalClasses((prevClasses) =>
         prevClasses.map((clase) =>
@@ -81,8 +81,8 @@ export default function AllScheduledClassesTable({
 
   if (localClasses.length === 0) {
     return (
-      <div className="bg-richblack-800 rounded-xl p-8 border border-richblack-700 text-center">
-        <p className="text-richblack-400 text-lg">
+      <div className="bg-cem-cardbackground rounded-xl p-8 border border-cem-neutral-gray-200 text-center shadow-sm">
+        <p className="text-cem-neutral-gray-500 text-lg">
           No hay clases programadas
         </p>
       </div>
@@ -91,72 +91,71 @@ export default function AllScheduledClassesTable({
 
   return (
     <>
-      <div className="bg-richblack-800 rounded-xl border border-richblack-700 overflow-hidden">
+      <div className="bg-cem-cardbackground rounded-xl border border-cem-neutral-gray-200 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-richblack-900 border-b border-richblack-700">
+            <thead className="bg-cem-background border-b border-cem-neutral-gray-200">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-richblack-300 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-cem-neutral-gray-700 uppercase tracking-wider">
                   Título
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-richblack-300 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-cem-neutral-gray-700 uppercase tracking-wider">
                   Instructor
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-richblack-300 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-cem-neutral-gray-700 uppercase tracking-wider">
                   Fecha y Hora
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-richblack-300 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-cem-neutral-gray-700 uppercase tracking-wider">
                   Plataforma
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-richblack-300 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-cem-neutral-gray-700 uppercase tracking-wider">
                   Inscritos
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-richblack-300 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-cem-neutral-gray-700 uppercase tracking-wider">
                   Estado
                 </th>
-                <th className="px-6 py-4 text-right text-xs font-semibold text-richblack-300 uppercase tracking-wider">
+                <th className="px-6 py-4 text-right text-xs font-semibold text-cem-neutral-gray-700 uppercase tracking-wider">
                   Acciones
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-richblack-700">
+            <tbody className="divide-y divide-cem-neutral-gray-200">
               {localClasses.map((clase) => (
                 <tr
                   key={clase.id}
-                  className="hover:bg-richblack-700/50 transition-colors"
+                  className="hover:bg-cem-neutral-gray-50 transition-colors"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="text-sm font-medium text-richblack-5">
+                    <p className="text-sm font-medium text-cem-neutral-gray-900">
                       {clase.title}
                     </p>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="text-sm text-richblack-300">
+                    <p className="text-sm text-cem-neutral-gray-600">
                       {clase.createdBy.firstName} {clase.createdBy.lastName}
                     </p>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="text-sm text-richblack-300">
+                    <p className="text-sm text-cem-neutral-gray-600">
                       {formatearFechaProgramada(clase.scheduledDate)}
                     </p>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-500/20 text-blue-400">
+                    <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-cem-primary/10 text-cem-primary">
                       {clase.platform}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="text-sm text-richblack-300">
+                    <p className="text-sm text-cem-neutral-gray-600">
                       {clase.enrollmentCount}
                     </p>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        clase.isActive
-                          ? "bg-green-500/20 text-green-400"
-                          : "bg-gray-500/20 text-gray-400"
-                      }`}
+                      className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${clase.isActive
+                        ? "bg-green-100 text-green-700"
+                        : "bg-gray-100 text-gray-600"
+                        }`}
                     >
                       {clase.isActive ? "Activa" : "Inactiva"}
                     </span>
@@ -165,11 +164,10 @@ export default function AllScheduledClassesTable({
                     <div className="flex justify-end gap-2">
                       <button
                         onClick={() => handleToggleStatus(clase)}
-                        className={`p-2 rounded-md transition-colors ${
-                          clase.isActive
-                            ? "bg-orange-600/20 text-orange-400 hover:bg-orange-600/30"
-                            : "bg-green-600/20 text-green-400 hover:bg-green-600/30"
-                        }`}
+                        className={`p-2 rounded-md transition-colors ${clase.isActive
+                          ? "bg-orange-100 text-orange-700 hover:bg-orange-200"
+                          : "bg-green-100 text-green-700 hover:bg-green-200"
+                          }`}
                         title={clase.isActive ? "Desactivar" : "Activar"}
                       >
                         {clase.isActive ? (

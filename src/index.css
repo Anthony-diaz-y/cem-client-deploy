@@ -5,6 +5,9 @@
 html,
 body {
   scroll-behavior: smooth;
+}
+
+body {
   overflow-x: hidden;
   width: 100%;
 }
@@ -91,11 +94,9 @@ body {
   inset: 0;
   border-radius: 50%;
   padding: 3px;
-  background: conic-gradient(
-    from 180deg at 50% 50%,
-    #14b8a6 0deg,
-    transparent 120deg
-  );
+  background: conic-gradient(from 180deg at 50% 50%,
+      #14b8a6 0deg,
+      transparent 120deg);
   -webkit-mask: content-box, border-box;
   -webkit-mask-composite: source-out;
   mask-composite: subtract;
@@ -110,24 +111,24 @@ body {
 }
 
 .lable-style {
-  @apply text-[14px] text-richblack-5;
+  @apply text-[14px] font-bold uppercase tracking-tight text-cem-neutral-gray-500;
 }
 
 .form-style {
-  @apply rounded-lg bg-richblack-700 p-3 text-[16px] leading-[24px] text-richblack-5 shadow-[0_1px_0_0] shadow-white/30 placeholder:text-richblack-400 focus:outline-none;
+  @apply rounded-xl bg-cem-background px-4 py-3 text-[15px] leading-[24px] text-cem-neutral-gray-900 border border-cem-neutral-gray-200 placeholder:text-cem-neutral-gray-400 focus:outline-none focus:border-cem-primary transition-all shadow-sm;
 }
 
 .section_heading {
-  @apply text-2xl font-bold text-richblack-5 lg:text-4xl;
+  @apply text-2xl font-bold text-cem-neutral-gray-900 lg:text-4xl;
 }
 
 /* Buttons */
 .yellowButton {
-  @apply cursor-pointer rounded-md bg-yellow-50 px-[20px] py-[8px] font-semibold text-richblack-900 hover:bg-black hover:text-yellow-50 duration-300;
+  @apply cursor-pointer rounded-xl bg-cem-primary px-[24px] py-[10px] font-bold text-white hover:bg-cem-primary-dark duration-300 shadow-md hover:shadow-lg hover:shadow-cem-primary/20 transition-all;
 }
 
 .blackButton {
-  @apply cursor-pointer rounded-md bg-richblack-800 px-[20px] py-[8px] font-semibold text-richblack-5 hover:bg-richblack-5 hover:text-richblack-800 duration-300;
+  @apply cursor-pointer rounded-xl bg-cem-neutral-gray-700 px-[24px] py-[10px] font-bold text-white hover:bg-cem-neutral-gray-900 duration-300 shadow-sm transition-all;
 }
 
 /* Loading skeleton */
@@ -144,13 +145,11 @@ body {
   bottom: 0;
   left: 0;
   transform: translateX(-100%);
-  background-image: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0,
-    rgba(255, 255, 255, 0.2) 20%,
-    rgba(255, 255, 255, 0.5) 60%,
-    rgba(255, 255, 255, 0)
-  );
+  background-image: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0,
+      rgba(255, 255, 255, 0.2) 20%,
+      rgba(255, 255, 255, 0.5) 60%,
+      rgba(255, 255, 255, 0));
   animation: shimmer 0.9s infinite;
   content: "";
 }
@@ -186,6 +185,7 @@ body {
 
   background-color: #111927;
 }
+
 /* code block card glass background */
 .glass {
   background: rgba(255, 255, 255, 0);
@@ -205,6 +205,7 @@ body {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -212,10 +213,12 @@ body {
 
 /* Floating animation for course cards */
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
@@ -230,6 +233,7 @@ body {
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(calc(-100% / 3));
   }
@@ -251,6 +255,7 @@ body {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -261,6 +266,7 @@ body {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -272,6 +278,7 @@ body {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -301,4 +308,3 @@ body {
 .course-details-transition {
   transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
-

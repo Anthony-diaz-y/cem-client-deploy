@@ -35,8 +35,8 @@ export default function EditProfile() {
     <>
       <form onSubmit={handleSubmit(submitProfileForm)}>
         {/* Profile Information */}
-        <div className="my-10 flex flex-col gap-y-6 rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-8 px-6 sm:px-12">
-          <h2 className="text-lg font-semibold text-richblack-5">
+        <div className="my-10 flex flex-col gap-y-6 rounded-2xl border border-cem-neutral-gray-100 bg-cem-cardbackground p-8 px-6 sm:px-12 shadow-sm">
+          <h2 className="text-2xl font-bold text-cem-neutral-gray-900">
             {SETTINGS_TEXTS.editProfile.title}
           </h2>
 
@@ -54,7 +54,7 @@ export default function EditProfile() {
                 defaultValue={user?.firstName}
               />
               {errors.firstName && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
+                <span className="-mt-1 text-[12px] text-red-500 font-medium">
                   {SETTINGS_TEXTS.editProfile.validation.firstNameRequired}
                 </span>
               )}
@@ -73,7 +73,7 @@ export default function EditProfile() {
                 defaultValue={user?.lastName}
               />
               {errors.lastName && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
+                <span className="-mt-1 text-[12px] text-red-500 font-medium">
                   {SETTINGS_TEXTS.editProfile.validation.lastNameRequired}
                 </span>
               )}
@@ -102,7 +102,7 @@ export default function EditProfile() {
                 defaultValue={user?.additionalDetails?.dateOfBirth}
               />
               {errors.dateOfBirth && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
+                <span className="-mt-1 text-[12px] text-red-500 font-medium">
                   {errors.dateOfBirth.message}
                 </span>
               )}
@@ -127,7 +127,7 @@ export default function EditProfile() {
                 })}
               </select>
               {errors.gender && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
+                <span className="-mt-1 text-[12px] text-red-500 font-medium">
                   {SETTINGS_TEXTS.editProfile.validation.genderRequired}
                 </span>
               )}
@@ -155,7 +155,7 @@ export default function EditProfile() {
                 defaultValue={user?.additionalDetails?.contactNumber}
               />
               {errors.contactNumber && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
+                <span className="-mt-1 text-[12px] text-red-500 font-medium">
                   {errors.contactNumber.message}
                 </span>
               )}
@@ -174,7 +174,7 @@ export default function EditProfile() {
                 defaultValue={user?.additionalDetails?.about}
               />
               {errors.about && (
-                <span className="-mt-1 text-[12px] text-yellow-100">
+                <span className="-mt-1 text-[12px] text-red-500 font-medium">
                   {SETTINGS_TEXTS.editProfile.validation.aboutRequired}
                 </span>
               )}
@@ -187,7 +187,7 @@ export default function EditProfile() {
             onClick={() => {
               router.push(SETTINGS_TEXTS.editProfile.links.myProfile);
             }}
-            className="cursor-pointer rounded-md bg-richblack-700 py-2 px-5 font-semibold text-richblack-50"
+            className="cursor-pointer rounded-xl bg-cem-neutral-gray-100 py-2.5 px-6 font-bold text-cem-neutral-gray-700 hover:bg-cem-neutral-gray-200 border border-cem-neutral-gray-200 transition-all shadow-sm"
           >
             {SETTINGS_TEXTS.editProfile.buttons.cancel}
           </button>

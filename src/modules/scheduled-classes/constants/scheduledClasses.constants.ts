@@ -14,7 +14,7 @@ export const PLATAFORMAS: { value: Platform; label: string; icon: string }[] = [
 
 // Colores de plataformas
 export const COLORES_PLATAFORMA: Record<Platform, string> = {
-  'Zoom': 'bg-blue-500',
+  'Zoom': 'bg-cem-primary',
   'Teams': 'bg-purple-600',
   'Discord': 'bg-indigo-600',
   'Google Meet': 'bg-teal-600',
@@ -22,7 +22,7 @@ export const COLORES_PLATAFORMA: Record<Platform, string> = {
 };
 
 export const COLORES_PLATAFORMA_TEXTO: Record<Platform, string> = {
-  'Zoom': 'text-blue-600',
+  'Zoom': 'text-cem-primary',
   'Teams': 'text-purple-600',
   'Discord': 'text-indigo-600',
   'Google Meet': 'text-teal-600',

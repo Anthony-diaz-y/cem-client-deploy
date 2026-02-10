@@ -81,33 +81,36 @@ export default function EditCategoryModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-10">
-      <div className="bg-richblack-800 rounded-xl border border-richblack-700 w-full max-w-md m-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-cem-neutral-gray-900/40 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-[2.5rem] border border-cem-neutral-gray-100 w-full max-w-md shadow-2xl animate-scaleIn">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-richblack-700 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
-              <FiEdit3 className="text-xl text-blue-400" />
+        <div className="px-8 py-6 border-b border-cem-neutral-gray-100 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-cem-primary/10 flex items-center justify-center shadow-sm">
+              <FiEdit3 className="text-2xl text-cem-primary" />
             </div>
-            <h2 className="text-xl font-semibold text-richblack-5">
-              Editar Categoría
-            </h2>
+            <div>
+              <h2 className="text-xl font-black text-cem-neutral-gray-900">
+                Editar Categoría
+              </h2>
+              <p className="text-xs text-cem-neutral-gray-500 font-bold uppercase tracking-widest mt-0.5">Gestión de categorías</p>
+            </div>
           </div>
           <button
             onClick={onClose}
             disabled={loading}
-            className="text-richblack-400 hover:text-richblack-5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-10 h-10 rounded-full flex items-center justify-center text-cem-neutral-gray-400 hover:bg-cem-neutral-gray-50 hover:text-cem-neutral-gray-900 transition-all border border-transparent hover:border-cem-neutral-gray-100 disabled:opacity-50"
           >
             <IoMdClose className="text-2xl" />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-8 space-y-6">
           {/* Name */}
           <div className="flex flex-col space-y-2">
-            <label className="text-sm text-richblack-5" htmlFor="name">
-              Nombre de la Categoría <sup className="text-pink-200">*</sup>
+            <label className="text-xs font-black text-cem-neutral-gray-900 uppercase tracking-widest flex items-center gap-1" htmlFor="name">
+              Nombre de la Categoría <span className="text-red-500 font-bold">*</span>
             </label>
             <input
               id="name"
@@ -115,7 +118,7 @@ export default function EditCategoryModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Ej: Programación, Diseño, Marketing..."
-              className="form-style w-full"
+              className="w-full px-6 py-4 bg-cem-neutral-gray-50/50 border border-cem-neutral-gray-100 rounded-2xl text-cem-neutral-gray-900 font-bold placeholder-cem-neutral-gray-300 focus:outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary transition-all shadow-sm"
               required
               disabled={loading}
             />
@@ -123,44 +126,44 @@ export default function EditCategoryModal({
 
           {/* Description */}
           <div className="flex flex-col space-y-2">
-            <label className="text-sm text-richblack-5" htmlFor="description">
-              Descripción <sup className="text-pink-200">*</sup>
+            <label className="text-xs font-black text-cem-neutral-gray-900 uppercase tracking-widest flex items-center gap-1" htmlFor="description">
+              Descripción <span className="text-red-500 font-bold">*</span>
             </label>
             <textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Describe la categoría..."
+              placeholder="Describe detalladamente el alcance de esta categoría..."
               rows={4}
-              className="form-style w-full resize-none"
+              className="w-full px-6 py-4 bg-cem-neutral-gray-50/50 border border-cem-neutral-gray-100 rounded-2xl text-cem-neutral-gray-900 font-medium placeholder-cem-neutral-gray-300 focus:outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary transition-all shadow-sm resize-none"
               required
               disabled={loading}
             />
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-6 border-t border-richblack-700">
+          <div className="flex flex-wrap items-center justify-end gap-3 pt-6 border-t border-cem-neutral-gray-100">
             <button
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-6 py-2 bg-richblack-700 text-richblack-5 rounded-lg hover:bg-richblack-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 md:flex-none px-8 py-3.5 bg-white text-cem-neutral-gray-500 border border-cem-neutral-gray-100 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-cem-neutral-gray-50 transition-all disabled:opacity-50"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="flex-1 md:flex-none px-8 py-3.5 bg-cem-primary text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-cem-primary-dark transition-all shadow-lg shadow-cem-primary/20 disabled:opacity-50 flex items-center justify-center gap-2 transform active:scale-95"
             >
               {loading ? (
                 <>
-                  <FiRefreshCw className="animate-spin" />
+                  <FiRefreshCw className="animate-spin text-lg" />
                   Guardando...
                 </>
               ) : (
                 <>
-                  <FiEdit3 />
+                  <FiEdit3 className="text-lg" />
                   Guardar Cambios
                 </>
               )}

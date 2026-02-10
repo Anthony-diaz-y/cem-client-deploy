@@ -34,7 +34,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ hero }) => {
               className="hidden md:block top-11 -left-24 absolute"
             />
 
-            <h1 className="text-[30px] sm:text-xl text-center lg:text-left md:text-5xl lg:text-6xl font-bold relative z-10 max-w-2xl mx-auto xl:mx-0 flex flex-col gap-1 md:gap-3.5 leading-tight md:leading-normal">
+            <h1 className="text-[30px]  text-center xl:text-left md:text-5xl lg:text-6xl font-bold relative z-10 max-w-2xl mx-auto xl:mx-0 flex flex-col gap-1 xl:gap-3.5 leading-tight xl:leading-normal">
               <span className="text-cem-neutral-gray-900">
                 Da el <span className="text-cem-primary">siguiente</span>
               </span>
@@ -46,7 +46,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ hero }) => {
               </span>
             </h1>
 
-            <p className="text-[12px] text-center  lg:text-left sm:text-[16px] md:text-xl text-cem-neutral-gray-600 leading-relaxed max-w-xl z-10 mx-auto xl:mx-0">
+            <p className="text-[12px] text-center   xl:text-left sm:text-[16px] md:text-xl text-cem-neutral-gray-600 leading-relaxed max-w-[350px] sm:max-w-[450px] md:max-w-[550px] lg:max-w-xl z-10 mx-auto xl:mx-0">
               {hero.description}
             </p>
 

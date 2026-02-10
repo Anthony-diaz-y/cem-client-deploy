@@ -8,10 +8,10 @@ export default function CartContainer() {
   const { totalItems, hasCourses } = useCart();
   return (
     <>
-      <h1 className="mb-14 text-3xl font-medium text-richblack-5 font-boogaloo text-center sm:text-left">
+      <h1 className="mb-14 text-3xl font-bold text-cem-neutral-gray-900 font-boogaloo text-center sm:text-left">
         {CART_TEXTS.title}
       </h1>
-      <p className="border-b border-b-richblack-400 pb-2 font-semibold text-richblack-400">
+      <p className="border-b border-b-cem-neutral-gray-100 pb-2 font-semibold text-cem-neutral-gray-500">
         {CART_TEXTS.coursesInCart(totalItems)}
       </p>
 
@@ -21,7 +21,7 @@ export default function CartContainer() {
           <RenderTotalAmount />
         </div>
       ) : (
-        <p className="mt-14 text-center text-3xl text-richblack-100">
+        <p className="mt-14 text-center text-3xl text-cem-neutral-gray-400">
           {CART_TEXTS.emptyCart}
         </p>
       )}

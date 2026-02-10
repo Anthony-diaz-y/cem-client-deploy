@@ -36,7 +36,7 @@ export default function EditClassForm({ clase, token, userRole, onSuccess, onCan
   const diaLocal = fechaISO.getDate();
   const horasLocal = fechaISO.getHours();
   const minutosLocal = fechaISO.getMinutes();
-  
+
   const dateOnly = `${añoLocal}-${String(mesLocal).padStart(2, '0')}-${String(diaLocal).padStart(2, '0')}`;
   const timeOnly = `${String(horasLocal).padStart(2, '0')}:${String(minutosLocal).padStart(2, '0')}`;
 
@@ -59,13 +59,13 @@ export default function EditClassForm({ clase, token, userRole, onSuccess, onCan
     try {
       const [año, mes, dia] = datos.dateOnly.split('-').map(Number);
       const [horas, minutos] = datos.timeOnly.split(':').map(Number);
-      
+
       const fechaLocal = new Date(año, mes - 1, dia, horas, minutos);
       const fechaISO = fechaLocal.toISOString();
 
       // Solo admins pueden cambiar isActive
       const esAdmin = userRole === 'Admin';
-      
+
       const payload: ActualizarClaseDto = {
         title: datos.title,
         description: datos.description,
@@ -165,14 +165,14 @@ export default function EditClassForm({ clase, token, userRole, onSuccess, onCan
       {/* Solo mostrar campo isActive para administradores */}
       {userRole === 'Admin' && (
         <div className="flex items-center gap-2 py-2">
-          <input {...register('isActive')} type="checkbox" className="w-4 h-4 text-blue-600 border-gray-300 rounded" />
+          <input {...register('isActive')} type="checkbox" className="w-4 h-4 text-cem-primary border-gray-300 rounded" />
           <label className="text-sm font-medium text-gray-700">{SCHEDULED_CLASSES_TEXTS.forms.edit.fields.isActive}</label>
         </div>
       )}
 
       <div className="flex justify-end space-x-3 pt-4 border-t">
         <button type="button" onClick={onCancel} className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium" disabled={enviando}>{SCHEDULED_CLASSES_TEXTS.forms.edit.buttons.cancel}</button>
-        <button type="submit" disabled={enviando} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold shadow-md">{enviando ? SCHEDULED_CLASSES_TEXTS.forms.edit.buttons.saving : SCHEDULED_CLASSES_TEXTS.forms.edit.buttons.save}</button>
+        <button type="submit" disabled={enviando} className="px-6 py-2 bg-cem-primary text-white rounded-lg hover:bg-cem-primary-dark font-semibold shadow-md">{enviando ? SCHEDULED_CLASSES_TEXTS.forms.edit.buttons.saving : SCHEDULED_CLASSES_TEXTS.forms.edit.buttons.save}</button>
       </div>
     </form>
   );
