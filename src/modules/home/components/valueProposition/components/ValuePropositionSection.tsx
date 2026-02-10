@@ -9,7 +9,7 @@ import guacamaya from "@shared/assets/values/guacamaya.webp";
 export const ValuePropositionSection: React.FC = () => {
   return (
     <section className="w-full bg-white py-16 md:py-20">
-      <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8">
+      <div className="w-full max-w-[1400px] mx-auto px-5">
         {/* Header */}
         <div className="text-center mb-12 md:mb-16">
           <p className="text-[#0B4653] text-[20px] font-bold inline-block mb-4">
