@@ -125,7 +125,10 @@ function CourseDetailsCard({
     }
   };
 
-  const isEnrolledInCourse = isEnrolled || (user && course?.studentsEnrolled?.includes((user as any)?._id || (user as any)?.id));
+  // Check if user is enrolled (checking both prop and students list with string conversion for safety)
+  const isEnrolledInCourse = isEnrolled || (user && course?.studentsEnrolled?.some((studentId: any) =>
+    String(studentId) === String(user._id) || String(studentId) === String(user.id)
+  ));
 
   return (
     <div className="rounded-xl bg-cem-cardbackground shadow-[0_20px_50px_rgba(0,0,0,0.12)] overflow-hidden border border-cem-neutral-gray-100/50">

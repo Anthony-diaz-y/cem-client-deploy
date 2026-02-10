@@ -149,6 +149,7 @@ const CourseDetailsContainer = () => {
                   setConfirmationModal={setConfirmationModal}
                   handleBuyCourse={handleBuyCourse}
                   handleAddToCart={handleAddToCart}
+                  isEnrolled={response.data.isEnrolled}
                 />
               </div>
             </div>
