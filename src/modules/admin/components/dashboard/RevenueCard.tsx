@@ -32,22 +32,21 @@ export default function RevenueCard({ revenue, loading }: RevenueCardProps) {
   const periodText = periodMap[revenue.period] || revenue.period;
 
   return (
-    <div className="bg-gradient-to-br from-cem-primary to-[#036d85] rounded-[2rem] p-8 relative overflow-hidden group shadow-lg shadow-cem-primary/10 transition-all hover:shadow-xl hover:shadow-cem-primary/20 h-full flex flex-col justify-between">
+    <div className="bg-gradient-to-br w-full from-cem-primary to-[#036d85]  rounded-xl px-8 py-4 relative overflow-hidden group shadow-lg shadow-cem-primary/10 transition-all hover:shadow-xl hover:shadow-cem-primary/20 h-full flex flex-col justify-between">
       {/* Decorative background circle */}
       <div className="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700"></div>
 
-      <div className="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-30 transition-opacity translate-y-2 group-hover:translate-y-0 duration-500">
-        <HiOutlineCurrencyDollar className="text-[140px] text-white" />
+      <div className="absolute top-0 right-5 mt-1.5 group-hover:opacity-30 transition-opacity translate-y-2 group-hover:translate-y-0 duration-500">
+        <HiOutlineCurrencyDollar className="text-[90px] text-white" />
       </div>
 
       <div className="relative z-10 flex flex-col h-full justify-between">
         <div>
-          <h2 className="text-white/80 font-bold text-lg mb-2 flex items-center gap-2">
-            <span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
+          <h2 className="text-white/80 font-semibold text-base mb-0.5 flex items-center gap-2">
             Ingresos Totales ({periodText})
           </h2>
           <div className="flex items-baseline gap-1">
-            <p className="text-5xl font-black text-white tracking-tight">
+            <p className="text-3xl font-semibold text-white tracking-tight">
               <CountUp
                 end={revenue.total}
                 decimals={2}
@@ -58,13 +57,11 @@ export default function RevenueCard({ revenue, loading }: RevenueCardProps) {
           </div>
         </div>
 
-        <div className="mt-6 flex items-center justify-between">
-          <p className="text-sm text-white/70 font-medium italic">
+        <div className="mt-2 flex items-center justify-between">
+          <p className="text-xs text-white/70 font-medium italic">
             "Impulsando la Transformación Educativa"
           </p>
-          <div className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-white text-xs font-bold border border-white/30 capitalize">
-            {periodText}
-          </div>
+
         </div>
       </div>
     </div>

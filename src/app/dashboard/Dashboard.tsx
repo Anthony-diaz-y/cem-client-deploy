@@ -33,8 +33,8 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content - Fluye naturalmente, permitiendo llegar al footer global */}
-      <main className="flex-1 w-full min-h-full flex flex-col">
-        <div className="mx-auto w-11/12 max-w-[1000px] py-10 flex-1">
+      <main className="flex-1 justify-center items-center w-full min-h-full flex flex-col">
+        <div className="px-10  max-w-[1400px] py-10 flex-1">
           {isLoading ? (
             <div className="flex justify-center items-center h-40">
               <Loading />

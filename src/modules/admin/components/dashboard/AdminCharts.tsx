@@ -142,9 +142,9 @@ export default function AdminCharts({ charts }: AdminChartsProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <div className="grid grid-cols-1 lg:grid-cols-9 gap-8 mb-8">
       {/* Gráfico 1: Top Estudiantes (Bar Chart) */}
-      <div className="bg-white p-8 rounded-[2rem] border border-cem-neutral-gray-100 shadow-sm hover:shadow-md transition-shadow">
+      <div className="lg:col-span-4 bg-white p-8 rounded-[2rem] border border-cem-neutral-gray-100 shadow-sm hover:shadow-md transition-shadow">
         <h3 className="text-lg font-black text-cem-neutral-gray-900 mb-6 flex items-center gap-2">
           Cursos más Populares
         </h3>
@@ -160,7 +160,7 @@ export default function AdminCharts({ charts }: AdminChartsProps) {
       </div>
 
       {/* Gráfico 2: Mayores Ingresos (Doughnut Chart + Custom Legend) */}
-      <div className="bg-white p-8 rounded-[2rem] border border-cem-neutral-gray-100 shadow-sm hover:shadow-md transition-shadow">
+      <div className="lg:col-span-5 bg-white p-8 rounded-[2rem] border border-cem-neutral-gray-100 shadow-sm hover:shadow-md transition-shadow">
         <h3 className="text-lg font-black text-cem-neutral-gray-900 mb-6">
           Mayores Ingresos
         </h3>

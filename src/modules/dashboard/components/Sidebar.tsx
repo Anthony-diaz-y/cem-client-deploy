@@ -87,7 +87,7 @@ export default function Sidebar() {
             ? "flex fixed left-0 top-[3.5rem] z-50"
             : "hidden"
           : "hidden sm:flex"
-          } min-h-[calc(100vh-3.5rem)] w-[220px] flex-col border-r border-cem-neutral-gray-200 bg-cem-cardbackground py-10 flex-shrink-0 shadow-sm`}
+          } min-h-[calc(100vh-3.5rem)] w-[340px] flex-col border-r border-cem-neutral-gray-200 bg-white py-10 flex-shrink-0 shadow-sm`}
       >
         <div className="flex flex-col mt-6">
           {sidebarLinks.map((link) => {
