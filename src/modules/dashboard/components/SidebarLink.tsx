@@ -19,22 +19,13 @@ export default function SidebarLink({ link, iconName }: SidebarLinkProps) {
   )[iconName];
   const pathname = usePathname();
   const dispatch = useDispatch();
-  // Inicializar mounted como false para que el render inicial sea idéntico en servidor y cliente
-  const [mounted, setMounted] = useState(false);
 
   const { openSideMenu, screenSize } = useSelector(
     (state: RootState) => state.sidebar
   );
 
-  // Marcar como montado solo en el cliente
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setMounted(true);
-    }
-  }, []);
-
   const matchRoute = (route: string) => {
-    if (!mounted || !pathname) return false; // Evitar diferencias durante SSR
+    if (!pathname) return false;
     if (route.includes(":")) {
       const routePattern = route.replace(/:[^/]+/g, "[^/]+");
       const regex = new RegExp(`^${routePattern}$`);
@@ -51,7 +42,7 @@ export default function SidebarLink({ link, iconName }: SidebarLinkProps) {
       dispatch(setOpenSideMenu(false));
   };
 
-  const isActive = mounted ? matchRoute(link.path) : false;
+  const isActive = matchRoute(link.path || "");
 
   // Usar className estático durante SSR para evitar diferencias
   const baseClasses =
