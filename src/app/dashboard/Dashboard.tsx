@@ -26,17 +26,24 @@ export default function DashboardLayout({
   if (!mounted) return null;
 
   return (
-    <div className="relative flex h-[calc(100vh-3.5rem)] mt-14 overflow-hidden">
-      <Sidebar />
-      <div className="flex-1 h-full overflow-y-auto overflow-x-hidden bg-cem-background">
-        {isLoading ? (
-          <div className="mt-10">
-            <Loading />
-          </div>
-        ) : (
-          <div className="mx-auto w-11/12 max-w-[1000px] py-10">{children}</div>
-        )}
-      </div>
+    <div className="relative flex min-h-screen bg-cem-background pt-14">
+      {/* Sidebar - Contenedor con sticky para que se mantenga fijo mientras el body scrollea */}
+      <aside className="hidden sm:block sticky top-14 self-start">
+        <Sidebar />
+      </aside>
+
+      {/* Main Content - Fluye naturalmente, permitiendo llegar al footer global */}
+      <main className="flex-1 w-full min-h-full flex flex-col">
+        <div className="mx-auto w-11/12 max-w-[1000px] py-10 flex-1">
+          {isLoading ? (
+            <div className="flex justify-center items-center h-40">
+              <Loading />
+            </div>
+          ) : (
+            children
+          )}
+        </div>
+      </main>
     </div>
   );
 }

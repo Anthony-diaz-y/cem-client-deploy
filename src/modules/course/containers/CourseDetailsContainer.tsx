@@ -157,7 +157,6 @@ const CourseDetailsContainer = () => {
         </div>
       </div>
 
-      <Footer />
       <FloatingWhatsApp />
       {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
     </>
