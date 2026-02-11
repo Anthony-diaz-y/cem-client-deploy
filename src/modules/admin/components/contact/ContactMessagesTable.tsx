@@ -173,29 +173,23 @@ export default function ContactMessagesTable({
     <div className="space-y-8">
       {/* Selector de ordenamiento */}
       <div className="flex items-center justify-end">
-        <div className="flex items-center gap-3 bg-white p-2 rounded-2xl border border-cem-neutral-gray-100 shadow-sm">
-          <label className="text-xs font-black text-cem-neutral-gray-900 uppercase tracking-wider ml-2">
-            Ordenar por:
-          </label>
-          <select
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value as "ASC" | "DESC")}
-            className="px-4 py-2 text-sm bg-cem-neutral-gray-50/50 border-none rounded-xl text-cem-neutral-gray-900 font-bold focus:ring-2 focus:ring-cem-primary/20 cursor-pointer outline-none"
-          >
-            <option value="DESC">Más recientes</option>
-            <option value="ASC">Más antiguos</option>
-          </select>
-        </div>
+        <select
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value as "ASC" | "DESC")}
+          className="px-4 py-2 text-sm bg-white border border-cem-neutral-gray-100 rounded-xl text-cem-neutral-gray-600 font-medium focus:ring-2 focus:ring-cem-primary/20 cursor-pointer outline-none shadow-sm"
+        >
+          <option value="DESC">Más recientes</option>
+          <option value="ASC">Más antiguos</option>
+        </select>
       </div>
 
       {/* Lista de mensajes */}
       {messages.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-[2.5rem] border border-cem-neutral-gray-100 shadow-sm">
-          <div className="bg-cem-neutral-gray-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <FaEnvelopeOpen className="text-3xl text-cem-neutral-gray-300" />
+        <div className="text-center py-20 bg-cem-neutral-gray-50 rounded-xl">
+          <div className="bg-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <FaEnvelopeOpen className="text-2xl text-cem-neutral-gray-200" />
           </div>
-          <h3 className="text-2xl font-black text-cem-neutral-gray-900 mb-2">Bandeja de entrada vacía</h3>
-          <p className="text-cem-neutral-gray-400 font-medium">No se han encontrado mensajes de contacto.</p>
+          <p className="text-sm text-cem-neutral-gray-400">No tienes mensajes aún</p>
         </div>
       ) : (
         <div className="space-y-6">
@@ -203,10 +197,10 @@ export default function ContactMessagesTable({
             <div
               key={message.id}
               className={`bg-white rounded-[2rem] border transition-all duration-300 hover:shadow-xl hover:shadow-cem-primary/5 ${message.replies && message.replies.length > 0
-                  ? "border-l-[6px] border-l-caribbeangreen-400 border-cem-neutral-gray-100"
-                  : !message.isRead
-                    ? "border-l-[6px] border-l-yellow-400 border-cem-neutral-gray-100 ring-4 ring-yellow-400/5"
-                    : "border-cem-neutral-gray-100"
+                ? "border-l-[6px] border-l-caribbeangreen-400 border-cem-neutral-gray-100"
+                : !message.isRead
+                  ? "border-l-[6px] border-l-yellow-400 border-cem-neutral-gray-100 ring-4 ring-yellow-400/5"
+                  : "border-cem-neutral-gray-100"
                 } p-8`}
             >
               <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-6">
@@ -268,8 +262,8 @@ export default function ContactMessagesTable({
                     }}
                     disabled={actionLoading}
                     className={`flex-1 md:flex-none p-3 rounded-2xl transition-all duration-300 shadow-sm border ${showReplyForm === message.id
-                        ? "bg-cem-primary text-white border-cem-primary shadow-cem-primary/20 scale-95"
-                        : "bg-white text-cem-primary border-cem-neutral-gray-100 hover:bg-cem-primary hover:text-white"
+                      ? "bg-cem-primary text-white border-cem-primary shadow-cem-primary/20 scale-95"
+                      : "bg-white text-cem-primary border-cem-neutral-gray-100 hover:bg-cem-primary hover:text-white"
                       } disabled:opacity-50`}
                     title="Responder"
                   >
@@ -291,8 +285,8 @@ export default function ContactMessagesTable({
                     onClick={() => message.isArchived ? handleUnarchive(message.id) : handleArchive(message.id)}
                     disabled={actionLoading}
                     className={`flex-1 md:flex-none p-3 rounded-2xl border transition-all shadow-sm disabled:opacity-50 ${message.isArchived
-                        ? "bg-cem-neutral-gray-900 text-white border-cem-neutral-gray-900"
-                        : "bg-white text-cem-neutral-gray-600 border-cem-neutral-gray-100 hover:bg-cem-neutral-gray-50"
+                      ? "bg-cem-neutral-gray-900 text-white border-cem-neutral-gray-900"
+                      : "bg-white text-cem-neutral-gray-600 border-cem-neutral-gray-100 hover:bg-cem-neutral-gray-50"
                       }`}
                     title={message.isArchived ? "Desarchivar" : "Archivar"}
                   >

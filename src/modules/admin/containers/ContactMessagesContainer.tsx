@@ -18,8 +18,8 @@ export default function ContactMessagesContainer() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-extrabold text-cem-neutral-gray-900 mb-2">
-          Mensajes de Contacto
+        <h1 className="text-3xl font-semibold text-cem-neutral-gray-900 mb-2">
+          Mensajes
         </h1>
         <p className="text-cem-neutral-gray-600 font-medium">
           Gestiona los mensajes recibidos a través del formulario de contacto.
