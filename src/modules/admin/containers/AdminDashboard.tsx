@@ -52,11 +52,11 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="bg-cem-background pr-20 text-cem-neutral-gray-900 mt-3">
+    <div className="bg-cem-background xl:pr-20 text-cem-neutral-gray-900 mt-3">
       {/* Header & Filter Section Combined */}
-      <div className="flex flex-col md:flex-row justify-between items-end gap-4 mb-2 animate-fadeIn">
+      <div className="flex flex-col md:flex-row justify-between items-end gap-4 mb-3 animate-fadeIn">
         <div>
-          <h1 className="text-3xl font-black text-cem-neutral-gray-900 mb-2 tracking-tight">
+          <h1 className="text-3xl font-semibold text-cem-neutral-gray-900 mb-2 tracking-tight">
             Dashboard de Administración
           </h1>
           <p className="text-cem-neutral-gray-600 font-medium">

@@ -84,7 +84,7 @@ export default function AdminCharts({ charts }: AdminChartsProps) {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-8">
       {/* Gráfico 1: Top Estudiantes (Custom Implementation) */}
       <div className="lg:col-span-5 bg-white px-5 pt-8 pb-10 rounded-[2rem] border border-cem-neutral-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col">
-        <h3 className="text-lg font-black text-cem-neutral-gray-900 mb-4">
+        <h3 className="text-lg font-semibold text-cem-neutral-gray-900 mb-4">
           Cursos más Populares
         </h3>
 
@@ -149,7 +149,7 @@ export default function AdminCharts({ charts }: AdminChartsProps) {
 
       {/* Gráfico 2: Distribución (Doughnut Chart + Custom Legend) */}
       <div className="lg:col-span-7 bg-white px-5 pt-8 pb-10 rounded-[2rem] border border-cem-neutral-gray-100 shadow-sm hover:shadow-md transition-shadow">
-        <h3 className="text-lg font-black text-cem-neutral-gray-900 mb-4">
+        <h3 className="text-lg font-semibold text-cem-neutral-gray-900 mb-4">
           Distribución de Usuarios
         </h3>
 

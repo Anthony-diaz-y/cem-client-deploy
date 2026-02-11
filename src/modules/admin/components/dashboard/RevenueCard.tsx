@@ -36,8 +36,8 @@ export default function RevenueCard({ revenue, loading }: RevenueCardProps) {
       {/* Decorative background circle */}
       <div className="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700"></div>
 
-      <div className="absolute top-0 right-5 mt-1.5 group-hover:opacity-30 transition-opacity translate-y-2 group-hover:translate-y-0 duration-500">
-        <HiOutlineCurrencyDollar className="text-[90px] text-white" />
+      <div className="absolute top-0 lg:top-5 xl:top-0 right-1 sm:right-3 lg:right-2 xl:right-5 mt-1.5 group-hover:opacity-30 transition-all translate-y-2 group-hover:translate-y-0 duration-500">
+        <HiOutlineCurrencyDollar className="text-[70px] sm:text-[80px] lg:text-[60px] xl:text-[90px] text-white" />
       </div>
 
       <div className="relative z-10 flex flex-col h-full justify-between">
