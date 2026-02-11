@@ -284,7 +284,7 @@ const CategorySelectionPage: React.FC = () => {
                                 </h3>
 
                                 {selectedCategory.courses &&
-                                selectedCategory.courses.length > 0 ? (
+                                  selectedCategory.courses.length > 0 ? (
                                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {selectedCategory.courses.map(
                                       (course, index) => (
@@ -317,7 +317,6 @@ const CategorySelectionPage: React.FC = () => {
         <ExperienceSection />
         <ScrollToTop />
       </div>
-      <Footer />
     </div>
   );
 };

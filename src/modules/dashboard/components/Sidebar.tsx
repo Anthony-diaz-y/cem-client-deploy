@@ -53,7 +53,7 @@ export default function Sidebar() {
 
   if (profileLoading || authLoading) {
     return (
-      <div className="grid h-[calc(100vh-3.5rem)] min-w-[220px] items-center border-r-[1px] border-r-cem-neutral-gray-100 bg-cem-cardbackground">
+      <div className="grid min-h-[calc(100vh-3.5rem)] min-w-[220px] items-center border-r border-cem-neutral-gray-100 bg-cem-cardbackground">
         <Loading />
       </div>
     );
@@ -83,11 +83,11 @@ export default function Sidebar() {
       <div
         suppressHydrationWarning
         className={`${mounted && screenSize !== undefined && screenSize <= DASHBOARD_TEXTS.breakpoints.mobile
-            ? openSideMenu
-              ? "flex fixed left-0 top-[3.5rem] z-50"
-              : "hidden"
-            : "hidden sm:flex"
-          } h-[calc(100vh-3.5rem)] min-w-[220px] max-w-[220px] flex-col border-r-[1px] border-r-cem-neutral-gray-200 bg-cem-cardbackground py-10 flex-shrink-0 shadow-sm`}
+          ? openSideMenu
+            ? "flex fixed left-0 top-[3.5rem] z-50"
+            : "hidden"
+          : "hidden sm:flex"
+          } min-h-[calc(100vh-3.5rem)] w-[220px] flex-col border-r border-cem-neutral-gray-200 bg-cem-cardbackground py-10 flex-shrink-0 shadow-sm`}
       >
         <div className="flex flex-col mt-6">
           {sidebarLinks.map((link) => {
