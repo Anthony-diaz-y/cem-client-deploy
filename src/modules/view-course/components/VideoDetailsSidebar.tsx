@@ -32,7 +32,7 @@ export default function VideoDetailsSidebar({
   };
 
   return (
-    <div className="flex h-[calc(100vh-3.5rem)] w-[320px] max-w-[350px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800">
+    <div className="flex h-[calc(100vh-5rem)] w-[320px] max-w-[350px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800">
       <div className="flex-shrink-0 border-b border-richblack-700">
         <SidebarHeader
           courseName={courseEntireData?.courseName}

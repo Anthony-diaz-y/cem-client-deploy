@@ -96,9 +96,9 @@ export default function CategoriesTable({
 
   return (
     <>
-      <div className="bg-white rounded-[2.5rem] border border-cem-neutral-gray-100 overflow-hidden shadow-sm">
+      <div className="bg-cem-neutral-gray-100 rounded-[2.5rem] border border-cem-neutral-gray-200 overflow-hidden shadow-sm">
         <div className="space-y-4 p-6">
-          {categoriesWithCourses.map((category) => (
+          {categoriesWithCourses.map((category, index) => (
             <CategoryCard
               key={category.id}
               category={category}

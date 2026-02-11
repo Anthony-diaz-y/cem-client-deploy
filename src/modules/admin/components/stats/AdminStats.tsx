@@ -17,14 +17,14 @@ interface AdminStatsProps {
 export default function AdminStats({ stats, loading }: AdminStatsProps) {
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-        {[1, 2, 3, 4, 5].map((i) => (
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 w-full h-full flex-1">
+        {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="bg-white rounded-2xl p-6 border border-cem-neutral-gray-100 animate-pulse shadow-sm"
+            className="bg-[#EBF9FF] rounded-xl px-6 py-4 border border-[#D0EFFF] animate-pulse shadow-sm flex flex-col justify-between h-full min-h-[80px]"
           >
-            <div className="h-4 bg-cem-neutral-gray-100 rounded w-3/4 mb-4"></div>
-            <div className="h-8 bg-cem-neutral-gray-100 rounded w-1/2"></div>
+            <div className="h-4 bg-cem-neutral-gray-200/40 rounded w-1/2 mb-4"></div>
+            <div className="h-10 bg-[#00849c]/20 rounded w-1/3"></div>
           </div>
         ))}
       </div>

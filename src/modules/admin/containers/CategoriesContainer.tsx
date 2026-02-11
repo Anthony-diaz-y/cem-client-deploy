@@ -27,18 +27,18 @@ export default function CategoriesContainer() {
   return (
     <div className="space-y-6">
       <div className="space-y-4">
-        <h1 className="text-3xl font-bold text-richblack-5">
+        <h1 className="text-3xl font-semibold text-cem-neutral-gray-900">
           Gestión de Categorías
         </h1>
-        <p className="text-richblack-400">
+        <p className="text-cem-neutral-gray-600">
           Administra las categorías del sistema. Visualiza, crea y elimina categorías.
         </p>
         <div className="flex items-center gap-3 pt-2">
           <button
             onClick={() => setIsCreateCategoryModalOpen(true)}
-            className="flex items-center gap-x-2 rounded-lg bg-yellow-50 px-5 py-2.5 font-semibold text-richblack-900 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/20"
+            className="flex items-center gap-x-2 rounded-lg bg-cem-primary px-5 py-2.5 font-semibold text-white transition-all duration-200 hover:bg-cem-primary-dark hover:shadow-lg hover:shadow-cem-primary/20"
           >
-            <span className="text-lg">+</span> Crear Categoría
+            <span className="text-lg">+</span> Crear categoría
           </button>
         </div>
       </div>
