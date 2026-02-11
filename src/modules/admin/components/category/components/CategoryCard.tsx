@@ -49,8 +49,8 @@ export default function CategoryCard({
   return (
     <div
       className={`bg-cem-neutral-gray-50/30 rounded-[2rem] border transition-all duration-300 ${isDragOver
-          ? "border-cem-primary bg-cem-primary/5 ring-4 ring-cem-primary/10 shadow-lg"
-          : "border-cem-neutral-gray-100 bg-white"
+        ? "border-cem-primary bg-cem-primary/5 ring-4 ring-cem-primary/10 shadow-lg"
+        : "border-cem-neutral-gray-100 bg-white"
         }`}
       onDragOver={(e) => {
         // Solo permitir dragOver si no es la misma categoría de origen
@@ -82,8 +82,8 @@ export default function CategoryCard({
               onToggle(category.id);
             }}
             className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${category.expanded
-                ? "bg-cem-primary text-white shadow-md shadow-cem-primary/20"
-                : "bg-cem-neutral-gray-50 text-cem-neutral-gray-400 hover:bg-cem-neutral-gray-100 hover:text-cem-neutral-gray-600"
+              ? "bg-cem-primary text-white shadow-md shadow-cem-primary/20"
+              : "bg-cem-neutral-gray-50 text-cem-neutral-gray-400 hover:bg-cem-neutral-gray-100 hover:text-cem-neutral-gray-600"
               }`}
             title={category.expanded ? "Contraer" : "Expandir"}
             disabled={!!draggedCourse}

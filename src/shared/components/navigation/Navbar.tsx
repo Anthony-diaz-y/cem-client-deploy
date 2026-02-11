@@ -89,10 +89,12 @@ const Navbar = () => {
     }
   }, [mobileMenuOpen]);
 
+  const isDashboard = location.startsWith("/dashboard");
+
   return (
     <>
       <nav
-        className={`z-[100] pt-2 pb-2 xl:px-16 fixed flex h-16 w-full items-center justify-center bg-cem-neutral-white border-b-cem-neutral-gray-200 translate-y-0 transition-all `}
+        className={`z-[100] py-4 xl:px-16 fixed flex h-20 w-full items-center justify-center bg-cem-neutral-white border-b border-cem-neutral-gray-100 translate-y-0 transition-all ${isDashboard ? "shadow-md" : ""}`}
       >
         <div className="flex w-11/12 max-w-maxContent items-center justify-between gap-6">
           {/* Logo CEM */}
@@ -121,11 +123,11 @@ const Navbar = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="¿Qué quieres aprender?"
-                className="w-full pl-10 pr-28 py-2.5 bg-transparent text-cem-neutral-gray-700 placeholder-cem-neutral-gray-400 focus:outline-none text-sm"
+                className="w-full pl-10 pr-28 py-2.5 bg-transparent text-cem-neutral-gray-700 placeholder-cem-neutral-gray-400 focus:outline-none text-base"
               />
               <button
                 type="submit"
-                className="absolute right-2 flex items-center gap-1 px-3 py-1.5 bg-cem-teal-50 text-cem-primary rounded-md hover:bg-cem-teal-100 transition-colors text-sm font-medium"
+                className="absolute right-2 flex items-center gap-1 px-3 py-1.5 bg-cem-teal-50 text-cem-primary rounded-md hover:bg-cem-teal-100 transition-colors text-base font-medium"
               >
                 Explora
                 <MdKeyboardArrowDown className="h-4 w-4" />
@@ -185,7 +187,7 @@ const Navbar = () => {
                     className={`${matchRoute(link?.path)
                       ? "text-cem-primary font-semibold"
                       : "text-cem-neutral-gray-800 hover:text-cem-primary"
-                      } transition-colors text-sm font-medium`}
+                      } transition-colors text-base font-medium`}
                   >
                     {link.title}
                   </p>
@@ -213,14 +215,14 @@ const Navbar = () => {
                   href="/auth/signup"
                   className="mr-6 hidden md:inline-block"
                 >
-                  <span className="text-cem-neutral-gray-800 hover:text-cem-primary transition-colors text-sm font-medium cursor-pointer whitespace-nowrap">
+                  <span className="text-cem-neutral-gray-800 hover:text-cem-primary transition-colors text-base font-medium cursor-pointer whitespace-nowrap">
                     Regístrate
                   </span>
                 </Link>
                 <Link href="/auth/login">
                   <button
                     type="button"
-                    className="px-6 py-2.5 rounded-lg bg-cem-primary text-white font-medium text-sm hover:bg-cem-primary-dark transition-colors"
+                    className="px-6 py-2.5 rounded-lg bg-cem-primary text-white font-medium text-base hover:bg-cem-primary-dark transition-colors"
                   >
                     Acceder
                   </button>

@@ -90,7 +90,7 @@ const DiscussionSidebar: React.FC<DiscussionSidebarProps> = ({
   };
 
   return (
-    <div className="flex h-[calc(100vh-3.5rem)] w-[400px] flex-shrink-0 flex-col border-l border-richblack-700 bg-richblack-800">
+    <div className="flex h-[calc(100vh-5rem)] w-[400px] flex-shrink-0 flex-col border-l border-richblack-700 bg-richblack-800">
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-richblack-700 bg-richblack-800 flex-shrink-0">
         <h2 className="text-lg font-semibold text-richblack-5">
