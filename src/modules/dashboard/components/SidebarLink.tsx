@@ -55,9 +55,9 @@ export default function SidebarLink({ link, iconName }: SidebarLinkProps) {
 
   // Usar className estático durante SSR para evitar diferencias
   const baseClasses =
-    "relative px-8 py-2 text-sm font-medium transition-all flex items-center gap-x-2";
+    "relative px-8 py-4 text-[1.1rem] font-semibold transition-all flex items-center gap-x-4";
   const activeClasses = isActive
-    ? "bg-[#E8F8FD] text-cem-primary font-bold"
+    ? "bg-[#DEF4FA] text-cem-primary shadow-sm"
     : "text-cem-neutral-gray-600 hover:bg-cem-neutral-gray-50 hover:text-cem-primary duration-200";
 
   return (
@@ -67,11 +67,11 @@ export default function SidebarLink({ link, iconName }: SidebarLinkProps) {
       className={`${baseClasses} ${activeClasses}`}
     >
       <span
-        className={`absolute left-0 top-0 h-full w-[3px] bg-cem-primary ${isActive ? "opacity-100" : "opacity-0"
+        className={`absolute left-0 top-0 h-full w-[4px] bg-cem-primary ${isActive ? "opacity-100" : "opacity-0"
           }`}
       ></span>
 
-      <Icon className="text-lg" />
+      <Icon className="text-[1.5rem]" />
       <span>{link.name}</span>
     </Link>
   );

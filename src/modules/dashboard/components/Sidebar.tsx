@@ -53,7 +53,7 @@ export default function Sidebar() {
 
   if (profileLoading || authLoading) {
     return (
-      <div className="grid min-h-[calc(100vh-3.5rem)] min-w-[220px] items-center border-r border-cem-neutral-gray-100 bg-cem-cardbackground">
+      <div className="grid min-h-[calc(100vh-5rem)] min-w-[220px] items-center border-r border-cem-neutral-gray-100 bg-cem-cardbackground">
         <Loading />
       </div>
     );
@@ -84,12 +84,12 @@ export default function Sidebar() {
         suppressHydrationWarning
         className={`${mounted && screenSize !== undefined && screenSize <= DASHBOARD_TEXTS.breakpoints.mobile
           ? openSideMenu
-            ? "flex fixed left-0 top-[3.5rem] z-50"
+            ? "flex fixed left-0 top-20 z-50"
             : "hidden"
           : "hidden sm:flex"
-          } min-h-[calc(100vh-3.5rem)] w-[340px] flex-col border-r border-cem-neutral-gray-200 bg-white py-10 flex-shrink-0 shadow-sm`}
+          } min-h-[calc(100vh-5rem)] w-[300px] flex-col border-r border-cem-neutral-gray-200 bg-white py-10 flex-shrink-0 shadow-sm`}
       >
-        <div className="flex flex-col mt-6">
+        <div className="flex flex-col mt-10">
           {sidebarLinks.map((link) => {
             if (link.type && user?.accountType !== link.type) return null;
             return (
@@ -103,7 +103,7 @@ export default function Sidebar() {
           })}
         </div>
 
-        <div className="mx-auto mt-6 mb-6 h-[1px] w-10/12 bg-cem-neutral-gray-100" />
+        <div className="mx-auto mt-10 mb-8 h-[1px] w-10/12 bg-cem-neutral-gray-100" />
 
         <div className="flex flex-col">
           <SidebarLink

@@ -94,7 +94,7 @@ const CourseDetailsContainer = () => {
           } course-details-transition`}
       >
         {/* 1. Top Section - Blue Background (Hero) */}
-        <div className="w-full bg-cem-celeste-light mt-16 border-b border-transparent course-hero-enter">
+        <div className="w-full bg-cem-celeste-light mt-20 border-b border-transparent course-hero-enter">
           <div className="mx-auto max-w-[1260px] px-4 pt-10 pb-10 lg:pt-14 lg:pb-14">
             <div className="w-full lg:max-w-[760px]">
               <CourseHero
@@ -143,7 +143,7 @@ const CourseDetailsContainer = () => {
           <div className="mx-auto max-w-[1260px] px-4 h-full relative">
             {/* Position Sidebar on the right */}
             <div className="absolute right-4 top-0 bottom-5">
-              <div className="sticky top-24 pt-14 w-[380px] pointer-events-auto">
+              <div className="sticky top-24 pt-20 w-[380px] pointer-events-auto">
                 <CourseDetailsCard
                   course={courseDetails}
                   setConfirmationModal={setConfirmationModal}

@@ -52,7 +52,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="bg-cem-background pr-20 text-cem-neutral-gray-900">
+    <div className="bg-cem-background pr-20 text-cem-neutral-gray-900 mt-3">
       {/* Header & Filter Section Combined */}
       <div className="flex flex-col md:flex-row justify-between items-end gap-4 mb-2 animate-fadeIn">
         <div>
@@ -82,9 +82,9 @@ export default function AdminDashboard() {
       </div>
 
       {/* Sección Combinada: Ingresos y Estadísticas */}
-      <div className="grid grid-cols-1 lg:grid-cols-9 gap-8 mb-8 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-8 items-stretch">
         {/* Columna Izquierda: Ingresos */}
-        <div className="lg:col-span-4 flex">
+        <div className="lg:col-span-5 flex">
           <RevenueCard
             revenue={dashboardData?.revenue || { total: 0, period: filter }}
             loading={loading}
@@ -92,7 +92,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Columna Derecha: Tarjetas de Resumen (Counts) */}
-        <div className="lg:col-span-5 flex">
+        <div className="lg:col-span-7 flex">
           <AdminStats stats={dashboardData?.counts || null} loading={loading} />
         </div>
       </div>

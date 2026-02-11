@@ -172,7 +172,7 @@ export default function ViewCourseLayout({
 
   return (
     <>
-      <div className="relative flex min-h-screen bg-cem-background pt-14">
+      <div className="relative flex min-h-screen bg-cem-background pt-20">
         {/* view course side bar */}
         <AnimatePresence mode="wait">
           {courseViewSidebar && (
@@ -181,7 +181,7 @@ export default function ViewCourseLayout({
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -320, opacity: 0 }}
               transition={{ type: "tween", duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-              className="sticky top-14 h-[calc(100vh-3.5rem)] z-30"
+              className="sticky top-20 h-[calc(100vh-5rem)] z-30"
             >
               <VideoDetailsSidebar setReviewModal={setReviewModal} />
             </motion.div>

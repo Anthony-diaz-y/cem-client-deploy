@@ -26,9 +26,9 @@ export default function DashboardLayout({
   if (!mounted) return null;
 
   return (
-    <div className="relative flex min-h-screen bg-cem-background pt-14">
+    <div className="relative flex min-h-screen bg-cem-background pt-20">
       {/* Sidebar - Contenedor con sticky para que se mantenga fijo mientras el body scrollea */}
-      <aside className="hidden sm:block sticky top-14 self-start">
+      <aside className="hidden sm:block sticky top-20 self-start">
         <Sidebar />
       </aside>
 
