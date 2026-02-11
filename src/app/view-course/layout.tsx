@@ -65,19 +65,19 @@ export default function ViewCourseLayout({
             const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
             return dateA - dateB; // Orden ascendente (más antiguas primero)
           });
-          
+
           const normalizedContent = sortedContent.map((section: any) => {
             // Normalizar el ID de la sección
             const normalizedSectionId = (section._id || section.id)?.toString().trim();
-            
+
             // Normalizar subsecciones
             let normalizedSubSections = section.subSection || section.subSections || [];
-            
+
             // Si tiene subSections (con S mayúscula), convertir a subSection
             if (section.subSections && Array.isArray(section.subSections)) {
               normalizedSubSections = section.subSections;
             }
-            
+
             // Normalizar IDs de subsecciones
             const normalizedSubSectionsWithIds = normalizedSubSections.map((subSection: any) => {
               const normalizedSubSectionId = (subSection._id || subSection.id)?.toString().trim();
@@ -131,7 +131,7 @@ export default function ViewCourseLayout({
             courseContent: normalizedContent,
           } as Course));
           dispatch(setCompletedLectures(courseData.completedVideos || []));
-          
+
           // Contar las lectures correctamente
           let lectures = 0;
           normalizedContent.forEach((sec: any) => {
@@ -139,7 +139,7 @@ export default function ViewCourseLayout({
             lectures += Array.isArray(subSections) ? subSections.length : 0;
           });
           dispatch(setTotalNoOfLectures(lectures));
-          
+
           console.log("Course data loaded:", {
             sections: normalizedContent.length,
             lectures,
@@ -172,7 +172,7 @@ export default function ViewCourseLayout({
 
   return (
     <>
-      <div className="relative flex h-[calc(100vh-3.5rem)] overflow-hidden">
+      <div className="relative flex min-h-screen bg-cem-background pt-14">
         {/* view course side bar */}
         <AnimatePresence mode="wait">
           {courseViewSidebar && (
@@ -181,6 +181,7 @@ export default function ViewCourseLayout({
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -320, opacity: 0 }}
               transition={{ type: "tween", duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+              className="sticky top-14 h-[calc(100vh-3.5rem)] z-30"
             >
               <VideoDetailsSidebar setReviewModal={setReviewModal} />
             </motion.div>
@@ -188,14 +189,14 @@ export default function ViewCourseLayout({
         </AnimatePresence>
 
         <motion.div
-          className="h-full flex-1 overflow-y-auto mt-14"
+          className="flex-1"
           animate={{
             marginLeft: courseViewSidebar ? 0 : 0,
             marginRight: discussionSidebarOpen ? 0 : 0,
           }}
           transition={{ type: "tween", duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
         >
-          <div className="mx-6 pt-3 pb-32">{children}</div>
+          <div className="mx-auto w-full max-w-[1400px] px-6 pt-8 pb-32">{children}</div>
         </motion.div>
 
         {/* Discussion sidebar - ocupa espacio real */}
