@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body suppressHydrationWarning>
         <GlobalProviders>
           <div className="w-full min-h-screen bg-white text-cem-neutral-gray-900 flex flex-col font-inter">
             <ConditionalNavbar />
