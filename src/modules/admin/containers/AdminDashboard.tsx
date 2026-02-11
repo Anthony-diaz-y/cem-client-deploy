@@ -6,6 +6,7 @@ import {
   getAdminDashboard,
   getPendingInstructors,
   Instructor,
+  AdminDashboardData,
 } from "@shared/services/adminAPI";
 import AdminStats from "../components/stats/AdminStats";
 import AdminCharts from "../components/dashboard/AdminCharts";
@@ -13,7 +14,7 @@ import RevenueCard from "../components/dashboard/RevenueCard";
 
 export default function AdminDashboard() {
   const { token } = useAppSelector((state) => state.auth);
-  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [dashboardData, setDashboardData] = useState<AdminDashboardData | null>(null);
   const [pendingInstructors, setPendingInstructors] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("month");
@@ -52,7 +53,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="bg-cem-background xl:pr-20 text-cem-neutral-gray-900 mt-3">
+    <div className="bg-cem-background xl:pr-20 text-cem-neutral-gray-900 mt-3 w-full">
       {/* Header & Filter Section Combined */}
       <div className="flex flex-col md:flex-row justify-between items-end gap-4 mb-3 animate-fadeIn">
         <div>
@@ -84,7 +85,7 @@ export default function AdminDashboard() {
       {/* Sección Combinada: Ingresos y Estadísticas */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-8 items-stretch">
         {/* Columna Izquierda: Ingresos */}
-        <div className="lg:col-span-5 flex">
+        <div className="lg:col-span-5 flex w-full">
           <RevenueCard
             revenue={dashboardData?.revenue || { total: 0, period: filter }}
             loading={loading}
@@ -92,15 +93,18 @@ export default function AdminDashboard() {
         </div>
 
         {/* Columna Derecha: Tarjetas de Resumen (Counts) */}
-        <div className="lg:col-span-7 flex">
+        <div className="lg:col-span-7 flex w-full">
           <AdminStats stats={dashboardData?.counts || null} loading={loading} />
         </div>
       </div>
 
       {/* Sección 3: Gráficos */}
-      {dashboardData?.charts && !loading && (
-        <AdminCharts charts={dashboardData.charts} />
-      )}
+      <div className="w-full">
+        <AdminCharts
+          charts={dashboardData?.charts || { topCoursesByStudents: [], topCoursesByRevenue: [] }}
+          loading={loading}
+        />
+      </div>
     </div>
   );
 }

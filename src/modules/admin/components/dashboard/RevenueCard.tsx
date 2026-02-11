@@ -13,9 +13,19 @@ interface RevenueCardProps {
 export default function RevenueCard({ revenue, loading }: RevenueCardProps) {
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl p-8 border border-cem-neutral-gray-100 animate-pulse mb-8 shadow-sm">
-        <div className="h-6 bg-cem-neutral-gray-100 rounded w-1/4 mb-4"></div>
-        <div className="h-10 bg-cem-neutral-gray-100 rounded w-1/3"></div>
+      <div className="bg-gradient-to-br from-cem-primary to-[#036d85] rounded-xl px-8 py-4 animate-pulse shadow-sm h-full w-full flex flex-col justify-between relative overflow-hidden min-h-[110px]">
+        {/* Placeholder para el icono de moneda */}
+        <div className="absolute top-0 right-5 mt-1.5 opacity-20">
+          <div className="w-20 h-20 bg-white rounded-full"></div>
+        </div>
+
+        <div className="relative z-10 flex flex-col h-full justify-between">
+          <div>
+            <div className="h-4 bg-white/20 rounded w-1/2 mb-4"></div>
+            <div className="h-10 bg-white/40 rounded w-2/3"></div>
+          </div>
+          <div className="h-3 bg-white/20 rounded w-3/4 mt-4"></div>
+        </div>
       </div>
     );
   }
@@ -59,7 +69,7 @@ export default function RevenueCard({ revenue, loading }: RevenueCardProps) {
 
         <div className="mt-2 flex items-center justify-between">
           <p className="text-xs text-white/70 font-medium italic">
-            "Impulsando la Transformación Educativa"
+            {'"Impulsando la Transformación Educativa"'}
           </p>
 
         </div>

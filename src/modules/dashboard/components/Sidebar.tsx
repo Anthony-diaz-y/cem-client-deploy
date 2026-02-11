@@ -20,8 +20,7 @@ export default function Sidebar() {
   const { loading: authLoading } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  // Inicializar mounted como false para que el render inicial sea idéntico en servidor y cliente
-  const [mounted, setMounted] = useState(false);
+
 
   // handle side bar menu - open / close
   // const [openSideMenu, setOpenSideMenu] = useState(false)
@@ -31,25 +30,39 @@ export default function Sidebar() {
   // console.log('openSideMenu ======' , openSideMenu)
   // console.log('screenSize ======' , screenSize)
 
+  // 1. Efecto para manejar el tamaño de la pantalla
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    // Marcar como montado solo en el cliente
-    setMounted(true);
-
-    const handleResize = () => dispatch(setScreenSize(window.innerWidth));
+    // Al estar dentro de DashboardLayout que ya tiene guardia de 'mounted', 
+    // sabemos que estamos en el cliente.
+    const handleResize = () => {
+      dispatch(setScreenSize(window.innerWidth));
+    };
 
     window.addEventListener("resize", handleResize);
-    handleResize();
-    return () => window.removeEventListener("resize", handleResize);
+
+    // Llamada asíncrona inicial para evitar el warning de "cascading renders"
+    // al disparar una acción de Redux durante el ciclo de vida del mount.
+    const timeout = setTimeout(handleResize, 0);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(timeout);
+    };
   }, [dispatch]);
 
-  // If screen size is small then close the side bar
+  // 2. Lógica de auto-apertura/cierre según el tamaño detectado
   useEffect(() => {
-    if (screenSize && screenSize <= DASHBOARD_TEXTS.breakpoints.mobile) {
+    if (screenSize === undefined) return;
+
+    const isMobile = screenSize <= DASHBOARD_TEXTS.breakpoints.mobile;
+
+    // Solo disparamos si el estado actual es diferente al deseado
+    if (isMobile && openSideMenu) {
       dispatch(setOpenSideMenu(false));
-    } else dispatch(setOpenSideMenu(true));
-  }, [screenSize, dispatch]);
+    } else if (!isMobile && !openSideMenu) {
+      dispatch(setOpenSideMenu(true));
+    }
+  }, [screenSize, dispatch, openSideMenu]); // openSideMenu incluido para reaccionar a cambios de tamaño correctamente
 
   if (profileLoading || authLoading) {
     return (
@@ -64,15 +77,14 @@ export default function Sidebar() {
       {/* Botón de menú móvil */}
       <div
         suppressHydrationWarning
-        className={`sm:hidden text-cem-primary absolute left-7 top-3 cursor-pointer ${mounted ? "" : "hidden"
-          }`}
+        className={`sm:hidden text-cem-primary absolute left-7 top-3 cursor-pointer`}
         onClick={() => dispatch(setOpenSideMenu(!openSideMenu))}
       >
-        {mounted && (openSideMenu ? <IoMdClose size={33} /> : <HiMenuAlt1 size={33} />)}
+        {openSideMenu ? <IoMdClose size={33} /> : <HiMenuAlt1 size={33} />}
       </div>
 
       {/* Sidebar móvil: overlay cuando está abierto */}
-      {mounted && screenSize !== undefined && screenSize <= DASHBOARD_TEXTS.breakpoints.mobile && openSideMenu && (
+      {screenSize !== undefined && screenSize <= DASHBOARD_TEXTS.breakpoints.mobile && openSideMenu && (
         <div
           className="fixed inset-0 bg-black/50 z-40 sm:hidden"
           onClick={() => dispatch(setOpenSideMenu(false))}
@@ -82,7 +94,7 @@ export default function Sidebar() {
       {/* Sidebar */}
       <div
         suppressHydrationWarning
-        className={`${mounted && screenSize !== undefined && screenSize <= DASHBOARD_TEXTS.breakpoints.mobile
+        className={`${screenSize !== undefined && screenSize <= DASHBOARD_TEXTS.breakpoints.mobile
           ? openSideMenu
             ? "flex fixed left-0 top-20 z-50"
             : "hidden"
