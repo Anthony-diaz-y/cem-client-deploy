@@ -4,6 +4,7 @@ import React, { useState, useMemo } from "react";
 import { EnrolledStudent } from "@shared/services/adminAPI";
 import { Img } from "@shared/components";
 import { FiSearch } from "react-icons/fi";
+import { HiSelector } from "react-icons/hi";
 
 interface StudentsTableProps {
   students: EnrolledStudent[];
@@ -97,7 +98,7 @@ export default function StudentsTable({ students }: StudentsTableProps) {
               | "not-started",
             )
           }
-          className="px-4 py-2 bg-white border border-cem-neutral-gray-200 rounded-lg text-[#1E293B] font-bold text-sm focus:outline-none focus:ring-2 focus:ring-cem-primary transition-all cursor-pointer shadow-sm"
+          className="h-[56px] px-4 bg-cem-neutral-gray-50 border border-cem-neutral-gray-200 rounded-lg text-[#1E293B] font-medium text-[16px] focus:outline-none focus:ring-2 focus:ring-cem-primary transition-all cursor-pointer shadow-sm"
         >
           <option value="all">Todos</option>
           <option value="completed">Completados</option>
@@ -113,12 +114,12 @@ export default function StudentsTable({ students }: StudentsTableProps) {
             placeholder="Buscar por nombre o email..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-white border border-cem-neutral-gray-200 rounded-lg text-[#1E293B] font-medium placeholder-cem-neutral-gray-400 focus:outline-none focus:ring-2 focus:ring-cem-primary transition-all shadow-sm"
+            className="w-full h-[56px] pl-10 pr-4 bg-cem-neutral-gray-50 border border-cem-neutral-gray-200 rounded-lg text-[#1E293B] font-medium placeholder-cem-neutral-gray-400 focus:outline-none focus:ring-2 focus:ring-cem-primary transition-all shadow-sm"
           />
         </div>
 
         {/* Contador */}
-        <div className="text-sm font-bold text-cem-neutral-gray-500 flex items-center">
+        <div className="text-sm font-medium text-cem-neutral-gray-500 flex items-center">
           {filteredStudents.length} de {students.length} estudiantes
         </div>
       </div>
@@ -133,24 +134,39 @@ export default function StudentsTable({ students }: StudentsTableProps) {
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto border border-cem-neutral-gray-100 rounded-lg shadow-sm">
-          <table className="min-w-full divide-y divide-cem-neutral-gray-100">
-            <thead className="bg-cem-neutral-gray-50">
+        <div className="overflow-x-auto rounded-lg border-b border-cem-neutral-gray-100">
+          <table className="min-w-full">
+            <thead className="bg-cem-neutral-gray-50 border-b border-cem-neutral-gray-200">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-black text-cem-neutral-gray-400 uppercase tracking-wider">
-                  Estudiante
+                <th className="px-6 py-3 text-left text-[12px] font-medium text-cem-neutral-gray-600 cursor-pointer hover:bg-cem-neutral-gray-100/50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span>Estudiante</span>
+                    <HiSelector className="text-cem-neutral-gray-400" />
+                  </div>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-black text-cem-neutral-gray-400 uppercase tracking-wider">
-                  Email
+                <th className="px-6 py-3 text-left text-[12px] font-medium text-cem-neutral-gray-600 cursor-pointer hover:bg-cem-neutral-gray-100/50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span>Email</span>
+                    <HiSelector className="text-cem-neutral-gray-400" />
+                  </div>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-black text-cem-neutral-gray-400 uppercase tracking-wider">
-                  Progreso
+                <th className="px-6 py-3 text-left text-[12px] font-medium text-cem-neutral-gray-600 cursor-pointer hover:bg-cem-neutral-gray-100/50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span>Progreso</span>
+                    <HiSelector className="text-cem-neutral-gray-400" />
+                  </div>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-black text-cem-neutral-gray-400 uppercase tracking-wider">
-                  Estado
+                <th className="px-6 py-3 text-left text-[12px] font-medium text-cem-neutral-gray-600 cursor-pointer hover:bg-cem-neutral-gray-100/50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span>Estado</span>
+                    <HiSelector className="text-cem-neutral-gray-400" />
+                  </div>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-black text-cem-neutral-gray-400 uppercase tracking-wider">
-                  Inscrito
+                <th className="px-6 py-3 text-left text-[12px] font-medium text-cem-neutral-gray-600 cursor-pointer hover:bg-cem-neutral-gray-100/50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span>Inscrito</span>
+                    <HiSelector className="text-cem-neutral-gray-400" />
+                  </div>
                 </th>
               </tr>
             </thead>
@@ -194,7 +210,7 @@ export default function StudentsTable({ students }: StudentsTableProps) {
                           {student.progress.progressPercentage.toFixed(1)}%
                         </span>
                       </div>
-                      <div className="text-[11px] font-bold text-cem-neutral-gray-400 uppercase tracking-tight">
+                      <div className="text-[8px] font-medium text-cem-neutral-gray-400 tracking-tight">
                         {student.progress.completedSubSections} /{" "}
                         {student.progress.totalSubSections} lecciones
                       </div>

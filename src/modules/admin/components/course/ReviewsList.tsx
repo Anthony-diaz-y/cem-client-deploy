@@ -8,7 +8,7 @@ import {
   deleteReviewAdmin,
 } from "@shared/services/adminAPI";
 import { Img, RatingStars, ConfirmationModal } from "@shared/components";
-import { FiStar, FiUser, FiEdit2, FiTrash2, FiPlus } from "react-icons/fi";
+import { FiStar, FiEdit2, FiTrash2, FiPlus } from "react-icons/fi";
 
 interface ReviewsListProps {
   reviews: CourseReview[];
@@ -120,7 +120,7 @@ export default function ReviewsList({
     return (
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-[#1E293B]">
+          <h2 className="text-[18px] font-medium text-[#1E293B]">
             Reseñas del Curso
           </h2>
           <button
@@ -132,10 +132,10 @@ export default function ReviewsList({
           </button>
         </div>
         <div className="bg-cem-neutral-gray-50 rounded-lg p-8 text-center border border-cem-neutral-gray-100">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white flex items-center justify-center shadow-sm">
-            <FiStar className="w-8 h-8 text-cem-neutral-gray-300" />
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-cyan-50 flex items-center justify-center shadow-sm">
+            <FiStar className="w-8 h-8 text-cyan-600" />
           </div>
-          <p className="text-cem-neutral-gray-500 font-bold">
+          <p className="text-cem-neutral-gray-500 font-medium">
             No hay reseñas para este curso aún
           </p>
         </div>
@@ -147,7 +147,7 @@ export default function ReviewsList({
     <div className="space-y-4">
       {/* Header con botón Agregar */}
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-[#1E293B]">
+        <h2 className="text-[18px] font-medium text-[#1E293B]">
           Reseñas del Curso
         </h2>
         <button
@@ -182,7 +182,7 @@ export default function ReviewsList({
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <h4 className="font-bold text-[#1E293B] mb-1">
+                    <h4 className="font-medium text-[#1E293B] mb-1">
                       {review.user.name}
                     </h4>
                     <p className="text-xs font-medium text-cem-neutral-gray-400">
@@ -192,11 +192,11 @@ export default function ReviewsList({
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1 px-2 py-0.5 bg-amber-50 rounded-lg">
                       <FiStar className="w-4 h-4 text-amber-500 fill-amber-500" />
-                      <span className="text-sm font-bold text-amber-600">
+                      <span className="text-sm font-medium text-amber-600">
                         {review.rating}
                       </span>
                     </div>
-                    <div className="flex gap-1 ml-4">
+                    <div className="flex gap-1 ml-4 pt-1">
                       <button
                         onClick={() => openEditModal(review)}
                         className="p-1.5 text-amber-500 hover:bg-amber-50 rounded-lg transition-colors"
@@ -226,7 +226,7 @@ export default function ReviewsList({
                 </p>
 
                 {/* Fecha */}
-                <div className="flex items-center gap-2 text-xs font-bold text-cem-neutral-gray-400">
+                <div className="flex items-center gap-2 text-xs font-medium text-cem-neutral-gray-400">
                   <span>Publicado el {formatDate(review.createdAt)}</span>
                   {review.updatedAt !== review.createdAt && (
                     <span className="text-cem-neutral-gray-300 font-medium italic">
@@ -252,7 +252,7 @@ export default function ReviewsList({
             </p>
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-cem-neutral-gray-500 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-medium text-cem-neutral-gray-500 mb-2">
                   Calificación
                 </label>
                 <select
@@ -263,7 +263,7 @@ export default function ReviewsList({
                       rating: parseInt(e.target.value),
                     })
                   }
-                  className="w-full px-4 py-2.5 bg-cem-neutral-gray-50 border border-cem-neutral-gray-200 rounded-lg text-[#1E293B] font-bold focus:outline-none focus:ring-2 focus:ring-cem-primary transition-all cursor-pointer"
+                  className="w-full px-4 py-2.5 bg-cem-neutral-gray-50 border border-cem-neutral-gray-200 rounded-lg text-[#1E293B] font-medium focus:outline-none focus:ring-2 focus:ring-cem-primary transition-all cursor-pointer"
                   required
                 >
                   <option value={1}>1 estrella</option>
@@ -274,7 +274,7 @@ export default function ReviewsList({
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-cem-neutral-gray-500 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-medium text-cem-neutral-gray-500 mb-2">
                   Reseña
                 </label>
                 <textarea
@@ -296,7 +296,7 @@ export default function ReviewsList({
                     setShowCreateModal(false);
                     setNewReview({ rating: 5, review: "" });
                   }}
-                  className="px-4 py-2 bg-cem-neutral-gray-100 hover:bg-cem-neutral-gray-200 text-cem-neutral-gray-700 rounded-lg transition-colors font-bold"
+                  className="px-4 py-2 bg-cem-neutral-gray-100 hover:bg-cem-neutral-gray-200 text-cem-neutral-gray-700 rounded-lg transition-colors font-medium"
                 >
                   Cancelar
                 </button>
@@ -304,7 +304,7 @@ export default function ReviewsList({
                   type="button"
                   onClick={handleCreateReview}
                   disabled={!newReview.review.trim()}
-                  className="px-4 py-2 bg-cem-primary hover:bg-cem-primary-dark disabled:opacity-50 disabled:bg-cem-neutral-gray-200 disabled:text-cem-neutral-gray-400 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-bold shadow-sm"
+                  className="px-4 py-2 bg-cem-primary hover:bg-cem-primary-dark disabled:opacity-50 disabled:bg-cem-neutral-gray-200 disabled:text-cem-neutral-gray-400 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium shadow-sm"
                 >
                   Crear
                 </button>
@@ -323,7 +323,7 @@ export default function ReviewsList({
             </h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-cem-neutral-gray-500 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-medium text-cem-neutral-gray-500 mb-2">
                   Calificación
                 </label>
                 <select
@@ -334,7 +334,7 @@ export default function ReviewsList({
                       rating: parseInt(e.target.value),
                     })
                   }
-                  className="w-full px-4 py-2.5 bg-cem-neutral-gray-50 border border-cem-neutral-gray-200 rounded-lg text-[#1E293B] font-bold focus:outline-none focus:ring-2 focus:ring-cem-primary transition-all cursor-pointer"
+                  className="w-full px-4 py-2.5 bg-cem-neutral-gray-50 border border-cem-neutral-gray-200 rounded-lg text-[#1E293B] font-medium focus:outline-none focus:ring-2 focus:ring-cem-primary transition-all cursor-pointer"
                   required
                 >
                   <option value={1}>1 estrella</option>
@@ -345,7 +345,7 @@ export default function ReviewsList({
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-cem-neutral-gray-500 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-medium text-cem-neutral-gray-500 mb-2">
                   Reseña
                 </label>
                 <textarea
@@ -367,7 +367,7 @@ export default function ReviewsList({
                     setEditingReview(null);
                     setEditReview({ rating: 5, review: "" });
                   }}
-                  className="px-4 py-2 bg-cem-neutral-gray-100 hover:bg-cem-neutral-gray-200 text-cem-neutral-gray-700 rounded-lg transition-colors font-bold"
+                  className="px-4 py-2 bg-cem-neutral-gray-100 hover:bg-cem-neutral-gray-200 text-cem-neutral-gray-700 rounded-lg transition-colors font-medium"
                 >
                   Cancelar
                 </button>
@@ -375,7 +375,7 @@ export default function ReviewsList({
                   type="button"
                   onClick={handleUpdateReview}
                   disabled={!editReview.review.trim()}
-                  className="px-4 py-2 bg-cem-primary hover:bg-cem-primary-dark disabled:opacity-50 disabled:bg-cem-neutral-gray-200 disabled:text-cem-neutral-gray-400 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-bold shadow-sm"
+                  className="px-4 py-2 bg-cem-primary hover:bg-cem-primary-dark disabled:opacity-50 disabled:bg-cem-neutral-gray-200 disabled:text-cem-neutral-gray-400 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium shadow-sm"
                 >
                   Guardar
                 </button>

@@ -95,7 +95,7 @@ export default function CourseDetailsContainer({
       </button>
 
       {/* Header del Curso */}
-      <div className=" rounded-xl border border-cem-neutral-gray-100 p-6 shadow-sm ">
+      <div className=" rounded-xl bg-white p-6 shadow-sm ">
         <div className="flex flex-col md:flex-row items-center gap-6">
           {/* Thumbnail */}
           <div className="flex-shrink-0">

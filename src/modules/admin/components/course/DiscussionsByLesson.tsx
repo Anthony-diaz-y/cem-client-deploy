@@ -356,7 +356,7 @@ export default function DiscussionsByLesson({
   if (discussions.length === 0) {
     return (
       <div className="bg-cem-neutral-gray-50 rounded-lg p-8 text-center border border-cem-neutral-gray-100 shadow-sm">
-        <p className="text-cem-neutral-gray-500 font-bold">No hay discusiones en este curso</p>
+        <p className="text-[14px] font-medium text-cem-neutral-gray-500">No hay discusiones en este curso</p>
       </div>
     );
   }
@@ -377,10 +377,10 @@ export default function DiscussionsByLesson({
               className="w-full px-4 py-4 flex justify-between items-center hover:bg-cem-neutral-gray-50/50 transition-colors"
             >
               <div className="flex-1 text-left">
-                <h3 className="font-bold text-[#1E293B] mb-1">
+                <h3 className="text-[18px] font-medium text-[#1E293B] mb-1">
                   {lesson.subSectionTitle}
                 </h3>
-                <p className="text-xs font-bold text-cem-neutral-gray-400 uppercase tracking-tight">
+                <p className="text-[14px] font-medium text-cem-neutral-gray-400 tracking-tight">
                   {lesson.sectionName}
                 </p>
               </div>
@@ -697,7 +697,7 @@ export default function DiscussionsByLesson({
                     })}
                   </div>
                 ) : (
-                  <p className="text-cem-neutral-gray-400 font-bold text-center py-4">
+                  <p className="text-[14px] font-medium text-cem-neutral-gray-400 text-center py-4">
                     No hay discusiones en esta lección
                   </p>
                 )}
