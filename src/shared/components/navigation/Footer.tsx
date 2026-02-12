@@ -59,7 +59,7 @@ const Footer = () => {
               </h3>
               <div className="flex flex-col items-center xl:items-start gap-4">
                 <Link
-                  href="/nosotros"
+                  href="/about"
                   className="text-white font-bold text-base hover:text-[#02819E] transition-colors"
                 >
                   Nosotros

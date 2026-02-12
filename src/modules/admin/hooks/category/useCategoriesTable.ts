@@ -24,7 +24,6 @@ interface UseCategoriesTableProps {
 export function useCategoriesTable({
   categories,
   token,
-  onUpdate,
 }: UseCategoriesTableProps) {
   const [categoriesWithCourses, setCategoriesWithCourses] = useState<CategoryWithCourses[]>([]);
   const [draggedCourse, setDraggedCourse] = useState<{
@@ -51,7 +50,7 @@ export function useCategoriesTable({
     });
 
     const counts = await Promise.all(countsPromises);
-    
+
     setCategoriesWithCourses((prev) =>
       prev.map((cat) => {
         const countData = counts.find((c) => c.categoryId === cat.id);
@@ -73,7 +72,7 @@ export function useCategoriesTable({
         courseCount: 0,
       }))
     );
-    
+
     loadInitialCourseCounts();
   }, [categories, loadInitialCourseCounts]);
 
@@ -105,11 +104,11 @@ export function useCategoriesTable({
             prev.map((cat) =>
               cat.id === categoryId
                 ? {
-                    ...cat,
-                    courses: coursesList,
-                    courseCount: coursesList.length,
-                    loading: false,
-                  }
+                  ...cat,
+                  courses: coursesList,
+                  courseCount: coursesList.length,
+                  loading: false,
+                }
                 : cat
             )
           );
@@ -126,19 +125,27 @@ export function useCategoriesTable({
   );
 
   const toggleCategory = useCallback(
-    async (categoryId: string) => {
-      setCategoriesWithCourses((prev) =>
-        prev.map((cat) => {
+    (categoryId: string) => {
+      setCategoriesWithCourses((prev) => {
+        const targetCategory = prev.find((c) => c.id === categoryId);
+        const willExpand = !targetCategory?.expanded;
+
+        // Si vamos a expandir y no tiene datos, cargarlos
+        if (willExpand && (!targetCategory?.courses || targetCategory.courses.length === 0)) {
+          loadCategoryCourses(categoryId);
+        }
+
+        return prev.map((cat) => {
           if (cat.id === categoryId) {
-            const willExpand = !cat.expanded;
-            if (willExpand && (!cat.courses || cat.courses.length === 0)) {
-              loadCategoryCourses(categoryId);
-            }
             return { ...cat, expanded: willExpand };
           }
+          // Si estamos expandiendo una nueva, cerrar las demás
+          if (willExpand) {
+            return { ...cat, expanded: false };
+          }
           return cat;
-        })
-      );
+        });
+      });
     },
     [loadCategoryCourses]
   );
@@ -167,11 +174,11 @@ export function useCategoriesTable({
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     const currentTarget = e.currentTarget as HTMLElement;
     const relatedTarget = e.relatedTarget as HTMLElement;
-    
+
     if (relatedTarget && currentTarget.contains(relatedTarget)) {
       return;
     }
-    
+
     setDragOverCategory(null);
   }, []);
 
@@ -226,7 +233,6 @@ export function useCategoriesTable({
         );
 
         if (success) {
-          const sourceCategory = categoriesWithCourses.find((c) => c.id === sourceCategoryId);
           const targetCategory = categoriesWithCourses.find((c) => c.id === targetCategoryId);
           toast.success(
             `"${courseName}" movido a "${targetCategory?.name || "nueva categoría"}"`

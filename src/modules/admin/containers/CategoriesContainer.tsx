@@ -25,7 +25,7 @@ export default function CategoriesContainer() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 lg:pr-20">
       <div className="space-y-4">
         <h1 className="text-3xl font-semibold text-cem-neutral-gray-900">
           Gestión de Categorías
