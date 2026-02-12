@@ -46,7 +46,7 @@ export const UserDistributionChart: React.FC<UserDistributionChartProps> = ({ ch
     const totalStudentsInTop = charts.topCoursesByStudents.reduce((acc, curr) => acc + curr.studentsCount, 0);
 
     return (
-        <div className="lg:col-span-7 bg-white px-5 pt-8 pb-10 rounded-[2rem] border border-cem-neutral-gray-100 shadow-sm hover:shadow-md transition-shadow">
+        <div className="lg:col-span-7 bg-white px-5 pt-8 pb-10 rounded-2xl border border-cem-neutral-gray-100 shadow-sm hover:shadow-md transition-shadow">
             <h3 className="text-lg font-semibold text-cem-neutral-gray-900 mb-4">
                 Distribución de Usuarios
             </h3>

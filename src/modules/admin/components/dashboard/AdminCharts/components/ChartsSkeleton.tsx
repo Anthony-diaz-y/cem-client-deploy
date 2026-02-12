@@ -4,7 +4,7 @@ export const ChartsSkeleton = () => {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-8">
             {/* Gráfico 1: Skeleton */}
-            <div className="lg:col-span-5 bg-white px-5 pt-8 pb-10 rounded-[2rem] border border-cem-neutral-gray-100 shadow-sm flex flex-col min-h-[365px]">
+            <div className="lg:col-span-5 bg-white px-5 pt-8 pb-10 rounded-2xl border border-cem-neutral-gray-100 shadow-sm flex flex-col min-h-[365px]">
                 <div className="h-6 bg-cem-neutral-gray-100 rounded w-1/2 mb-4 animate-pulse"></div>
                 <div className="space-y-[1rem] flex-1">
                     {[1, 2, 3, 4, 5].map((i) => (
@@ -20,7 +20,7 @@ export const ChartsSkeleton = () => {
             </div>
 
             {/* Gráfico 2: Skeleton */}
-            <div className="lg:col-span-7 bg-white px-5 pt-8 pb-10 rounded-[2rem] border border-cem-neutral-gray-100 shadow-sm min-h-[365px]">
+            <div className="lg:col-span-7 bg-white px-5 pt-8 pb-10 rounded-2xl border border-cem-neutral-gray-100 shadow-sm min-h-[365px]">
                 <div className="h-6 bg-cem-neutral-gray-100 rounded w-1/3 mb-6 animate-pulse"></div>
                 <div className="flex flex-col md:flex-row items-center gap-4 h-[240px]">
                     {/* Doughnut Skeleton */}

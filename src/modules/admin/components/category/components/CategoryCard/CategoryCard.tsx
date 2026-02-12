@@ -21,7 +21,7 @@ export default function CategoryCard(props: CategoryCardProps) {
 
   return (
     <div
-      className={`bg-cem-neutral-gray-50/30 rounded-[2rem] border transition-all duration-300 ${isDragOver
+      className={`bg-cem-neutral-gray-50/30 rounded-2xl border transition-all duration-300 ${isDragOver
         ? "border-cem-primary bg-cem-primary/5 ring-4 ring-cem-primary/10 shadow-lg"
         : "border-cem-neutral-gray-100 bg-white"
         }`}
