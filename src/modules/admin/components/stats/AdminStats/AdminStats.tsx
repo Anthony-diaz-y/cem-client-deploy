@@ -3,7 +3,7 @@
 import React from "react";
 import { AdminStatsProps } from "./interfaces/AdminStats.interface";
 import { AdminStatsSkeleton } from "./components/AdminStatsSkeleton";
-import { StatCard } from "./components/StatCard";
+import { StatCard } from "../../shared/StatCard";
 
 export default function AdminStats({ stats, loading }: AdminStatsProps) {
     if (loading) {

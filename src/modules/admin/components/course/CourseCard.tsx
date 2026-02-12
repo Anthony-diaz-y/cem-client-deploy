@@ -1,17 +1,16 @@
-"use client";
-
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { AdminCourse } from "@shared/services/adminAPI";
+import { AdminCourse, CourseCategory } from "@shared/services/adminAPI";
 import { COURSE_STATUS } from "@shared/utils/constants";
 import { Img } from "@shared/components";
 import {
-  FiEdit2,
+  FiEdit3,
   FiTrash2,
-  FiCheckCircle,
-  FiStar,
-  FiXCircle,
   FiEye,
+  FiMoreHorizontal,
+  FiRotateCcw,
+  FiCheckCircle,
+  FiClock,
 } from "react-icons/fi";
 
 interface CourseCardProps {
@@ -21,10 +20,6 @@ interface CourseCardProps {
   onDeleteClick: (course: AdminCourse) => void;
 }
 
-/**
- * Componente de tarjeta individual para mostrar información de un curso
- * Incluye acciones según el estado del curso (publicado/borrador)
- */
 export default function CourseCard({
   course,
   onPublishClick,
@@ -32,178 +27,199 @@ export default function CourseCard({
   onDeleteClick,
 }: CourseCardProps) {
   const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const isPublished = course.status === COURSE_STATUS.PUBLISHED;
 
   return (
-    <div className="bg-richblack-800 rounded-xl border border-richblack-700 overflow-hidden hover:border-yellow-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/10 flex flex-col">
-      {/* Thumbnail con badge de estado */}
-      <div className="relative w-full h-48 bg-richblack-900 overflow-hidden">
+    <div className="bg-white rounded-[24px] border border-cem-neutral-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 group flex flex-col h-full shadow-sm">
+      {/* Thumbnail con overlay */}
+      <div className="relative w-full h-[220px] overflow-hidden">
         {course.thumbnail ? (
           <Img
             src={course.thumbnail}
             alt={course.courseName}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-richblack-500">
+          <div className="w-full h-full bg-cem-neutral-gray-50 flex items-center justify-center text-cem-neutral-gray-400">
             Sin imagen
           </div>
         )}
-        {/* Badge de estado */}
-        <div className="absolute top-3 right-3">
-          <span
-            className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full shadow-lg ${
-              course.status === COURSE_STATUS.DRAFT
-                ? "bg-yellow-500/90 text-richblack-900"
-                : "bg-green-500/90 text-white"
-            }`}
-          >
-            {course.status === COURSE_STATUS.DRAFT ? "Borrador" : "Publicado"}
-          </span>
+
+        {/* Badge de estado flotante */}
+        <div className="absolute top-4 right-4 z-10">
+          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold text-xs shadow-lg backdrop-blur-md ${isPublished
+            ? "bg-[#22C55E] text-white"
+            : "bg-cem-neutral-gray-700/80 text-white"
+            }`}>
+            {isPublished ? (
+              <FiCheckCircle className="text-sm" />
+            ) : (
+              <FiClock className="text-sm" />
+            )}
+            {isPublished ? "Publicado" : "Borrador"}
+          </div>
         </div>
       </div>
 
-      {/* Contenido de la tarjeta */}
-      <div className="p-6 space-y-4 flex-1 flex flex-col">
-        {/* Título y categoría */}
-        <h3 className="text-lg font-bold text-richblack-5 line-clamp-2 min-h-[56px] mb-2">
-          {course.courseName}
-        </h3>
+      {/* Contenido */}
+      <div className="p-6 flex flex-col flex-1 space-y-4">
         {/* Categorías */}
-        <div className="flex flex-wrap gap-2 mb-3">
+        <div className="flex flex-wrap gap-2">
           {Array.isArray(course.category) ? (
-            course.category.map((cat: any) => (
+            course.category.map((cat: CourseCategory, index) => (
               <span
-                key={cat.id || cat.name}
-                className="inline-flex px-3 py-1.5 text-xs font-medium rounded-md bg-richblack-700 text-richblack-300"
+                key={cat.id || index}
+                className={`px-3 py-1 text-[11px] font-bold rounded-lg uppercase tracking-wider ${index % 2 === 0
+                  ? "bg-[#EEF2FF] text-[#4F46E5]"
+                  : "bg-[#F0FDF4] text-[#16A34A]"
+                  }`}
               >
                 {cat.name}
               </span>
             ))
-          ) : (
-            <span className="inline-flex px-3 py-1.5 text-xs font-medium rounded-md bg-richblack-700 text-richblack-300">
-              {/* Fallback for safety if backend sends single object temporarily */}
-              {(course.category as any)?.name || "Sin categoría"}
+          ) : course.category ? (
+            <span
+              className="px-3 py-1 text-[11px] font-bold rounded-lg uppercase tracking-wider bg-[#EEF2FF] text-[#4F46E5]"
+            >
+              {(course.category as CourseCategory).name}
             </span>
-          )}
+          ) : null}
         </div>
 
+        {/* Título */}
+        <h3 className="text-xl font-bold text-[#1E293B] line-clamp-2 min-h-[56px] leading-tight">
+          {course.courseName}
+        </h3>
+
         {/* Instructor */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-richblack-700 flex items-center justify-center text-richblack-400 text-sm font-medium flex-shrink-0">
-            {course.instructor?.name?.[0] || "?"}
+        <div className="flex items-center gap-3 py-1">
+          <div className="flex-shrink-0">
+            {course.instructor?.image ? (
+              <Img
+                src={course.instructor.image}
+                className="w-10 h-10 rounded-full object-cover shadow-sm"
+                alt={course.instructor.name}
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-[#3B4CB8] flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                {course.instructor?.name?.[0] || "?"}
+              </div>
+            )}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-richblack-5 truncate">
+            <p className="text-sm font-bold text-[#1E293B] truncate">
               {course.instructor?.name}
             </p>
-            <p className="text-xs text-richblack-400 truncate">
+            <p className="text-xs text-cem-neutral-gray-400 truncate">
               {course.instructor?.email}
             </p>
           </div>
         </div>
 
-        {/* Precio y Rating */}
-        <div className="flex items-center justify-between py-2">
-          <span className="text-3xl font-bold text-yellow-50">
-            ${course.price.toFixed(2)}
+        {/* Precio */}
+        <div className="flex items-baseline gap-1">
+          <span className="text-2xl font-black text-[#00849c]">
+            S/{course.price.toFixed(2)}
           </span>
-          {course.averageRating && (
-            <div className="flex items-center gap-1.5 text-richblack-400">
-              <FiStar className="text-yellow-500 fill-yellow-500 text-lg" />
-              <span className="text-sm font-semibold text-richblack-5">
-                {course.averageRating.toFixed(1)}
-              </span>
-              <span className="text-xs text-richblack-400">
-                ({course.totalReviews || 0})
-              </span>
-            </div>
-          )}
         </div>
 
-        {/* Estadísticas */}
-        <div className="flex items-center justify-between text-sm text-richblack-400 pt-3 border-t border-richblack-700">
-          <span className="font-medium">
-            {course.totalStudentsEnrolled || 0} estudiantes
-          </span>
-          {course.averageRating && (
-            <span className="text-xs">
-              {course.averageRating.toFixed(1)} ⭐
-            </span>
-          )}
+        {/* Separador e Info Alumnos */}
+        <div className="pt-4 mt-auto border-t border-cem-neutral-gray-100 flex items-center justify-between">
+          <p className="text-sm font-medium text-cem-neutral-gray-500">
+            <span className="font-bold text-cem-neutral-gray-900">{course.totalStudentsEnrolled || 0}</span> Estudiantes
+          </p>
         </div>
 
-        {/* Botones de acción */}
-        <div className="pt-4 mt-auto space-y-2">
-          {/* Botón Ver Detalles - siempre visible */}
+        {/* Acciones */}
+        <div className="flex gap-3 pt-2">
           <button
             onClick={() => router.push(`/dashboard/admin/courses/${course.id}`)}
-            className="w-full px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-purple-500/20"
+            className="flex-1 h-12 bg-cem-primary hover:bg-cem-primary-dark text-white rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-cem-primary/20 active:scale-95"
           >
-            <FiEye className="text-base" />
-            Ver Detalles
+            <FiEye className="text-lg" />
+            Ver detalles
           </button>
 
-          {course.status === COURSE_STATUS.DRAFT ? (
-            // Cursos en Borrador: Editar, Publicar, Eliminar
-            <>
-              <div className="grid grid-cols-2 gap-2">
+          <div className="relative" ref={menuRef}>
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${isMenuOpen
+                ? "bg-cem-primary text-white shadow-lg"
+                : "bg-[#DCEEEF] text-cem-primary hover:bg-[#D5E8E9]"
+                }`}
+            >
+              <FiMoreHorizontal className="text-xl" />
+            </button>
+
+            {/* Menú Dropdown */}
+            {isMenuOpen && (
+              <div className="absolute bottom-14 right-0 w-48 bg-white border border-cem-neutral-gray-100 rounded-2xl shadow-2xl py-2 z-50 animate-fadeInUp">
                 <button
-                  onClick={() =>
-                    router.push(`/dashboard/admin/courses/edit/${course.id}`)
-                  }
-                  className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-blue-500/20"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    router.push(`/dashboard/admin/courses/edit/${course.id}`);
+                  }}
+                  className="w-full px-4 py-3 flex items-center gap-3 text-sm font-bold text-cem-neutral-gray-700 hover:bg-cem-neutral-gray-50 hover:text-cem-primary transition-all"
                 >
-                  <FiEdit2 className="text-base" />
+                  <FiEdit3 className="text-lg" />
                   Editar
                 </button>
+
+                {isPublished ? (
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      onUnpublishClick(course);
+                    }}
+                    className="w-full px-4 py-3 flex items-center gap-3 text-sm font-bold text-amber-600 hover:bg-amber-50 transition-all"
+                  >
+                    <FiRotateCcw className="text-lg" />
+                    Despublicar
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      onPublishClick(course);
+                    }}
+                    className="w-full px-4 py-3 flex items-center gap-3 text-sm font-bold text-emerald-600 hover:bg-emerald-50 transition-all"
+                  >
+                    <FiCheckCircle className="text-lg" />
+                    Publicar
+                  </button>
+                )}
+
+                <div className="h-px bg-cem-neutral-gray-100 mx-2 my-1" />
+
                 <button
-                  onClick={() => onPublishClick(course)}
-                  className="px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-green-500/20"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    onDeleteClick(course);
+                  }}
+                  className="w-full px-4 py-3 flex items-center gap-3 text-sm font-bold text-red-600 hover:bg-red-50 transition-all"
                 >
-                  <FiCheckCircle className="text-base" />
-                  Publicar
+                  <FiTrash2 className="text-lg" />
+                  Eliminar
                 </button>
               </div>
-              <button
-                onClick={() => onDeleteClick(course)}
-                className="w-full px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-red-500/20"
-              >
-                <FiTrash2 className="text-base" />
-                Eliminar
-              </button>
-            </>
-          ) : (
-            // Cursos Publicados: Editar, Despublicar, Eliminar
-            <>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() =>
-                    router.push(`/dashboard/admin/courses/edit/${course.id}`)
-                  }
-                  className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-blue-500/20"
-                >
-                  <FiEdit2 className="text-base" />
-                  Editar
-                </button>
-                <button
-                  onClick={() => onUnpublishClick(course)}
-                  className="px-4 py-2.5 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-yellow-500/20"
-                >
-                  <FiXCircle className="text-base" />
-                  Despublicar
-                </button>
-              </div>
-              <button
-                onClick={() => onDeleteClick(course)}
-                className="w-full px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-red-500/20"
-              >
-                <FiTrash2 className="text-base" />
-                Eliminar
-              </button>
-            </>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 }
+

@@ -23,7 +23,9 @@ export default function DashboardLayout({
   }, []);
 
   // Prevent hydration mismatch by not rendering dynamic content on server
-  if (!mounted) return null;
+  if (!mounted) {
+    return <div className="min-h-screen bg-cem-background" />;
+  }
 
   return (
     <div className="relative flex min-h-screen bg-cem-background pt-20">
@@ -34,9 +36,9 @@ export default function DashboardLayout({
 
       {/* Main Content - Fluye naturalmente, permitiendo llegar al footer global */}
       <main className="flex-1 w-full min-h-full flex flex-col">
-        <div className="px-10 w-full max-w-[1440px] py-10 flex-1 mx-auto">
+        <div className="px-10 w-full max-w-[1440px] py-10 flex-1 mx-auto flex flex-col">
           {isLoading ? (
-            <div className="flex justify-center items-center h-40">
+            <div className="flex justify-center items-center flex-1 min-h-[70vh]">
               <Loading />
             </div>
           ) : (

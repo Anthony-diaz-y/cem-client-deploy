@@ -10,7 +10,7 @@ interface RevenueCardContentProps {
 
 export const RevenueCardContent: React.FC<RevenueCardContentProps> = ({ revenue, periodText }) => {
     return (
-        <div className="bg-gradient-to-br w-full from-cem-primary to-[#036d85]  rounded-xl px-8 py-4 relative overflow-hidden group shadow-lg shadow-cem-primary/10 transition-all hover:shadow-xl hover:shadow-cem-primary/20 h-full flex flex-col justify-between">
+        <div className="bg-gradient-to-br w-full from-cem-primary to-[#036d85]  rounded-2xl px-8 py-4 relative overflow-hidden group shadow-lg shadow-cem-primary/10 transition-all hover:shadow-xl hover:shadow-cem-primary/20 h-full flex flex-col justify-between">
             {/* Decorative background circle */}
             <div className="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700"></div>
 

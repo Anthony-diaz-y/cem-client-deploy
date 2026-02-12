@@ -15,7 +15,7 @@ export const PopularCoursesChart: React.FC<PopularCoursesChartProps> = ({ charts
     }, [charts.topCoursesByStudents]);
 
     return (
-        <div className="lg:col-span-5 bg-white px-5 pt-8 pb-10 rounded-[2rem] border border-cem-neutral-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+        <div className="lg:col-span-5 bg-white px-5 pt-8 pb-10 rounded-2xl border border-cem-neutral-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col">
             <h3 className="text-lg font-semibold text-cem-neutral-gray-900 mb-4">
                 Cursos más Populares
             </h3>

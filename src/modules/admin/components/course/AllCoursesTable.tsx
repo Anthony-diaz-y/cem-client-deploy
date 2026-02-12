@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   AdminCourse,
   publishCourse,
@@ -11,7 +11,7 @@ import { COURSE_STATUS } from "@shared/utils/constants";
 import { fetchCourseCategories } from "@shared/services/courseDetailsAPI";
 import { ConfirmationModal } from "@shared/components";
 import CourseFilters from "./CourseFilters";
-import CourseCard from "./CourseCard";
+import VirtualCourseCard from "./VirtualCourseCard";
 import { useCourseFilters } from "../../hooks/course/useCourseFilters";
 
 interface AllCoursesTableProps {
@@ -33,6 +33,8 @@ interface AllCoursesTableProps {
   }) => void;
   searchInput?: string;
   onSearchInputChange?: (value: string) => void;
+  loadMore?: () => void;
+  hasMore?: boolean;
 }
 
 interface Category {
@@ -41,10 +43,6 @@ interface Category {
   name: string;
 }
 
-/**
- * Componente principal para mostrar y gestionar todos los cursos
- * Incluye filtros, búsqueda y acciones de publicación/eliminación
- */
 export default function AllCoursesTable({
   courses,
   token,
@@ -53,6 +51,8 @@ export default function AllCoursesTable({
   onFiltersChange,
   searchInput: externalSearchInput,
   onSearchInputChange,
+  loadMore,
+  hasMore,
 }: AllCoursesTableProps) {
   const [confirmationModal, setConfirmationModal] = useState<{
     isOpen: boolean;
@@ -63,6 +63,32 @@ export default function AllCoursesTable({
     type: null,
     course: null,
   });
+
+  const observerTarget = useRef(null);
+
+  useEffect(() => {
+    if (!loadMore || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting && hasMore) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1, rootMargin: "800px" }
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [loadMore, hasMore]);
 
   // Usar filtros externos si están disponibles, sino usar estado local
   const [localStatusFilter, setLocalStatusFilter] = useState<
@@ -92,7 +118,7 @@ export default function AllCoursesTable({
         if (categories && Array.isArray(categories)) {
           setAllCategories(categories);
         }
-      } catch (error) {
+      } catch {
         // Error manejado por el servicio
       }
     };
@@ -234,32 +260,49 @@ export default function AllCoursesTable({
         />
 
         {/* Cantidad de cursos */}
-        <div className="text-sm text-richblack-400">
-          {displayCourses.length} curso{displayCourses.length !== 1 ? "s" : ""} encontrado{displayCourses.length !== 1 ? "s" : ""}
+        <div className="text-sm text-cem-neutral-gray-500 font-medium">
+          Mostrando <span className="text-cem-primary font-bold">{displayCourses.length}</span> de <span className="text-cem-neutral-gray-900 font-bold">{courses.length}</span> curso{courses.length !== 1 ? "s" : ""}
           {shouldFilterLocally && ` de ${courses.length} total`}
         </div>
 
         {/* Grid de cursos */}
         {displayCourses.length === 0 ? (
-          <div className="bg-richblack-800 rounded-xl border border-richblack-700 p-12 text-center">
-            <p className="text-richblack-400 text-lg">
+          <div className="bg-cem-neutral-gray-50/50 rounded-2xl border border-cem-neutral-gray-100 p-16 text-center shadow-sm">
+            <p className="text-cem-neutral-gray-400 text-lg font-medium">
               {courses.length === 0
                 ? "No hay cursos en el sistema"
                 : "No se encontraron cursos con los filtros seleccionados"}
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {displayCourses.map((course) => (
-              <CourseCard
-                key={course.id}
-                course={course}
-                onPublishClick={handlePublishClick}
-                onUnpublishClick={handleUnpublishClick}
-                onDeleteClick={handleDeleteClick}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+              {displayCourses.map((course) => (
+                <VirtualCourseCard
+                  key={course.id}
+                  course={course}
+                  onPublishClick={handlePublishClick}
+                  onUnpublishClick={handleUnpublishClick}
+                  onDeleteClick={handleDeleteClick}
+                />
+              ))}
+            </div>
+
+            {/* Sentinel element for infinite scroll */}
+            <div
+              ref={observerTarget}
+              className="h-20 w-full flex items-center justify-center pt-8"
+            >
+              {hasMore && (
+                <div className="flex items-center gap-2 text-cem-primary font-bold animate-pulse">
+                  <div className="w-2 h-2 rounded-full bg-cem-primary animate-bounce" />
+                  <div className="w-2 h-2 rounded-full bg-cem-primary animate-bounce delay-100" />
+                  <div className="w-2 h-2 rounded-full bg-cem-primary animate-bounce delay-200" />
+                  Cargando más cursos...
+                </div>
+              )}
+            </div>
+          </>
         )}
       </div>
 

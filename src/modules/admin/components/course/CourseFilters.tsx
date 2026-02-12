@@ -45,10 +45,10 @@ export default function CourseFilters({
   onSearchChange,
 }: CourseFiltersProps) {
   return (
-    <div className="bg-richblack-800 rounded-xl border border-richblack-700 p-6 space-y-4">
+    <div className="bg-white rounded-2xl border border-cem-neutral-gray-100 p-8 space-y-6 shadow-sm">
       {/* Barra de búsqueda */}
-      <div>
-        <label className="block text-sm font-medium text-richblack-300 mb-2">
+      <div className="space-y-1">
+        <label className="text-sm font-semibold text-cem-neutral-gray-800 ml-1">
           Buscar curso
         </label>
         <input
@@ -64,13 +64,13 @@ export default function CourseFilters({
             }
           }}
           placeholder="Buscar por nombre de curso, descripción o instructor..."
-          className="w-full px-4 py-3 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 placeholder-richblack-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+          className="w-full h-[56px] px-6 bg-cem-neutral-gray-50/50 border-b-2 border-cem-neutral-gray-300 rounded-2xl text-cem-neutral-gray-900 font-medium placeholder-cem-neutral-gray-400 focus:outline-none focus:border-cem-primary transition-all shadow-sm"
           autoComplete="off"
         />
       </div>
 
       {/* Filtros */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Filtro por estado */}
         <CustomDropdown
           label="Estado"

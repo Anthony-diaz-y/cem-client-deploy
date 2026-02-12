@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "../../store/hooks";
 import { MOCK_MODE } from "../../services/apiConnector";
+import { Loading } from "@shared/components";
 
 const ProtectedRoute = ({
   children,
@@ -26,7 +27,13 @@ const ProtectedRoute = ({
     }
   }, [token, router]);
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return (
+      <div className="min-h-screen w-full bg-cem-background flex items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
 
   if (MOCK_MODE) {
     return <>{children}</>;
@@ -36,7 +43,11 @@ const ProtectedRoute = ({
     return <>{children}</>;
   }
 
-  return null;
+  return (
+    <div className="min-h-screen w-full bg-cem-background flex items-center justify-center">
+      <Loading />
+    </div>
+  );
 };
 
 export default ProtectedRoute;
