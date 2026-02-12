@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Category } from "@shared/services/adminAPI";
 import DeleteCategoryModal from "./DeleteCategoryModal";
 import EditCategoryModal from "./EditCategoryModal";
-import CategoryCard from "./components/CategoryCard";
+import CategoryCard from "./components/CategoryCard/CategoryCard";
 import { useCategoriesTable } from "../../hooks/category/useCategoriesTable";
 import { useAutoScroll } from "../../hooks/category/useAutoScroll";
 import { FiChevronRight } from "react-icons/fi";
