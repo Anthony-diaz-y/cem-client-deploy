@@ -25,48 +25,48 @@ export default function StatisticsCards({
       value: statistics.totalStudentsEnrolled,
       icon: FiUsers,
       color: "blue",
-      bgColor: "bg-blue-500/10",
-      iconColor: "text-blue-400",
+      bgColor: "bg-blue-50",
+      iconColor: "text-blue-600",
     },
     {
       title: "Progreso Promedio",
       value: `${statistics.averageProgressPercentage.toFixed(1)}%`,
       icon: FiTrendingUp,
       color: "green",
-      bgColor: "bg-green-500/10",
-      iconColor: "text-green-400",
+      bgColor: "bg-emerald-50",
+      iconColor: "text-emerald-600",
     },
     {
       title: "Completados",
       value: statistics.studentsCompleted,
       icon: FiCheckCircle,
       color: "green",
-      bgColor: "bg-green-500/10",
-      iconColor: "text-green-400",
+      bgColor: "bg-emerald-50",
+      iconColor: "text-emerald-600",
     },
     {
       title: "En Progreso",
       value: statistics.studentsInProgress,
       icon: FiClock,
       color: "yellow",
-      bgColor: "bg-yellow-500/10",
-      iconColor: "text-yellow-400",
+      bgColor: "bg-amber-50",
+      iconColor: "text-amber-600",
     },
     {
       title: "No Iniciados",
       value: statistics.studentsNotStarted,
       icon: FiUsers,
       color: "gray",
-      bgColor: "bg-gray-500/10",
-      iconColor: "text-gray-400",
+      bgColor: "bg-cem-neutral-gray-50",
+      iconColor: "text-cem-neutral-gray-500",
     },
     {
       title: "Calificación Promedio",
       value: statistics.averageRating.toFixed(1),
       icon: FiStar,
       color: "yellow",
-      bgColor: "bg-yellow-500/10",
-      iconColor: "text-yellow-400",
+      bgColor: "bg-amber-50",
+      iconColor: "text-amber-600",
       subtitle: `(${statistics.totalReviews} reseñas)`,
     },
     {
@@ -74,8 +74,8 @@ export default function StatisticsCards({
       value: statistics.totalDiscussions,
       icon: FiMessageSquare,
       color: "purple",
-      bgColor: "bg-purple-500/10",
-      iconColor: "text-purple-400",
+      bgColor: "bg-violet-50",
+      iconColor: "text-violet-600",
       subtitle: `(${statistics.totalDiscussionReplies} respuestas)`,
     },
     {
@@ -83,8 +83,8 @@ export default function StatisticsCards({
       value: statistics.totalSubSections,
       icon: FiBook,
       color: "indigo",
-      bgColor: "bg-indigo-500/10",
-      iconColor: "text-indigo-400",
+      bgColor: "bg-indigo-50",
+      iconColor: "text-indigo-600",
       subtitle: `(${statistics.totalSections} secciones)`,
     },
   ];
@@ -96,7 +96,7 @@ export default function StatisticsCards({
         return (
           <div
             key={index}
-            className="bg-richblack-800 rounded-xl border border-richblack-700 p-6 hover:border-richblack-600 transition-all duration-200"
+            className="bg-white rounded-xl border border-cem-neutral-gray-100 p-6 hover:border-cem-primary/30 transition-all duration-200 shadow-sm"
           >
             <div className="flex items-start justify-between mb-4">
               <div className={`p-3 rounded-lg ${card.bgColor}`}>
@@ -104,12 +104,12 @@ export default function StatisticsCards({
               </div>
             </div>
             <div>
-              <p className="text-2xl font-bold text-richblack-5 mb-1">
+              <p className="text-2xl font-bold text-[#1E293B] mb-1">
                 {card.value}
               </p>
-              <p className="text-sm text-richblack-400">{card.title}</p>
+              <p className="text-sm font-bold text-cem-neutral-gray-500 uppercase tracking-tight">{card.title}</p>
               {card.subtitle && (
-                <p className="text-xs text-richblack-500 mt-1">
+                <p className="text-xs text-cem-neutral-gray-400 mt-1">
                   {card.subtitle}
                 </p>
               )}

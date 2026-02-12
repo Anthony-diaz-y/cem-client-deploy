@@ -99,13 +99,13 @@ export default function DiscussionsByLesson({
 
   const getAccountTypeBadge = (type: string) => {
     const badges = {
-      Admin: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-      Instructor: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-      Student: "bg-green-500/20 text-green-400 border-green-500/30",
+      Admin: "bg-purple-50 text-purple-600 border-purple-100",
+      Instructor: "bg-blue-50 text-blue-600 border-blue-100",
+      Student: "bg-emerald-50 text-emerald-600 border-emerald-100",
     };
     return (
       badges[type as keyof typeof badges] ||
-      "bg-gray-500/20 text-gray-400 border-gray-500/30"
+      "bg-cem-neutral-gray-50 text-cem-neutral-gray-500 border-cem-neutral-gray-100"
     );
   };
 
@@ -145,8 +145,8 @@ export default function DiscussionsByLesson({
       };
       toast.error(
         apiError?.response?.data?.message ||
-          apiError?.message ||
-          "Error al crear la pregunta",
+        apiError?.message ||
+        "Error al crear la pregunta",
         { id: toastId },
       );
     }
@@ -188,8 +188,8 @@ export default function DiscussionsByLesson({
       };
       toast.error(
         apiError?.response?.data?.message ||
-          apiError?.message ||
-          "Error al actualizar la pregunta",
+        apiError?.message ||
+        "Error al actualizar la pregunta",
         { id: toastId },
       );
     }
@@ -226,8 +226,8 @@ export default function DiscussionsByLesson({
       };
       toast.error(
         apiError?.response?.data?.message ||
-          apiError?.message ||
-          "Error al eliminar la pregunta",
+        apiError?.message ||
+        "Error al eliminar la pregunta",
         { id: toastId },
       );
     }
@@ -268,8 +268,8 @@ export default function DiscussionsByLesson({
       };
       toast.error(
         apiError?.response?.data?.message ||
-          apiError?.message ||
-          "Error al crear la respuesta",
+        apiError?.message ||
+        "Error al crear la respuesta",
         { id: toastId },
       );
     }
@@ -311,8 +311,8 @@ export default function DiscussionsByLesson({
       };
       toast.error(
         apiError?.response?.data?.message ||
-          apiError?.message ||
-          "Error al actualizar la respuesta",
+        apiError?.message ||
+        "Error al actualizar la respuesta",
         { id: toastId },
       );
     }
@@ -346,8 +346,8 @@ export default function DiscussionsByLesson({
       };
       toast.error(
         apiError?.response?.data?.message ||
-          apiError?.message ||
-          "Error al eliminar la respuesta",
+        apiError?.message ||
+        "Error al eliminar la respuesta",
         { id: toastId },
       );
     }
@@ -355,8 +355,8 @@ export default function DiscussionsByLesson({
 
   if (discussions.length === 0) {
     return (
-      <div className="bg-richblack-900/50 rounded-lg p-8 text-center">
-        <p className="text-richblack-400">No hay discusiones en este curso</p>
+      <div className="bg-cem-neutral-gray-50 rounded-lg p-8 text-center border border-cem-neutral-gray-100 shadow-sm">
+        <p className="text-cem-neutral-gray-500 font-bold">No hay discusiones en este curso</p>
       </div>
     );
   }
@@ -369,43 +369,43 @@ export default function DiscussionsByLesson({
         return (
           <div
             key={lesson.subSectionId}
-            className="border border-richblack-700 rounded-lg overflow-hidden bg-richblack-800"
+            className="border border-cem-neutral-gray-100 rounded-lg overflow-hidden bg-white shadow-sm mb-4"
           >
             {/* Header de la lección */}
             <button
               onClick={() => toggleLesson(lesson.subSectionId)}
-              className="w-full px-4 py-4 flex justify-between items-center hover:bg-richblack-900/50 transition-colors"
+              className="w-full px-4 py-4 flex justify-between items-center hover:bg-cem-neutral-gray-50/50 transition-colors"
             >
               <div className="flex-1 text-left">
-                <h3 className="font-semibold text-richblack-5 mb-1">
+                <h3 className="font-bold text-[#1E293B] mb-1">
                   {lesson.subSectionTitle}
                 </h3>
-                <p className="text-sm text-richblack-400">
+                <p className="text-xs font-bold text-cem-neutral-gray-400 uppercase tracking-tight">
                   {lesson.sectionName}
                 </p>
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-3">
-                  <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs font-semibold">
+                  <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded text-[10px] font-black uppercase tracking-wider border border-blue-100">
                     {lesson.totalQuestions} preguntas
                   </span>
-                  <span className="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs font-semibold">
+                  <span className="px-2 py-1 bg-emerald-50 text-emerald-600 rounded text-[10px] font-black uppercase tracking-wider border border-emerald-100">
                     {lesson.totalReplies} respuestas
                   </span>
                 </div>
                 {isExpanded ? (
-                  <FiChevronDown className="text-richblack-400 text-xl" />
+                  <FiChevronDown className="text-cem-neutral-gray-400 text-xl" />
                 ) : (
-                  <FiChevronRight className="text-richblack-400 text-xl" />
+                  <FiChevronRight className="text-cem-neutral-gray-400 text-xl" />
                 )}
               </div>
             </button>
 
             {/* Contenido expandido */}
             {isExpanded && (
-              <div className="px-4 py-4 border-t border-richblack-700 bg-richblack-900/30 space-y-4">
+              <div className="px-4 py-4 border-t border-cem-neutral-gray-100 bg-cem-neutral-gray-50/30 space-y-4">
                 {/* Formulario para crear nueva pregunta */}
-                <div className="bg-richblack-800 p-4 rounded-lg border border-richblack-700">
+                <div className="bg-white p-4 rounded-lg border border-cem-neutral-gray-100 shadow-sm">
                   <div className="flex gap-2">
                     <input
                       type="text"
@@ -417,13 +417,13 @@ export default function DiscussionsByLesson({
                           [lesson.subSectionId]: e.target.value,
                         })
                       }
-                      className="flex-1 px-4 py-2 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 placeholder-richblack-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="flex-1 px-4 py-2 bg-cem-neutral-gray-50 border border-cem-neutral-gray-200 rounded-lg text-[#1E293B] font-medium placeholder-cem-neutral-gray-400 focus:outline-none focus:ring-2 focus:ring-cem-primary transition-all"
                     />
                     <button
                       onClick={() =>
                         handleCreateDiscussion(lesson.subSectionId)
                       }
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center gap-2"
+                      className="px-4 py-2 bg-cem-primary hover:bg-cem-primary-dark text-white rounded-lg transition-colors flex items-center gap-2 font-bold shadow-sm"
                     >
                       <FiPlus className="w-4 h-4" />
                       Crear
@@ -442,12 +442,12 @@ export default function DiscussionsByLesson({
                       return (
                         <div
                           key={discussion.id}
-                          className="bg-richblack-800 p-4 rounded-lg border border-richblack-700 hover:border-richblack-600 transition-colors"
+                          className="bg-white p-4 rounded-lg border border-cem-neutral-gray-100 hover:border-cem-primary/30 transition-all shadow-sm"
                         >
                           {/* Pregunta */}
                           <div className="flex items-start gap-3 mb-3">
-                            <div className="p-2 bg-richblack-700 rounded-lg flex-shrink-0">
-                              <FiMessageSquare className="text-richblack-400" />
+                            <div className="p-2 bg-cem-neutral-gray-50 rounded-lg flex-shrink-0 border border-cem-neutral-gray-100">
+                              <FiMessageSquare className="text-cem-primary" />
                             </div>
                             <div className="flex-1 min-w-0">
                               {editingDiscussion === discussion.id ? (
@@ -463,7 +463,7 @@ export default function DiscussionsByLesson({
                                         [discussion.id]: e.target.value,
                                       })
                                     }
-                                    className="w-full px-3 py-2 bg-richblack-900 border border-richblack-700 rounded-lg text-richblack-5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-3 py-2 bg-cem-neutral-gray-50 border border-cem-neutral-gray-200 rounded-lg text-[#1E293B] font-medium focus:outline-none focus:ring-2 focus:ring-cem-primary resize-none transition-all"
                                     rows={2}
                                   />
                                   <div className="flex gap-2">
@@ -471,7 +471,7 @@ export default function DiscussionsByLesson({
                                       onClick={() =>
                                         handleUpdateDiscussion(discussion.id)
                                       }
-                                      className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition-colors"
+                                      className="px-3 py-1.5 bg-cem-primary hover:bg-cem-primary-dark text-white rounded text-sm font-bold transition-colors shadow-sm"
                                     >
                                       Guardar
                                     </button>
@@ -483,7 +483,7 @@ export default function DiscussionsByLesson({
                                           [discussion.id]: "",
                                         });
                                       }}
-                                      className="px-3 py-1.5 bg-richblack-700 hover:bg-richblack-600 text-richblack-300 rounded text-sm transition-colors"
+                                      className="px-3 py-1.5 bg-cem-neutral-gray-100 hover:bg-cem-neutral-gray-200 text-cem-neutral-gray-600 rounded text-sm font-bold transition-colors"
                                     >
                                       Cancelar
                                     </button>
@@ -491,24 +491,24 @@ export default function DiscussionsByLesson({
                                 </div>
                               ) : (
                                 <>
-                                  <p className="font-medium text-richblack-5 mb-2">
+                                  <p className="font-bold text-[#1E293B] mb-2 leading-relaxed">
                                     {discussion.question}
                                   </p>
                                   <div className="flex items-center gap-3 flex-wrap mb-2">
                                     <div className="flex items-center gap-2">
-                                      <FiUser className="text-richblack-400 text-sm" />
-                                      <span className="text-sm text-richblack-300">
+                                      <FiUser className="text-cem-neutral-gray-400 text-sm" />
+                                      <span className="text-sm font-bold text-cem-neutral-gray-500">
                                         {discussion.userName}
                                       </span>
                                       <span
-                                        className={`px-2 py-0.5 rounded text-xs font-semibold border ${getAccountTypeBadge(
+                                        className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border ${getAccountTypeBadge(
                                           discussion.userAccountType,
                                         )}`}
                                       >
                                         {discussion.userAccountType}
                                       </span>
                                     </div>
-                                    <span className="text-xs text-richblack-500">
+                                    <span className="text-[11px] font-bold text-cem-neutral-gray-400 uppercase">
                                       {formatDate(discussion.createdAt)}
                                     </span>
                                   </div>
@@ -517,7 +517,7 @@ export default function DiscussionsByLesson({
                                       onClick={() =>
                                         toggleDiscussion(discussion.id)
                                       }
-                                      className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                                      className="text-xs font-black uppercase tracking-wider text-cem-primary hover:text-cem-primary-dark transition-colors"
                                     >
                                       {isDiscussionExpanded
                                         ? "Ocultar respuestas"
@@ -531,7 +531,7 @@ export default function DiscussionsByLesson({
                                           [discussion.id]: discussion.question,
                                         });
                                       }}
-                                      className="text-xs text-yellow-400 hover:text-yellow-300 transition-colors flex items-center gap-1"
+                                      className="text-xs font-black uppercase tracking-wider text-amber-500 hover:text-amber-600 transition-colors flex items-center gap-1"
                                     >
                                       <FiEdit2 className="w-3 h-3" />
                                       Editar
@@ -543,7 +543,7 @@ export default function DiscussionsByLesson({
                                           id: discussion.id,
                                         })
                                       }
-                                      className="text-xs text-red-400 hover:text-red-300 transition-colors flex items-center gap-1"
+                                      className="text-xs font-black uppercase tracking-wider text-red-500 hover:text-red-600 transition-colors flex items-center gap-1"
                                     >
                                       <FiTrash2 className="w-3 h-3" />
                                       Eliminar
@@ -556,9 +556,9 @@ export default function DiscussionsByLesson({
 
                           {/* Respuestas */}
                           {isDiscussionExpanded && (
-                            <div className="ml-11 mt-3 space-y-3 border-t border-richblack-700 pt-3">
+                            <div className="ml-11 mt-3 space-y-3 border-t border-cem-neutral-gray-100 pt-3">
                               {/* Formulario para crear nueva respuesta */}
-                              <div className="bg-richblack-900/50 p-3 rounded-lg">
+                              <div className="bg-cem-neutral-gray-50 p-3 rounded-lg border border-cem-neutral-gray-100">
                                 <div className="flex gap-2">
                                   <input
                                     type="text"
@@ -570,13 +570,13 @@ export default function DiscussionsByLesson({
                                         [discussion.id]: e.target.value,
                                       })
                                     }
-                                    className="flex-1 px-3 py-2 bg-richblack-800 border border-richblack-700 rounded-lg text-richblack-5 placeholder-richblack-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                    className="flex-1 px-3 py-2 bg-white border border-cem-neutral-gray-200 rounded-lg text-[#1E293B] font-medium placeholder-cem-neutral-gray-400 focus:outline-none focus:ring-2 focus:ring-cem-primary transition-all text-sm shadow-sm"
                                   />
                                   <button
                                     onClick={() =>
                                       handleCreateReply(discussion.id)
                                     }
-                                    className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center gap-1"
+                                    className="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors flex items-center gap-1 shadow-sm"
                                   >
                                     <FiSend className="w-4 h-4" />
                                   </button>
@@ -585,15 +585,15 @@ export default function DiscussionsByLesson({
 
                               {/* Lista de respuestas */}
                               {(discussion as DiscussionWithReplies).replies &&
-                              (discussion as DiscussionWithReplies).replies!
-                                .length > 0 ? (
+                                (discussion as DiscussionWithReplies).replies!
+                                  .length > 0 ? (
                                 <div className="space-y-2">
                                   {(
                                     discussion as DiscussionWithReplies
                                   ).replies!.map((reply: DiscussionReply) => (
                                     <div
                                       key={reply.id}
-                                      className="bg-richblack-900/50 p-3 rounded-lg border border-richblack-700"
+                                      className="bg-cem-neutral-gray-50/50 p-3 rounded-lg border border-cem-neutral-gray-100"
                                     >
                                       {editingReply === reply.id ? (
                                         <div className="space-y-2">
@@ -607,7 +607,7 @@ export default function DiscussionsByLesson({
                                                 [reply.id]: e.target.value,
                                               })
                                             }
-                                            className="w-full px-3 py-2 bg-richblack-800 border border-richblack-700 rounded-lg text-richblack-5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                            className="w-full px-3 py-2 bg-white border border-cem-neutral-gray-200 rounded-lg text-[#1E293B] font-medium focus:outline-none focus:ring-2 focus:ring-cem-primary resize-none transition-all text-sm"
                                             rows={2}
                                           />
                                           <div className="flex gap-2">
@@ -615,7 +615,7 @@ export default function DiscussionsByLesson({
                                               onClick={() =>
                                                 handleUpdateReply(reply.id)
                                               }
-                                              className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition-colors"
+                                              className="px-3 py-1.5 bg-cem-primary hover:bg-cem-primary-dark text-white rounded text-sm font-bold transition-colors shadow-sm"
                                             >
                                               Guardar
                                             </button>
@@ -627,7 +627,7 @@ export default function DiscussionsByLesson({
                                                   [reply.id]: "",
                                                 });
                                               }}
-                                              className="px-3 py-1.5 bg-richblack-700 hover:bg-richblack-600 text-richblack-300 rounded text-sm transition-colors"
+                                              className="px-3 py-1.5 bg-cem-neutral-gray-100 hover:bg-cem-neutral-gray-200 text-cem-neutral-gray-600 rounded text-sm font-bold transition-colors"
                                             >
                                               Cancelar
                                             </button>
@@ -635,26 +635,26 @@ export default function DiscussionsByLesson({
                                         </div>
                                       ) : (
                                         <>
-                                          <p className="text-sm text-richblack-300 mb-2">
+                                          <p className="text-sm font-medium text-cem-neutral-gray-500 mb-2 leading-relaxed">
                                             {reply.reply}
                                           </p>
                                           <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
-                                              <span className="text-xs text-richblack-400">
+                                              <span className="text-xs font-bold text-cem-neutral-gray-400">
                                                 {reply.userName}
                                               </span>
                                               <span
-                                                className={`px-2 py-0.5 rounded text-xs font-semibold border ${getAccountTypeBadge(
+                                                className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border ${getAccountTypeBadge(
                                                   reply.userAccountType,
                                                 )}`}
                                               >
                                                 {reply.userAccountType}
                                               </span>
-                                              <span className="text-xs text-richblack-500">
+                                              <span className="text-[11px] font-bold text-cem-neutral-gray-300 uppercase">
                                                 {formatDate(reply.createdAt)}
                                               </span>
                                             </div>
-                                            <div className="flex gap-2">
+                                            <div className="flex gap-1">
                                               <button
                                                 onClick={() => {
                                                   setEditingReply(reply.id);
@@ -663,7 +663,7 @@ export default function DiscussionsByLesson({
                                                     [reply.id]: reply.reply,
                                                   });
                                                 }}
-                                                className="text-xs text-yellow-400 hover:text-yellow-300 transition-colors flex items-center gap-1"
+                                                className="text-xs font-black uppercase tracking-wider text-amber-500 hover:text-amber-600 transition-colors flex items-center gap-1"
                                               >
                                                 <FiEdit2 className="w-3 h-3" />
                                               </button>
@@ -674,7 +674,7 @@ export default function DiscussionsByLesson({
                                                     id: reply.id,
                                                   })
                                                 }
-                                                className="text-xs text-red-400 hover:text-red-300 transition-colors flex items-center gap-1"
+                                                className="text-xs font-black uppercase tracking-wider text-red-500 hover:text-red-600 transition-colors flex items-center gap-1"
                                               >
                                                 <FiTrash2 className="w-3 h-3" />
                                               </button>
@@ -686,7 +686,7 @@ export default function DiscussionsByLesson({
                                   ))}
                                 </div>
                               ) : (
-                                <p className="text-xs text-richblack-500 text-center py-2">
+                                <p className="text-xs font-bold text-cem-neutral-gray-400 text-center py-2 uppercase tracking-tight">
                                   No hay respuestas aún
                                 </p>
                               )}
@@ -697,7 +697,7 @@ export default function DiscussionsByLesson({
                     })}
                   </div>
                 ) : (
-                  <p className="text-richblack-400 text-center py-4">
+                  <p className="text-cem-neutral-gray-400 font-bold text-center py-4">
                     No hay discusiones en esta lección
                   </p>
                 )}

@@ -43,7 +43,7 @@ export default function CourseCard({
   const isPublished = course.status === COURSE_STATUS.PUBLISHED;
 
   return (
-    <div className="bg-white rounded-[24px] border border-cem-neutral-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 group flex flex-col h-full shadow-sm">
+    <div className="bg-white rounded-[24px] border border-cem-neutral-gray-100 overflow-hidden hover:shadow-[0_30px_60px_rgba(0,0,0,0.12)] transition-all duration-500 group flex flex-col h-full shadow-[0_10px_30px_rgba(0,0,0,0.08)]">
       {/* Thumbnail con overlay */}
       <div className="relative w-full h-[220px] overflow-hidden">
         {course.thumbnail ? (
@@ -75,14 +75,14 @@ export default function CourseCard({
       </div>
 
       {/* Contenido */}
-      <div className="p-6 flex flex-col flex-1 space-y-4">
+      <div className="p-6 flex flex-col flex-1">
         {/* Categorías */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 mb-3">
           {Array.isArray(course.category) ? (
             course.category.map((cat: CourseCategory, index) => (
               <span
                 key={cat.id || index}
-                className={`px-3 py-1 text-[11px] font-bold rounded-lg uppercase tracking-wider ${index % 2 === 0
+                className={`inline-flex px-3 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider w-fit ${index % 2 === 0
                   ? "bg-[#EEF2FF] text-[#4F46E5]"
                   : "bg-[#F0FDF4] text-[#16A34A]"
                   }`}
@@ -92,55 +92,62 @@ export default function CourseCard({
             ))
           ) : course.category ? (
             <span
-              className="px-3 py-1 text-[11px] font-bold rounded-lg uppercase tracking-wider bg-[#EEF2FF] text-[#4F46E5]"
+              className="inline-flex px-3 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider w-fit bg-[#EEF2FF] text-[#4F46E5]"
             >
               {(course.category as CourseCategory).name}
             </span>
           ) : null}
         </div>
 
-        {/* Título */}
-        <h3 className="text-xl font-bold text-[#1E293B] line-clamp-2 min-h-[56px] leading-tight">
-          {course.courseName}
-        </h3>
-
-        {/* Instructor */}
-        <div className="flex items-center gap-3 py-1">
-          <div className="flex-shrink-0">
-            {course.instructor?.image ? (
-              <Img
-                src={course.instructor.image}
-                className="w-10 h-10 rounded-full object-cover shadow-sm"
-                alt={course.instructor.name}
-              />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-[#3B4CB8] flex items-center justify-center text-white font-bold text-sm shadow-sm">
-                {course.instructor?.name?.[0] || "?"}
-              </div>
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-[#1E293B] truncate">
-              {course.instructor?.name}
-            </p>
-            <p className="text-xs text-cem-neutral-gray-400 truncate">
-              {course.instructor?.email}
-            </p>
-          </div>
+        {/* Título - Altura fija para mantener la alineación de lo que sigue */}
+        <div className="min-h-[56px] flex items-start mb-4">
+          <h3 className="text-xl font-bold text-[#1E293B] line-clamp-2 leading-tight">
+            {course.courseName}
+          </h3>
         </div>
 
-        {/* Precio */}
-        <div className="flex items-baseline gap-1">
-          <span className="text-2xl font-black text-[#00849c]">
-            S/{course.price.toFixed(2)}
-          </span>
-        </div>
+        {/* Info flexible con empuje hacia el fondo */}
+        <div className="flex flex-col flex-1">
+          {/* Instructor */}
+          <div className="flex items-center gap-3 h-12 mb-4">
+            <div className="flex-shrink-0">
+              {course.instructor?.image ? (
+                <Img
+                  src={course.instructor.image}
+                  className="w-10 h-10 rounded-full object-cover shadow-sm"
+                  alt={course.instructor.name}
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-[#3B4CB8] flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                  {course.instructor?.name?.[0] || "?"}
+                </div>
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-[#1E293B] truncate">
+                {course.instructor?.name}
+              </p>
+              <p className="text-[11px] text-cem-neutral-gray-400 truncate">
+                {course.instructor?.email}
+              </p>
+            </div>
+          </div>
 
-        {/* Separador e Info Alumnos */}
-        <div className="pt-4 mt-auto border-t border-cem-neutral-gray-100 flex items-center justify-between">
-          <p className="text-sm font-medium text-cem-neutral-gray-500">
-            <span className="font-bold text-cem-neutral-gray-900">{course.totalStudentsEnrolled || 0}</span> Estudiantes
-          </p>
+          <div className="mt-auto space-y-4">
+            {/* Precio */}
+            <div className="flex items-baseline gap-1">
+              <span className="text-2xl font-black text-[#00849c]">
+                S/{course.price.toFixed(2)}
+              </span>
+            </div>
+
+            {/* Separador e Info Alumnos */}
+            <div className="pt-4 border-t border-cem-neutral-gray-100 flex items-center justify-between">
+              <p className="text-sm font-medium text-cem-neutral-gray-500">
+                <span className="font-bold text-cem-neutral-gray-900">{course.totalStudentsEnrolled || 0}</span> Estudiantes
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Acciones */}
