@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDropzone, FileWithPath } from "react-dropzone";
 import { FiUploadCloud } from "react-icons/fi";
 import { UploadProps } from "../../types";
@@ -20,7 +20,7 @@ export default function Upload({
   const [previewSource, setPreviewSource] = useState<string>(
     viewData ? viewData : editData ? editData : ""
   );
-  const inputRef = useRef<HTMLInputElement>(null);
+
 
   const onDrop = (acceptedFiles: FileWithPath[]) => {
     const file = acceptedFiles[0];
@@ -30,11 +30,12 @@ export default function Upload({
     }
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     accept: !video
       ? { "image/*": [".jpeg", ".jpg", ".png"] }
       : { "video/*": [".mp4"] },
     onDrop,
+    noClick: true,
   });
 
   const previewFile = (file: File) => {
@@ -58,13 +59,23 @@ export default function Upload({
 
   return (
     <div className="flex flex-col space-y-2">
-      <label className="text-sm text-richblack-5" htmlFor={name}>
+      <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor={name}>
         {label} {required && !viewData && <sup className="text-pink-200">*</sup>}
       </label>
 
       <div
-        className={`${isDragActive ? "bg-richblack-600" : "bg-richblack-700"}
-         flex min-h-[250px] cursor-pointer items-center justify-center rounded-md border-2 border-dotted border-richblack-500`}
+        {...getRootProps()}
+        onClick={(e) => {
+          if (!previewSource) {
+            e.preventDefault();
+            open();
+          }
+        }}
+        className={`flex min-h-[250px] cursor-pointer items-center justify-center rounded-2xl border border-dashed transition-all duration-300
+          ${isDragActive
+            ? "border-cem-primary bg-cem-primary/5 shadow-inner"
+            : "border-cem-neutral-gray-200 bg-white hover:border-cem-primary/50 hover:bg-cem-neutral-gray-50/50 shadow-sm"
+          }`}
       >
         {previewSource ? (
           <div className="flex w-full flex-col p-6">
@@ -72,7 +83,7 @@ export default function Upload({
               <Image
                 src={previewSource}
                 alt="Preview"
-                className="h-full w-full rounded-md object-cover"
+                className="h-full w-full rounded-xl object-cover shadow-md"
                 width={800}
                 height={450}
                 unoptimized={
@@ -84,7 +95,7 @@ export default function Upload({
             ) : (
               <video
                 src={previewSource}
-                className="w-full h-full rounded-md object-cover"
+                className="w-full h-full rounded-xl object-cover shadow-md"
                 controls
                 playsInline
                 style={{ aspectRatio: "16/9" }}
@@ -92,40 +103,45 @@ export default function Upload({
             )}
 
             {!viewData && (
-              <button
-                type="button"
-                onClick={() => {
-                  setPreviewSource("");
-                  setSelectedFile(null);
-                  setValue(
-                    name,
-                    null as unknown as Parameters<typeof setValue>[1]
-                  );
-                }}
-                className="mt-3 text-richblack-400 underline"
-              >
-                Cancelar
-              </button>
+              <div className="flex justify-center">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPreviewSource("");
+                    setSelectedFile(null);
+                    setValue(
+                      name,
+                      null as unknown as Parameters<typeof setValue>[1]
+                    );
+                  }}
+                  className="mt-4 px-4 py-2 text-cem-neutral-gray-500 font-medium hover:text-red-500 hover:bg-red-50 rounded-lg transition-all text-sm border border-transparent hover:border-red-100"
+                >
+                  Eliminar archivo y cambiar
+                </button>
+              </div>
             )}
           </div>
         ) : (
-          <div
-            className="flex w-full flex-col items-center p-6"
-            {...getRootProps()}
-          >
-            <input {...getInputProps()} ref={inputRef} />
-            <div className="grid aspect-square w-14 place-items-center rounded-full bg-pure-greys-800">
-              <FiUploadCloud className="text-2xl text-yellow-50" />
+          <div className="flex w-full flex-col items-center p-8">
+            <input {...getInputProps()} />
+            <div className="flex flex-col items-center space-y-4">
+              <div className="grid aspect-square w-16 place-items-center rounded-full bg-cem-primary/5 text-cem-primary transition-transform duration-300 group-hover:scale-110">
+                <FiUploadCloud className="text-3xl" />
+              </div>
+
+              <div className="text-center">
+                <p className="text-[16px] leading-[24px] text-cem-neutral-gray-700">
+                  Arrastra y suelta una {!video ? "imagen" : "video"}, o haz clic para Explorar
+                  <br />
+                  un archivo
+                </p>
+                <div className="mt-2 text-[13px] leading-[18px] text-cem-neutral-gray-400">
+                  <p>Tamaño recomendado 1024x576.</p>
+                  <p>Relación de aspecto 16:9</p>
+                </div>
+              </div>
             </div>
-            <p className="mt-2 max-w-[200px] text-center text-sm text-richblack-200">
-              Arrastra y suelta una {!video ? "imagen" : "video"}, o haz clic para{" "}
-              <span className="font-semibold text-yellow-50">Explorar</span> un
-              archivo
-            </p>
-            <ul className="mt-10 flex list-disc justify-between space-x-12 text-center  text-xs text-richblack-200">
-              <li>Relación de aspecto 16:9</li>
-              <li>Tamaño recomendado 1024x576</li>
-            </ul>
           </div>
         )}
       </div>

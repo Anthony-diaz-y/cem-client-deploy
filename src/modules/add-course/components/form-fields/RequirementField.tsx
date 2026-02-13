@@ -55,7 +55,7 @@ export default function RequirementsField<T extends FieldValues = FieldValues>({
 
   return (
     <div className="flex flex-col space-y-2">
-      <label className="text-sm text-richblack-5" htmlFor={name}>
+      <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor={name}>
         {label} <sup className="text-pink-200">*</sup>
       </label>
 
@@ -70,17 +70,17 @@ export default function RequirementsField<T extends FieldValues = FieldValues>({
         <button
           type="button"
           onClick={handleAddRequirement}
-          className="font-semibold text-yellow-50"
+          className="font-semibold text-cem-primary hover:text-cem-primary-dark transition-colors"
         >
-          Add
+          Agregar
         </button>
       </div>
 
       {requirementsList.length > 0 && (
         <ul className="mt-2 list-inside list-disc">
           {requirementsList.map((requirement, index) => (
-            <li key={index} className="flex items-center text-richblack-5">
-              <span>{requirement}</span>
+            <li key={index} className="flex items-center text-cem-neutral-gray-700">
+              <span className="flex-1">{requirement}</span>
               <button
                 type="button"
                 className="ml-2 text-xs text-pure-greys-300 "

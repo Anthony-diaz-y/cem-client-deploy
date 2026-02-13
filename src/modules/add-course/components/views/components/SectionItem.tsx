@@ -62,8 +62,8 @@ export default function SectionItem({
   setConfirmationModal,
   setWasJustDragged,
 }: SectionItemProps) {
-  const subSectionsArray = (section.subSection && Array.isArray(section.subSection)) 
-    ? section.subSection 
+  const subSectionsArray = (section.subSection && Array.isArray(section.subSection))
+    ? section.subSection
     : ((section as { subSections?: SubSection[] }).subSections && Array.isArray((section as { subSections?: SubSection[] }).subSections))
       ? (section as { subSections?: SubSection[] }).subSections
       : [];
@@ -71,7 +71,7 @@ export default function SectionItem({
   const handleSectionDragStart = (e: React.DragEvent) => {
     const target = e.target as HTMLElement;
     const isFromLecture = target.closest('[data-lecture-draggable]');
-    
+
     if (!isFromLecture) {
       onSectionDragStart(e, sectionId);
     } else {
@@ -81,8 +81,8 @@ export default function SectionItem({
   };
 
   const handleSectionDragOver = (e: React.DragEvent) => {
-    if (draggedItem?.type === "section" || 
-        (draggedItem?.type === "lecture" && draggedItem?.sourceSectionId !== sectionId)) {
+    if (draggedItem?.type === "section" ||
+      (draggedItem?.type === "lecture" && draggedItem?.sourceSectionId !== sectionId)) {
       e.preventDefault();
       onSectionDragOver(e, sectionId);
     }
@@ -108,26 +108,25 @@ export default function SectionItem({
         e.stopPropagation();
         onSectionDrop(e, sectionId);
       }}
-      className={`transition-all duration-200 ${
-        isDragged
+      className={`transition-all duration-200 ${isDragged
           ? "opacity-50 scale-95"
           : isDragOver
-          ? "border-l-4 border-l-yellow-500 bg-yellow-500/10"
-          : ""
-      }`}
+            ? "border-l-4 border-l-yellow-500 bg-yellow-500/10"
+            : ""
+        }`}
     >
-      <summary className="flex cursor-pointer items-center justify-between border-b-2 border-b-richblack-600 py-2">
+      <summary className="flex cursor-pointer items-center justify-between border-b-2 border-b-cem-neutral-gray-200 py-2">
         <div className="flex items-center gap-x-3">
-          <HiMenu className="text-xl text-richblack-400 cursor-grab active:cursor-grabbing" />
-          <RxDropdownMenu className="text-2xl text-richblack-50" />
-          <p className="font-semibold text-richblack-50">
+          <HiMenu className="text-xl text-cem-neutral-gray-400 cursor-grab active:cursor-grabbing" />
+          <RxDropdownMenu className="text-2xl text-cem-neutral-gray-900" />
+          <p className="font-semibold text-cem-neutral-gray-900">
             {section.sectionName}
           </p>
         </div>
 
         <div className="flex items-center gap-x-3">
           <button onClick={() => onEditSectionName(sectionId, section.sectionName)}>
-            <MdEdit className="text-xl text-richblack-300" />
+            <MdEdit className="text-xl text-cem-neutral-gray-400 hover:text-cem-neutral-gray-600 transition-colors" />
           </button>
 
           <button
@@ -142,11 +141,11 @@ export default function SectionItem({
               })
             }
           >
-            <RiDeleteBin6Line className="text-xl text-richblack-300" />
+            <RiDeleteBin6Line className="text-xl text-cem-neutral-gray-400 hover:text-cem-neutral-gray-600 transition-colors" />
           </button>
 
-          <span className="font-medium text-richblack-300">|</span>
-          <AiFillCaretDown className={`text-xl text-richblack-300`} />
+          <span className="font-medium text-cem-neutral-gray-300">|</span>
+          <AiFillCaretDown className={`text-xl text-cem-neutral-gray-400`} />
         </div>
       </summary>
 
@@ -166,7 +165,7 @@ export default function SectionItem({
         {subSectionsArray && subSectionsArray.length > 0 ? (
           subSectionsArray.map((lecture: SubSection, subSectionIndex: number) => {
             const subSectionId = (lecture as { id?: string })?.id || lecture?._id || `subsection-${sectionIndex}-${subSectionIndex}`;
-            
+
             const isLectureDragged =
               draggedItem?.type === "lecture" &&
               draggedItem?.lectureId === subSectionId;
@@ -198,12 +197,12 @@ export default function SectionItem({
             );
           })
         ) : (
-          <p className="text-richblack-400 text-sm py-2">No lectures in this section</p>
+          <p className="text-cem-neutral-gray-500 text-sm py-2">No hay lecciones en esta sección</p>
         )}
-        
+
         <button
           onClick={() => onAddLecture(sectionId)}
-          className="mt-3 flex items-center gap-x-1 text-yellow-50"
+          className="mt-3 flex items-center gap-x-1 text-cem-primary font-semibold hover:text-cem-primary-dark transition-colors"
         >
           <FaPlus className="text-lg" />
           <p>Agregar Lección</p>

@@ -17,6 +17,7 @@ interface UseAdminCoursesReturn {
   searchInput: string;
   setSearchInput: (value: string) => void;
   handlePageChange: (newPage: number) => void;
+  loadMore: () => void;
   handleFiltersChange: (newFilters: {
     search?: string;
     status?: string;
@@ -35,7 +36,7 @@ export function useAdminCourses(
   const [searchInput, setSearchInput] = useState(initialSearch || "");
   const [filters, setFilters] = useState({
     page: 1,
-    limit: 10,
+    limit: 12, // Aumentado de 6 a 12 para reducir el número de peticiones
     search: initialSearch || "",
     status: "all",
     categoryId: "all",
@@ -48,64 +49,47 @@ export function useAdminCourses(
   });
   const [meta, setMeta] = useState({
     page: 1,
-    limit: 10,
+    limit: 12,
     total: 0,
     totalPages: 1,
   });
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialMount = useRef(true);
 
-  const fetchCourses = useCallback(async (currentFilters: typeof filters, showLoading = true) => {
+  const fetchCourses = useCallback(async (currentFilters: typeof filters, showLoading = true, append = false) => {
     if (!token) return;
-    if (showLoading) {
+    if (showLoading && !append) {
       setLoading(true);
     }
     try {
-      const backendFilters: {
-        page?: number;
-        limit?: number;
-        search?: string;
-        status?: string;
-        categoryId?: string;
-        instructorId?: string;
-      } = {};
+      const backendFilters: Record<string, string | number | undefined> = {
+        page: currentFilters.page,
+        limit: currentFilters.limit,
+      };
 
-      if (currentFilters.page) {
-        backendFilters.page = currentFilters.page;
-      }
-      if (currentFilters.limit) {
-        backendFilters.limit = currentFilters.limit;
-      }
-
-      if (currentFilters.search && currentFilters.search.trim() !== "") {
-        backendFilters.search = currentFilters.search.trim();
-      }
-
-      if (currentFilters.status && currentFilters.status !== "all") {
-        backendFilters.status = currentFilters.status;
-      }
-
-      if (currentFilters.categoryId && currentFilters.categoryId !== "all") {
-        backendFilters.categoryId = currentFilters.categoryId;
-      }
-
-      if (currentFilters.instructorId && currentFilters.instructorId !== "all") {
-        backendFilters.instructorId = currentFilters.instructorId;
-      }
+      if (currentFilters.search?.trim()) backendFilters.search = currentFilters.search.trim();
+      if (currentFilters.status !== "all") backendFilters.status = currentFilters.status;
+      if (currentFilters.categoryId !== "all") backendFilters.categoryId = currentFilters.categoryId;
+      if (currentFilters.instructorId !== "all") backendFilters.instructorId = currentFilters.instructorId;
 
       const response = await getAllCoursesAdmin(token, backendFilters, true);
 
       if (response && response.success) {
         const coursesData = response.data || [];
-        const metaData = response.meta || {
+        const newMeta = response.meta || {
           page: currentFilters.page || 1,
-          limit: currentFilters.limit || 10,
+          limit: currentFilters.limit || 6,
           total: response.count || coursesData.length,
-          totalPages: Math.ceil((response.count || coursesData.length) / (currentFilters.limit || 10))
+          totalPages: Math.ceil((response.count || 1) / (currentFilters.limit || 6))
         };
 
-        setCourses(coursesData);
-        setMeta(metaData);
+        if (append) {
+          setCourses(prev => [...prev, ...coursesData]);
+        } else {
+          setCourses(coursesData);
+        }
+
+        setMeta(newMeta);
 
         if (response.counts) {
           setCounts(response.counts);
@@ -117,8 +101,8 @@ export function useAdminCourses(
           });
         }
       }
-    } catch (error) {
-      setCourses([]);
+    } catch {
+      if (!append) setCourses([]);
     } finally {
       if (showLoading) {
         setLoading(false);
@@ -127,48 +111,39 @@ export function useAdminCourses(
   }, [token]);
 
   useEffect(() => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    const trimmedSearch = searchInput.trim();
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
 
     debounceTimerRef.current = setTimeout(() => {
       setFilters((prev) => ({
         ...prev,
-        search: trimmedSearch,
+        search: searchInput.trim(),
         page: 1
       }));
     }, 250);
 
     return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     };
   }, [searchInput]);
 
   useEffect(() => {
     if (!token) return;
+    const isLoadMore = filters.page > 1;
+    fetchCourses(filters, isInitialMount.current, isLoadMore);
 
-    const showLoading = isInitialMount.current;
-    fetchCourses(filters, showLoading);
-
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-    }
-  }, [token, filters.search, filters.status, filters.categoryId, filters.instructorId, filters.page, filters.limit, fetchCourses]);
+    if (isInitialMount.current) isInitialMount.current = false;
+  }, [token, filters, fetchCourses]);
 
   const handlePageChange = useCallback((newPage: number) => {
     setFilters((prev) => ({ ...prev, page: newPage }));
   }, []);
 
-  const handleFiltersChange = useCallback((newFilters: {
-    search?: string;
-    status?: string;
-    categoryId?: string;
-    instructorId?: string;
-  }) => {
+  const loadMore = useCallback(() => {
+    if (loading || meta.page >= meta.totalPages) return;
+    setFilters(prev => ({ ...prev, page: prev.page + 1 }));
+  }, [loading, meta.page, meta.totalPages]);
+
+  const handleFiltersChange = useCallback((newFilters: Partial<typeof filters>) => {
     setFilters(prev => ({
       ...prev,
       ...newFilters,
@@ -188,7 +163,8 @@ export function useAdminCourses(
     loading,
     searchInput,
     setSearchInput,
-    handlePageChange,
+    handlePageChange, // Mantener por compatibilidad si es necesario
+    loadMore,
     handleFiltersChange,
     refreshCourses,
   };

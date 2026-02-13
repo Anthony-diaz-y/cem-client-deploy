@@ -2,10 +2,11 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppSelector } from "@shared/store/hooks";
-import AllCoursesTable from "../components/course/AllCoursesTable";
+import AllCoursesTable from "../components/course/allCoursesTable/AllCoursesTable";
 import { Loading } from "@shared/components";
-import Pagination from "@shared/components/common/Pagination";
 import { useAdminCourses } from "../hooks/course/useAdminCourses";
+import { StatCard } from "../components/shared/StatCard";
+import { ActionButton } from "../components/shared/ActionButton";
 
 export default function AllCoursesContainer() {
   const router = useRouter();
@@ -21,7 +22,7 @@ export default function AllCoursesContainer() {
     loading,
     searchInput,
     setSearchInput,
-    handlePageChange,
+    loadMore,
     handleFiltersChange,
     refreshCourses,
   } = useAdminCourses(token, initialSearch);
@@ -34,49 +35,39 @@ export default function AllCoursesContainer() {
     );
   }
 
-  if (loading) {
+  // Solo mostrar la pantalla de carga completa en el primer montaje si no hay cursos
+  if (loading && courses.length === 0) {
     return <Loading />;
   }
 
   return (
     <div className="space-y-6">
       <div className="space-y-4">
-        <h1 className="text-3xl font-bold text-richblack-5">
+        <h1 className="text-3xl font-bold">
           Todos los Cursos
         </h1>
-        <p className="text-richblack-400">
-          Gestiona todos los cursos del sistema, tanto publicados como en borrador
+        <p className="text-cem-neutral-gray-500 font-medium">
+          Gestiona todos los cursos del sistema, tanto publicados como en borrador.
         </p>
         <div className="flex items-center gap-3 pt-2">
-          <button
+          <ActionButton
+            label="Crear Curso"
             onClick={() => router.push("/dashboard/add-course")}
-            className="flex items-center gap-x-2 rounded-lg bg-yellow-50 px-5 py-2.5 font-semibold text-richblack-900 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/20"
-          >
-            <span className="text-lg">+</span> Crear Curso
-          </button>
+          />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-richblack-800 rounded-xl p-4 border border-richblack-700">
-          <p className="text-sm text-richblack-400 mb-1">Total de Cursos</p>
-          <p className="text-2xl font-bold text-richblack-5">{counts.total}</p>
-        </div>
-        <div className="bg-richblack-800 rounded-xl p-4 border border-richblack-700">
-          <p className="text-sm text-richblack-400 mb-1">Publicados</p>
-          <p className="text-2xl font-bold text-green-400">{counts.published}</p>
-        </div>
-        <div className="bg-richblack-800 rounded-xl p-4 border border-richblack-700">
-          <p className="text-sm text-richblack-400 mb-1">Borradores</p>
-          <p className="text-2xl font-bold text-yellow-100">{counts.draft}</p>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <StatCard title="Total de Cursos" value={counts.total} />
+        <StatCard title="Publicados" value={counts.published} />
+        <StatCard title="Borradores" value={counts.draft} />
       </div>
 
       <AllCoursesTable
         courses={courses}
         token={token}
         onUpdate={refreshCourses}
-        onEdit={() => {}}
+        onEdit={() => { }}
         filters={{
           search: filters.search,
           status: filters.status,
@@ -86,12 +77,8 @@ export default function AllCoursesContainer() {
         onFiltersChange={handleFiltersChange}
         searchInput={searchInput}
         onSearchInputChange={setSearchInput}
-      />
-
-      <Pagination
-        currentPage={meta.page}
-        totalPages={meta.totalPages}
-        onPageChange={handlePageChange}
+        loadMore={loadMore}
+        hasMore={meta.page < meta.totalPages}
       />
     </div>
   );

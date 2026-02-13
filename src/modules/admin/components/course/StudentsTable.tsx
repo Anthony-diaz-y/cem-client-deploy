@@ -4,6 +4,7 @@ import React, { useState, useMemo } from "react";
 import { EnrolledStudent } from "@shared/services/adminAPI";
 import { Img } from "@shared/components";
 import { FiSearch } from "react-icons/fi";
+import { HiSelector } from "react-icons/hi";
 
 interface StudentsTableProps {
   students: EnrolledStudent[];
@@ -49,20 +50,20 @@ export default function StudentsTable({ students }: StudentsTableProps) {
   const getStatusBadge = (student: EnrolledStudent) => {
     if (student.progress.isCompleted) {
       return (
-        <span className="px-2 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-semibold">
+        <span className="px-2 py-1 bg-emerald-100 text-emerald-600 rounded-full text-xs font-bold">
           Completado
         </span>
       );
     }
     if (student.progress.completedSubSections > 0) {
       return (
-        <span className="px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-xs font-semibold">
+        <span className="px-2 py-1 bg-amber-100 text-amber-600 rounded-full text-xs font-bold">
           En Progreso
         </span>
       );
     }
     return (
-      <span className="px-2 py-1 bg-gray-500/20 text-gray-400 rounded-full text-xs font-semibold">
+      <span className="px-2 py-1 bg-cem-neutral-gray-100 text-cem-neutral-gray-500 rounded-full text-xs font-bold">
         No Iniciado
       </span>
     );
@@ -91,13 +92,13 @@ export default function StudentsTable({ students }: StudentsTableProps) {
           onChange={(e) =>
             setStudentFilter(
               e.target.value as
-                | "all"
-                | "completed"
-                | "in-progress"
-                | "not-started",
+              | "all"
+              | "completed"
+              | "in-progress"
+              | "not-started",
             )
           }
-          className="px-4 py-2 bg-richblack-700 border border-richblack-600 rounded-lg text-richblack-5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="h-[56px] px-4 bg-cem-neutral-gray-50 border border-cem-neutral-gray-200 rounded-lg text-[#1E293B] font-medium text-[16px] focus:outline-none focus:ring-2 focus:ring-cem-primary transition-all cursor-pointer shadow-sm"
         >
           <option value="all">Todos</option>
           <option value="completed">Completados</option>
@@ -107,94 +108,109 @@ export default function StudentsTable({ students }: StudentsTableProps) {
 
         {/* Búsqueda */}
         <div className="flex-1 relative">
-          <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-richblack-400 text-lg" />
+          <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cem-neutral-gray-400 text-lg" />
           <input
             type="text"
             placeholder="Buscar por nombre o email..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-richblack-700 border border-richblack-600 rounded-lg text-richblack-5 placeholder-richblack-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full h-[56px] pl-10 pr-4 bg-cem-neutral-gray-50 border border-cem-neutral-gray-200 rounded-lg text-[#1E293B] font-medium placeholder-cem-neutral-gray-400 focus:outline-none focus:ring-2 focus:ring-cem-primary transition-all shadow-sm"
           />
         </div>
 
         {/* Contador */}
-        <div className="text-sm text-richblack-400 flex items-center">
+        <div className="text-sm font-medium text-cem-neutral-gray-500 flex items-center">
           {filteredStudents.length} de {students.length} estudiantes
         </div>
       </div>
 
       {/* Tabla */}
       {filteredStudents.length === 0 ? (
-        <div className="bg-richblack-900/50 rounded-lg p-8 text-center">
-          <p className="text-richblack-400">
+        <div className="bg-cem-neutral-gray-50 rounded-lg p-8 text-center border border-cem-neutral-gray-100">
+          <p className="text-cem-neutral-gray-500 font-bold">
             {students.length === 0
               ? "No hay estudiantes matriculados en este curso"
               : "No se encontraron estudiantes con los filtros seleccionados"}
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-richblack-700">
-            <thead className="bg-richblack-900/50">
+        <div className="overflow-x-auto rounded-lg border-b border-cem-neutral-gray-100">
+          <table className="min-w-full">
+            <thead className="bg-cem-neutral-gray-50 border-b border-cem-neutral-gray-200">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider">
-                  Estudiante
+                <th className="px-6 py-3 text-left text-[12px] font-medium text-cem-neutral-gray-600 cursor-pointer hover:bg-cem-neutral-gray-100/50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span>Estudiante</span>
+                    <HiSelector className="text-cem-neutral-gray-400" />
+                  </div>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider">
-                  Email
+                <th className="px-6 py-3 text-left text-[12px] font-medium text-cem-neutral-gray-600 cursor-pointer hover:bg-cem-neutral-gray-100/50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span>Email</span>
+                    <HiSelector className="text-cem-neutral-gray-400" />
+                  </div>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider">
-                  Progreso
+                <th className="px-6 py-3 text-left text-[12px] font-medium text-cem-neutral-gray-600 cursor-pointer hover:bg-cem-neutral-gray-100/50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span>Progreso</span>
+                    <HiSelector className="text-cem-neutral-gray-400" />
+                  </div>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider">
-                  Estado
+                <th className="px-6 py-3 text-left text-[12px] font-medium text-cem-neutral-gray-600 cursor-pointer hover:bg-cem-neutral-gray-100/50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span>Estado</span>
+                    <HiSelector className="text-cem-neutral-gray-400" />
+                  </div>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider">
-                  Inscrito
+                <th className="px-6 py-3 text-left text-[12px] font-medium text-cem-neutral-gray-600 cursor-pointer hover:bg-cem-neutral-gray-100/50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span>Inscrito</span>
+                    <HiSelector className="text-cem-neutral-gray-400" />
+                  </div>
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-richblack-800 divide-y divide-richblack-700">
+            <tbody className="bg-white divide-y divide-cem-neutral-gray-100">
               {filteredStudents.map((student) => (
                 <tr
                   key={student.id}
-                  className="hover:bg-richblack-900/50 transition-colors"
+                  className="hover:bg-cem-neutral-gray-50/50 transition-colors"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full overflow-hidden bg-richblack-700 flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full overflow-hidden bg-cem-neutral-gray-100 flex-shrink-0 border border-cem-neutral-gray-100">
                         <Img
                           src={student.image}
                           alt={`${student.name}`}
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <span className="text-sm font-medium text-richblack-5">
+                      <span className="text-sm font-bold text-[#1E293B]">
                         {student.name}
                       </span>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-richblack-300">
+                    <span className="text-sm font-medium text-cem-neutral-gray-500">
                       {student.email}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <div className="w-32 bg-richblack-700 rounded-full h-2 overflow-hidden">
+                        <div className="w-32 bg-cem-neutral-gray-100 rounded-full h-2 overflow-hidden shadow-inner">
                           <div
-                            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                            className="bg-cem-primary h-2 rounded-full transition-all duration-300"
                             style={{
                               width: `${student.progress.progressPercentage}%`,
                             }}
                           />
                         </div>
-                        <span className="text-sm font-medium text-richblack-5">
+                        <span className="text-sm font-black text-cem-primary">
                           {student.progress.progressPercentage.toFixed(1)}%
                         </span>
                       </div>
-                      <div className="text-xs text-richblack-400">
+                      <div className="text-[8px] font-medium text-cem-neutral-gray-400 tracking-tight">
                         {student.progress.completedSubSections} /{" "}
                         {student.progress.totalSubSections} lecciones
                       </div>
@@ -204,7 +220,7 @@ export default function StudentsTable({ students }: StudentsTableProps) {
                     {getStatusBadge(student)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-richblack-300">
+                    <span className="text-sm font-bold text-cem-neutral-gray-400">
                       {formatDate(student.enrolledAt)}
                     </span>
                   </td>

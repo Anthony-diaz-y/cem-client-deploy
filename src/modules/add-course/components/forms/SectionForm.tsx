@@ -19,7 +19,7 @@ const SectionForm: React.FC<SectionFormProps> = ({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="sectionName">
+        <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="sectionName">
           Nombre de la Sección <sup className="text-pink-200">*</sup>
         </label>
         <input
@@ -41,15 +41,14 @@ const SectionForm: React.FC<SectionFormProps> = ({
           type="submit"
           disabled={loading}
           text={editSectionName ? "Editar Nombre de Sección" : "Crear Sección"}
-          outline={true}
         >
-          <IoAddCircleOutline size={20} className="text-yellow-50" />
+          <IoAddCircleOutline size={20} className="text-white" />
         </IconBtn>
         {editSectionName && (
           <button
             type="button"
             onClick={onCancelEdit}
-            className="text-sm text-richblack-300 underline"
+            className="text-sm text-cem-neutral-gray-400 underline hover:text-cem-neutral-gray-600 transition-colors"
           >
             Cancelar Edición
           </button>

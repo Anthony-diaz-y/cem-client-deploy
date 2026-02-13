@@ -53,7 +53,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="bg-cem-background xl:pr-20 text-cem-neutral-gray-900 mt-3 w-full">
+    <div className="bg-cem-background text-cem-neutral-gray-900 mt-3 w-full">
       {/* Header & Filter Section Combined */}
       <div className="flex flex-col md:flex-row justify-between items-end gap-4 mb-3 animate-fadeIn">
         <div>

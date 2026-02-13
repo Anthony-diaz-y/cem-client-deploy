@@ -6,6 +6,7 @@ import CategoriesTable from "../components/category/CategoriesTable";
 import CreateCategoryModal from "../components/category/CreateCategoryModal";
 import { Loading } from "@shared/components";
 import { useCategories } from "../hooks/category/useCategories";
+import { ActionButton } from "../components/shared/ActionButton";
 
 export default function CategoriesContainer() {
   const { token } = useAppSelector((state) => state.auth);
@@ -34,12 +35,10 @@ export default function CategoriesContainer() {
           Administra las categorías del sistema. Visualiza, crea y elimina categorías.
         </p>
         <div className="flex items-center gap-3 pt-2">
-          <button
+          <ActionButton
+            label="Crear categoría"
             onClick={() => setIsCreateCategoryModalOpen(true)}
-            className="flex items-center gap-x-2 rounded-lg bg-cem-primary px-5 py-2.5 font-semibold text-white transition-all duration-200 hover:bg-cem-primary-dark hover:shadow-lg hover:shadow-cem-primary/20"
-          >
-            <span className="text-lg">+</span> Crear categoría
-          </button>
+          />
         </div>
       </div>
 

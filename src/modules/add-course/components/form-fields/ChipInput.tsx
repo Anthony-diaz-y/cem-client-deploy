@@ -59,7 +59,7 @@ export default function ChipInput({
 
   return (
     <div className="flex flex-col space-y-2">
-      <label className="text-sm text-richblack-5" htmlFor={name}>
+      <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor={name}>
         {label} <sup className="text-pink-200">*</sup>
       </label>
 
@@ -67,7 +67,7 @@ export default function ChipInput({
         {chips?.map((chip, index) => (
           <div
             key={index}
-            className="m-1 flex items-center rounded-full bg-yellow-400 px-2 py-1 text-sm text-richblack-5"
+            className="m-1 flex items-center rounded-full bg-cem-primary/10 px-3 py-1 text-sm text-cem-primary border border-cem-primary/20"
           >
             {chip}
 

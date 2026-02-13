@@ -22,7 +22,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
     <>
       {/* Course Title */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseTitle">
+        <label className="text-sm text-cem-neutral-gray-900" htmlFor="courseTitle">
           Título del Curso <sup className="text-pink-200">*</sup>
         </label>
         <input
@@ -40,14 +40,14 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
 
       {/* Course Short Description */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseShortDesc">
+        <label className="text-sm text-cem-neutral-gray-900" htmlFor="courseShortDesc">
           Descripción Corta del Curso <sup className="text-pink-200">*</sup>
         </label>
         <textarea
           id="courseShortDesc"
           placeholder="Ingresa la descripción"
           {...register("courseShortDesc", { required: true })}
-          className="form-style resize-x-none min-h-[130px] w-full"
+          className="form-style resize-x-none h-[103px] w-full"
         />
         {errors.courseShortDesc && (
           <span className="ml-2 text-xs tracking-wide text-pink-200">
@@ -58,7 +58,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
 
       {/* Course Price */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="coursePrice">
+        <label className="text-sm text-cem-neutral-gray-900" htmlFor="coursePrice">
           Precio del Curso <sup className="text-pink-200">*</sup>
         </label>
         <div className="relative">
@@ -86,7 +86,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
 
       {/* Course Category */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseCategory">
+        <label className="text-sm text-cem-neutral-gray-900" htmlFor="courseCategory">
           Categoría del Curso <sup className="text-pink-200">*</sup>
         </label>
         <select
@@ -101,7 +101,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
             courseCategories?.map((category, indx) => {
               const categoryId = (category as { id?: string })?.id || category?._id;
               if (!categoryId) return null;
-              
+
               return (
                 <option key={indx} value={categoryId}>
                   {category?.name}
@@ -144,9 +144,27 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         editData={editCourse && course ? (course as Course).thumbnail : null}
       />
 
+      {/* Course Promotional Video Link */}
+      <div className="flex flex-col space-y-2">
+        <label className="text-sm text-cem-neutral-gray-900" htmlFor="courseVideoUrl">
+          Video Promocional (Link)
+        </label>
+        <input
+          id="courseVideoUrl"
+          placeholder="Ingresa el link del video promocional (YouTube, Vimeo, etc.)"
+          {...register("courseVideoUrl")}
+          className="form-style w-full"
+        />
+        {errors.courseVideoUrl && (
+          <span className="ml-2 text-xs tracking-wide text-pink-200">
+            {errors.courseVideoUrl.message}
+          </span>
+        )}
+      </div>
+
       {/* Benefits of the course */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseBenefits">
+        <label className="text-sm text-cem-neutral-gray-900" htmlFor="courseBenefits">
           Beneficios del Curso <sup className="text-pink-200">*</sup>
         </label>
         <textarea
