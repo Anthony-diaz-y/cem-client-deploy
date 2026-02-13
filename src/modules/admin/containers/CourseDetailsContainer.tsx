@@ -84,7 +84,7 @@ export default function CourseDetailsContainer({
   }
 
   return (
-    <div className="space-y-6 xl:pr-20">
+    <div className="space-y-6">
       {/* Botón de regreso */}
       <button
         onClick={() => router.push("/dashboard/admin/all-courses")}
@@ -98,8 +98,8 @@ export default function CourseDetailsContainer({
       <div className=" rounded-xl bg-white p-6 shadow-sm ">
         <div className="flex flex-col md:flex-row items-center gap-6">
           {/* Thumbnail */}
-          <div className="flex-shrink-0">
-            <div className="w-[268px] h-[178.67px] rounded-lg overflow-hidden bg-cem-neutral-gray-50 border border-cem-neutral-gray-100 shadow-sm">
+          <div className="w-full md:w-auto flex justify-center md:block">
+            <div className="w-full max-w-[268px] aspect-[3/2] rounded-lg overflow-hidden bg-cem-neutral-gray-50 border border-cem-neutral-gray-100 shadow-sm">
               <Img
                 src={data.course.thumbnail}
                 alt={data.course.courseName}

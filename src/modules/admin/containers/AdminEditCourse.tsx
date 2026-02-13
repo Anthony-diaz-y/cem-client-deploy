@@ -15,7 +15,7 @@ import { Course } from "@modules/course/types";
 // Función para normalizar la estructura del curso (subSections -> subSection)
 const normalizeCourseStructure = (course: any): Course => {
   if (!course || !course.courseContent) return course;
-  
+
   const normalizedContent = course.courseContent.map((section: any) => {
     // Si tiene subSections (con S mayúscula), convertir a subSection
     if (section.subSections && Array.isArray(section.subSections)) {
@@ -33,7 +33,7 @@ const normalizeCourseStructure = (course: any): Course => {
     }
     return section;
   });
-  
+
   return {
     ...course,
     courseContent: normalizedContent,
@@ -79,30 +79,33 @@ export default function AdminEditCourse() {
   }
 
   return (
-    <div className="flex w-full items-start gap-x-6">
-      <div className="flex flex-1 flex-col">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-3xl font-medium text-richblack-5 font-boogaloo">
+    <div className="flex flex-col xl:flex-row w-full items-start gap-y-10 xl:gap-y-0 xl:gap-x-10">
+      <div className="flex flex-1 flex-col w-full">
+        <div className="mb-10 flex flex-col md:flex-row items-center justify-between gap-y-4">
+          <h1 className="text-3xl font-medium text-cem-neutral-gray-900 font-boogaloo text-center md:text-left">
             Editar Curso: {course ? (course as Course).courseName : "Cargando..."}
           </h1>
           <button
             onClick={() => router.push("/dashboard/admin/all-courses")}
-            className="px-4 py-2 bg-richblack-700 text-richblack-5 rounded-lg hover:bg-richblack-600 transition-colors font-medium"
+            className="px-6 py-2.5 bg-cem-neutral-gray-100 text-cem-neutral-gray-700 rounded-xl hover:bg-cem-neutral-gray-200 transition-all font-semibold shadow-sm border border-cem-neutral-gray-200"
           >
             Volver a Cursos
           </button>
         </div>
 
-        <div className="flex-1">
+        <div className="flex-1 w-full mx-auto max-w-[800px] xl:max-w-none">
           <RenderSteps />
         </div>
       </div>
 
       {/* Course Upload Tips */}
-      <div className="sticky top-10 hidden lg:block max-w-[400px] flex-1 rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-6">
-        <p className="mb-8 text-lg text-richblack-5">⚡ Consejos para Editar Cursos</p>
+      <div className="sticky top-24 hidden xl:block w-full max-w-[400px] flex-shrink-0 rounded-2xl border-[1px] border-cem-neutral-gray-200 bg-white p-8 shadow-sm">
+        <div className="flex items-center gap-x-2 mb-6">
+          <span className="text-2xl">⚡</span>
+          <p className="text-xl text-cem-neutral-gray-900 font-semibold font-boogaloo">Consejos para Editar Cursos</p>
+        </div>
 
-        <ul className="ml-5 list-item list-disc space-y-4 text-xs text-richblack-5">
+        <ul className="ml-5 list-disc space-y-4 text-sm text-cem-neutral-gray-600">
           <li>Puedes editar toda la información del curso.</li>
           <li>Puedes agregar, editar o eliminar secciones.</li>
           <li>Puedes agregar, editar o eliminar videos/lecturas.</li>

@@ -41,7 +41,7 @@ export default function AllCoursesContainer() {
   }
 
   return (
-    <div className="space-y-6 xl:pr-20">
+    <div className="space-y-6">
       <div className="space-y-4">
         <h1 className="text-3xl font-bold">
           Todos los Cursos
