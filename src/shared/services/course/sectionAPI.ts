@@ -53,7 +53,7 @@ export const updateSection = async (data: Record<string, unknown>, token: string
   const toastId = toast.loading("Loading...")
 
   try {
-    const response = await apiConnector<ApiResponse>("POST", UPDATE_SECTION_API, data, {
+    const response = await apiConnector<ApiResponse>("PUT", UPDATE_SECTION_API, data, {
       Authorization: `Bearer ${token}`,
     })
 
@@ -76,7 +76,7 @@ export const deleteSection = async (data: Record<string, unknown>, token: string
   const toastId = toast.loading("Loading...")
 
   try {
-    const response = await apiConnector<ApiResponse>("POST", DELETE_SECTION_API, data, {
+    const response = await apiConnector<ApiResponse>("DELETE", DELETE_SECTION_API, data, {
       Authorization: `Bearer ${token}`,
     })
 
