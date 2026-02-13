@@ -131,16 +131,48 @@ function CourseDetailsCard({
     String(studentId) === String(user._id) || String(studentId) === String(user.id)
   ));
 
-  // Helper para convertir links de YT a embed (básico)
+  // Helper para convertir links de YT/Vimeo a embed
   const getEmbedUrl = (url: string) => {
     if (!url) return "";
+
+    // Si el usuario pega el tag completo del iframe, extraemos el src
+    if (url.includes("<iframe")) {
+      const match = url.match(/src="([^"]+)"/);
+      if (match && match[1]) {
+        url = match[1];
+      }
+    }
+
+    // YouTube
     if (url.includes("youtube.com/watch?v=")) {
-      return url.replace("watch?v=", "embed/");
+      const videoId = url.split("v=")[1]?.split("&")[0];
+      return `https://www.youtube.com/embed/${videoId}`;
     }
     if (url.includes("youtu.be/")) {
-      return url.replace("youtu.be/", "youtube.com/embed/");
+      const videoId = url.split("youtu.be/")[1]?.split("?")[0];
+      return `https://www.youtube.com/embed/${videoId}`;
     }
-    // Para Vimeo u otros, habría que adaptar, por ahora devolvemos tal cual si no es YT
+
+    // Vimeo
+    if (url.includes("vimeo.com/")) {
+      // Si ya es un link de player, lo dejamos intacto (puede traer el hash ?h=...)
+      if (url.includes("player.vimeo.com")) {
+        return url;
+      }
+
+      // Manejar vimeo.com/ID/HASH (unlisted) o vimeo.com/ID
+      const path = url.split("vimeo.com/")[1]?.split("?")[0];
+      const parts = path?.split("/") || [];
+      const videoId = parts[0];
+      const hash = parts[1];
+
+      let embedUrl = `https://player.vimeo.com/video/${videoId}`;
+      if (hash) {
+        embedUrl += `?h=${hash}`;
+      }
+      return embedUrl;
+    }
+
     return url;
   };
 
@@ -291,8 +323,9 @@ function CourseDetailsCard({
                 src={`${promoUrl}?autoplay=1`}
                 title="Promo Video"
                 className="w-full h-full"
-                allow="autoplay; encrypted-media; picture-in-picture"
+                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
                 allowFullScreen
+                referrerPolicy="strict-origin-when-cross-origin"
               />
             </div>
             {/* Backdrop click to close */}
