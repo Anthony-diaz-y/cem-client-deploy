@@ -115,7 +115,7 @@ body {
 }
 
 .form-style {
-  @apply rounded-xl bg-cem-background px-4 py-3 text-[15px] leading-[24px] text-cem-neutral-gray-900 border border-cem-neutral-gray-200 placeholder:text-cem-neutral-gray-400 focus:outline-none focus:border-cem-primary transition-all shadow-sm;
+  @apply min-h-[48px] rounded-xl bg-white px-4 py-3 text-[15px] leading-[24px] text-cem-neutral-gray-900 border border-cem-neutral-gray-300 placeholder:text-cem-neutral-gray-400 focus:outline-none focus:border-cem-primary transition-all shadow-sm;
 }
 
 .section_heading {

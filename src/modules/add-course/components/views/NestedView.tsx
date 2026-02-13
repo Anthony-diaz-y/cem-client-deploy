@@ -1,5 +1,3 @@
-import { useSelector } from "react-redux";
-import { RootState } from "@shared/store/store";
 import { Course, Section } from "@modules/course/types";
 import { NestedViewProps } from "../../types/index";
 import { useNestedView } from "../../hooks/useNestedView";
@@ -45,16 +43,16 @@ export default function NestedView({
   return (
     <>
       <div
-        className="rounded-2xl bg-richblack-700 p-6 px-8"
+        className="rounded-2xl bg-cem-neutral-gray-50 border border-cem-neutral-gray-200 p-6 px-8"
         id="nestedViewContainer"
       >
         {courseData.courseContent.map((section: Section, sectionIndex: number) => {
           const sectionId = (section as { id?: string })?.id || section?._id;
-          
+
           if (!sectionId || typeof sectionId !== 'string') {
             return null;
           }
-          
+
           const isSectionDragged =
             draggedItem?.type === "section" &&
             draggedItem?.sectionId === sectionId;
