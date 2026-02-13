@@ -43,7 +43,7 @@ export default function CourseFilters({
     onSearchChange,
 }: CourseFiltersProps) {
     return (
-        <div className="bg-white rounded-2xl border border-cem-neutral-gray-100 p-8 space-y-6 shadow-sm">
+        <div className="bg-white rounded-2xl border border-cem-neutral-gray-200 p-8 space-y-6 shadow-sm">
             {/* Barra de búsqueda */}
             <div className="space-y-1">
                 <label className="text-sm font-semibold text-cem-neutral-gray-800 ml-1">
