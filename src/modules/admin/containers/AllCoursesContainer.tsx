@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppSelector } from "@shared/store/hooks";
-import AllCoursesTable from "../components/course/AllCoursesTable";
+import AllCoursesTable from "../components/course/allCoursesTable/AllCoursesTable";
 import { Loading } from "@shared/components";
 import { useAdminCourses } from "../hooks/course/useAdminCourses";
 import { StatCard } from "../components/shared/StatCard";

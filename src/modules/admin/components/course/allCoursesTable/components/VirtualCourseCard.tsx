@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect, useRef } from "react";
 import CourseCard from "./CourseCard";
 import { AdminCourse } from "@shared/services/adminAPI";
