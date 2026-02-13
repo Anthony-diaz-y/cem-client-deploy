@@ -47,7 +47,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
           id="courseShortDesc"
           placeholder="Ingresa la descripción"
           {...register("courseShortDesc", { required: true })}
-          className="form-style resize-x-none min-h-[130px] w-full"
+          className="form-style resize-x-none h-[103px] w-full"
         />
         {errors.courseShortDesc && (
           <span className="ml-2 text-xs tracking-wide text-pink-200">

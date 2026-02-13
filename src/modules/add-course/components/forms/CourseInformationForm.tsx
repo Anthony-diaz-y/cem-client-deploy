@@ -19,21 +19,22 @@ export default function CourseInformationForm() {
   } = useCourseInformationForm();
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-8 rounded-md border-[1px] border-cem-neutral-gray-200 bg-cem-cardbackground p-6 shadow-sm"
-    >
-      <CourseFormFields
-        register={register}
-        setValue={setValue}
-        errors={errors}
-        courseCategories={courseCategories}
-        loading={loading}
-        editCourse={isEditMode}
-        course={course}
-      />
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <div className="space-y-8 rounded-2xl border-[1px] border-cem-neutral-gray-200 bg-white p-8 shadow-sm">
+        <CourseFormFields
+          register={register}
+          setValue={setValue}
+          errors={errors}
+          courseCategories={courseCategories}
+          loading={loading}
+          editCourse={isEditMode}
+          course={course}
+        />
+      </div>
 
-      <CourseFormActions loading={loading} />
+      <div className="flex justify-end pr-2">
+        <CourseFormActions loading={loading} />
+      </div>
     </form>
   );
 }

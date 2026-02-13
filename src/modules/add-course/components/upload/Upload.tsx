@@ -123,32 +123,23 @@ export default function Upload({
             )}
           </div>
         ) : (
-          <div className="flex w-full flex-col items-center p-8 space-y-4">
+          <div className="flex w-full flex-col items-center p-8">
             <input {...getInputProps()} />
-            <div className="flex flex-col items-center space-y-2">
-              <div className="grid aspect-square w-16 place-items-center rounded-2xl bg-cem-neutral-gray-50 border border-cem-neutral-gray-100 text-cem-primary shadow-sm group-hover:scale-110 transition-transform duration-300">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="grid aspect-square w-16 place-items-center rounded-full bg-cem-primary/5 text-cem-primary transition-transform duration-300 group-hover:scale-110">
                 <FiUploadCloud className="text-3xl" />
               </div>
-            </div>
 
-            <div className="text-center space-y-1">
-              <p className="text-sm text-cem-neutral-gray-600">
-                Arrastra y suelta una {!video ? "imagen" : "video"}, o haz clic para{" "}
-                <span className="font-semibold text-cem-primary decoration-2 underline-offset-4 hover:underline">Explorar</span>
-              </p>
-              <p className="text-xs text-cem-neutral-gray-400">
-                Soporta {!video ? "JPG, PNG, JPEG" : "MP4"}
-              </p>
-            </div>
-
-            <div className="flex gap-x-6 pt-4">
-              <div className="flex items-center gap-x-2 text-xs text-cem-neutral-gray-400">
-                <div className="w-1.5 h-1.5 rounded-full bg-cem-neutral-gray-300"></div>
-                Relación 16:9
-              </div>
-              <div className="flex items-center gap-x-2 text-xs text-cem-neutral-gray-400">
-                <div className="w-1.5 h-1.5 rounded-full bg-cem-neutral-gray-300"></div>
-                1024x576 px
+              <div className="text-center">
+                <p className="text-[16px] leading-[24px] text-cem-neutral-gray-700">
+                  Arrastra y suelta una {!video ? "imagen" : "video"}, o haz clic para Explorar
+                  <br />
+                  un archivo
+                </p>
+                <div className="mt-2 text-[13px] leading-[18px] text-cem-neutral-gray-400">
+                  <p>Tamaño recomendado 1024x576.</p>
+                  <p>Relación de aspecto 16:9</p>
+                </div>
               </div>
             </div>
           </div>

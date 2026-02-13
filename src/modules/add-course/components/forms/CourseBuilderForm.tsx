@@ -23,7 +23,7 @@ export default function CourseBuilderForm() {
   const { goToNext, goBack } = useCourseBuilderNavigation();
 
   return (
-    <div className="space-y-8 rounded-2xl border-[1px] border-cem-neutral-gray-200 bg-white p-6 shadow-sm">
+    <div className="space-y-8 rounded-2xl border-[1px] border-cem-neutral-gray-100 bg-white p-8 shadow-sm">
       <p className="text-2xl font-semibold text-cem-neutral-gray-900 font-boogaloo">Constructor de Curso</p>
 
       <SectionForm
