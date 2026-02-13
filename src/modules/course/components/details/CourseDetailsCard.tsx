@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import copy from "copy-to-clipboard";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
@@ -130,20 +131,44 @@ function CourseDetailsCard({
     String(studentId) === String(user._id) || String(studentId) === String(user.id)
   ));
 
+  // Helper para convertir links de YT a embed (básico)
+  const getEmbedUrl = (url: string) => {
+    if (!url) return "";
+    if (url.includes("youtube.com/watch?v=")) {
+      return url.replace("watch?v=", "embed/");
+    }
+    if (url.includes("youtu.be/")) {
+      return url.replace("youtu.be/", "youtube.com/embed/");
+    }
+    // Para Vimeo u otros, habría que adaptar, por ahora devolvemos tal cual si no es YT
+    return url;
+  };
+
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const promoUrl = getEmbedUrl(course.promoVideoUrl || "");
+
   return (
     <div className="rounded-xl bg-cem-cardbackground shadow-[0_20px_50px_rgba(0,0,0,0.12)] overflow-hidden border border-cem-neutral-gray-100/50">
       {/* Video thumbnail with play button */}
-      <div className="relative aspect-video bg-cem-neutral-gray-100 overflow-hidden group">
+      <div
+        className="relative aspect-video bg-cem-neutral-gray-100 overflow-hidden group cursor-pointer"
+        onClick={() => {
+          if (promoUrl) setShowVideoModal(true);
+        }}
+      >
         <Img
           src={thumbnail}
           alt={course?.courseName}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/20 transition-colors cursor-pointer">
-          <div className="w-16 h-16 rounded-full bg-cem-cardbackground flex items-center justify-center shadow-lg transition-transform group-hover:scale-110">
-            <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[18px] border-l-cem-primary border-b-[10px] border-b-transparent ml-1" />
+        {/* Solo mostrar el Play si hay video */}
+        {promoUrl && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/20 transition-colors">
+            <div className="w-16 h-16 rounded-full bg-cem-cardbackground flex items-center justify-center shadow-lg transition-transform group-hover:scale-110">
+              <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[18px] border-l-cem-primary border-b-[10px] border-b-transparent ml-1" />
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="p-6 lg:p-8">
@@ -248,6 +273,34 @@ function CourseDetailsCard({
           </button>
         </div>
       </div>
+
+      {/* Video Modal */}
+      {showVideoModal && promoUrl && typeof document !== "undefined" &&
+        createPortal(
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 transition-opacity duration-300 backdrop-blur-sm">
+            <div className="relative w-full max-w-4xl aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
+              <button
+                onClick={() => setShowVideoModal(false)}
+                className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/80 rounded-full text-white transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <iframe
+                src={`${promoUrl}?autoplay=1`}
+                title="Promo Video"
+                className="w-full h-full"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            {/* Backdrop click to close */}
+            <div className="absolute inset-0 -z-10" onClick={() => setShowVideoModal(false)} />
+          </div>,
+          document.body
+        )
+      }
     </div>
   );
 }

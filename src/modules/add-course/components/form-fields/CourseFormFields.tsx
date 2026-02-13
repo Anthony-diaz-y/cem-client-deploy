@@ -144,6 +144,24 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         editData={editCourse && course ? (course as Course).thumbnail : null}
       />
 
+      {/* Course Promotional Video Link */}
+      <div className="flex flex-col space-y-2">
+        <label className="text-sm text-cem-neutral-gray-900" htmlFor="courseVideoUrl">
+          Video Promocional (Link)
+        </label>
+        <input
+          id="courseVideoUrl"
+          placeholder="Ingresa el link del video promocional (YouTube, Vimeo, etc.)"
+          {...register("courseVideoUrl")}
+          className="form-style w-full"
+        />
+        {errors.courseVideoUrl && (
+          <span className="ml-2 text-xs tracking-wide text-pink-200">
+            {errors.courseVideoUrl.message}
+          </span>
+        )}
+      </div>
+
       {/* Benefits of the course */}
       <div className="flex flex-col space-y-2">
         <label className="text-sm text-cem-neutral-gray-900" htmlFor="courseBenefits">

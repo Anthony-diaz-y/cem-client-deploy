@@ -86,6 +86,7 @@ export interface Course {
   category: Category | Category[];
   studentsEnrolled: string[];
   instructions: string[];
+  promoVideoUrl?: string;
   status: string;
   totalDuration?: string | number;
   createdAt: string;
@@ -226,6 +227,7 @@ export interface CourseDetailsCardProps {
     | "studentsEnrolled"
     | "instructions"
     | "instructor"
+    | "promoVideoUrl"
   >;
   setConfirmationModal: React.Dispatch<
     React.SetStateAction<ConfirmationModalData | null>

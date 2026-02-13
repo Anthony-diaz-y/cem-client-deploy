@@ -28,6 +28,7 @@ export interface CourseInformationFormData {
   courseCategory: string; // El select guarda directamente el ID como string
   courseRequirements: string[];
   courseImage: string;
+  courseVideoUrl: string;
 }
 
 export interface CourseBuilderFormData {
