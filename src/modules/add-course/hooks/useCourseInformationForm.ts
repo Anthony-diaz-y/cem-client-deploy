@@ -9,7 +9,6 @@ import {
   getFullDetailsOfCourse,
 } from "@shared/services/courseDetailsAPI";
 import { setCourse, setStep } from "@modules/course/store/courseSlice";
-import { COURSE_STATUS } from "@shared/utils/constants";
 import { RootState } from "@shared/store/store";
 import { Course } from "../../course/types";
 import { CourseInformationFormData } from "../types";
@@ -108,10 +107,10 @@ export const useCourseInformationForm = () => {
         courseBenefits: courseData.whatYouWillLearn || "",
         courseCategory:
           currentCategoryId &&
-          currentCategoryId !== "undefined" &&
-          currentCategoryId !== "null" &&
-          currentCategoryId !== "" &&
-          currentCategoryId !== "NaN"
+            currentCategoryId !== "undefined" &&
+            currentCategoryId !== "null" &&
+            currentCategoryId !== "" &&
+            currentCategoryId !== "NaN"
             ? currentCategoryId
             : "",
         courseRequirements: courseData.instructions || [],
@@ -146,12 +145,12 @@ export const useCourseInformationForm = () => {
       currentValues.courseTags.toString() !== courseData.tag.toString() ||
       currentValues.courseBenefits !== courseData.whatYouWillLearn ||
       currentValues.courseCategory !==
-        (Array.isArray(courseData.category)
-          ? (courseData.category[0] as any)?.id || courseData.category[0]?._id
-          : (courseData.category as any)?.id ||
-            (courseData.category as any)?._id) ||
+      (Array.isArray(courseData.category)
+        ? (courseData.category[0] as any)?.id || courseData.category[0]?._id
+        : (courseData.category as any)?.id ||
+        (courseData.category as any)?._id) ||
       currentValues.courseRequirements.toString() !==
-        courseData.instructions.toString() ||
+      courseData.instructions.toString() ||
       currentValues.courseImage !== courseData.thumbnail
     );
   };
@@ -190,12 +189,9 @@ export const useCourseInformationForm = () => {
         if (currentValues.courseBenefits !== courseData.whatYouWillLearn) {
           formData.append("whatYouWillLearn", data.courseBenefits);
         }
-        // SIEMPRE enviar categoryId si está presente y es válido
-        // Esto asegura que el backend reciba el cambio de categoría correctamente
+        // SIEMPRE enviar categories si está presente y es válido
+        // NestJS con FileInterceptor requiere arrays en formato bracket notation
         const newCategoryId = String(data.courseCategory || "").trim();
-        const courseCategoryId = String(
-          getCategoryId(courseData.category),
-        ).trim();
 
         if (
           newCategoryId &&
@@ -205,13 +201,14 @@ export const useCourseInformationForm = () => {
           const uuidRegex =
             /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
           if (uuidRegex.test(newCategoryId)) {
-            formData.append("categoryId", newCategoryId);
+            // Usar bracket notation para arrays en FormData
+            formData.append("categories[0]", newCategoryId);
           } else {
             // console.error("Invalid category ID format:", newCategoryId);
           }
         } else {
           console.warn(
-            "⚠️ No se puede enviar categoryId - valor inválido:",
+            "⚠️ No se puede enviar categories - valor inválido:",
             newCategoryId,
           );
         }
@@ -316,7 +313,8 @@ export const useCourseInformationForm = () => {
     formData.append("price", data.coursePrice.toString());
     formData.append("tag", JSON.stringify(data.courseTags));
     formData.append("whatYouWillLearn", data.courseBenefits);
-    formData.append("categoryId", categoryId); // Cambiado de "category" a "categoryId" y usando id/_id correctamente
+    // NestJS con FileInterceptor requiere arrays en formato bracket notation
+    formData.append("categories[0]", categoryId);
     // El campo status ya no es necesario - el backend siempre crea el curso como Draft
     formData.append("instructions", JSON.stringify(data.courseRequirements));
     formData.append("thumbnailImage", data.courseImage);
