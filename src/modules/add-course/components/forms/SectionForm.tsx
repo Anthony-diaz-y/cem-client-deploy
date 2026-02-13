@@ -41,9 +41,8 @@ const SectionForm: React.FC<SectionFormProps> = ({
           type="submit"
           disabled={loading}
           text={editSectionName ? "Editar Nombre de Sección" : "Crear Sección"}
-          outline={true}
         >
-          <IoAddCircleOutline size={20} className="text-cem-primary" />
+          <IoAddCircleOutline size={20} className="text-white" />
         </IconBtn>
         {editSectionName && (
           <button

@@ -115,6 +115,7 @@ export const useCourseInformationForm = () => {
             : "",
         courseRequirements: courseData.instructions || [],
         courseImage: courseData.thumbnail || "",
+        courseVideoUrl: courseData.promoVideoUrl || "",
       };
 
       // Establecer todos los valores de una vez usando setValue múltiple
@@ -151,7 +152,8 @@ export const useCourseInformationForm = () => {
         (courseData.category as any)?._id) ||
       currentValues.courseRequirements.toString() !==
       courseData.instructions.toString() ||
-      currentValues.courseImage !== courseData.thumbnail
+      currentValues.courseImage !== courseData.thumbnail ||
+      currentValues.courseVideoUrl !== (courseData.promoVideoUrl || "")
     );
   };
 
@@ -223,6 +225,9 @@ export const useCourseInformationForm = () => {
         }
         if (currentValues.courseImage !== courseData.thumbnail) {
           formData.append("thumbnailImage", data.courseImage);
+        }
+        if (currentValues.courseVideoUrl !== (courseData.promoVideoUrl || "")) {
+          formData.append("promoVideoUrl", data.courseVideoUrl);
         }
 
         setLoading(true);
@@ -318,6 +323,9 @@ export const useCourseInformationForm = () => {
     // El campo status ya no es necesario - el backend siempre crea el curso como Draft
     formData.append("instructions", JSON.stringify(data.courseRequirements));
     formData.append("thumbnailImage", data.courseImage);
+    if (data.courseVideoUrl) {
+      formData.append("promoVideoUrl", data.courseVideoUrl);
+    }
 
     setLoading(true);
     try {

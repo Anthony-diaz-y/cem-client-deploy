@@ -95,18 +95,17 @@ export default function LectureItem({
         onDrop(e, sectionId, subSectionIndex ?? undefined);
       }}
       onClick={handleClick}
-      className={`flex cursor-grab active:cursor-grabbing items-center justify-between gap-x-3 border-b-2 border-b-richblack-600 py-2 transition-all duration-200 ${
-        isDragged
-          ? "opacity-50 scale-95 bg-richblack-700"
+      className={`flex cursor-grab active:cursor-grabbing items-center justify-between gap-x-3 border-b-2 border-b-cem-neutral-gray-200 py-2 transition-all duration-200 ${isDragged
+          ? "opacity-50 scale-95 bg-cem-neutral-gray-50"
           : isDragOver
-          ? "bg-yellow-500/20 border-yellow-500"
-          : "hover:bg-richblack-600/30"
-      }`}
+            ? "bg-yellow-500/20 border-yellow-500"
+            : "hover:bg-cem-neutral-gray-100"
+        }`}
     >
       <div className="flex items-center gap-x-3 py-2">
-        <HiMenu className="text-lg text-richblack-400 cursor-grab active:cursor-grabbing flex-shrink-0 pointer-events-none" />
-        <RxDropdownMenu className="text-2xl text-richblack-50" />
-        <p className="font-semibold text-richblack-50">
+        <HiMenu className="text-lg text-cem-neutral-gray-400 cursor-grab active:cursor-grabbing flex-shrink-0 pointer-events-none" />
+        <RxDropdownMenu className="text-2xl text-cem-neutral-gray-900" />
+        <p className="font-semibold text-cem-neutral-gray-900">
           {lecture.title}
         </p>
       </div>
@@ -115,10 +114,10 @@ export default function LectureItem({
         className="flex items-center gap-x-3"
       >
         <button onClick={handleEdit}>
-          <MdEdit className="text-xl text-richblack-300" />
+          <MdEdit className="text-xl text-cem-neutral-gray-400 hover:text-cem-neutral-gray-600 transition-colors" />
         </button>
         <button onClick={handleDelete}>
-          <RiDeleteBin6Line className="text-xl text-richblack-300" />
+          <RiDeleteBin6Line className="text-xl text-cem-neutral-gray-400 hover:text-cem-neutral-gray-600 transition-colors" />
         </button>
       </div>
     </div>
