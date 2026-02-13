@@ -25,9 +25,9 @@ export { default as DeleteAllCoursesModal } from "./components/category/DeleteAl
 export { default as DeleteCourseModal } from "./components/category/DeleteCourseModal";
 
 // Components - Course
-export { default as AllCoursesTable } from "./components/course/AllCoursesTable";
-export { default as CourseCard } from "./components/course/CourseCard";
-export { default as CourseFilters } from "./components/course/CourseFilters";
+export { default as AllCoursesTable } from "./components/course/allCoursesTable/AllCoursesTable";
+export { default as CourseCard } from "./components/course/allCoursesTable/components/CourseCard";
+export { default as CourseFilters } from "./components/course/allCoursesTable/components/CourseFilters";
 export { default as EditCourseModal } from "./components/course/EditCourseModal";
 export { default as PendingCoursesTable } from "./components/course/PendingCoursesTable";
 export { default as ReviewsList } from "./components/course/ReviewsList";
