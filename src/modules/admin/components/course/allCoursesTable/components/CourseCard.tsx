@@ -109,29 +109,37 @@ export default function CourseCard({
                 {/* Info flexible con empuje hacia el fondo */}
                 <div className="flex flex-col flex-1">
                     {/* Instructor */}
-                    <div className="flex items-center gap-3 h-12 mb-4">
-                        <div className="flex-shrink-0">
-                            {course.instructor?.image ? (
-                                <Img
-                                    src={course.instructor.image}
-                                    className="w-10 h-10 rounded-full object-cover shadow-sm"
-                                    alt={course.instructor.name}
-                                />
-                            ) : (
-                                <div className="w-10 h-10 rounded-full bg-[#3B4CB8] flex items-center justify-center text-white font-bold text-sm shadow-sm">
-                                    {course.instructor?.name?.[0] || "?"}
+                    {(() => {
+                        const displayInstructor = (course.instructors && course.instructors.length > 0)
+                            ? course.instructors[0]
+                            : course.instructor;
+
+                        return (
+                            <div className="flex items-center gap-3 h-12 mb-4">
+                                <div className="flex-shrink-0">
+                                    {displayInstructor?.image ? (
+                                        <Img
+                                            src={displayInstructor.image}
+                                            className="w-10 h-10 rounded-full object-cover shadow-sm"
+                                            alt={displayInstructor.name}
+                                        />
+                                    ) : (
+                                        <div className="w-10 h-10 rounded-full bg-[#3B4CB8] flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                                            {displayInstructor?.name?.[0] || "?"}
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-[#1E293B] truncate">
-                                {course.instructor?.name}
-                            </p>
-                            <p className="text-[11px] text-cem-neutral-gray-400 truncate">
-                                {course.instructor?.email}
-                            </p>
-                        </div>
-                    </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-bold text-[#1E293B] truncate">
+                                        {displayInstructor?.name}
+                                    </p>
+                                    <p className="text-[11px] text-cem-neutral-gray-400 truncate">
+                                        {displayInstructor?.email}
+                                    </p>
+                                </div>
+                            </div>
+                        );
+                    })()}
 
                     <div className="mt-auto space-y-4">
                         {/* Precio */}

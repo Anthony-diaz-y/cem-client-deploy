@@ -32,10 +32,23 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
     typeof course.totalDuration === "number" ? course.totalDuration : undefined,
   );
 
-  const instructor = course.instructor;
-  // Use provided categoryName or fall back to course.category
-  // If categoryName is provided (e.g. from a filtered view), we might want to show just that,
-  // or show all. For now, let's prioritize showing all categories if available.
+  // Prioritizamos la lista de instructores asignados (la nueva información del backend)
+  // Si no hay ninguno, hacemos fallback al creador (instructor)
+  const displayInstructor = (course.instructors && course.instructors.length > 0)
+    ? course.instructors[0]
+    : course.instructor;
+
+  // Extraemos la información asegurándonos de que coincida con la estructura de sanetización del backend
+  const instructorName = displayInstructor?.name ||
+    (displayInstructor?.firstName ? `${displayInstructor.firstName} ${displayInstructor.lastName || ""}`.trim() : "Instructor");
+
+  const instructorImage = displayInstructor?.image;
+
+  // Apuntamos a additionalDetails.professional_title que es donde el backend envía el título profesional
+  const instructorTitle = displayInstructor?.additionalDetails?.professional_title ||
+    (displayInstructor as any)?.professional_title ||
+    "Experto";
+
   const categories = Array.isArray(course.category)
     ? course.category
     : course.category
@@ -176,17 +189,21 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
         {/* Instructor y Precio */}
         <div className="mt-auto pt-3 border-t border-cem-neutral-gray-200 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2.5 flex-1 min-w-0">
-            <div className="w-9 h-9 rounded-full bg-cem-teal-100 flex items-center justify-center flex-shrink-0">
-              <span className="text-cem-primary font-semibold text-sm">
-                {instructor?.name?.charAt(0).toUpperCase() || "I"}
-              </span>
+            <div className="w-9 h-9 rounded-full bg-cem-teal-100 flex items-center justify-center flex-shrink-0 overflow-hidden border border-cem-neutral-gray-100">
+              {instructorImage ? (
+                <Img src={instructorImage} alt={instructorName} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-cem-primary font-semibold text-sm">
+                  {instructorName.charAt(0).toUpperCase() || "I"}
+                </span>
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-cem-neutral-gray-900 truncate">
-                {instructor?.name || "Instructor"}
+                {instructorName}
               </p>
               <p className="text-xs text-cem-neutral-gray-500 truncate">
-                {instructor?.additionalDetails?.professional_title || "Experto"}
+                {instructorTitle}
               </p>
             </div>
           </div>

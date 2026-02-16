@@ -7,6 +7,7 @@ import { fetchCourseCategories } from "@shared/services/courseDetailsAPI";
 import { HiOutlineCurrencyRupee } from "react-icons/hi";
 import { IoMdClose } from "react-icons/io";
 import { Img } from "@shared/components";
+import CourseInstructorSelect from "../../../add-course/components/form-fields/CourseInstructorSelect";
 
 interface EditCourseModalProps {
   course: AdminCourse | null;
@@ -22,6 +23,7 @@ interface EditCourseFormData {
   price: number;
   categoryId: string;
   thumbnailImage: File | string;
+  instructors: string[];
 }
 
 /**
@@ -74,11 +76,17 @@ export default function EditCourseModal({
       setValue("courseDescription", course.courseDescription);
       setValue("price", course.price);
       // Normalizar el ID de categoría - Handle array structure by taking the first one (primary)
-      // TODO: Support multi-select for categories
       const categoryId = Array.isArray(course.category)
-        ? course.category[0]?.id || ""
-        : (course.category as any)?.id || "";
+        ? course.category[0]?.id || (course.category[0] as any)?._id || ""
+        : (course.category as any)?.id || (course.category as any)?._id || "";
       setValue("categoryId", categoryId);
+
+      // Normalizar instructores para el select (solo IDs)
+      const instructorIds = Array.isArray(course.instructors)
+        ? course.instructors.map((inst: any) => inst.id || inst._id)
+        : [];
+      setValue("instructors", instructorIds);
+
       setValue("thumbnailImage", course.thumbnail || "");
       setThumbnailPreview(course.thumbnail || null);
     } else {
@@ -123,6 +131,11 @@ export default function EditCourseModal({
         newCategoryId !== ""
       ) {
         formData.append("categoryId", newCategoryId);
+      }
+
+      // Enviar instructores (como JSON string para el backend)
+      if (data.instructors && Array.isArray(data.instructors)) {
+        formData.append("instructors", JSON.stringify(data.instructors));
       }
 
       // Solo agregar thumbnailImage si es un archivo nuevo
@@ -258,6 +271,20 @@ export default function EditCourseModal({
               </span>
             )}
           </div>
+
+          {/* Instructor(es) */}
+          <CourseInstructorSelect
+            name="instructors"
+            label="Docente(s) del curso"
+            register={register as any}
+            setValue={setValue as any}
+            errors={errors as any}
+            initialData={
+              Array.isArray(course.instructors)
+                ? course.instructors.map((inst: any) => inst.id || inst._id)
+                : []
+            }
+          />
 
           {/* Thumbnail */}
           <div className="flex flex-col space-y-2">

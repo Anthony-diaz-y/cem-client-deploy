@@ -15,10 +15,18 @@ export interface Course {
   thumbnail: string;
   instructor: {
     name: string;
+    image?: string;
     additionalDetails: {
       professional_title?: string | null;
     };
   };
+  instructors?: {
+    name: string;
+    image?: string;
+    additionalDetails: {
+      professional_title?: string | null;
+    };
+  }[];
   category: {
     id: string;
     name: string;

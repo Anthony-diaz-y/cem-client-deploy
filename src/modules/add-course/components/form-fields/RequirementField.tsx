@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { RiDeleteBin6Line } from "react-icons/ri";
-
-import { RootState } from "@shared/store/store";
-import { Course } from "../../../course/types";
 import { FieldValues, Path } from "react-hook-form";
 import { RequirementFieldProps } from "../../types/index";
 
@@ -14,18 +10,10 @@ export default function RequirementsField<T extends FieldValues = FieldValues>({
   register,
   setValue,
   errors,
-}: RequirementFieldProps<T>) {
-  const { editCourse, course } = useSelector(
-    (state: RootState) => state.course
-  );
+  initialData,
+}: RequirementFieldProps<T> & { initialData?: string[] }) {
   const [requirement, setRequirement] = useState("");
-  const [requirementsList, setRequirementsList] = useState<string[]>(() => {
-    if (editCourse && course) {
-      const courseData = course as Course;
-      return courseData.instructions || [];
-    }
-    return [];
-  });
+  const [requirementsList, setRequirementsList] = useState<string[]>(initialData || []);
 
   useEffect(() => {
     register(name, {
@@ -59,21 +47,27 @@ export default function RequirementsField<T extends FieldValues = FieldValues>({
         {label} <sup className="text-pink-200">*</sup>
       </label>
 
-      <div className="flex flex-col items-start space-y-2">
+      <div className="flex flex-col space-y-3">
         <input
           type="text"
           id={name}
           value={requirement}
           onChange={(e) => setRequirement(e.target.value)}
+          placeholder={`Ingresa ${label.toLowerCase()}`}
           className="form-style w-full"
         />
-        <button
-          type="button"
-          onClick={handleAddRequirement}
-          className="font-semibold text-cem-primary hover:text-cem-primary-dark transition-colors"
-        >
-          Agregar
-        </button>
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={handleAddRequirement}
+            className="flex items-center gap-x-1 font-bold text-cem-primary hover:text-cem-primary-dark transition-all group/add"
+          >
+            <div className="w-5 h-5 rounded-md bg-cem-primary/10 flex items-center justify-center group-hover/add:bg-cem-primary group-hover/add:text-white transition-all">
+              <span className="text-sm">+</span>
+            </div>
+            <span className="text-sm">Agregar</span>
+          </button>
+        </div>
       </div>
 
       {requirementsList.length > 0 && (

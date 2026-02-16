@@ -27,8 +27,10 @@ export interface CourseInformationFormData {
   courseBenefits: string;
   courseCategory: string; // El select guarda directamente el ID como string
   courseRequirements: string[];
+  courseInstructor: string[]; // Nuevo campo para docentes
   courseImage: string;
   courseVideoUrl: string;
+  courseSyllabus?: File | string | null; // Nuevo campo para el syllabus (PDF)
 }
 
 export interface CourseBuilderFormData {

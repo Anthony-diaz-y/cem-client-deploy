@@ -2,9 +2,13 @@
 
 import React from "react";
 import { HiOutlineCurrencyRupee } from "react-icons/hi";
+import { UseFormRegister, UseFormSetValue, FieldErrors } from "react-hook-form";
 import ChipInput from "./ChipInput";
 import Upload from "../upload/Upload";
 import RequirementsField from "./RequirementField";
+import CourseInstructorSelect from "./CourseInstructorSelect";
+import CourseCategorySelect from "./CourseCategorySelect";
+import SyllabusUpload from "../upload/SyllabusUpload";
 import { CourseFormFieldsProps } from "../../types";
 import { Course } from "../../../course/types";
 
@@ -22,7 +26,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
     <>
       {/* Course Title */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-cem-neutral-gray-900" htmlFor="courseTitle">
+        <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="courseTitle">
           Título del Curso <sup className="text-pink-200">*</sup>
         </label>
         <input
@@ -40,7 +44,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
 
       {/* Course Short Description */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-cem-neutral-gray-900" htmlFor="courseShortDesc">
+        <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="courseShortDesc">
           Descripción Corta del Curso <sup className="text-pink-200">*</sup>
         </label>
         <textarea
@@ -58,7 +62,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
 
       {/* Course Price */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-cem-neutral-gray-900" htmlFor="coursePrice">
+        <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="coursePrice">
           Precio del Curso <sup className="text-pink-200">*</sup>
         </label>
         <div className="relative">
@@ -85,68 +89,44 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
       </div>
 
       {/* Course Category */}
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm text-cem-neutral-gray-900" htmlFor="courseCategory">
-          Categoría del Curso <sup className="text-pink-200">*</sup>
-        </label>
-        <select
-          {...register("courseCategory", { required: true })}
-          id="courseCategory"
-          className="form-style w-full cursor-pointer"
-        >
-          <option value="" disabled>
-            Elige una Categoría
-          </option>
-          {!loading &&
-            courseCategories?.map((category, indx) => {
-              const categoryId = (category as { id?: string })?.id || category?._id;
-              if (!categoryId) return null;
-
-              return (
-                <option key={indx} value={categoryId}>
-                  {category?.name}
-                </option>
-              );
-            })}
-        </select>
-        {errors.courseCategory && (
-          <span className="ml-2 text-xs tracking-wide text-pink-200">
-            La categoría del curso es requerida
-          </span>
-        )}
-      </div>
+      <CourseCategorySelect
+        name="courseCategory"
+        label="Categoría del Curso"
+        register={register}
+        setValue={setValue}
+        errors={errors}
+        categories={courseCategories}
+        initialData={
+          Array.isArray(course?.category)
+            ? (course?.category[0] as any)?.id || (course?.category[0] as any)?._id
+            : (course?.category as any)?.id || (course?.category as any)?._id || (course?.category as unknown as string) || ""
+        }
+        loading={loading}
+      />
 
       {/* Course Tags */}
       <ChipInput
         label="Etiquetas"
         name="courseTags"
         placeholder="Ingresa etiquetas y presiona Enter o Coma"
-        register={
-          register as unknown as Parameters<typeof ChipInput>[0]["register"]
-        }
-        errors={errors as unknown as Parameters<typeof ChipInput>[0]["errors"]}
-        setValue={
-          setValue as unknown as Parameters<typeof ChipInput>[0]["setValue"]
-        }
+        register={register as UseFormRegister<any>}
+        errors={errors as FieldErrors<any>}
+        setValue={setValue as UseFormSetValue<any>}
       />
 
       {/* Course Thumbnail Image */}
       <Upload
         name="courseImage"
         label="Miniatura del Curso"
-        register={
-          register as unknown as Parameters<typeof Upload>[0]["register"]
-        }
-        setValue={
-          setValue as unknown as Parameters<typeof Upload>[0]["setValue"]
-        }
-        errors={errors as unknown as Parameters<typeof Upload>[0]["errors"]}
+        register={register as UseFormRegister<any>}
+        setValue={setValue as UseFormSetValue<any>}
+        errors={errors as FieldErrors<any>}
         editData={editCourse && course ? (course as Course).thumbnail : null}
       />
 
       {/* Course Promotional Video Link */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-cem-neutral-gray-900" htmlFor="courseVideoUrl">
+        <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="courseVideoUrl">
           Video Promocional (Link)
         </label>
         <input
@@ -164,7 +144,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
 
       {/* Benefits of the course */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-cem-neutral-gray-900" htmlFor="courseBenefits">
+        <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="courseBenefits">
           Beneficios del Curso <sup className="text-pink-200">*</sup>
         </label>
         <textarea
@@ -180,6 +160,20 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         )}
       </div>
 
+      {/* Instructor(es) del curso */}
+      <CourseInstructorSelect
+        name="courseInstructor"
+        label="Docente(s) del curso"
+        register={register}
+        setValue={setValue}
+        errors={errors}
+        initialData={
+          editCourse && course
+            ? (course as any).instructors?.map((i: any) => i.id || i._id) || []
+            : []
+        }
+      />
+
       {/* Requirements/Instructions */}
       <RequirementsField
         name="courseRequirements"
@@ -187,6 +181,18 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         register={register}
         setValue={setValue}
         errors={errors}
+        initialData={editCourse && course ? (course as Course).instructions || [] : []}
+      />
+
+      {/* Course Syllabus PDF */}
+      <SyllabusUpload
+        name="courseSyllabus"
+        label="Subir Syllabys"
+        register={register as any}
+        setValue={setValue as any}
+        errors={errors}
+        required={true}
+        editData={editCourse && course ? (course as any).syllabus : null}
       />
     </>
   );
