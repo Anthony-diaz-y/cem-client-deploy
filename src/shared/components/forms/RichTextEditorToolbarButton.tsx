@@ -20,11 +20,10 @@ const ToolbarButton = ({
     onMouseDown={(e) => e.preventDefault()}
     onClick={onClick}
     disabled={disabled}
-    className={`p-2 rounded transition-colors ${
-      isActive
-        ? "bg-yellow-50/20 text-yellow-50"
-        : "text-richblack-300 hover:bg-richblack-600 hover:text-richblack-5"
-    } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+    className={`p-1.5 rounded-lg transition-all ${isActive
+        ? "bg-white/20 text-white"
+        : "text-white/80 hover:bg-white/10 hover:text-white"
+      } ${disabled ? "opacity-30 cursor-not-allowed" : "active:scale-95"}`}
     title={title}
   >
     <Icon className="text-xl" />

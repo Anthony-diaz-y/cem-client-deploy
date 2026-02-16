@@ -20,3 +20,4 @@ export { default as OpenRoute } from "./routes/OpenRoute";
 export { default as ReviewSlider } from "./sliders/ReviewSlider";
 export { default as DemoBanner } from "./banners/DemoBanner";
 export { default as FloatingWhatsApp } from "./ui/FloatingWhatsApp";
+export { CEMModalLayout } from "./ui/CEMModalLayout";

@@ -1,8 +1,6 @@
 "use client";
 
 import React from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@shared/store/store";
 
 interface CourseBuilderNavigationProps {
   loading: boolean;
@@ -16,8 +14,6 @@ const CourseBuilderNavigation: React.FC<CourseBuilderNavigationProps> = ({
   onNext,
   onBack,
 }) => {
-  const { editCourse } = useSelector((state: RootState) => state.course);
-
   return (
     <div className="flex justify-end gap-x-3">
       <button
@@ -38,4 +34,3 @@ const CourseBuilderNavigation: React.FC<CourseBuilderNavigationProps> = ({
 };
 
 export default CourseBuilderNavigation;
-

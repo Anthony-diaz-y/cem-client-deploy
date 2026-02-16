@@ -57,23 +57,24 @@ body {
   background-color: #767986f5;
 }
 
-/* Custom scrollbar for sidebar */
+/* Custom scrollbar for sidebar and modals */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 10px;
+  background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #475569;
-  border-radius: 10px;
+  background-color: #cbd5e180;
+  /* slate-300 with transparency */
+  border-radius: 20px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: #64748b;
+  background-color: #94a3b8b3;
+  /* slate-400 with more transparency */
 }
 
 /* loading spinner - Premium CEM design */

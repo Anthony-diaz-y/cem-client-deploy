@@ -75,7 +75,7 @@ export default function CourseCard({
             </div>
 
             {/* Contenido */}
-            <div className="p-6 flex flex-col flex-1">
+            <div className="p-5 flex flex-col flex-1">
                 {/* Categorías */}
                 <div className="flex flex-wrap gap-2 mb-3">
                     {Array.isArray(course.category) ? (
@@ -154,7 +154,7 @@ export default function CourseCard({
                 <div className="flex gap-3 pt-2">
                     <button
                         onClick={() => router.push(`/dashboard/admin/courses/${course.id}`)}
-                        className="flex-1 h-12 bg-cem-primary hover:bg-cem-primary-dark text-white rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-cem-primary/20 active:scale-95"
+                        className="flex-1 h-11 bg-cem-primary hover:bg-cem-primary-dark text-white rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-cem-primary/20 active:scale-95"
                     >
                         <FiEye className="text-lg" />
                         Ver detalles
@@ -163,7 +163,7 @@ export default function CourseCard({
                     <div className="relative" ref={menuRef}>
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${isMenuOpen
+                            className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${isMenuOpen
                                 ? "bg-cem-primary text-white shadow-lg"
                                 : "bg-[#DCEEEF] text-cem-primary hover:bg-[#D5E8E9]"
                                 }`}

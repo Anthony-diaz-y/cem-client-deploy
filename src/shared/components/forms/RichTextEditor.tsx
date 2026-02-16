@@ -1,32 +1,13 @@
 "use client";
 
-import { useEditor, EditorContent, Editor } from "@tiptap/react";
+import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Link } from "@tiptap/extension-link";
 import { Underline } from "@tiptap/extension-underline";
 import { TextAlign } from "@tiptap/extension-text-align";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
-import {
-  MdFormatBold,
-  MdFormatItalic,
-  MdFormatUnderlined,
-  MdFormatListBulleted,
-  MdFormatListNumbered,
-  MdFormatAlignLeft,
-  MdFormatAlignCenter,
-  MdFormatAlignRight,
-  MdUndo,
-  MdRedo,
-  MdFormatClear,
-  MdLink,
-  MdLinkOff,
-  MdCode,
-  MdFormatQuote
-} from "react-icons/md";
-import { IconType } from "react-icons";
-import { useCallback, useEffect } from "react";
-import ToolbarButton from "./RichTextEditorToolbarButton";
+import { useEffect } from "react";
 import MenuBar from "./RichTextEditorMenuBar";
 
 interface RichTextEditorProps {
@@ -49,7 +30,7 @@ const RichTextEditor = ({ value, onChange, placeholder, disabled }: RichTextEdit
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: "text-blue-200 underline cursor-pointer",
+          class: "text-cem-primary underline cursor-pointer",
         },
       }),
       TextAlign.configure({
@@ -65,7 +46,7 @@ const RichTextEditor = ({ value, onChange, placeholder, disabled }: RichTextEdit
     },
     editorProps: {
       attributes: {
-        class: "prose prose-invert max-w-none min-h-[250px] p-4 outline-none",
+        class: "prose max-w-none min-h-[250px] p-4 outline-none",
         'data-placeholder': placeholder || 'Escribe aquí...',
       },
     },
@@ -80,20 +61,20 @@ const RichTextEditor = ({ value, onChange, placeholder, disabled }: RichTextEdit
   }, [value, editor]);
 
   return (
-    <div className={`border border-richblack-600 rounded-lg overflow-hidden bg-richblack-800 focus-within:border-yellow-50 focus-within:ring-1 focus-within:ring-yellow-50 transition-all ${disabled ? "opacity-50" : ""}`}>
+    <div className={`border border-cem-neutral-gray-200 rounded-2xl overflow-hidden bg-white focus-within:border-cem-primary focus-within:ring-2 focus-within:ring-cem-primary/10 transition-all ${disabled ? "opacity-50" : ""}`}>
       <MenuBar editor={editor} />
       <EditorContent editor={editor} />
 
       <style jsx global>{`
         .ProseMirror {
-          color: #F1F2FF;
-          font-size: 16px;
+          color: #1E293B;
+          font-size: 15px;
           line-height: 1.6;
         }
         .ProseMirror p.is-editor-empty:first-child::before {
           content: attr(data-placeholder);
           float: left;
-          color: #838894;
+          color: #94A3B8;
           pointer-events: none;
           height: 0;
         }
@@ -102,25 +83,27 @@ const RichTextEditor = ({ value, onChange, placeholder, disabled }: RichTextEdit
           font-weight: bold;
           margin-top: 0.67em;
           margin-bottom: 0.67em;
+          color: #0F172A;
         }
         .ProseMirror h2 {
           font-size: 1.5em;
           font-weight: bold;
           margin-top: 0.83em;
           margin-bottom: 0.83em;
+          color: #0F172A;
         }
         .ProseMirror a {
-          color: #47A5C5;
+          color: #02819E;
           text-decoration: underline;
           cursor: pointer;
         }
         .ProseMirror blockquote {
-          border-left: 3px solid #424854;
+          border-left: 3px solid #E5E7EB;
           padding-left: 1rem;
-          color: #AFB2BF;
+          color: #64748B;
         }
         .ProseMirror pre {
-          background: #161D29;
+          background: #F8FAFC;
           padding: 1rem;
           border-radius: 0.5rem;
           font-family: inherit;
@@ -139,4 +122,3 @@ const RichTextEditor = ({ value, onChange, placeholder, disabled }: RichTextEdit
 };
 
 export default RichTextEditor;
-
