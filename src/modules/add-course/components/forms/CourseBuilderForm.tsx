@@ -23,32 +23,36 @@ export default function CourseBuilderForm() {
   const { goToNext, goBack } = useCourseBuilderNavigation();
 
   return (
-    <div className="space-y-8 rounded-2xl border-[1px] border-cem-neutral-gray-100 bg-white p-8 shadow-sm">
-      <p className="text-2xl font-semibold text-cem-neutral-gray-900 font-boogaloo">Constructor de Curso</p>
+    <>
+      <div className="space-y-8 rounded-2xl border-[1px] border-cem-neutral-gray-100 bg-white p-8 shadow-sm">
+        <p className="text-2xl font-semibold text-cem-neutral-gray-900 font-boogaloo">Constructor del curso</p>
 
-      <SectionForm
-        register={register}
-        handleSubmit={handleSubmit}
-        errors={errors}
-        loading={loading}
-        editSectionName={editSectionName}
-        onSubmit={onSubmit}
-        onCancelEdit={cancelEdit}
-      />
+        <SectionForm
+          register={register}
+          handleSubmit={handleSubmit}
+          errors={errors}
+          loading={loading}
+          editSectionName={editSectionName}
+          onSubmit={onSubmit}
+          onCancelEdit={cancelEdit}
+        />
 
-      {course &&
-        (course as Course).courseContent &&
-        Array.isArray((course as Course).courseContent) &&
-        (course as Course).courseContent.length > 0 && (
-          <NestedView handleChangeEditSectionName={handleChangeEditSectionName} />
-        )}
+        {course &&
+          (course as Course).courseContent &&
+          Array.isArray((course as Course).courseContent) &&
+          (course as Course).courseContent.length > 0 && (
+            <NestedView handleChangeEditSectionName={handleChangeEditSectionName} />
+          )}
+      </div>
 
-      <CourseBuilderNavigation
-        loading={loading}
-        onNext={goToNext}
-        onBack={goBack}
-      />
-    </div>
+      <div className="mt-8">
+        <CourseBuilderNavigation
+          loading={loading}
+          onNext={goToNext}
+          onBack={goBack}
+        />
+      </div>
+    </>
   );
 }
 

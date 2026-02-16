@@ -42,10 +42,7 @@ export default function NestedView({
 
   return (
     <>
-      <div
-        className="rounded-2xl bg-cem-neutral-gray-50 border border-cem-neutral-gray-200 p-6 px-8"
-        id="nestedViewContainer"
-      >
+      <div className="space-y-6" id="nestedViewContainer">
         {courseData.courseContent.map((section: Section, sectionIndex: number) => {
           const sectionId = (section as { id?: string })?.id || section?._id;
 
@@ -62,33 +59,37 @@ export default function NestedView({
             draggedItem?.sectionId !== sectionId;
 
           return (
-            <SectionItem
+            <div
               key={sectionId}
-              section={section}
-              sectionId={sectionId}
-              sectionIndex={sectionIndex}
-              isDragged={isSectionDragged}
-              isDragOver={isSectionDragOver}
-              draggedItem={draggedItem}
-              dragOverSection={dragOverSection}
-              wasJustDragged={wasJustDragged}
-              onSectionDragStart={handleSectionDragStart}
-              onSectionDragEnd={handleDragEnd}
-              onSectionDragOver={handleSectionDragOver}
-              onSectionDrop={handleSectionDrop}
-              onLectureDragStart={handleLectureDragStart}
-              onLectureDragEnd={handleLectureDragEnd}
-              onLectureDragOver={handleLectureDragOver}
-              onLectureDrop={handleLectureDrop}
-              onEditSectionName={handleChangeEditSectionName}
-              onDeleteSection={handleDeleteSectionWithModal}
-              onAddLecture={setAddSubsection}
-              onViewLecture={setViewSubSection}
-              onEditLecture={(lecture, sectionId) => setEditSubSection({ ...lecture, sectionId })}
-              onDeleteLecture={handleDeleteLectureWithModal}
-              setConfirmationModal={setConfirmationModal}
-              setWasJustDragged={setWasJustDragged}
-            />
+              className="rounded-2xl bg-cem-neutral-gray-50/80 border border-cem-neutral-gray-200 p-3 px-5 shadow-sm transition-all animate-scaleIn hover:shadow-md hover:border-cem-neutral-gray-300"
+            >
+              <SectionItem
+                section={section}
+                sectionId={sectionId}
+                sectionIndex={sectionIndex}
+                isDragged={isSectionDragged}
+                isDragOver={isSectionDragOver}
+                draggedItem={draggedItem}
+                dragOverSection={dragOverSection}
+                wasJustDragged={wasJustDragged}
+                onSectionDragStart={handleSectionDragStart}
+                onSectionDragEnd={handleDragEnd}
+                onSectionDragOver={handleSectionDragOver}
+                onSectionDrop={handleSectionDrop}
+                onLectureDragStart={handleLectureDragStart}
+                onLectureDragEnd={handleLectureDragEnd}
+                onLectureDragOver={handleLectureDragOver}
+                onLectureDrop={handleLectureDrop}
+                onEditSectionName={handleChangeEditSectionName}
+                onDeleteSection={handleDeleteSectionWithModal}
+                onAddLecture={setAddSubsection}
+                onViewLecture={setViewSubSection}
+                onEditLecture={(lecture, sectionId) => setEditSubSection({ ...lecture, sectionId })}
+                onDeleteLecture={handleDeleteLectureWithModal}
+                setConfirmationModal={setConfirmationModal}
+                setWasJustDragged={setWasJustDragged}
+              />
+            </div>
           );
         })}
       </div>

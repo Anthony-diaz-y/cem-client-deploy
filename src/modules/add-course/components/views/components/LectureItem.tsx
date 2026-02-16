@@ -95,29 +95,37 @@ export default function LectureItem({
         onDrop(e, sectionId, subSectionIndex ?? undefined);
       }}
       onClick={handleClick}
-      className={`flex cursor-grab active:cursor-grabbing items-center justify-between gap-x-3 border-b-2 border-b-cem-neutral-gray-200 py-2 transition-all duration-200 ${isDragged
-          ? "opacity-50 scale-95 bg-cem-neutral-gray-50"
-          : isDragOver
-            ? "bg-yellow-500/20 border-yellow-500"
-            : "hover:bg-cem-neutral-gray-100"
+      className={`group flex cursor-grab active:cursor-grabbing border-b border-cem-neutral-gray-200/60 items-center justify-between gap-x-2 py-1 px-0.5 transition-all duration-200 ${isDragged
+        ? "opacity-50 scale-95 bg-cem-neutral-gray-50"
+        : isDragOver
+          ? "bg-cem-primary/5 rounded-lg"
+          : "hover:bg-white hover:shadow-sm rounded-lg"
         }`}
     >
-      <div className="flex items-center gap-x-3 py-2">
-        <HiMenu className="text-lg text-cem-neutral-gray-400 cursor-grab active:cursor-grabbing flex-shrink-0 pointer-events-none" />
-        <RxDropdownMenu className="text-2xl text-cem-neutral-gray-900" />
-        <p className="font-semibold text-cem-neutral-gray-900">
+      <div className="flex items-center gap-x-2.5">
+        <HiMenu className="text-lg text-cem-neutral-gray-300 cursor-grab active:cursor-grabbing flex-shrink-0 pointer-events-none group-hover:text-cem-neutral-gray-400 transition-colors" />
+        <div className="w-8 h-8 rounded-lg bg-cem-neutral-gray-50 flex items-center justify-center text-cem-neutral-gray-400 group-hover:bg-cem-primary/10 group-hover:text-cem-primary transition-all">
+          <RxDropdownMenu size={18} />
+        </div>
+        <p className="font-medium text-[13px] text-cem-neutral-gray-700 group-hover:text-cem-neutral-gray-900 transition-colors leading-none">
           {lecture.title}
         </p>
       </div>
       <div
         onClick={(e) => e.stopPropagation()}
-        className="flex items-center gap-x-3"
+        className="flex items-center gap-x-2 opacity-0 group-hover:opacity-100 transition-opacity"
       >
-        <button onClick={handleEdit}>
-          <MdEdit className="text-xl text-cem-neutral-gray-400 hover:text-cem-neutral-gray-600 transition-colors" />
+        <button
+          onClick={handleEdit}
+          className="p-1.5 hover:bg-cem-primary/10 rounded-lg text-cem-neutral-gray-400 hover:text-cem-primary transition-all"
+        >
+          <MdEdit size={20} />
         </button>
-        <button onClick={handleDelete}>
-          <RiDeleteBin6Line className="text-xl text-cem-neutral-gray-400 hover:text-cem-neutral-gray-600 transition-colors" />
+        <button
+          onClick={handleDelete}
+          className="p-1.5 hover:bg-red-50 rounded-lg text-cem-neutral-gray-400 hover:text-red-500 transition-all"
+        >
+          <RiDeleteBin6Line size={20} />
         </button>
       </div>
     </div>

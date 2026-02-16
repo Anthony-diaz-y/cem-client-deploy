@@ -59,47 +59,53 @@ function AttachmentUpload<TFieldValues extends FieldValues = FieldValues>({
   const visibleExisting = existingAttachments.filter(att => !deletedUrls.includes(att.url));
 
   return (
-    <div className="flex flex-col space-y-2">
-      <label className="text-sm text-richblack-5" htmlFor={name}>
+    <div className="flex flex-col space-y-2 animate-fadeIn">
+      <label className="text-sm font-bold text-cem-neutral-gray-900" htmlFor={name}>
         {label}
       </label>
 
       {/* Zona de Arrastre */}
       <div
         {...getRootProps()}
-        className={`${isDragActive ? "bg-richblack-600" : "bg-richblack-700"}
-         flex min-h-[150px] cursor-pointer items-center justify-center rounded-md border-2 border-dotted border-richblack-500 p-6`}
+        className={`flex min-h-[220px] cursor-pointer items-center justify-center rounded-2xl border-2 border-dashed transition-all duration-300
+          ${isDragActive
+            ? "border-cem-primary bg-cem-primary/5 shadow-inner"
+            : "border-cem-neutral-gray-200 bg-white hover:border-cem-primary/50 hover:bg-cem-neutral-gray-50/50 shadow-sm"
+          }`}
       >
         <input {...getInputProps()} id={name} />
-        <div className="flex flex-col items-center">
-          <div className="grid aspect-square w-12 place-items-center rounded-full bg-pure-greys-800">
-            <FiUploadCloud className="text-xl text-yellow-50" />
+        <div className="flex flex-col items-center p-8">
+          <div className="grid aspect-square w-16 place-items-center rounded-full bg-cem-primary/5 text-cem-primary transition-transform duration-300 group-hover:scale-110">
+            <FiUploadCloud className="text-3xl" />
           </div>
-          <p className="mt-2 text-center text-xs text-richblack-200">
-            Arrastra archivos o haz clic para <span className="font-semibold text-yellow-50">Explorar</span>
+          <p className="mt-4 text-center text-base text-cem-neutral-gray-700">
+            Arrastra archivos o haz clic para <span className="font-bold text-cem-primary">Explorar</span>
           </p>
-          <p className="mt-1 text-center text-[10px] text-richblack-400">
-            Todos los formatos permitidos (.zip, .pdf, .json, .sql, etc.)
-          </p>
+          <div className="mt-2 text-center text-[13px] leading-[18px] text-cem-neutral-gray-400">
+            <p>Tamaño máximo 10mb</p>
+            <p>Formatos: PDF, Word, Excel, PPT</p>
+          </div>
         </div>
       </div>
 
       {/* Lista de archivos seleccionados */}
       {selectedFiles.length > 0 && (
-        <div className="mt-4 space-y-2">
-          <p className="text-xs font-semibold text-richblack-5">Nuevos archivos:</p>
+        <div className="mt-3 space-y-2">
+          <p className="text-xs font-bold text-cem-neutral-gray-900 ml-1">Nuevos archivos:</p>
           {selectedFiles.map((file, index) => (
-            <div key={index} className="flex items-center justify-between rounded-md bg-richblack-700 p-2 text-xs text-richblack-5">
-              <div className="flex items-center space-x-2">
-                <FiFile className="text-yellow-50" />
-                <span className="truncate max-w-[200px]">{file.name}</span>
+            <div key={index} className="flex items-center justify-between rounded-xl bg-cem-neutral-gray-50 p-3 text-[13px] border border-cem-neutral-gray-100 animate-slideDown">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-lg bg-cem-primary/10 flex items-center justify-center text-cem-primary">
+                  <FiFile size={18} />
+                </div>
+                <span className="font-medium text-cem-neutral-gray-900 truncate max-w-[200px]">{file.name}</span>
               </div>
               <button
                 type="button"
                 onClick={() => removeFile(index)}
-                className="text-pink-200 hover:text-pink-100"
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-cem-neutral-gray-400 hover:text-red-500 hover:bg-red-50 transition-all"
               >
-                <FiX size={16} />
+                <FiX size={18} />
               </button>
             </div>
           ))}
@@ -109,19 +115,21 @@ function AttachmentUpload<TFieldValues extends FieldValues = FieldValues>({
       {/* Adjuntos existentes */}
       {visibleExisting.length > 0 && (
         <div className="mt-4 space-y-2">
-          <p className="text-xs font-semibold text-richblack-5 text-yellow-100">Adjuntos actuales:</p>
+          <p className="text-xs font-bold text-cem-primary ml-1">Adjuntos actuales:</p>
           {visibleExisting.map((attachment, index) => (
-            <div key={index} className="flex items-center justify-between rounded-md bg-richblack-800 p-2 text-xs text-richblack-400">
-              <div className="flex items-center space-x-2">
-                <FiFile />
-                <span className="truncate max-w-[200px]">{attachment.name}</span>
+            <div key={index} className="flex items-center justify-between rounded-xl bg-white border border-cem-neutral-gray-100 p-3 text-[13px]">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-lg bg-cem-neutral-gray-100 flex items-center justify-center text-cem-neutral-gray-500">
+                  <FiFile size={18} />
+                </div>
+                <span className="font-medium text-cem-neutral-gray-700 truncate max-w-[200px]">{attachment.name}</span>
               </div>
               <button
                 type="button"
                 onClick={() => handleRemoveExisting(attachment.url)}
-                className="text-pink-200 hover:text-pink-100"
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-cem-neutral-gray-400 hover:text-red-500 hover:bg-red-50 transition-all"
               >
-                <FiX size={16} />
+                <FiX size={18} />
               </button>
             </div>
           ))}
@@ -129,7 +137,7 @@ function AttachmentUpload<TFieldValues extends FieldValues = FieldValues>({
       )}
 
       {errors[name] && (
-        <span className="ml-2 text-xs tracking-wide text-pink-200">
+        <span className="mt-1 text-xs font-medium text-red-500 ml-1">
           {errors[name]?.message as string || "Error en los adjuntos"}
         </span>
       )}
