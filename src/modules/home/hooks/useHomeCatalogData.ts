@@ -11,10 +11,10 @@ export function useHomeCatalogData() {
     const fetchCourses = async () => {
       setLoading(true);
       setError(false);
-      
+
       try {
         const allCourses = await getAllCourses();
-        
+
         if (Array.isArray(allCourses) && allCourses.length > 0) {
           setCourses(allCourses as Course[]);
         } else {
@@ -33,5 +33,3 @@ export function useHomeCatalogData() {
 
   return { courses, loading, error };
 }
-
-

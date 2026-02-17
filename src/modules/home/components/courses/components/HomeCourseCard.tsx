@@ -6,10 +6,11 @@ import { Img } from "@shared/components";
 import { RatingStars } from "@shared/components";
 import GetAvgRating from "@shared/utils/avgRating";
 import type { Course } from "../../../../courses/types";
+import type { CoursePreview } from "../../../../categories/types";
 import { formatDurationForBadge } from "../../../utils";
 
 interface HomeCourseCardProps {
-  course: Course | any; // Accept Course or CoursePreview
+  course: Course | CoursePreview;
   index?: number;
   categoryName?: string; // Optional category name override
 }
@@ -20,27 +21,52 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
   categoryName,
 }) => {
   const courseId = course.id;
-  const avgRating =
-    typeof course.averageRating === "number"
-      ? course.averageRating
-      : GetAvgRating(course.ratingAndReviews || []);
-  const reviewCount =
-    typeof course.totalReviews === "number"
-      ? course.totalReviews
-      : course.ratingAndReviews?.length || 0;
-  const badgeDuration = formatDurationForBadge(
-    typeof course.totalDuration === "number" ? course.totalDuration : undefined,
-  );
 
-  const instructor = course.instructor;
-  // Use provided categoryName or fall back to course.category
-  // If categoryName is provided (e.g. from a filtered view), we might want to show just that,
-  // or show all. For now, let's prioritize showing all categories if available.
-  const categories = Array.isArray(course.category)
-    ? course.category
-    : course.category
-      ? [course.category]
-      : [];
+  // Type guard para saber si es un objeto Course completo
+  const isFullCourse = "instructor" in course || "instructors" in course;
+  const fullCourse = isFullCourse ? (course as Course) : null;
+
+  // Lógica para Rating y Reviews (Solo disponibles en Course)
+  const avgRating = fullCourse
+    ? typeof fullCourse.averageRating === "number"
+      ? fullCourse.averageRating
+      : GetAvgRating(fullCourse.ratingAndReviews || [])
+    : 0;
+
+  const reviewCount = fullCourse
+    ? typeof fullCourse.totalReviews === "number"
+      ? fullCourse.totalReviews
+      : Array.isArray(fullCourse.ratingAndReviews)
+        ? fullCourse.ratingAndReviews.length
+        : 0
+    : 0;
+
+  // Lógica para Duración (Tipos distintos en las interfaces: number vs string)
+  const durationValue =
+    typeof course.totalDuration === "number"
+      ? course.totalDuration
+      : typeof course.totalDuration === "string"
+        ? parseInt(course.totalDuration)
+        : undefined;
+
+  const badgeDuration = formatDurationForBadge(durationValue);
+
+  // Lógica para Instructor (Solo disponible en el objeto Course)
+  const displayInstructor = fullCourse
+    ? fullCourse.instructors && fullCourse.instructors.length > 0
+      ? fullCourse.instructors[0]
+      : fullCourse.instructor
+    : undefined;
+
+  const instructorName = displayInstructor?.name || "Instructor";
+
+  const instructorImage = displayInstructor?.image;
+  const instructorTitle = displayInstructor?.additionalDetails?.professional_title || "Experto";
+
+  // Lógica para Categorías (Estructuras distintas o IDs simples)
+  const categories = fullCourse && Array.isArray(fullCourse.category)
+    ? fullCourse.category
+    : [];
 
   const animationDelay = index * 0.1;
 
@@ -105,7 +131,7 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
         {/* Categorías */}
         {/* Categorías */}
         <div className="flex flex-wrap gap-1.5 mb-2">
-          {categories.slice(0, 3).map((cat: any, index: number) => {
+          {categories.slice(0, 3).map((cat: { id?: string; name?: string }, index: number) => {
             const colors = [
               "bg-pink-100 text-pink-700",
               "bg-green-100 text-green-700",
@@ -176,17 +202,21 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
         {/* Instructor y Precio */}
         <div className="mt-auto pt-3 border-t border-cem-neutral-gray-200 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2.5 flex-1 min-w-0">
-            <div className="w-9 h-9 rounded-full bg-cem-teal-100 flex items-center justify-center flex-shrink-0">
-              <span className="text-cem-primary font-semibold text-sm">
-                {instructor?.name?.charAt(0).toUpperCase() || "I"}
-              </span>
+            <div className="w-9 h-9 rounded-full bg-cem-teal-100 flex items-center justify-center flex-shrink-0 overflow-hidden border border-cem-neutral-gray-100">
+              {instructorImage ? (
+                <Img src={instructorImage} alt={instructorName} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-cem-primary font-semibold text-sm">
+                  {instructorName.charAt(0).toUpperCase() || "I"}
+                </span>
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-cem-neutral-gray-900 truncate">
-                {instructor?.name || "Instructor"}
+                {instructorName}
               </p>
               <p className="text-xs text-cem-neutral-gray-500 truncate">
-                {instructor?.additionalDetails?.professional_title || "Experto"}
+                {instructorTitle}
               </p>
             </div>
           </div>
@@ -196,7 +226,7 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
               S/{course.price || 0}
             </p>
             <p className="text-xs font-medium text-cem-neutral-gray-500">
-              $ {course.priceUSD ? Number(course.priceUSD).toFixed(2) : ((course.price || 0) / 3.75).toFixed(2)}
+              $ {fullCourse?.priceUSD ? Number(fullCourse.priceUSD).toFixed(2) : (Number(course.price || 0) / 3.75).toFixed(2)}
             </p>
           </div>
         </div>

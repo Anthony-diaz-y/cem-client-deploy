@@ -2,7 +2,8 @@
 import type { ConfirmationModalData } from "@shared/components";
 
 export interface CourseAuthorSectionProps {
-  instructor: Instructor;
+  instructor?: Instructor;
+  instructors?: Instructor[];
 }
 
 export interface CourseContentSectionProps {
@@ -16,7 +17,8 @@ export interface CourseContentSectionProps {
 export interface CourseHeroProps {
   course: Course & {
     _id: string | string[];
-    instructor: Instructor;
+    instructor?: Instructor;
+    instructors?: Instructor[];
   };
   avgReviewCount: number;
   onBuyCourse?: () => void;
@@ -30,6 +32,7 @@ export interface CourseInfoSectionProps {
 
 export interface Instructor {
   _id?: string;
+  id?: string; // Add id for compatibility
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -49,6 +52,8 @@ export interface Instructor {
     researchGate?: string;
     linkedin?: string;
   };
+  active?: boolean; // Add active
+  approved?: boolean; // Add approved
 }
 
 export interface Section {
@@ -75,18 +80,20 @@ export interface Course {
   _id: string;
   courseName: string;
   courseDescription: string;
-  instructor: Instructor;
+  instructor?: Instructor;
+  instructors?: Instructor[]; // Add instructors array
   whatYouWillLearn: string;
   courseContent: Section[];
   ratingAndReviews: Review[];
   price: number;
   priceUSD?: number;
   thumbnail: string;
-  tag: string[];
+  tag?: string[];
   category: Category | Category[];
   studentsEnrolled: string[];
   instructions: string[];
   promoVideoUrl?: string;
+  syllabus?: string;
   status: string;
   totalDuration?: string | number;
   createdAt: string;
@@ -228,6 +235,7 @@ export interface CourseDetailsCardProps {
     | "instructions"
     | "instructor"
     | "promoVideoUrl"
+    | "syllabus"
   >;
   setConfirmationModal: React.Dispatch<
     React.SetStateAction<ConfirmationModalData | null>

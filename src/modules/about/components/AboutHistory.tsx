@@ -22,7 +22,7 @@ const AboutHistory = () => {
             </div>
 
             <div className="flex flex-col-reverse xl:flex-row justify-between w-full items-center max-w-[1200px] px-8 xl:px-0">
-                <div className="xl:w-1/2 flex flex-col gap-5 xl:gap-6 xl:-mt-24 max-w-[400px] md:max-w-[520px] lg:max-w-[690px]">
+                <div className="xl:w-1/2 flex flex-col gap-5 xl:gap-6 xl:-mt-24 max-w-[380px] md:max-w-[520px] lg:max-w-[690px]">
                     <h3 className="text-[32px] font-semibold mt-8 xl:mt-0">Nuestra historia</h3>
                     <p className="text-[16px] xl:max-w-md">
                         El Centro de Epecialización Multidisciplinario (CEM), es una empresa comprometida con el desarrollo académico y profesional, la transferencia tecnológica y el fortalecimiento del ecosistema y la cultura científica del país. Nuestra labor se centra en brindar capacitaciones, asesorías y otros servicios especializados de alta calidad a través de una plataforma colaborativa, innovadora, eficiente y descentralizada.

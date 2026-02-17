@@ -32,7 +32,9 @@ export const CourseCard: React.FC<CourseCardProps> = ({
     typeof course.totalDuration === "number" ? course.totalDuration : undefined,
   );
 
-  const instructor = course.instructor;
+  const instructor = (course.instructors && course.instructors.length > 0)
+    ? course.instructors[0]
+    : course.instructor;
 
   /* Handle categories */
   const categories = Array.isArray(course.category)
@@ -40,9 +42,6 @@ export const CourseCard: React.FC<CourseCardProps> = ({
     : course.category
       ? [course.category]
       : [];
-
-  const courseDescription =
-    (course as any).courseDescription || "Descripción del curso no disponible.";
 
   return (
     <Link
@@ -100,7 +99,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
       <div className="p-4 flex-1 flex flex-col">
         {/* Render categories as pills */}
         <div className="flex flex-wrap gap-1.5 mb-2">
-          {categories.slice(0, 3).map((cat: any, index: number) => {
+          {categories.slice(0, 3).map((cat, index: number) => {
             const colors = [
               "bg-pink-100 text-pink-700",
               "bg-green-100 text-green-700",
@@ -164,10 +163,14 @@ export const CourseCard: React.FC<CourseCardProps> = ({
 
         <div className="mt-auto pt-3 border-t border-cem-neutral-gray-200 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2.5 flex-1 min-w-0">
-            <div className="w-9 h-9 rounded-full bg-cem-teal-100 flex items-center justify-center flex-shrink-0">
-              <span className="text-cem-primary font-semibold text-sm">
-                {instructor.name.charAt(0).toUpperCase()}
-              </span>
+            <div className="w-9 h-9 rounded-full bg-cem-teal-100 flex items-center justify-center flex-shrink-0 overflow-hidden border border-cem-neutral-gray-100">
+              {instructor?.image ? (
+                <Img src={instructor.image} alt={instructor.name} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-cem-primary font-semibold text-sm">
+                  {instructor?.name?.charAt(0).toUpperCase() || "I"}
+                </span>
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-cem-neutral-gray-900 truncate">

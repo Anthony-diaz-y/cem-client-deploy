@@ -6,7 +6,7 @@ import copy from "copy-to-clipboard";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { HiOutlineShare } from "react-icons/hi";
+import { HiOutlineShare, HiOutlineDownload } from "react-icons/hi";
 import { Img } from "@shared/components";
 import { addToCart } from "../../store/cartSlice";
 import { ACCOUNT_TYPE } from "@shared/utils/constants";
@@ -291,6 +291,21 @@ function CourseDetailsCard({
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {/* Syllabus Download */}
+        {course?.syllabus && (
+          <div className="mb-8">
+            <a
+              href={course.syllabus}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-lg bg-white border border-cem-neutral-gray-200 text-cem-neutral-gray-900 font-bold hover:bg-cem-neutral-gray-50 transition-colors shadow-sm"
+            >
+              <HiOutlineDownload className="text-xl" />
+              Descargar Syllabus
+            </a>
           </div>
         )}
 
