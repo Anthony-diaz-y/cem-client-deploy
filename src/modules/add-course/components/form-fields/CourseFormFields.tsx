@@ -110,7 +110,6 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         name="courseTags"
         placeholder="Ingresa etiquetas y presiona Enter o Coma"
         register={register as UseFormRegister<any>}
-        errors={errors as FieldErrors<any>}
         setValue={setValue as UseFormSetValue<any>}
       />
 

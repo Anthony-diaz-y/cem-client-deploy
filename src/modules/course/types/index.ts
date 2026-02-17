@@ -88,7 +88,7 @@ export interface Course {
   price: number;
   priceUSD?: number;
   thumbnail: string;
-  tag: string[];
+  tag?: string[];
   category: Category | Category[];
   studentsEnrolled: string[];
   instructions: string[];
