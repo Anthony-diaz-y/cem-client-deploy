@@ -11,11 +11,11 @@ const AboutTeam = () => {
     const { activeCategory, setActiveCategory, filteredStaff } = useTeamFilter();
 
     return (
-        <section className="flex flex-col justify-center items-center mt-20 mb-32 px-6">
+        <section className="flex flex-col justify-center items-center mt-20 mb-32">
             <div className="max-w-[360px] md:max-w-[1200px] w-full">
-                <h2 className="text-[36px] font-semibold mb-8">Conoce al equipo</h2>
+                <h2 className="text-[36px] font-semibold mb-8 px-6 xl:px-0">Conoce al equipo</h2>
 
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-12 text-sm md:text-base overflow-x-auto pb-2 no-scrollbar">
+                <div className="flex flex-wrap items-center px-6 xl:px-0 gap-x-4 gap-y-2 mb-12 text-sm md:text-base overflow-x-auto pb-2 no-scrollbar">
                     {STAFF_CATEGORIES.map((cat, idx) => (
                         <div key={cat} className="flex items-center gap-4 whitespace-nowrap">
                             <button
@@ -28,15 +28,37 @@ const AboutTeam = () => {
                                 {cat}
                             </button>
                             {idx < STAFF_CATEGORIES.length - 1 && (
-                                <span className="text-cem-neutral-gray-300 hidden md:inline">—</span>
+                                <span className="text-cem-neutral-gray-300">—</span>
                             )}
                         </div>
                     ))}
                 </div>
 
+                <div className="md:hidden">
+                    <div
+                        className="flex overflow-x-auto gap-6 px-6 pb-8 snap-x snap-mandatory no-scrollbar"
+                        style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
+                    >
+                        <style dangerouslySetInnerHTML={{
+                            __html: `
+                            .no-scrollbar::-webkit-scrollbar {
+                                display: none;
+                            }
+                        `}} />
+                        {filteredStaff.map((member, index) => (
+                            <div
+                                key={`${activeCategory}-${member.id}-${index}`}
+                                className="flex-shrink-0 w-[75%] snap-center"
+                            >
+                                <StaffCard member={member} />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
                 <motion.div
                     layout
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10"
+                    className="hidden md:grid md:grid-cols-2 px-6 xl:px-0 lg:grid-cols-4 gap-x-6 gap-y-10"
                 >
                     <AnimatePresence mode="popLayout">
                         {filteredStaff.map((member, index) => (

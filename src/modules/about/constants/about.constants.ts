@@ -26,6 +26,12 @@ export const TESTIMONIALS: Testimonial[] = [
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua quis nostrud exercitation ullamcoLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do",
     rating: 4,
   },
+  {
+    name: "User 4",
+    role: "Education Consultant",
+    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua quis nostrud exercitation ullamcoLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do",
+    rating: 5,
+  },
 ];
 
 export const STAFF_CATEGORIES = [
