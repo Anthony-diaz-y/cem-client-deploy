@@ -158,11 +158,11 @@ export const useCourseInformationForm = () => {
       currentValues.courseTitle !== courseData.courseName ||
       currentValues.courseShortDesc !== courseData.courseDescription ||
       currentValues.coursePrice !== courseData.price ||
-      currentValues.courseTags.toString() !== courseData.tag.toString() ||
+      (currentValues.courseTags ?? []).toString() !== (courseData.tag ?? []).toString() ||
       currentValues.courseBenefits !== courseData.whatYouWillLearn ||
       currentFormCatId !== currentCourseCatId ||
-      currentValues.courseRequirements.toString() !==
-      courseData.instructions.toString() ||
+      (currentValues.courseRequirements ?? []).toString() !==
+      (courseData.instructions ?? []).toString() ||
       currentFormInstructors !== currentCourseInstructors ||
       currentValues.courseImage !== courseData.thumbnail ||
       currentValues.courseSyllabus !== ((courseData as any).syllabus || "") ||
@@ -198,7 +198,7 @@ export const useCourseInformationForm = () => {
         if (currentValues.coursePrice !== courseData.price) {
           formData.append("price", data.coursePrice.toString());
         }
-        if (currentValues.courseTags.toString() !== courseData.tag.toString()) {
+        if ((currentValues.courseTags ?? []).toString() !== (courseData.tag ?? []).toString()) {
           formData.append("tag", JSON.stringify(data.courseTags));
         }
         if (currentValues.courseBenefits !== courseData.whatYouWillLearn) {
@@ -228,8 +228,8 @@ export const useCourseInformationForm = () => {
           );
         }
         if (
-          currentValues.courseRequirements.toString() !==
-          courseData.instructions.toString()
+          (currentValues.courseRequirements ?? []).toString() !==
+          (courseData.instructions ?? []).toString()
         ) {
           formData.append(
             "instructions",
