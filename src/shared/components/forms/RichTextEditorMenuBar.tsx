@@ -28,7 +28,7 @@ interface MenuBarProps {
 const useSetLink = (editor: Editor | null) => {
   return useCallback(() => {
     if (!editor) return;
-    
+
     const previousUrl = editor.getAttributes("link").href;
     const url = window.prompt("URL", previousUrl);
 
@@ -55,7 +55,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-1 p-2 bg-richblack-700 border-b border-richblack-600 rounded-t-lg sticky top-0 z-10">
+    <div className="flex flex-wrap items-center gap-1 p-2 bg-cem-primary rounded-t-2xl sticky top-0 z-10">
       <ToolbarButton
         icon={MdUndo}
         onClick={() => editor.chain().focus().undo().run()}
@@ -69,7 +69,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
         title="Rehacer"
       />
 
-      <div className="w-px h-6 bg-richblack-600 mx-1" />
+      <div className="w-px h-6 bg-white/20 mx-1" />
 
       <ToolbarButton
         icon={MdFormatBold}
@@ -90,7 +90,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
         title="Subrayado"
       />
 
-      <div className="w-px h-6 bg-richblack-600 mx-1" />
+      <div className="w-px h-6 bg-white/20 mx-1" />
 
       <ToolbarButton
         icon={MdFormatListBulleted}
@@ -105,7 +105,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
         title="Lista numerada"
       />
 
-      <div className="w-px h-6 bg-richblack-600 mx-1" />
+      <div className="w-px h-6 bg-white/20 mx-1" />
 
       <ToolbarButton
         icon={MdFormatAlignLeft}
@@ -126,7 +126,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
         title="Alinear a la derecha"
       />
 
-      <div className="w-px h-6 bg-richblack-600 mx-1" />
+      <div className="w-px h-6 bg-white/20 mx-1" />
 
       <ToolbarButton
         icon={MdLink}
@@ -141,7 +141,7 @@ const MenuBar = ({ editor }: MenuBarProps) => {
         title="Quitar enlace"
       />
 
-      <div className="w-px h-6 bg-richblack-600 mx-1" />
+      <div className="w-px h-6 bg-white/20 mx-1" />
 
       <button
         type="button"
@@ -153,11 +153,10 @@ const MenuBar = ({ editor }: MenuBarProps) => {
             editor.chain().focus().toggleHeading({ level: 1 }).run();
           }
         }}
-        className={`px-2 py-1 rounded text-sm font-bold ${
-          editor.isActive("heading", { level: 1 })
-            ? "bg-yellow-50/20 text-yellow-50"
-            : "text-richblack-300 hover:bg-richblack-600 hover:text-richblack-5"
-        }`}
+        className={`px-2 py-1 rounded-lg text-sm font-black transition-all ${editor.isActive("heading", { level: 1 })
+            ? "bg-white/20 text-white"
+            : "text-white/80 hover:bg-white/10 hover:text-white"
+          }`}
         title="Título 1"
       >
         H1
@@ -172,11 +171,10 @@ const MenuBar = ({ editor }: MenuBarProps) => {
             editor.chain().focus().toggleHeading({ level: 2 }).run();
           }
         }}
-        className={`px-2 py-1 rounded text-sm font-bold ${
-          editor.isActive("heading", { level: 2 })
-            ? "bg-yellow-50/20 text-yellow-50"
-            : "text-richblack-300 hover:bg-richblack-600 hover:text-richblack-5"
-        }`}
+        className={`px-2 py-1 rounded-lg text-sm font-black transition-all ${editor.isActive("heading", { level: 2 })
+            ? "bg-white/20 text-white"
+            : "text-white/80 hover:bg-white/10 hover:text-white"
+          }`}
         title="Título 2"
       >
         H2

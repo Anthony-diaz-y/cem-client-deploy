@@ -75,7 +75,7 @@ export default function CourseCard({
             </div>
 
             {/* Contenido */}
-            <div className="p-6 flex flex-col flex-1">
+            <div className="p-5 flex flex-col flex-1">
                 {/* Categorías */}
                 <div className="flex flex-wrap gap-2 mb-3">
                     {Array.isArray(course.category) ? (
@@ -109,29 +109,37 @@ export default function CourseCard({
                 {/* Info flexible con empuje hacia el fondo */}
                 <div className="flex flex-col flex-1">
                     {/* Instructor */}
-                    <div className="flex items-center gap-3 h-12 mb-4">
-                        <div className="flex-shrink-0">
-                            {course.instructor?.image ? (
-                                <Img
-                                    src={course.instructor.image}
-                                    className="w-10 h-10 rounded-full object-cover shadow-sm"
-                                    alt={course.instructor.name}
-                                />
-                            ) : (
-                                <div className="w-10 h-10 rounded-full bg-[#3B4CB8] flex items-center justify-center text-white font-bold text-sm shadow-sm">
-                                    {course.instructor?.name?.[0] || "?"}
+                    {(() => {
+                        const displayInstructor = (course.instructors && course.instructors.length > 0)
+                            ? course.instructors[0]
+                            : course.instructor;
+
+                        return (
+                            <div className="flex items-center gap-3 h-12 mb-4">
+                                <div className="flex-shrink-0">
+                                    {displayInstructor?.image ? (
+                                        <Img
+                                            src={displayInstructor.image}
+                                            className="w-10 h-10 rounded-full object-cover shadow-sm"
+                                            alt={displayInstructor.name}
+                                        />
+                                    ) : (
+                                        <div className="w-10 h-10 rounded-full bg-[#3B4CB8] flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                                            {displayInstructor?.name?.[0] || "?"}
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-[#1E293B] truncate">
-                                {course.instructor?.name}
-                            </p>
-                            <p className="text-[11px] text-cem-neutral-gray-400 truncate">
-                                {course.instructor?.email}
-                            </p>
-                        </div>
-                    </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-bold text-[#1E293B] truncate">
+                                        {displayInstructor?.name}
+                                    </p>
+                                    <p className="text-[11px] text-cem-neutral-gray-400 truncate">
+                                        {displayInstructor?.email}
+                                    </p>
+                                </div>
+                            </div>
+                        );
+                    })()}
 
                     <div className="mt-auto space-y-4">
                         {/* Precio */}
@@ -154,7 +162,7 @@ export default function CourseCard({
                 <div className="flex gap-3 pt-2">
                     <button
                         onClick={() => router.push(`/dashboard/admin/courses/${course.id}`)}
-                        className="flex-1 h-12 bg-cem-primary hover:bg-cem-primary-dark text-white rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-cem-primary/20 active:scale-95"
+                        className="flex-1 h-11 bg-cem-primary hover:bg-cem-primary-dark text-white rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-cem-primary/20 active:scale-95"
                     >
                         <FiEye className="text-lg" />
                         Ver detalles
@@ -163,7 +171,7 @@ export default function CourseCard({
                     <div className="relative" ref={menuRef}>
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${isMenuOpen
+                            className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${isMenuOpen
                                 ? "bg-cem-primary text-white shadow-lg"
                                 : "bg-[#DCEEEF] text-cem-primary hover:bg-[#D5E8E9]"
                                 }`}

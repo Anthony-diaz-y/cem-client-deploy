@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "next/navigation";
 import { RootState } from "@shared/store/store";
 
-import { ConfirmationModal, Footer } from "@shared/components";
+import { ConfirmationModal } from "@shared/components";
 import {
   CourseDetailsCard,
   CourseHero,
@@ -78,7 +78,7 @@ const CourseDetailsContainer = () => {
   }
 
   const { courseDetails } = response.data;
-  const { whatYouWillLearn, category, instructor } = courseDetails;
+  const { whatYouWillLearn, category, instructor, instructors } = courseDetails;
 
   // Ensure categories is always an array
   const categories = Array.isArray(category)
@@ -133,7 +133,7 @@ const CourseDetailsContainer = () => {
                 onCollapseAll={handleCollapseAll}
               />
 
-              <CourseAuthorSection instructor={instructor} />
+              <CourseAuthorSection instructor={instructor} instructors={instructors} />
             </div>
           </div>
         </div>

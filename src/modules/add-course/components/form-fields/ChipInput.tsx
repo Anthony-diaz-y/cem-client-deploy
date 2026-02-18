@@ -12,7 +12,6 @@ export default function ChipInput({
   name,
   placeholder,
   register,
-  errors,
   setValue,
 }: ChipInputProps) {
   const { editCourse, course } = useSelector(
@@ -30,7 +29,7 @@ export default function ChipInput({
   });
 
   useEffect(() => {
-    register(name, { required: true, validate: (value) => value.length > 0 });
+    register(name, { required: false });
   }, [name, register]);
 
   useEffect(() => {
@@ -60,7 +59,7 @@ export default function ChipInput({
   return (
     <div className="flex flex-col space-y-2">
       <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor={name}>
-        {label} <sup className="text-pink-200">*</sup>
+        {label}
       </label>
 
       <div className="flex w-full flex-wrap gap-y-2">
@@ -90,11 +89,7 @@ export default function ChipInput({
           className="form-style w-full"
         />
       </div>
-      {errors[name as keyof typeof errors] && (
-        <span className="ml-2 text-xs tracking-wide text-pink-200">
-          {label} is required
-        </span>
-      )}
+      {/* Mensaje de error removido ya que el campo ahora es opcional */}
     </div>
   );
 }

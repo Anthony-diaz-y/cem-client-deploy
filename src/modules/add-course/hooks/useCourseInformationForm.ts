@@ -114,7 +114,10 @@ export const useCourseInformationForm = () => {
             ? currentCategoryId
             : "",
         courseRequirements: courseData.instructions || [],
+        courseInstructor:
+          (courseData as any).instructors?.map((i: any) => i.id || i._id) || [],
         courseImage: courseData.thumbnail || "",
+        courseSyllabus: (courseData as any).syllabus || "",
         courseVideoUrl: courseData.promoVideoUrl || "",
       };
 
@@ -139,20 +142,30 @@ export const useCourseInformationForm = () => {
     const courseData = course as Course;
     const currentValues = getValues();
 
+    // Normalizar ID de categoría para comparación
+    const currentFormCatId = String(currentValues.courseCategory || "").trim();
+    const currentCourseCatId = String(getCategoryId(courseData.category)).trim();
+
+    // Normalizar instructores para comparación (IDs solamente)
+    const currentFormInstructors = Array.isArray(currentValues.courseInstructor)
+      ? [...currentValues.courseInstructor].sort().toString()
+      : "";
+    const currentCourseInstructors = Array.isArray((courseData as any).instructors)
+      ? (courseData as any).instructors.map((i: any) => i.id || i._id).sort().toString()
+      : "";
+
     return (
       currentValues.courseTitle !== courseData.courseName ||
       currentValues.courseShortDesc !== courseData.courseDescription ||
       currentValues.coursePrice !== courseData.price ||
-      currentValues.courseTags.toString() !== courseData.tag.toString() ||
+      (currentValues.courseTags ?? []).toString() !== (courseData.tag ?? []).toString() ||
       currentValues.courseBenefits !== courseData.whatYouWillLearn ||
-      currentValues.courseCategory !==
-      (Array.isArray(courseData.category)
-        ? (courseData.category[0] as any)?.id || courseData.category[0]?._id
-        : (courseData.category as any)?.id ||
-        (courseData.category as any)?._id) ||
-      currentValues.courseRequirements.toString() !==
-      courseData.instructions.toString() ||
+      currentFormCatId !== currentCourseCatId ||
+      (currentValues.courseRequirements ?? []).toString() !==
+      (courseData.instructions ?? []).toString() ||
+      currentFormInstructors !== currentCourseInstructors ||
       currentValues.courseImage !== courseData.thumbnail ||
+      currentValues.courseSyllabus !== ((courseData as any).syllabus || "") ||
       currentValues.courseVideoUrl !== (courseData.promoVideoUrl || "")
     );
   };
@@ -185,7 +198,7 @@ export const useCourseInformationForm = () => {
         if (currentValues.coursePrice !== courseData.price) {
           formData.append("price", data.coursePrice.toString());
         }
-        if (currentValues.courseTags.toString() !== courseData.tag.toString()) {
+        if ((currentValues.courseTags ?? []).toString() !== (courseData.tag ?? []).toString()) {
           formData.append("tag", JSON.stringify(data.courseTags));
         }
         if (currentValues.courseBenefits !== courseData.whatYouWillLearn) {
@@ -215,16 +228,28 @@ export const useCourseInformationForm = () => {
           );
         }
         if (
-          currentValues.courseRequirements.toString() !==
-          courseData.instructions.toString()
+          (currentValues.courseRequirements ?? []).toString() !==
+          (courseData.instructions ?? []).toString()
         ) {
           formData.append(
             "instructions",
             JSON.stringify(data.courseRequirements),
           );
         }
+        if (
+          currentValues.courseInstructor?.toString() !==
+          ((courseData as any).instructors || []).toString()
+        ) {
+          formData.append(
+            "instructors",
+            JSON.stringify(data.courseInstructor),
+          );
+        }
         if (currentValues.courseImage !== courseData.thumbnail) {
           formData.append("thumbnailImage", data.courseImage);
+        }
+        if (currentValues.courseSyllabus !== ((courseData as any).syllabus || "")) {
+          formData.append("syllabus", data.courseSyllabus as any);
         }
         if (currentValues.courseVideoUrl !== (courseData.promoVideoUrl || "")) {
           formData.append("promoVideoUrl", data.courseVideoUrl);
@@ -322,7 +347,11 @@ export const useCourseInformationForm = () => {
     formData.append("categories[0]", categoryId);
     // El campo status ya no es necesario - el backend siempre crea el curso como Draft
     formData.append("instructions", JSON.stringify(data.courseRequirements));
+    formData.append("instructors", JSON.stringify(data.courseInstructor));
     formData.append("thumbnailImage", data.courseImage);
+    if (data.courseSyllabus) {
+      formData.append("syllabus", data.courseSyllabus as any);
+    }
     if (data.courseVideoUrl) {
       formData.append("promoVideoUrl", data.courseVideoUrl);
     }

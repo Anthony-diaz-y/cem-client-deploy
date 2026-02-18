@@ -5,12 +5,19 @@ export interface StatCardProps {
     title: string;
     value: number;
     highlight?: boolean;
+    width?: string | number;
+    height?: string | number;
+    className?: string;
 }
 
-export const StatCard: React.FC<StatCardProps> = ({ title, value }) => {
+export const StatCard: React.FC<StatCardProps> = ({ title, value, width, height, className, highlight }) => {
     return (
         <div
-            className="rounded-2xl px-6 py-4 transition-all hover:shadow-md hover:-translate-y-1 shadow-sm flex flex-col justify-between bg-[#EBF9FF] border border-[#D0EFFF] w-full h-full"
+            className={`rounded-2xl px-6 py-4 transition-all hover:shadow-md hover:-translate-y-1 shadow-sm flex flex-col justify-between bg-[#EBF9FF] border border-[#D0EFFF] ${highlight ? "ring-2 ring-cem-primary/20" : ""} ${className || ""}`}
+            style={{
+                width: width || "100%",
+                height: height || "100%",
+            }}
         >
             <div>
                 <p className="text-sm font-medium text-cem-neutral-gray-600 mb-2">{title}</p>

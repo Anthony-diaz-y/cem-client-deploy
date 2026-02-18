@@ -305,6 +305,7 @@ export interface AdminCourse {
   createdAt: string;
   updatedAt: string;
   instructor: CourseInstructor;
+  instructors?: CourseInstructor[];
   category: CourseCategory | CourseCategory[];
   totalStudentsEnrolled?: number;
   averageRating?: number;
@@ -373,8 +374,15 @@ export interface CourseDetailsCourseInfo {
     name: string;
     email: string;
     image: string;
-    accountType: "Instructor";
+    accountType: "Instructor" | "Admin";
   };
+  instructors?: {
+    id: string;
+    name: string;
+    email: string;
+    image: string;
+    accountType: "Instructor" | "Admin";
+  }[];
   category: {
     id: string;
     name: string;

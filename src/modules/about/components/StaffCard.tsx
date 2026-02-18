@@ -15,11 +15,11 @@ const StaffCard: React.FC<StaffCardProps> = ({ member }) => {
 
     return (
         <div
-            className="flex flex-col gap-4 w-full"
+            className="flex flex-col gap-4 w-full items-center md:items-start"
             onMouseEnter={() => setIsFlipped(true)}
             onMouseLeave={() => setIsFlipped(false)}
         >
-            <div className="relative w-full aspect-[4/5] [perspective:1000px] cursor-pointer">
+            <div className="relative w-[241px] h-[336px] md:w-full md:aspect-[4/5] [perspective:1000px] cursor-pointer">
                 <motion.div
                     className="relative w-full h-full [transform-style:preserve-3d]"
                     initial="front"
@@ -45,7 +45,7 @@ const StaffCard: React.FC<StaffCardProps> = ({ member }) => {
                     </div>
                 </motion.div>
             </div>
-            <div>
+            <div className="text-center md:text-left">
                 <h4 className="text-[20px] font-bold text-cem-neutral-gray-900">{member.name}</h4>
                 <p className="text-cem-neutral-gray-500 text-[14px]">{member.role}</p>
             </div>

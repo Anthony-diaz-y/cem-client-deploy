@@ -2,7 +2,6 @@ import { AiFillCaretDown } from "react-icons/ai";
 import { FaPlus } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { RxDropdownMenu } from "react-icons/rx";
 import { HiMenu } from "react-icons/hi";
 import { Section, SubSection } from "@modules/course/types";
 import { type ConfirmationModalData } from "@shared/components";
@@ -109,27 +108,32 @@ export default function SectionItem({
         onSectionDrop(e, sectionId);
       }}
       className={`transition-all duration-200 ${isDragged
-          ? "opacity-50 scale-95"
-          : isDragOver
-            ? "border-l-4 border-l-yellow-500 bg-yellow-500/10"
-            : ""
+        ? "opacity-50 scale-95"
+        : isDragOver
+          ? "border-l-4 border-l-yellow-500 bg-yellow-500/10"
+          : ""
         }`}
     >
-      <summary className="flex cursor-pointer items-center justify-between border-b-2 border-b-cem-neutral-gray-200 py-2">
-        <div className="flex items-center gap-x-3">
-          <HiMenu className="text-xl text-cem-neutral-gray-400 cursor-grab active:cursor-grabbing" />
-          <RxDropdownMenu className="text-2xl text-cem-neutral-gray-900" />
-          <p className="font-semibold text-cem-neutral-gray-900">
+      <summary className="flex cursor-pointer items-center justify-between py-0.5 transition-all">
+        <div className="flex items-center gap-x-2">
+          <HiMenu className="text-xl text-cem-neutral-gray-300 cursor-grab active:cursor-grabbing hover:text-cem-neutral-gray-500 transition-colors" />
+          <p className="font-bold text-base text-cem-neutral-gray-900">
             {section.sectionName}
           </p>
         </div>
 
-        <div className="flex items-center gap-x-3">
-          <button onClick={() => onEditSectionName(sectionId, section.sectionName)}>
-            <MdEdit className="text-xl text-cem-neutral-gray-400 hover:text-cem-neutral-gray-600 transition-colors" />
+        <div className="flex items-center gap-x-2">
+          <button
+            type="button"
+            onClick={() => onEditSectionName(sectionId, section.sectionName)}
+            className="p-1 hover:bg-white rounded-lg transition-all shadow-sm border border-transparent hover:border-cem-neutral-gray-100"
+          >
+            <MdEdit className="text-lg text-cem-neutral-gray-400 hover:text-cem-primary transition-colors" />
           </button>
 
           <button
+            type="button"
+            className="p-1 hover:bg-red-50 rounded-lg transition-all shadow-sm border border-transparent hover:border-red-100"
             onClick={() =>
               setConfirmationModal({
                 text1: "¿Eliminar esta Sección?",
@@ -141,16 +145,19 @@ export default function SectionItem({
               })
             }
           >
-            <RiDeleteBin6Line className="text-xl text-cem-neutral-gray-400 hover:text-cem-neutral-gray-600 transition-colors" />
+            <RiDeleteBin6Line className="text-lg text-cem-neutral-gray-400 hover:text-red-500 transition-colors" />
           </button>
 
-          <span className="font-medium text-cem-neutral-gray-300">|</span>
-          <AiFillCaretDown className={`text-xl text-cem-neutral-gray-400`} />
+          <div className="w-px h-5 bg-cem-neutral-gray-200 mx-0.5" />
+          <AiFillCaretDown className="text-lg text-cem-neutral-gray-400 group-open:rotate-180 transition-transform" />
         </div>
       </summary>
 
+      {/* Header divider removed for maximum tightness if desired, or kept very thin */}
+      <div className="h-px bg-cem-neutral-gray-200/60 w-full" />
+
       <div
-        className="px-6 pb-4 min-h-[50px]"
+        className="px-0.5 min-h-[10px] divide-y divide-cem-neutral-gray-200/50"
         onDragOver={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -197,15 +204,20 @@ export default function SectionItem({
             );
           })
         ) : (
-          <p className="text-cem-neutral-gray-500 text-sm py-2">No hay lecciones en esta sección</p>
+          <p className="text-cem-neutral-gray-500 text-sm py-1">No hay lecciones en esta sección</p>
         )}
+
+        {/* Re-added delimiting line before the action button with perfect alignment */}
+
 
         <button
           onClick={() => onAddLecture(sectionId)}
-          className="mt-3 flex items-center gap-x-1 text-cem-primary font-semibold hover:text-cem-primary-dark transition-colors"
+          className="flex items-center  gap-x-1.5 text-cem-primary font-bold hover:text-cem-primary-dark transition-colors group/btn py-1 ml-1"
         >
-          <FaPlus className="text-lg" />
-          <p>Agregar Lección</p>
+          <div className="w-5 h-5 mt-2 rounded-md bg-cem-primary/5 flex items-center justify-center group-hover/btn:bg-cem-primary group-hover/btn:text-white transition-all">
+            <FaPlus className="text-[10px]" />
+          </div>
+          <p className="text-[13px] mt-2">Agregar Lección</p>
         </button>
       </div>
     </details>
