@@ -127,7 +127,7 @@ export interface CartItem {
   courseName: string;
   price: number;
   thumbnail: string;
-  instructor: Instructor;
+  instructor?: Instructor;
   courseDescription?: string;
   category?: {
     name: string;
