@@ -27,7 +27,8 @@ export interface CourseHeroProps {
 
 export interface CourseInfoSectionProps {
   whatYouWillLearn: string;
-  categories: Category[];
+  tag?: string[];
+  category?: Category | Category[];
 }
 
 export interface Instructor {

@@ -27,19 +27,19 @@ const CourseHero: React.FC<CourseHeroProps> = ({ course, avgReviewCount }) => {
         <div className="flex flex-wrap items-center gap-2 mb-6">
           {(Array.isArray(course.category) ? course.category : [course.category]).map((category, ind) => {
             const colors = [
-              "bg-purple-100 text-purple-700",
-              "bg-green-100 text-green-700",
-              "bg-blue-100 text-blue-700",
-              "bg-pink-100 text-pink-700",
-              "bg-amber-100 text-amber-700",
-              "bg-cyan-100 text-cyan-700",
+              "bg-purple-100/50 text-purple-600",
+              "bg-green-100/50 text-green-600",
+              "bg-blue-100/50 text-blue-600",
+              "bg-pink-100/50 text-pink-600",
+              "bg-amber-100/50 text-amber-600",
+              "bg-cyan-100/50 text-cyan-600",
             ];
             const colorClass = colors[ind % colors.length];
 
             return (
               <span
                 key={ind}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 hover:scale-105 hover:shadow-sm cursor-default ${colorClass}`}
+                className={`px-4 py-1.5 rounded-full text-[12px] font-medium tracking-wide transition-all duration-300 hover:scale-105 cursor-default ${colorClass}`}
               >
                 {category.name}
               </span>

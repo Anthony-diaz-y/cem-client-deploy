@@ -20,41 +20,24 @@ const LearningPathCard: React.FC<LearningPathCardProps> = ({
   const courseCount = category.courses?.length || 0;
 
   return (
-    <div className="w-full bg-white rounded-xl border border-cem-neutral-gray-200 hover:border-cem-primary shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden">
-      {/* Card Header */}
-      <div className="p-5">
-        <div className="flex items-center gap-3 mb-4">
+    <div className="w-full sm:w-[368px] bg-white rounded-[20px] border border-cem-neutral-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 overflow-hidden flex flex-col">
+      {/* Card Header - Clickable to toggle */}
+      <div
+        className="p-8 cursor-pointer group"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className="flex items-center gap-5">
           {/* Icon - Brand Primary background */}
-          <div className="w-12 h-12 bg-cem-primary rounded-lg flex items-center justify-center text-white text-2xl flex-shrink-0">
+          <div className="w-12 h-12 bg-cem-primary rounded-xl flex items-center justify-center text-white text-2xl flex-shrink-0 shadow-sm group-hover:scale-105 transition-transform">
             {icon || "📚"}
           </div>
 
           {/* Title */}
           <div className="flex-1 min-w-0">
-            <h3 className="text-gray-900 font-bold text-base leading-tight">
+            <h3 className="text-cem-neutral-gray-900 font-semibold text-[19px] leading-[1.2] group-hover:text-cem-primary transition-colors">
               {category.name}
             </h3>
           </div>
-        </div>
-
-        {/* Footer with course count and toggle */}
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-500">
-            {courseCount} {courseCount === 1 ? "ruta" : "rutas"} de aprendizaje
-          </span>
-
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="p-1.5 rounded-full hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-900"
-            aria-label={isExpanded ? "Contraer" : "Expandir"}
-            type="button"
-          >
-            {isExpanded ? (
-              <BiChevronUp className="text-xl" />
-            ) : (
-              <BiChevronDown className="text-xl" />
-            )}
-          </button>
         </div>
       </div>
 
@@ -65,41 +48,46 @@ const LearningPathCard: React.FC<LearningPathCardProps> = ({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="overflow-hidden border-t border-gray-200"
+            transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+            className="overflow-hidden"
           >
-            {/* Course List */}
-            <div className="bg-white">
+            {/* Course List - Individual Cards (290px width) */}
+            <div className="bg-white px-8 pb-4">
               {category.courses && category.courses.length > 0 ? (
-                <div className="space-y-0.5 p-2">
+                <div className="flex flex-col items-start gap-1">
                   {category.courses.map((course) => (
                     <CourseListItem key={course.id} course={course} />
                   ))}
                 </div>
               ) : (
-                <div className="px-4 py-6 text-center text-gray-400 text-sm">
-                  No hay cursos disponibles
+                <div className="px-4 py-8 text-center text-cem-neutral-gray-400 text-sm italic">
+                  Próximamente más rutas...
                 </div>
               )}
-            </div>
-
-            {/* Footer badge */}
-            <div className="px-4 py-2.5 bg-gray-50 flex items-center justify-center border-t border-gray-200">
-              <span className="text-xs text-gray-600 font-medium">
-                {courseCount} {courseCount === 1 ? "ruta" : "rutas"} de
-                aprendizaje
-              </span>
-              <button
-                onClick={() => setIsExpanded(false)}
-                className="ml-2 text-gray-500 hover:text-gray-700 transition-colors"
-                type="button"
-              >
-                <BiChevronUp className="text-lg" />
-              </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Card Footer - Always visible summary and toggle */}
+      <div className="px-8 pb-8 pt-2 mt-auto flex items-center justify-between">
+        <span className="text-[14px] text-cem-neutral-gray-500 font-medium">
+          {courseCount} {courseCount === 1 ? "ruta" : "rutas"} de aprendizaje
+        </span>
+
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className={`w-9 h-9 rounded-full border border-cem-neutral-gray-200 flex items-center justify-center text-cem-neutral-gray-400 hover:text-cem-primary hover:border-cem-primary hover:bg-cem-primary/5 transition-all duration-300 ${isExpanded ? 'bg-cem-primary/5 border-cem-primary text-cem-primary' : ''}`}
+          aria-label={isExpanded ? "Contraer" : "Expandir"}
+          type="button"
+        >
+          {isExpanded ? (
+            <BiChevronUp className="text-2xl" />
+          ) : (
+            <BiChevronDown className="text-2xl" />
+          )}
+        </button>
+      </div>
     </div>
   );
 };
