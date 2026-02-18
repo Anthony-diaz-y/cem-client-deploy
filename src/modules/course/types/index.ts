@@ -75,6 +75,7 @@ export interface SubSection {
     type: string;
   }[];
   content?: string;
+  isLocked?: boolean;
 }
 
 export interface Course {
@@ -97,6 +98,7 @@ export interface Course {
   syllabus?: string;
   status: string;
   totalDuration?: string | number;
+  isSequential?: boolean;
   createdAt: string;
   updatedAt: string;
 }

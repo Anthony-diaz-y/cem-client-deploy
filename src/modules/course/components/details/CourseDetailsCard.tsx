@@ -13,8 +13,9 @@ import { ACCOUNT_TYPE } from "@shared/utils/constants";
 import { CourseDetailsCardProps } from "../../types";
 import { RootState, AppDispatch } from "@shared/store/store";
 import { COURSE_TEXTS } from "../../constants/course.constants";
-import { studentEndpoints } from "@shared/services/apis";
+import { profileEndpoints, studentEndpoints } from "@shared/services/apis";
 import { apiConnector } from "@shared/services/apiConnector";
+import { getUserDetails } from "@shared/services/profileAPI";
 import PaymentModal from "./PaymentModal";
 
 /**
@@ -93,6 +94,19 @@ function CourseDetailsCard({
       await apiConnector("POST", studentEndpoints.CAPTURE_PAYPAL_ORDER_API, {
         orderId: data.orderID
       });
+
+      // Actualizar el estado global del usuario para reflejar la nueva inscripción
+      if (token) {
+        // Usamos una función simple para navegar si getUserDetails requiere una
+        const navigate = (path: string) => router.push(path);
+        dispatch(getUserDetails(token, navigate as any));
+      }
+
+      // Emitir evento global para que componentes como EnrolledCourses se recarguen
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("coursePurchased"));
+      }
+
       toast.success("¡Compra exitosa!");
       router.push("/dashboard/enrolled-courses");
     } catch (err) {
