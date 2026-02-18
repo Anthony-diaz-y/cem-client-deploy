@@ -7,8 +7,18 @@ import { STAFF_CATEGORIES } from "../constants/about.constants";
 import { fadeInScaleVariants } from "../animations";
 import { useTeamFilter } from "../hooks/useTeamFilter";
 
+import { useCarousel } from "@shared/hooks/useCarousel";
+
 const AboutTeam = () => {
     const { activeCategory, setActiveCategory, filteredStaff } = useTeamFilter();
+    const {
+        scrollRef,
+        isDragging,
+        handleMouseDown,
+        handleMouseLeave,
+        handleMouseUp,
+        handleMouseMove,
+    } = useCarousel();
 
     return (
         <section className="flex flex-col justify-center items-center mt-20 mb-32 overflow-hidden">
@@ -35,10 +45,14 @@ const AboutTeam = () => {
                 </div>
             </div>
 
-            {/* Mobile Carousel - Full Width */}
             <div className="w-full md:hidden">
                 <div
-                    className="flex overflow-x-auto gap-4 px-6 pb-10 snap-x snap-mandatory no-scrollbar"
+                    ref={scrollRef}
+                    onMouseDown={handleMouseDown}
+                    onMouseLeave={handleMouseLeave}
+                    onMouseUp={handleMouseUp}
+                    onMouseMove={handleMouseMove}
+                    className={`flex overflow-x-auto gap-4 px-6 pb-10 no-scrollbar cursor-grab active:cursor-grabbing ${!isDragging ? "snap-x snap-mandatory" : ""}`}
                     style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
                 >
                     <style dangerouslySetInnerHTML={{

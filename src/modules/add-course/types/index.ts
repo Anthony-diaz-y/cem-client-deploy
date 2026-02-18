@@ -24,7 +24,8 @@ export interface CourseInformationFormData {
   coursePrice: number;
   courseTags?: string[];
   courseBenefits: string;
-  courseCategory: string; // El select guarda directamente el ID como string
+  courseCategory: string; // Carrera
+  courseSector: string; // Sector
   courseRequirements: string[];
   courseInstructor: string[]; // Nuevo campo para docentes
   courseImage: string;

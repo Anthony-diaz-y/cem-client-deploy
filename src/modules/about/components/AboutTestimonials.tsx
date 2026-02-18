@@ -1,35 +1,16 @@
-import React, { useRef, useState } from "react";
 import { RatingStars } from "@shared/components";
 import { TESTIMONIALS } from "../constants/about.constants";
+import { useCarousel } from "@shared/hooks/useCarousel";
 
 const AboutTestimonials = () => {
-    const scrollRef = useRef<HTMLDivElement>(null);
-    const [isDragging, setIsDragging] = useState(false);
-    const [startX, setStartX] = useState(0);
-    const [scrollLeft, setScrollLeft] = useState(0);
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-        if (!scrollRef.current) return;
-        setIsDragging(true);
-        setStartX(e.pageX - scrollRef.current.offsetLeft);
-        setScrollLeft(scrollRef.current.scrollLeft);
-    };
-
-    const handleMouseLeave = () => {
-        setIsDragging(false);
-    };
-
-    const handleMouseUp = () => {
-        setIsDragging(false);
-    };
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-        if (!isDragging || !scrollRef.current) return;
-        e.preventDefault();
-        const x = e.pageX - scrollRef.current.offsetLeft;
-        const walk = (x - startX) * 2;
-        scrollRef.current.scrollLeft = scrollLeft - walk;
-    };
+    const {
+        scrollRef,
+        isDragging,
+        handleMouseDown,
+        handleMouseLeave,
+        handleMouseUp,
+        handleMouseMove,
+    } = useCarousel();
 
     return (
         <section className="flex flex-col items-center justify-center py-16 md:py-16 bg-[#D8E9EB] overflow-hidden">

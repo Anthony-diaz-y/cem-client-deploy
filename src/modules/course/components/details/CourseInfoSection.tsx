@@ -8,12 +8,11 @@ import { COURSE_TEXTS } from "../../constants/course.constants";
  * CourseInfoSection - Section for course information
  * Displays what you'll learn and tags
  */
-const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({
+const CourseInfoSection: React.FC<Omit<CourseInfoSectionProps, "categories">> = ({
   whatYouWillLearn,
-  categories,
 }) => {
   return (
-    <div className="mb-12">
+    <div className="mb-0">
       {/* What you'll learn */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-cem-neutral-gray-900 mb-4">
@@ -29,37 +28,6 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({
           )}
         </div>
       </div>
-
-      {/* Tags/Categories */}
-      {categories && categories.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[16px] text-cem-neutral-gray-700 mr-1">
-            Etiquetas:
-          </span>
-          {categories.map((category, ind) => {
-            // Colors palette similar to the requested design (Pastel backgrounds with darker text)
-            // Pink, Green, Blue, Purple, Amber, Cyan
-            const colors = [
-              "bg-pink-100 text-pink-700",
-              "bg-green-100 text-green-700",
-              "bg-blue-100 text-blue-700",
-              "bg-purple-100 text-purple-700",
-              "bg-amber-100 text-amber-700",
-              "bg-cyan-100 text-cyan-700",
-            ];
-            const colorClass = colors[ind % colors.length];
-
-            return (
-              <span
-                key={ind}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 hover:scale-105 hover:shadow-sm cursor-default ${colorClass}`}
-              >
-                {category.name}
-              </span>
-            );
-          })}
-        </div>
-      )}
     </div>
   );
 };

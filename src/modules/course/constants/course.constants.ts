@@ -22,7 +22,7 @@ export const COURSE_TEXTS = {
     pricePrefix: "S/",
   },
   infoSection: {
-    whatYouWillLearn: "Lo que aprenderás",
+    whatYouWillLearn: "¿Por qué llevar el curso?",
     tags: "Etiquetas",
   },
   contentSection: {
