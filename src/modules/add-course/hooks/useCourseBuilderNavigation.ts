@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-import { resetCourseState, setEditCourse, setStep } from "../../course/store/courseSlice";
+import { resetCourseState, setStep } from "../../course/store/courseSlice";
 import { RootState } from "@shared/store/store";
 import { Course, Section, SubSection } from "../../course/types";
 import { ACCOUNT_TYPE } from "@shared/utils/constants";
@@ -22,29 +22,29 @@ export const useCourseBuilderNavigation = () => {
     if (!course || !token) return;
 
     const courseData = course as Course;
-    
+
     // Validar que courseContent existe y es un array
     if (!courseData.courseContent || !Array.isArray(courseData.courseContent) || courseData.courseContent.length === 0) {
       toast.error("Por favor, agrega al menos una sección");
       return;
     }
-    
+
     // Validar que cada sección tenga al menos una subsección
     const sectionsWithoutLectures = courseData.courseContent.filter(
       (section) => {
         // Verificar que subSection o subSections existe, es un array y tiene al menos un elemento
         // El backend puede devolver 'subSections' (con S mayúscula) o 'subSection'
         const subSectionsArray = section.subSection || (section as any).subSections;
-        const hasSubSections = subSectionsArray && 
-                              Array.isArray(subSectionsArray) && 
-                              subSectionsArray.length > 0;
+        const hasSubSections = subSectionsArray &&
+          Array.isArray(subSectionsArray) &&
+          subSectionsArray.length > 0;
         if (!hasSubSections) {
           console.log(`Section "${section.sectionName}" (ID: ${(section as any)?.id || section?._id}) has no lectures`);
         }
         return !hasSubSections;
       }
     );
-    
+
     if (sectionsWithoutLectures.length > 0) {
       console.log("Sections without lectures:", sectionsWithoutLectures);
       toast.error(`Por favor, agrega al menos una lección en cada sección. ${sectionsWithoutLectures.length} sección(es) sin lecciones.`);
@@ -82,7 +82,7 @@ export const useCourseBuilderNavigation = () => {
       for (const section of courseData.courseContent) {
         const sectionId = (section as any)?.id || section?._id;
         const subSectionsArray = section.subSection || (section as any).subSections || [];
-        
+
         if (subSectionsArray.length > 0 && sectionId) {
           const subSectionIds = subSectionsArray.map((sub: SubSection) => {
             return (sub as any)?.id || sub?._id;
@@ -107,17 +107,15 @@ export const useCourseBuilderNavigation = () => {
 
       // Verificar si es admin para redirigir correctamente
       const isAdmin = user?.accountType === ACCOUNT_TYPE.ADMIN;
-      
+
       // Mensaje de confirmación único
       if (isAdmin) {
         toast.success("Curso editado exitosamente");
       } else {
-        toast.success("¡Curso creado exitosamente! El curso está en estado 'Borrador' y pendiente de revisión por el administrador.", {
-          duration: 6000,
-        });
+        toast.success("¡Curso creado exitosamente! Está en estado 'Borrador'.");
       }
-      
-      // Resetear el estado del curso y redirigir según el tipo de usuario
+
+      // Resetear el estado del curso y redirigir
       dispatch(resetCourseState());
       if (isAdmin) {
         router.push("/dashboard/admin/all-courses");
