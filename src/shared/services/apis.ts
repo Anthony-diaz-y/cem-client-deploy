@@ -114,6 +114,7 @@ export const adminEndpoints = {
   GET_INSTRUCTOR_DETAILS_API: BASE_URL + "/admin/instructor",
   TOGGLE_INSTRUCTOR_STATUS_API: BASE_URL + "/admin/instructor",
   UPDATE_INSTRUCTOR_API: BASE_URL + "/admin/instructor",
+  CREATE_INSTRUCTOR_API: BASE_URL + "/admin/instructor",
   PENDING_COURSES_API: BASE_URL + "/admin/pending-courses",
   ALL_COURSES_API: BASE_URL + "/admin/all-courses",
   PUBLISH_COURSE_API: BASE_URL + "/admin/publish-course",

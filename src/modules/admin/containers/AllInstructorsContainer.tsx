@@ -1,16 +1,19 @@
 "use client";
 
+import React, { useState } from "react";
 import { useAppSelector } from "@shared/store/hooks";
 import AllInstructorsTable from "../components/instructor/AllInstructorsTable";
 import { Loading } from "@shared/components";
 import CustomDropdown from "../components/dropdown/CustomDropdown";
-import { FiSearch } from "react-icons/fi";
+import { FiSearch, FiPlus } from "react-icons/fi";
 import Pagination from "@shared/components/common/Pagination";
 import { useAdminInstructors } from "../hooks/instructor/useAdminInstructors";
 import { StatCard } from "../components/shared/StatCard";
+import CreateInstructorModal from "../components/instructor/CreateInstructorModal";
 
 export default function AllInstructorsContainer() {
   const { token } = useAppSelector((state) => state.auth);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const {
     instructors,
     counts,
@@ -40,13 +43,22 @@ export default function AllInstructorsContainer() {
 
   return (
     <div className="space-y-8 animate-fadeIn">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-medium text-cem-neutral-gray-900 tracking-tight">
-          Gestión de Instructores
-        </h1>
-        <p className="text-cem-neutral-gray-600 font-medium max-w-3xl leading-relaxed">
-          Administra todos los instructores del sistema. Filtra, busca, edita información, activa/desactiva cuentas y gestiona sus estados de manera completa.
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-medium text-cem-neutral-gray-900 tracking-tight">
+            Gestión de Instructores
+          </h1>
+          <p className="text-cem-neutral-gray-600 font-medium max-w-3xl leading-relaxed">
+            Administra todos los instructores del sistema. Filtra, busca, edita información, activa/desactiva cuentas y gestiona sus estados de manera completa.
+          </p>
+        </div>
+        <button
+          onClick={() => setIsCreateModalOpen(true)}
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-cem-primary text-white rounded-xl font-bold hover:bg-cem-primary-dark transition-all shadow-lg shadow-cem-primary/20 whitespace-nowrap h-fit"
+        >
+          <FiPlus className="text-xl" />
+          <span>Nuevo Instructor</span>
+        </button>
       </div>
 
       {/* Grid de estadísticas - Distribución uniforme */}
@@ -159,6 +171,13 @@ export default function AllInstructorsContainer() {
           </div>
         )}
       </div>
+
+      <CreateInstructorModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={refreshInstructors}
+        token={token}
+      />
     </div>
   );
 }

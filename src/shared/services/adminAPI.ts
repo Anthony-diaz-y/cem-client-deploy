@@ -17,6 +17,7 @@ export {
   getInstructorDetails,
   toggleInstructorStatus,
   updateInstructor,
+  createInstructor,
 } from "./admin/instructors";
 
 // Exportar funciones de cursos

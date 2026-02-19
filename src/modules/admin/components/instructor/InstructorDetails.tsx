@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   getInstructorDetails,
@@ -10,7 +10,6 @@ import {
   Instructor,
 } from "@shared/services/adminAPI";
 import { Img } from "@shared/components";
-import { formatDate } from "@shared/utils/formatDate";
 import { ConfirmationModal, Loading } from "@shared/components";
 import { FiArrowLeft, FiEdit, FiCheckCircle, FiXCircle } from "react-icons/fi";
 
@@ -42,12 +41,8 @@ export default function InstructorDetails({
     isOpen: false,
   });
 
-  useEffect(() => {
-    fetchDetails();
-  }, [instructorId, token]);
-
   // Carga los detalles del instructor desde la API
-  const fetchDetails = async () => {
+  const fetchDetails = useCallback(async () => {
     if (!token) return;
     setLoading(true);
     try {
@@ -57,12 +52,16 @@ export default function InstructorDetails({
         setStatistics(data.statistics);
         setCourses(data.courses);
       }
-    } catch (error) {
+    } catch {
       // Error manejado por el servicio
     } finally {
       setLoading(false);
     }
-  };
+  }, [instructorId, token]);
+
+  useEffect(() => {
+    fetchDetails();
+  }, [fetchDetails]);
 
   // Abre el modal de confirmación para cambiar estado activo/inactivo
   const handleToggleStatus = () => {
@@ -103,103 +102,152 @@ export default function InstructorDetails({
 
   return (
     <>
-      <div className="space-y-6">
+      <div className="space-y-8 animate-fadeIn">
         {/* Botón volver */}
         <button
           onClick={() => router.push("/dashboard/admin/instructors")}
-          className="flex items-center gap-2 text-richblack-300 hover:text-richblack-5 transition-colors"
+          className="flex items-center gap-2 text-cem-neutral-gray-400 hover:text-cem-primary transition-all group w-fit"
         >
-          <FiArrowLeft size={20} />
-          <span>Volver a la lista</span>
+          <div className="p-2 rounded-full group-hover:bg-cem-primary/10 transition-all">
+            <FiArrowLeft size={20} />
+          </div>
+          <span className="font-bold text-sm tracking-wide">Volver a la lista</span>
         </button>
 
         {/* Header del instructor */}
-        <div className="bg-richblack-800 rounded-xl border border-richblack-700 p-6">
-          <div className="flex items-start gap-6">
-            <Img
-              src={
-                instructor.image ||
-                `https://api.dicebear.com/5.x/initials/svg?seed=${instructor.name}`
-              }
-              alt={`${instructor.name}`}
-              className="h-24 w-24 rounded-full object-cover"
-            />
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-richblack-5 mb-2">
-                {instructor.name}
-              </h1>
-              <p className="text-richblack-300 mb-4">{instructor.email}</p>
-              <div className="flex gap-3 mb-4">
-                <span
-                  className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${
-                    instructor.approved
-                      ? "bg-green-500/20 text-green-400"
-                      : "bg-yellow-500/20 text-yellow-400"
+        <div className="bg-white rounded-[2.5rem] border border-cem-neutral-gray-100 p-8 shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
+            <div className="relative">
+              <Img
+                src={
+                  instructor.image ||
+                  `https://api.dicebear.com/5.x/initials/svg?seed=${instructor.name}`
+                }
+                alt={`${instructor.name}`}
+                className="h-32 w-32 rounded-full object-cover border-4 border-white shadow-lg"
+              />
+              <div
+                className={`absolute bottom-1 right-1 h-6 w-6 rounded-full border-4 border-white ${instructor.active ? "bg-green-500" : "bg-cem-neutral-gray-300"
                   }`}
-                >
-                  {instructor.approved ? "Aprobado" : "Pendiente"}
-                </span>
-                <span
-                  className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${
-                    instructor.active
-                      ? "bg-green-500/20 text-green-400"
-                      : "bg-gray-500/20 text-gray-400"
-                  }`}
-                >
-                  {instructor.active ? "Activo" : "Inactivo"}
-                </span>
+              ></div>
+            </div>
+
+            <div className="flex-1 text-center lg:text-left">
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 mb-2">
+                <h1 className="text-3xl font-bold text-cem-neutral-gray-900 tracking-tight">
+                  {instructor.name}
+                </h1>
+                <div className="flex gap-2">
+                  <span
+                    className={`inline-flex items-center px-3 py-1 rounded-lg text-[10px] font-bold ${instructor.approved
+                      ? "bg-cem-primary/10 text-cem-primary"
+                      : "bg-cem-neutral-gray-100 text-cem-neutral-gray-400"
+                      }`}
+                  >
+                    {instructor.approved ? "VERIFICADO" : "EN REVISIÓN"}
+                  </span>
+                  <span
+                    className={`inline-flex items-center px-3 py-1 rounded-lg text-[10px] font-bold ${instructor.active
+                      ? "bg-cem-primary/10 text-cem-primary"
+                      : "bg-cem-neutral-gray-100 text-cem-neutral-gray-400"
+                      }`}
+                  >
+                    {instructor.active ? "ACTIVO" : "INACTIVO"}
+                  </span>
+                </div>
               </div>
+              <p className="text-cem-neutral-gray-500 font-medium mb-6">
+                {instructor.email}
+              </p>
+
               {instructor.profile && (
-                <div className="space-y-2 text-sm text-richblack-400">
-                  {instructor.profile.gender && (
-                    <p>Género: {instructor.profile.gender}</p>
-                  )}
-                  {instructor.profile.dateOfBirth && (
-                    <p>
-                      Fecha de Nacimiento:{" "}
-                      {formatDate(instructor.profile.dateOfBirth)}
-                    </p>
-                  )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm bg-cem-neutral-gray-50/50 p-6 rounded-2xl border border-cem-neutral-gray-100">
                   {instructor.profile.contactNumber && (
-                    <p>Contacto: {instructor.profile.contactNumber}</p>
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-lg bg-white border border-cem-neutral-gray-100 flex items-center justify-center text-cem-primary shadow-sm">
+                        <FiCheckCircle size={16} />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-wider">
+                          Contacto
+                        </p>
+                        <p className="font-bold text-cem-neutral-gray-700">
+                          {instructor.profile.contactNumber}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  {instructor.profile.gender && (
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-lg bg-white border border-cem-neutral-gray-100 flex items-center justify-center text-cem-primary shadow-sm">
+                        <FiCheckCircle size={16} />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-wider">
+                          Género
+                        </p>
+                        <p className="font-bold text-cem-neutral-gray-700">
+                          {instructor.profile.gender}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  {instructor.profile.professional_title && (
+                    <div className="col-span-full pt-2 border-t border-cem-neutral-gray-100 mt-2">
+                      <p className="text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-wider mb-2">
+                        Especialidades (Experto en)
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {instructor.profile.professional_title.split(",").map((spec, i) => (
+                          <span key={i} className="px-3 py-1 bg-cem-primary/5 text-cem-primary rounded-lg text-xs font-bold border border-cem-primary/10">
+                            {spec.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   )}
                   {instructor.profile.about && (
-                    <p className="mt-2 text-richblack-300">
-                      {instructor.profile.about}
-                    </p>
+                    <div className="col-span-full pt-2 border-t border-cem-neutral-gray-100 mt-2">
+                      <p className="text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-wider mb-2">
+                        Biografía
+                      </p>
+                      <p className="text-cem-neutral-gray-600 leading-relaxed italic">
+                        &quot;{instructor.profile.about}&quot;
+                      </p>
+                    </div>
                   )}
                 </div>
               )}
             </div>
-            <div className="flex gap-2">
+
+            <div className="flex flex-col sm:flex-row lg:flex-col gap-3 w-full lg:w-auto">
               <button
                 onClick={() =>
                   router.push(
                     `/dashboard/admin/instructors/${instructorId}/edit`,
                   )
                 }
-                className="px-4 py-2 bg-yellow-50 text-richblack-900 rounded-lg font-medium hover:bg-yellow-100 transition-colors flex items-center gap-2"
+                className="px-6 py-3 bg-cem-primary text-white rounded-xl font-bold hover:bg-cem-primary-dark transition-all flex items-center justify-center gap-2 shadow-lg shadow-cem-primary/20"
               >
                 <FiEdit size={18} />
-                Editar
+                Editar Perfil
               </button>
               <button
                 onClick={handleToggleStatus}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${
-                  instructor.active
-                    ? "bg-orange-600 text-white hover:bg-orange-700"
-                    : "bg-green-600 text-white hover:bg-green-700"
-                }`}
+                className={`px-6 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border-2 ${instructor.active
+                  ? "border-red-100 text-red-500 hover:bg-red-50"
+                  : "border-green-100 text-green-500 hover:bg-green-50"
+                  }`}
               >
                 {instructor.active ? (
                   <>
                     <FiXCircle size={18} />
-                    Desactivar
+                    Desactivar Cuenta
                   </>
                 ) : (
                   <>
                     <FiCheckCircle size={18} />
-                    Activar
+                    Activar Cuenta
                   </>
                 )}
               </button>
@@ -208,137 +256,157 @@ export default function InstructorDetails({
         </div>
 
         {/* Estadísticas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
-            <p className="text-sm text-richblack-400 mb-2">Total de Cursos</p>
-            <p className="text-3xl font-bold text-richblack-5">
-              {statistics.totalCourses}
-            </p>
-          </div>
-          <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
-            <p className="text-sm text-richblack-400 mb-2">Cursos Publicados</p>
-            <p className="text-3xl font-bold text-green-400">
-              {statistics.publishedCourses}
-            </p>
-          </div>
-          <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
-            <p className="text-sm text-richblack-400 mb-2">
-              Cursos en Borrador
-            </p>
-            <p className="text-3xl font-bold text-yellow-400">
-              {statistics.draftCourses}
-            </p>
-          </div>
-          <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
-            <p className="text-sm text-richblack-400 mb-2">
-              Total de Estudiantes
-            </p>
-            <p className="text-3xl font-bold text-blue-400">
-              {statistics.totalStudents}
-            </p>
-          </div>
-          <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
-            <p className="text-sm text-richblack-400 mb-2">Ingresos Totales</p>
-            <p className="text-3xl font-bold text-green-400">
-              ${(statistics.totalRevenue || 0).toFixed(2)}
-            </p>
-          </div>
-          <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
-            <p className="text-sm text-richblack-400 mb-2">
-              Calificación Promedio
-            </p>
-            <p className="text-3xl font-bold text-yellow-400">
-              ⭐ {(statistics.averageRating || 0).toFixed(1)}
-            </p>
-          </div>
-          <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
-            <p className="text-sm text-richblack-400 mb-2">Total de Reseñas</p>
-            <p className="text-3xl font-bold text-purple-400">
-              {statistics.totalReviews}
-            </p>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            {
+              title: "Cursos del Instructor",
+              value: statistics.totalCourses,
+            },
+            {
+              title: "Estudiantes Totales",
+              value: statistics.totalStudents,
+            },
+            {
+              title: "Ganancias Totales",
+              value: `$${(statistics.totalRevenue || 0).toFixed(2)}`,
+            },
+            {
+              title: "Calificación Promedio",
+              value: `⭐ ${(statistics.averageRating || 0).toFixed(1)}`,
+            },
+          ].map((stat, idx) => (
+            <div
+              key={idx}
+              className="rounded-[2rem] px-8 py-6 transition-all hover:shadow-md hover:-translate-y-1 shadow-sm flex flex-col justify-between bg-[#EBF9FF] border border-[#D0EFFF]"
+            >
+              <div>
+                <p className="text-[12px] font-bold text-cem-neutral-gray-500 uppercase tracking-widest mb-3">
+                  {stat.title}
+                </p>
+                <p className="text-3xl font-black text-cem-primary">
+                  {stat.value}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Lista de cursos */}
-        <div className="bg-richblack-800 rounded-xl border border-richblack-700 overflow-hidden">
-          <div className="px-6 py-4 border-b border-richblack-700">
-            <h2 className="text-xl font-semibold text-richblack-5">
-              Cursos del Instructor ({courses.length})
+        <div className="bg-white rounded-[2.5rem] border border-cem-neutral-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+          <div className="px-8 py-6 border-b border-cem-neutral-gray-100 bg-cem-neutral-gray-50/50 flex justify-between items-center">
+            <h2 className="text-2xl font-medium text-cem-neutral-gray-900">
+              Cursos Registrados{" "}
+              <span className="text-cem-neutral-gray-400 font-normal">
+                ({courses.length})
+              </span>
             </h2>
           </div>
+
           {courses.length === 0 ? (
-            <div className="p-8 text-center">
-              <p className="text-richblack-400">
-                Este instructor no tiene cursos registrados
+            <div className="p-16 text-center">
+              <div className="w-20 h-20 bg-cem-neutral-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FiCheckCircle className="text-3xl text-cem-neutral-gray-200" />
+              </div>
+              <p className="text-cem-neutral-gray-900 text-xl font-bold mb-1">
+                Aún no tiene cursos
+              </p>
+              <p className="text-cem-neutral-gray-500 italic">
+                Este instructor no ha creado ningún curso en la plataforma.
               </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-richblack-900">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase">
-                      Nombre del Curso
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-cem-neutral-gray-50/30">
+                    <th className="px-8 py-4 text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-widest">
+                      Curso
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase">
+                    <th className="px-6 py-4 text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-widest">
                       Estado
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase">
+                    <th className="px-6 py-4 text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-widest">
                       Precio
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase">
+                    <th className="px-6 py-4 text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-widest">
                       Estudiantes
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase">
-                      Ingresos
+                    <th className="px-6 py-4 text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-widest">
+                      Ganancias
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase">
-                      Calificación
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase">
-                      Reseñas
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-richblack-400 uppercase">
-                      Categoría
+                    <th className="px-8 py-4 text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-widest text-right">
+                      Valoración
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-richblack-700">
+                <tbody className="divide-y divide-cem-neutral-gray-50">
                   {courses.map((course) => (
-                    <tr key={course.id} className="hover:bg-richblack-900/50">
-                      <td className="px-6 py-4 text-sm font-medium text-richblack-5">
-                        {course.courseName}
+                    <tr
+                      key={course.id}
+                      className="hover:bg-cem-neutral-gray-50/20 transition-all group"
+                    >
+                      <td className="px-8 py-5">
+                        <div className="flex flex-col">
+                          <span className="text-sm font-bold text-cem-neutral-gray-800 line-clamp-1">
+                            {course.courseName}
+                          </span>
+                          <span className="text-[10px] text-cem-neutral-gray-400 font-medium">
+                            {course.category?.name || "SIN CATEGORÍA"}
+                          </span>
+                        </div>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-5">
                         <span
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            course.status === "Published"
-                              ? "bg-blue-500/20 text-blue-400"
-                              : "bg-gray-500/20 text-gray-400"
-                          }`}
+                          className={`inline-flex px-3 py-1 text-[10px] font-bold rounded-lg ${course.status === "Published"
+                            ? "bg-blue-50 text-blue-500"
+                            : "bg-cem-neutral-gray-100 text-cem-neutral-gray-400"
+                            }`}
                         >
                           {course.status === "Published"
-                            ? "Publicado"
-                            : "Borrador"}
+                            ? "PUBLICADO"
+                            : "BORRADOR"}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-richblack-300">
-                        ${course.price.toFixed(2)}
+                      <td className="px-6 py-5">
+                        <span className="text-sm font-bold text-cem-neutral-gray-700">
+                          ${course.price.toFixed(2)}
+                        </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-richblack-300">
-                        {course.totalStudents}
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-sm font-bold text-cem-neutral-gray-700">
+                            {course.totalStudents}
+                          </span>
+                          <div className="h-1 w-8 bg-cem-neutral-gray-100 rounded-full overflow-hidden hidden sm:block">
+                            <div
+                              className="h-full bg-cem-primary"
+                              style={{
+                                width: `${Math.min(
+                                  100,
+                                  (course.totalStudents / 100) * 100,
+                                )}%`,
+                              }}
+                            ></div>
+                          </div>
+                        </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-richblack-300">
-                        ${(course.revenue || 0).toFixed(2)}
+                      <td className="px-6 py-5">
+                        <span className="text-sm font-bold text-cem-primary">
+                          ${(course.revenue || 0).toFixed(2)}
+                        </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-richblack-300">
-                        ⭐ {(course.averageRating || 0).toFixed(1)}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-richblack-300">
-                        {course.totalReviews}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-richblack-300">
-                        {course.category?.name || "Sin categoría"}
+                      <td className="px-8 py-5 text-right">
+                        <div className="flex flex-col items-end">
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm font-bold text-cem-neutral-gray-700">
+                              {(course.averageRating || 0).toFixed(1)}
+                            </span>
+                            <span className="text-orange-400">★</span>
+                          </div>
+                          <span className="text-[10px] text-cem-neutral-gray-400 font-medium whitespace-nowrap">
+                            {course.totalReviews} reseñas
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   ))}
