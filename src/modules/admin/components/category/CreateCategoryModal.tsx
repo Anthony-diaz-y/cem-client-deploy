@@ -27,15 +27,32 @@ export default function CreateCategoryModal({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [icon, setIcon] = useState("");
+  const [domainId, setDomainId] = useState("");
+  const [domains, setDomains] = useState<Array<{ id: string; name: string }>>([]);
   const [loading, setLoading] = useState(false);
 
+  // Cargar dominios al abrir el modal
+  React.useEffect(() => {
+    if (isOpen) {
+      const fetchDomains = async () => {
+        try {
+          const { getAllDomains } = await import("../../../../modules/categories/services/domainsAPI");
+          const data = await getAllDomains();
+          setDomains(data || []);
+        } catch (error) {
+          console.error("Error fetching domains:", error);
+        }
+      };
+      fetchDomains();
+    }
+  }, [isOpen]);
 
   // Maneja el envío del formulario y crea la categoría
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !description.trim()) {
-      toast.error("Nombre y descripción son requeridos");
+    if (!name.trim() || !description.trim() || !domainId) {
+      toast.error("Nombre, descripción y tipo de categoría son requeridos");
       return;
     }
 
@@ -46,7 +63,7 @@ export default function CreateCategoryModal({
           name: name.trim(),
           description: description.trim(),
           icon: icon || undefined,
-          // domainId se asignará por defecto en backend
+          domainId: domainId,
         },
         token
       );
@@ -68,6 +85,7 @@ export default function CreateCategoryModal({
         setName("");
         setDescription("");
         setIcon("");
+        setDomainId("");
 
         onSuccess();
         onClose();
@@ -115,6 +133,9 @@ export default function CreateCategoryModal({
           setDescription={setDescription}
           icon={icon}
           setIcon={setIcon}
+          domainId={domainId}
+          setDomainId={setDomainId}
+          domains={domains}
           loading={loading}
         />
       </form>

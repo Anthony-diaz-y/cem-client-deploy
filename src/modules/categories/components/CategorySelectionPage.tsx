@@ -291,6 +291,65 @@ const CategorySelectionPage: React.FC = () => {
                   </div>
                 );
               })}
+
+              {/* Nueva sección: Todos los cursos (cuando no hay categoría seleccionada) */}
+              {!selectedCategory && (
+                <div className="mt-20">
+                  <div className="text-center mb-12">
+                    <h2 className="text-4xl lg:text-5xl font-bold text-cem-neutral-gray-900 mb-4">
+                      Nuestros cursos y programas
+                    </h2>
+                    <p className="text-cem-neutral-gray-500 max-w-2xl mx-auto">
+                      Cursos y programas para impulsar tu carrera en ciencias, con videos y recursos flexibles.
+                    </p>
+                  </div>
+
+                  {loadingSearch ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <CategorySkeleton key={i} />
+                      ))}
+                    </div>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                        {searchResults.map((course, index) => (
+                          <HomeCourseCard
+                            key={course.id}
+                            course={course}
+                            index={index}
+                          />
+                        ))}
+                      </div>
+
+                      {/* Paginación simple si es necesario o un link a ver más */}
+                      {meta && meta.totalPages && meta.totalPages > 1 && (
+                        <div className="flex justify-center mt-12">
+                          <div className="flex items-center gap-4">
+                            <button
+                              onClick={() => setPage(page - 1)}
+                              disabled={page === 1}
+                              className="px-4 py-2 border rounded-lg disabled:opacity-50 hover:bg-gray-50 transition-colors"
+                            >
+                              Anterior
+                            </button>
+                            <span className="font-medium text-cem-neutral-gray-700">
+                              Página {page} de {meta.totalPages}
+                            </span>
+                            <button
+                              onClick={() => setPage(page + 1)}
+                              disabled={page === meta.totalPages}
+                              className="px-4 py-2 border rounded-lg disabled:opacity-50 hover:bg-gray-50 transition-colors"
+                            >
+                              Siguiente
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

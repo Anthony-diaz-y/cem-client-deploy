@@ -29,7 +29,25 @@ export default function EditCategoryModal({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [icon, setIcon] = useState("");
+  const [domainId, setDomainId] = useState("");
+  const [domains, setDomains] = useState<Array<{ id: string; name: string }>>([]);
   const [loading, setLoading] = useState(false);
+
+  // Cargar dominios al abrir el modal
+  useEffect(() => {
+    if (isOpen) {
+      const fetchDomains = async () => {
+        try {
+          const { getAllDomains } = await import("../../../../modules/categories/services/domainsAPI");
+          const data = await getAllDomains();
+          setDomains(data || []);
+        } catch (error) {
+          console.error("Error fetching domains:", error);
+        }
+      };
+      fetchDomains();
+    }
+  }, [isOpen]);
 
   // Cargar datos al abrir
   useEffect(() => {
@@ -37,6 +55,7 @@ export default function EditCategoryModal({
       setName(category.name || "");
       setDescription(category.description || "");
       setIcon(category.icon || "");
+      setDomainId(category.domain?.id || "");
     }
   }, [category]);
 
@@ -45,7 +64,7 @@ export default function EditCategoryModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !description.trim()) {
+    if (!name.trim() || !description.trim() || !domainId) {
       toast.error("Todos los campos son requeridos");
       return;
     }
@@ -58,7 +77,7 @@ export default function EditCategoryModal({
         description.trim(),
         token,
         icon || undefined,
-        // No enviamos domainId para mantener el que ya tiene
+        domainId,
       );
 
       if (result) {
@@ -120,6 +139,9 @@ export default function EditCategoryModal({
           setDescription={setDescription}
           icon={icon}
           setIcon={setIcon}
+          domainId={domainId}
+          setDomainId={setDomainId}
+          domains={domains}
           loading={loading}
         />
       </form>
