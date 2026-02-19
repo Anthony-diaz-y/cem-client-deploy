@@ -31,18 +31,18 @@ export const getCatalogPageData = async (categoryId: string) => {
     // Validar formato UUID antes de hacer la petición
     if (!isValidUUID(categoryId)) {
       console.error(
-        "Invalid category ID format (expected UUID):", 
+        "Invalid category ID format (expected UUID):",
         categoryId,
         "\nThis looks like a MongoDB ObjectId. The backend uses PostgreSQL UUIDs."
       );
       return null;
     }
 
-    console.log("Fetching catalog page data for categoryId (UUID):", categoryId);
+
     const response = await apiConnector<ApiResponse>("POST", catalogData.CATALOGPAGEDATA_API,
       { categoryId: categoryId } as Record<string, unknown>);
 
-    console.log("CATALOG PAGE DATA API RESPONSE............", response);
+
 
     // Verificar estructura de respuesta antes de desestructurar
     if (!response?.data) {
@@ -52,7 +52,7 @@ export const getCatalogPageData = async (categoryId: string) => {
 
     // Si success es false, significa que no hay cursos para esta categoría
     if (!response.data.success) {
-      console.log("No courses found for category:", response.data.message || "No message provided");
+
       // Retornar estructura vacía en lugar de null para mantener compatibilidad
       return {
         selectedCategory: { courses: [], name: "", description: "" },
@@ -64,25 +64,25 @@ export const getCatalogPageData = async (categoryId: string) => {
     // Si success es true, verificar que data existe antes de retornar
     if (response.data.data && typeof response.data.data === 'object') {
       result = response.data.data as any;
-      
+
       // Normalizar los cursos para asegurar que tengan los campos necesarios
       const normalizeCourse = (course: any) => {
         if (!course) return course;
-        
+
         // Asegurar que ratingAndReviews sea un array (no null/undefined)
         if (course.ratingAndReviews === null || course.ratingAndReviews === undefined) {
           course.ratingAndReviews = [];
         } else if (!Array.isArray(course.ratingAndReviews)) {
           course.ratingAndReviews = [];
         }
-        
+
         // Calcular averageRating si no existe pero hay reseñas
-        if ((course.averageRating === undefined || course.averageRating === null) && 
-            Array.isArray(course.ratingAndReviews) && course.ratingAndReviews.length > 0) {
+        if ((course.averageRating === undefined || course.averageRating === null) &&
+          Array.isArray(course.ratingAndReviews) && course.ratingAndReviews.length > 0) {
           const validRatings = course.ratingAndReviews
             .filter((r: any) => r && (r.rating !== undefined && r.rating !== null))
             .map((r: any) => r.rating);
-          
+
           if (validRatings.length > 0) {
             const sum = validRatings.reduce((acc: number, val: number) => acc + val, 0);
             course.averageRating = Math.round((sum / validRatings.length) * 10) / 10;
@@ -92,15 +92,15 @@ export const getCatalogPageData = async (categoryId: string) => {
         } else if (course.averageRating === undefined || course.averageRating === null) {
           course.averageRating = 0;
         }
-        
+
         // Calcular totalReviews si no existe
         if (course.totalReviews === undefined || course.totalReviews === null) {
           course.totalReviews = Array.isArray(course.ratingAndReviews) ? course.ratingAndReviews.length : 0;
         }
-        
+
         return course;
       };
-      
+
       // Normalizar todos los cursos en la respuesta
       if (result.selectedCategory?.courses) {
         result.selectedCategory.courses = result.selectedCategory.courses.map(normalizeCourse);
@@ -111,7 +111,7 @@ export const getCatalogPageData = async (categoryId: string) => {
       if (result.differentCategory?.courses) {
         result.differentCategory.courses = result.differentCategory.courses.map(normalizeCourse);
       }
-      
+
     } else {
       console.error("Invalid data structure in response");
       return null;
@@ -120,13 +120,13 @@ export const getCatalogPageData = async (categoryId: string) => {
   catch (error) {
     const apiError = error as ApiError;
     console.error("CATALOG PAGE DATA API ERROR....", apiError);
-    
+
     // Manejo específico de errores 500
     if (apiError.response?.status === 500) {
       console.error('Error del servidor (500):', apiError.response.data);
       throw new Error('Error del servidor. Por favor, intenta más tarde.');
     }
-    
+
     // Si es un error de red u otro error, retornar null
     return null;
   }

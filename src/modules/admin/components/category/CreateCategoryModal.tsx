@@ -40,7 +40,7 @@ export default function CreateCategoryModal({
           const data = await getAllDomains();
           setDomains(data || []);
         } catch (error) {
-          console.error("Error fetching domains:", error);
+          // Error silenciado
         }
       };
       fetchDomains();
