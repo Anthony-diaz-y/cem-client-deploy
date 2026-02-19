@@ -7,12 +7,6 @@ import CategoryCard from "./CategoryCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { ConcentricCircles } from "../../home/components/shared";
 import { brandColors } from "../../../shared/design-tokens";
-import {
-  GiMicroscope,
-  GiWheat,
-  GiHealthNormal,
-  GiChemicalDrop,
-} from "react-icons/gi";
 import CategorySkeleton from "./CategorySkeleton";
 import LearningPathCard from "./LearningPathCard";
 import { HomeCourseCard } from "@/modules/home/components/courses/components/HomeCourseCard";
@@ -20,20 +14,9 @@ import { useCoursesData } from "../../courses/hooks/useCoursesData";
 import { FiSearch } from "react-icons/fi";
 import { CoursesListSection } from "../../courses/components/coursesList/components/CoursesListSection";
 import ScrollToTop from "../../../shared/components/navigation/ScrollToTop";
+import { resolveCategoryIcon } from "../utils/categoryIcons";
 
-/** Asigna iconos por defecto según palabras clave en el nombre de la categoría */
-const getCategoryIcon = (categoryName: string) => {
-  const name = categoryName.toLowerCase();
-  if (name.includes("biología") || name.includes("biotecnología") || name.includes("bioprocesos"))
-    return <GiMicroscope />;
-  if (name.includes("agro") || name.includes("veterinaria") || name.includes("carrera") || name.includes("animal"))
-    return <GiWheat />;
-  if (name.includes("salud")) return <GiHealthNormal />;
-  if (name.includes("alimento") || name.includes("inocuidad")) return <GiChemicalDrop />;
-  if (name.includes("ambiental") || name.includes("sostenibilidad") || name.includes("forestal"))
-    return <GiWheat />;
-  return <GiMicroscope />;
-};
+
 
 /** Página principal de cursos con categorías y cursos inline */
 const CategorySelectionPage: React.FC = () => {
@@ -210,7 +193,9 @@ const CategorySelectionPage: React.FC = () => {
               exit={{ opacity: 0 }}
             >
               {domains.map((domain) => {
-                const categoriesToShow = domain.categories || [];
+                const categoriesToShow = (domain.categories || []).filter(
+                  (cat) => cat.courses && cat.courses.length > 0,
+                );
                 if (categoriesToShow.length === 0) return null;
 
                 // Check if this domain is "Rutas de aprendizaje"
@@ -238,7 +223,7 @@ const CategorySelectionPage: React.FC = () => {
                           <div key={`learning-path-${category.id}`} className="w-full sm:w-[368px] flex-shrink-0">
                             <LearningPathCard
                               category={category}
-                              icon={getCategoryIcon(category.name)}
+                              icon={resolveCategoryIcon(category.name, category.icon)}
                             />
                           </div>
                         ))}
@@ -251,7 +236,7 @@ const CategorySelectionPage: React.FC = () => {
                             <CategoryCard
                               key={category.id}
                               category={category}
-                              icon={getCategoryIcon(category.name)}
+                              icon={resolveCategoryIcon(category.name, category.icon)}
                               onClick={() => handleCategoryClick(category)}
                               isActive={selectedCategory?.id === category.id}
                               variant={

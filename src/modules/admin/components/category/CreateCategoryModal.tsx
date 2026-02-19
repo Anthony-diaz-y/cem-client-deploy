@@ -26,9 +26,9 @@ export default function CreateCategoryModal({
 }: CreateCategoryModalProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [categoryType, setCategoryType] = useState("");
-  const [isSelectOpen, setIsSelectOpen] = useState(false);
+  const [icon, setIcon] = useState("");
   const [loading, setLoading] = useState(false);
+
 
   // Maneja el envío del formulario y crea la categoría
   const onSubmit = async (e: React.FormEvent) => {
@@ -45,6 +45,8 @@ export default function CreateCategoryModal({
         {
           name: name.trim(),
           description: description.trim(),
+          icon: icon || undefined,
+          // domainId se asignará por defecto en backend
         },
         token
       );
@@ -65,7 +67,7 @@ export default function CreateCategoryModal({
         // Reset states
         setName("");
         setDescription("");
-        setCategoryType("");
+        setIcon("");
 
         onSuccess();
         onClose();
@@ -111,10 +113,8 @@ export default function CreateCategoryModal({
           setName={setName}
           description={description}
           setDescription={setDescription}
-          categoryType={categoryType}
-          setCategoryType={setCategoryType}
-          isSelectOpen={isSelectOpen}
-          setIsSelectOpen={setIsSelectOpen}
+          icon={icon}
+          setIcon={setIcon}
           loading={loading}
         />
       </form>

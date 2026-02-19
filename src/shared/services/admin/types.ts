@@ -485,11 +485,18 @@ export interface Category {
   id: string;
   name: string;
   description: string;
+  icon?: string | null;
+  domain?: {
+    id: string;
+    name: string;
+  } | null;
 }
 
 export interface CreateCategoryRequest {
   name: string;
   description: string;
+  icon?: string;
+  domainId?: string;
 }
 
 export interface CreateCategoryResponse {
@@ -506,6 +513,8 @@ export interface UpdateCategoryRequest {
   categoryId: string;
   name: string;
   description: string;
+  icon?: string;
+  domainId?: string;
 }
 
 export interface UpdateCategoryResponse {

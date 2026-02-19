@@ -28,28 +28,17 @@ export default function EditCategoryModal({
 }: EditCategoryModalProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [categoryType, setCategoryType] = useState("");
-  const [isSelectOpen, setIsSelectOpen] = useState(false);
+  const [icon, setIcon] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Actualizar estado cuando cambia la categoría
+  // Cargar datos al abrir
   useEffect(() => {
     if (category) {
       setName(category.name || "");
       setDescription(category.description || "");
-      // Mockup: assume career/sector based on name or description if not in data
-      // For now we keep it empty or as per real data if available
+      setIcon(category.icon || "");
     }
   }, [category]);
-
-  // Cerrar dropdown al hacer click fuera
-  useEffect(() => {
-    const handleClickOutside = () => setIsSelectOpen(false);
-    if (isSelectOpen) {
-      window.addEventListener("click", handleClickOutside);
-    }
-    return () => window.removeEventListener("click", handleClickOutside);
-  }, [isSelectOpen]);
 
   if (!isOpen || !category) return null;
 
@@ -67,7 +56,9 @@ export default function EditCategoryModal({
         category.id,
         name.trim(),
         description.trim(),
-        token
+        token,
+        icon || undefined,
+        // No enviamos domainId para mantener el que ya tiene
       );
 
       if (result) {
@@ -127,10 +118,8 @@ export default function EditCategoryModal({
           setName={setName}
           description={description}
           setDescription={setDescription}
-          categoryType={categoryType}
-          setCategoryType={setCategoryType}
-          isSelectOpen={isSelectOpen}
-          setIsSelectOpen={setIsSelectOpen}
+          icon={icon}
+          setIcon={setIcon}
           loading={loading}
         />
       </form>
