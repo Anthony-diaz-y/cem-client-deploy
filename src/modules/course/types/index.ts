@@ -76,7 +76,17 @@ export interface SubSection {
   }[];
   content?: string;
   isLocked?: boolean;
+  type?: "lecture" | "quiz";
+  quizTitle?: string;
+  questions?: QuizQuestion[];
 }
+
+export interface QuizQuestion {
+  questionText: string;
+  options: string[];
+  correctOptionIndex: number;
+}
+
 
 export interface Course {
   _id: string;
@@ -127,8 +137,9 @@ export interface Category {
 export interface CartItem {
   id?: string; // UUID del backend PostgreSQL
   _id?: string; // Mantener compatibilidad si se usa
-  courseName: string;
+  courseName?: string;
   price: number;
+  priceUSD?: number;
   thumbnail: string;
   instructor?: Instructor;
   courseDescription?: string;

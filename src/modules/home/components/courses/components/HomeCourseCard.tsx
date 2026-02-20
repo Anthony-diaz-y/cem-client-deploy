@@ -226,7 +226,7 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
               S/{course.price || 0}
             </p>
             <p className="text-xs font-medium text-cem-neutral-gray-500">
-              $ {fullCourse?.priceUSD ? Number(fullCourse.priceUSD).toFixed(2) : (Number(course.price || 0) / 3.75).toFixed(2)}
+              $ {course.priceUSD ? Number(course.priceUSD).toFixed(2) : (Number(course.price || 0) / 3.75).toFixed(2)}
             </p>
           </div>
         </div>

@@ -1,12 +1,14 @@
 import { SubSection } from "@modules/course/types";
 import { ConfirmationModal, type ConfirmationModalData } from "@shared/components";
 import SubSectionModal from "../../modals/SubSectionModal";
+import QuizModal from "../../modals/QuizModal";
 import MoveLectureWarningModal from "../../modals/MoveLectureWarningModal";
 
 interface ModalsContainerProps {
   addSubSection: string | null;
   viewSubSection: SubSection | null;
   editSubSection: (SubSection & { sectionId: string }) | null;
+  editQuiz: (SubSection & { sectionId: string }) | null;
   confirmationModal: ConfirmationModalData | null;
   showMoveWarning: boolean;
   pendingMove: {
@@ -17,7 +19,7 @@ interface ModalsContainerProps {
   setAddSubsection: React.Dispatch<React.SetStateAction<string | null>>;
   setViewSubSection: React.Dispatch<React.SetStateAction<SubSection | null>>;
   setEditSubSection: React.Dispatch<React.SetStateAction<(SubSection & { sectionId: string }) | null>>;
-  setConfirmationModal: React.Dispatch<React.SetStateAction<ConfirmationModalData | null>>;
+  setEditQuiz: React.Dispatch<React.SetStateAction<(SubSection & { sectionId: string }) | null>>;
   confirmMoveLecture: () => void;
   cancelMoveLecture: () => void;
 }
@@ -27,13 +29,14 @@ export default function ModalsContainer({
   addSubSection,
   viewSubSection,
   editSubSection,
+  editQuiz,
   confirmationModal,
   showMoveWarning,
   pendingMove,
   setAddSubsection,
   setViewSubSection,
   setEditSubSection,
-  setConfirmationModal,
+  setEditQuiz,
   confirmMoveLecture,
   cancelMoveLecture,
 }: ModalsContainerProps) {
@@ -94,6 +97,12 @@ export default function ModalsContainer({
               );
             }
           }}
+          edit={true}
+        />
+      ) : editQuiz ? (
+        <QuizModal
+          modalData={editQuiz}
+          setModalData={(value) => setEditQuiz(typeof value === "object" ? (value as SubSection & { sectionId: string }) : null)}
           edit={true}
         />
       ) : null}

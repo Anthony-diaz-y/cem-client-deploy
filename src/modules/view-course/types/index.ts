@@ -1,5 +1,7 @@
 // View Course Module Types
 
+import { QuizQuestion } from "@modules/course/types";
+
 export interface SidebarHeaderProps {
   courseName?: string;
   completedLectures: string[];
@@ -48,7 +50,11 @@ export interface SubSection {
   }[];
   content?: string;
   isLocked?: boolean;
+  type?: "lecture" | "quiz";
+  quizTitle?: string;
+  questions?: QuizQuestion[];
 }
+
 
 export interface Course {
   _id: string;

@@ -27,6 +27,7 @@ interface SectionItemProps {
   onEditSectionName: (sectionId: string, sectionName: string) => void;
   onDeleteSection: (sectionId: string) => void;
   onAddLecture: (sectionId: string) => void;
+  onQuizLecture: (lecture: SubSection, sectionId: string) => void;
   onViewLecture: (lecture: SubSection) => void;
   onEditLecture: (lecture: SubSection, sectionId: string) => void;
   onDeleteLecture: (subSectionId: string, sectionId: string) => void;
@@ -55,6 +56,7 @@ export default function SectionItem({
   onEditSectionName,
   onDeleteSection,
   onAddLecture,
+  onQuizLecture,
   onViewLecture,
   onEditLecture,
   onDeleteLecture,
@@ -187,7 +189,6 @@ export default function SectionItem({
                 lecture={lecture}
                 subSectionId={subSectionId}
                 sectionId={sectionId}
-                sectionIndex={sectionIndex}
                 subSectionIndex={subSectionIndex}
                 isDragged={isLectureDragged}
                 isDragOver={isLectureDragOver}
@@ -198,6 +199,7 @@ export default function SectionItem({
                 onDrop={onLectureDrop}
                 onClick={onViewLecture}
                 onEdit={onEditLecture}
+                onQuiz={onQuizLecture}
                 onDelete={onDeleteLecture}
                 setConfirmationModal={setConfirmationModal}
               />
@@ -207,18 +209,17 @@ export default function SectionItem({
           <p className="text-cem-neutral-gray-500 text-sm py-1">No hay lecciones en esta sección</p>
         )}
 
-        {/* Re-added delimiting line before the action button with perfect alignment */}
-
-
-        <button
-          onClick={() => onAddLecture(sectionId)}
-          className="flex items-center  gap-x-1.5 text-cem-primary font-bold hover:text-cem-primary-dark transition-colors group/btn py-1 ml-1"
-        >
-          <div className="w-5 h-5 mt-2 rounded-md bg-cem-primary/5 flex items-center justify-center group-hover/btn:bg-cem-primary group-hover/btn:text-white transition-all">
-            <FaPlus className="text-[10px]" />
-          </div>
-          <p className="text-[13px] mt-2">Agregar Lección</p>
-        </button>
+        <div className="flex items-center gap-x-3">
+          <button
+            onClick={() => onAddLecture(sectionId)}
+            className="flex items-center gap-x-1.5 text-cem-primary font-bold hover:text-cem-primary-dark transition-colors group/btn py-1 ml-1"
+          >
+            <div className="w-5 h-5 mt-2 rounded-md bg-cem-primary/5 flex items-center justify-center group-hover/btn:bg-cem-primary group-hover/btn:text-white transition-all">
+              <FaPlus className="text-[10px]" />
+            </div>
+            <p className="text-[13px] mt-2">Agregar Lección</p>
+          </button>
+        </div>
       </div>
     </details>
   );

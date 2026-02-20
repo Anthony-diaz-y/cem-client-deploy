@@ -10,6 +10,7 @@ import CourseCategorySelect from "./CourseCategorySelect";
 import SyllabusUpload from "../upload/SyllabusUpload";
 import { CourseFormFieldsProps } from "../../types";
 import { Course } from "../../../course/types";
+import { getCategoryIds } from "../../hooks/useCourseInformationForm";
 
 // Campos del formulario de información del curso
 const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
@@ -59,34 +60,107 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         )}
       </div>
 
-      {/* 3. Course Price */}
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="coursePrice">
-          Precio <sup className="text-pink-200">*</sup>
-        </label>
-        <div className="relative">
-          <input
-            id="coursePrice"
-            placeholder="Ingresa el precio del curso"
-            {...register("coursePrice", {
-              required: true,
-              valueAsNumber: true,
-              min: {
-                value: 0,
-                message: "El precio debe ser mayor o igual a 0",
-              },
-            })}
-            className="form-style w-full !pl-12"
-          />
-          <span className="absolute left-6 top-1/2 -translate-y-1/2 text-lg text-cem-neutral-gray-400 font-medium">$</span>
+      {/* 3. Course Prices (PEN & USD) - Split into Integer and Cents */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Precio en PEN */}
+        <div className="flex flex-col space-y-2 text-left">
+          <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="coursePrice_int">
+            Precio (PEN) <sup className="text-pink-200">*</sup>
+          </label>
+          <div className="flex items-center gap-1.5">
+            <div className="relative w-32">
+              <input
+                id="coursePrice_int"
+                placeholder="0"
+                {...register("coursePrice_int", { required: true })}
+                className="form-style w-32 !pl-10 text-right pr-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                type="number"
+                onKeyDown={(e) => ["e", "E", "+", "-", ","].includes(e.key) && e.preventDefault()}
+                onBlur={(e) => {
+                  if (!e.target.value) setValue("coursePrice_int" as any, "0");
+                }}
+              />
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-cem-neutral-gray-400 font-bold">S/</span>
+            </div>
+            <span className="text-xl font-bold text-cem-neutral-gray-300">.</span>
+            <div className="w-16">
+              <input
+                id="coursePrice_cents"
+                placeholder="00"
+                {...register("coursePrice_cents", {
+                  required: true,
+                  maxLength: 2,
+                })}
+                className="form-style w-16 p-0 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                type="number"
+                onInput={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  if (target.value.length > 2) target.value = target.value.slice(0, 2);
+                }}
+                onBlur={(e) => {
+                  let val = e.target.value;
+                  if (!val) val = "00";
+                  if (val.length === 1) val = "0" + val;
+                  setValue("coursePrice_cents" as any, val);
+                }}
+                onKeyDown={(e) => ["e", "E", "+", "-", ","].includes(e.key) && e.preventDefault()}
+              />
+            </div>
+          </div>
+          {(errors.coursePrice_int || errors.coursePrice_cents) && (
+            <span className="ml-1 text-[11px] tracking-wide text-pink-200">
+              Campo requerido (ej: 0.00)
+            </span>
+          )}
         </div>
-        {errors.coursePrice && (
-          <span className="ml-2 text-xs tracking-wide text-pink-200">
-            El precio del curso es requerido
-          </span>
-        )}
-      </div>
 
+        {/* Precio en USD */}
+        <div className="flex flex-col space-y-2 text-left">
+          <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="coursePriceUSD_int">
+            Precio (USD) <span className="text-xs text-cem-neutral-gray-400 font-normal ml-1">(Opcional)</span>
+          </label>
+          <div className="flex items-center gap-1.5">
+            <div className="relative w-32">
+              <input
+                id="coursePriceUSD_int"
+                placeholder="0"
+                {...register("coursePriceUSD_int")}
+                className="form-style w-32 !pl-10 text-right pr-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                type="number"
+                onKeyDown={(e) => ["e", "E", "+", "-", ","].includes(e.key) && e.preventDefault()}
+              />
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-cem-neutral-gray-400 font-medium">$</span>
+            </div>
+            <span className="text-xl font-bold text-cem-neutral-gray-300">.</span>
+            <div className="w-16">
+              <input
+                id="coursePriceUSD_cents"
+                placeholder="00"
+                {...register("coursePriceUSD_cents", {
+                  maxLength: 2,
+                })}
+                className="form-style w-16 p-0 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                type="number"
+                onInput={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  if (target.value.length > 2) target.value = target.value.slice(0, 2);
+                }}
+                onBlur={(e) => {
+                  let val = e.target.value;
+                  if (val && val.length === 1) {
+                    setValue("coursePriceUSD_cents" as any, "0" + val);
+                  }
+                }}
+                onKeyDown={(e) => ["e", "E", "+", "-", ","].includes(e.key) && e.preventDefault()}
+              />
+            </div>
+          </div>
+          <p className="text-[10px] text-cem-neutral-gray-400 ml-1">
+            Se calcula automáticamente si no se especifica.
+          </p>
+        </div>
+      </div>
+      drum
       {/* 4. Course Category (Carrera) */}
       <CourseCategorySelect
         name="courseCategory"
@@ -95,12 +169,9 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         setValue={setValue}
         errors={errors}
         categories={courseCategories}
-        initialData={
-          Array.isArray(course?.category)
-            ? (course?.category[0] as any)?.id || (course?.category[0] as any)?._id
-            : (course?.category as any)?.id || (course?.category as any)?._id || (course?.category as unknown as string) || ""
-        }
+        initialData={getCategoryIds(course?.category).carreraId}
         loading={loading}
+        domainName="Según tu carrera"
       />
 
       {/* 5. Course Sector */}
@@ -111,8 +182,9 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         setValue={setValue as any}
         errors={errors as any}
         categories={courseCategories}
-        initialData={""}
+        initialData={getCategoryIds(course?.category).sectorId}
         loading={loading}
+        domainName="Según tu sector"
       />
 
       {/* 6. Docente del curso */}

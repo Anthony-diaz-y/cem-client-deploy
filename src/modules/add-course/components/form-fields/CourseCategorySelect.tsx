@@ -9,6 +9,10 @@ interface Category {
     id?: string;
     name: string;
     description?: string;
+    domain?: {
+        id: string;
+        name: string;
+    };
 }
 
 interface CourseCategorySelectProps<T extends FieldValues = FieldValues> {
@@ -20,6 +24,7 @@ interface CourseCategorySelectProps<T extends FieldValues = FieldValues> {
     categories: Category[];
     initialData?: string; // Single ID for category
     loading?: boolean;
+    domainName?: string; // Filter categories by domain name
 }
 
 export default function CourseCategorySelect<T extends FieldValues = FieldValues>({
@@ -31,6 +36,7 @@ export default function CourseCategorySelect<T extends FieldValues = FieldValues
     categories = [],
     initialData = "",
     loading = false,
+    domainName,
 }: CourseCategorySelectProps<T>) {
     // State for local selection management
     const [selectedCategoryId, setSelectedCategoryId] = useState<string>(initialData || "");
@@ -84,11 +90,17 @@ export default function CourseCategorySelect<T extends FieldValues = FieldValues
         setSelectedCategoryId("");
     };
 
-    // Filter available categories based on search term
+    // Filter available categories based on domain and search term
     const filteredCategories = categories.filter((category) => {
         const matchesSearch = category.name.toLowerCase().includes(searchTerm.toLowerCase());
-        // Also exclude already selected category if we wanted, but here replace is okay
-        return matchesSearch;
+        const categoryDomainName = category.domain?.name?.toLowerCase() || "";
+        const targetDomainName = domainName?.toLowerCase() || "";
+
+        const matchesDomain = targetDomainName
+            ? categoryDomainName.includes(targetDomainName) || targetDomainName.includes(categoryDomainName)
+            : true;
+
+        return matchesSearch && matchesDomain;
     });
 
     // Get category name for display

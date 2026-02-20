@@ -42,12 +42,28 @@ const normalizeCourseStructure = (course: any): Course => {
 };
 
 // Helper to safely extract category ID whether it's an object or array
-const getCategoryId = (cat: any): string => {
-  if (!cat) return "";
-  if (Array.isArray(cat)) {
-    return cat.length > 0 ? cat[0].id || cat[0]._id || "" : "";
-  }
-  return cat.id || cat._id || "";
+export const getCategoryIds = (cat: any): { carreraId: string, sectorId: string } => {
+  const result = { carreraId: "", sectorId: "" };
+  if (!cat) return result;
+
+  const categories = Array.isArray(cat) ? cat : [cat];
+
+  categories.forEach((c: any) => {
+    const domainName = c.domain?.name?.toLowerCase();
+    const id = c.id || c._id || (typeof c === "string" ? c : "");
+    if (!id) return;
+
+    if (domainName?.includes("carrera")) {
+      result.carreraId = id;
+    } else if (domainName?.includes("sector")) {
+      result.sectorId = id;
+    } else if (!result.carreraId) {
+      // Fallback: first one with no domain info or unknown domain goes to carrera
+      result.carreraId = id;
+    }
+  });
+
+  return result;
 };
 
 /**
@@ -69,7 +85,7 @@ export const useCourseInformationForm = () => {
   );
   const [loading, setLoading] = useState(false);
   const [courseCategories, setCourseCategories] = useState<
-    Array<{ id?: string; _id?: string; name: string }>
+    Array<{ id?: string; _id?: string; name: string; domain?: { name: string } }>
   >([]);
 
   useEffect(() => {
@@ -94,26 +110,22 @@ export const useCourseInformationForm = () => {
       // Esto asegura que siempre use los datos actualizados del Redux store
 
       // Normalizar y obtener todos los valores actuales del curso
-      const currentCategoryId = String(
-        getCategoryId(courseData.category),
-      ).trim();
+      const { carreraId, sectorId } = getCategoryIds(courseData.category);
 
       // Establecer todos los valores del formulario de una vez para evitar inconsistencias
       const formValues = {
         courseTitle: courseData.courseName || "",
         courseShortDesc: courseData.courseDescription || "",
         coursePrice: courseData.price !== undefined ? courseData.price : 0,
+        coursePrice_int: courseData.price !== undefined ? Math.floor(courseData.price).toString() : "0",
+        coursePrice_cents: courseData.price !== undefined ? (courseData.price % 1).toFixed(2).split(".")[1] : "00",
+        coursePriceUSD: courseData.priceUSD !== undefined ? courseData.priceUSD : 0,
+        coursePriceUSD_int: courseData.priceUSD !== undefined ? Math.floor(courseData.priceUSD).toString() : "",
+        coursePriceUSD_cents: courseData.priceUSD !== undefined ? (courseData.priceUSD % 1).toFixed(2).split(".")[1] : "",
         courseTags: courseData.tag || [],
         courseBenefits: courseData.whatYouWillLearn || "",
-        courseCategory:
-          currentCategoryId &&
-            currentCategoryId !== "undefined" &&
-            currentCategoryId !== "null" &&
-            currentCategoryId !== "" &&
-            currentCategoryId !== "NaN"
-            ? currentCategoryId
-            : "",
-        courseSector: "", // Inicializar vacío o con valor del curso si existiera
+        courseCategory: carreraId,
+        courseSector: sectorId,
         courseRequirements: courseData.instructions || [],
         courseInstructor:
           (courseData as any).instructors?.map((i: any) => i.id || i._id) || [],
@@ -143,9 +155,8 @@ export const useCourseInformationForm = () => {
     const courseData = course as Course;
     const currentValues = getValues();
 
-    // Normalizar ID de categoría para comparación
-    const currentFormCatId = String(currentValues.courseCategory || "").trim();
-    const currentCourseCatId = String(getCategoryId(courseData.category)).trim();
+    // Normalizar IDs de categorías para comparación
+    const { carreraId: currentCourseCarreraId, sectorId: currentCourseSectorId } = getCategoryIds(courseData.category);
 
     // Normalizar instructores para comparación (IDs solamente)
     const currentFormInstructors = Array.isArray(currentValues.courseInstructor)
@@ -158,11 +169,14 @@ export const useCourseInformationForm = () => {
     return (
       currentValues.courseTitle !== courseData.courseName ||
       currentValues.courseShortDesc !== courseData.courseDescription ||
-      currentValues.coursePrice !== courseData.price ||
+      currentValues.coursePrice_int !== Math.floor(courseData.price || 0).toString() ||
+      currentValues.coursePrice_cents !== ((courseData.price || 0) % 1).toFixed(2).split(".")[1] ||
+      (currentValues.coursePriceUSD_int ?? "") !== (courseData.priceUSD !== undefined ? Math.floor(courseData.priceUSD).toString() : "") ||
+      (currentValues.coursePriceUSD_cents ?? "") !== (courseData.priceUSD !== undefined ? (courseData.priceUSD % 1).toFixed(2).split(".")[1] : "") ||
       (currentValues.courseTags ?? []).toString() !== (courseData.tag ?? []).toString() ||
       currentValues.courseBenefits !== courseData.whatYouWillLearn ||
-      currentFormCatId !== currentCourseCatId ||
-      currentValues.courseSector !== "" || // Evaluar si el sector cambió (placeholder por ahora)
+      currentValues.courseCategory !== currentCourseCarreraId ||
+      currentValues.courseSector !== currentCourseSectorId ||
       (currentValues.courseRequirements ?? []).toString() !==
       (courseData.instructions ?? []).toString() ||
       currentFormInstructors !== currentCourseInstructors ||
@@ -197,8 +211,16 @@ export const useCourseInformationForm = () => {
         if (currentValues.courseShortDesc !== courseData.courseDescription) {
           formData.append("courseDescription", data.courseShortDesc);
         }
-        if (currentValues.coursePrice !== courseData.price) {
-          formData.append("price", data.coursePrice.toString());
+        const combinedPrice = parseFloat(`${data.coursePrice_int || "0"}.${data.coursePrice_cents || "00"}`);
+        const combinedPriceUSD = (data.coursePriceUSD_int || data.coursePriceUSD_cents)
+          ? parseFloat(`${data.coursePriceUSD_int || "0"}.${data.coursePriceUSD_cents || "00"}`)
+          : undefined;
+
+        if (combinedPrice !== courseData.price) {
+          formData.append("price", combinedPrice.toString());
+        }
+        if (combinedPriceUSD !== undefined && combinedPriceUSD !== courseData.priceUSD) {
+          formData.append("priceUSD", combinedPriceUSD.toString());
         }
         if ((currentValues.courseTags ?? []).toString() !== (courseData.tag ?? []).toString()) {
           formData.append("tag", JSON.stringify(data.courseTags));
@@ -206,29 +228,18 @@ export const useCourseInformationForm = () => {
         if (currentValues.courseBenefits !== courseData.whatYouWillLearn) {
           formData.append("whatYouWillLearn", data.courseBenefits);
         }
-        // SIEMPRE enviar categories si está presente y es válido
-        // NestJS con FileInterceptor requiere arrays en formato bracket notation
-        const newCategoryId = String(data.courseCategory || "").trim();
+        // Enviar múltiples categorías si están presentes
+        const categoryIds = [currentValues.courseCategory, currentValues.courseSector].filter(id =>
+          id && id !== "" && !["undefined", "null", "NaN"].includes(String(id).trim())
+        );
 
-        if (
-          newCategoryId &&
-          !["undefined", "null", "NaN"].includes(newCategoryId)
-        ) {
-          // Validar formato UUID
-          const uuidRegex =
-            /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-          if (uuidRegex.test(newCategoryId)) {
-            // Usar bracket notation para arrays en FormData
-            formData.append("categories[0]", newCategoryId);
-          } else {
-            // console.error("Invalid category ID format:", newCategoryId);
+        categoryIds.forEach((id, index) => {
+          const cleanId = String(id).trim();
+          const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+          if (uuidRegex.test(cleanId)) {
+            formData.append(`categories[${index}]`, cleanId);
           }
-        } else {
-          console.warn(
-            "⚠️ No se puede enviar categories - valor inválido:",
-            newCategoryId,
-          );
-        }
+        });
         if (
           (currentValues.courseRequirements ?? []).toString() !==
           (courseData.instructions ?? []).toString()
@@ -307,46 +318,33 @@ export const useCourseInformationForm = () => {
       return;
     }
 
-    // courseCategory es un string (el ID) desde el select
-    const categoryId = data.courseCategory;
-
-    // Validar que categoryId existe y es válido
-    if (
-      !categoryId ||
-      categoryId === "" ||
-      categoryId === "undefined" ||
-      categoryId === "null"
-    ) {
-      console.error("Category ID is required and must be a valid UUID");
-      console.error(
-        "Received categoryId:",
-        categoryId,
-        "Type:",
-        typeof categoryId,
-      );
-      toast.error("Por favor, selecciona una categoría válida");
-      return;
-    }
-
-    // Validar formato UUID
-    const uuidRegex =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(categoryId)) {
-      console.error("Invalid category ID format (expected UUID):", categoryId);
-      toast.error(
-        "ID de categoría inválido. Por favor, selecciona una categoría válida",
-      );
-      return;
-    }
-
     const formData = new FormData();
     formData.append("courseName", data.courseTitle);
     formData.append("courseDescription", data.courseShortDesc);
-    formData.append("price", data.coursePrice.toString());
+    const combinedPrice = parseFloat(`${data.coursePrice_int || "0"}.${data.coursePrice_cents || "00"}`);
+    const combinedPriceUSD = (data.coursePriceUSD_int || data.coursePriceUSD_cents)
+      ? parseFloat(`${data.coursePriceUSD_int || "0"}.${data.coursePriceUSD_cents || "00"}`)
+      : undefined;
+
+    formData.append("price", combinedPrice.toString());
+    if (combinedPriceUSD !== undefined) {
+      formData.append("priceUSD", combinedPriceUSD.toString());
+    }
     formData.append("tag", JSON.stringify(data.courseTags));
     formData.append("whatYouWillLearn", data.courseBenefits);
-    // NestJS con FileInterceptor requiere arrays en formato bracket notation
-    formData.append("categories[0]", categoryId);
+
+    // Enviar múltiples categorías (Carrera y Sector)
+    const categoryIds = [data.courseCategory, data.courseSector].filter(id =>
+      id && id !== "" && !["undefined", "null", "NaN"].includes(String(id).trim())
+    );
+
+    categoryIds.forEach((id, index) => {
+      const cleanId = String(id).trim();
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (uuidRegex.test(cleanId)) {
+        formData.append(`categories[${index}]`, cleanId);
+      }
+    });
     // El campo status ya no es necesario - el backend siempre crea el curso como Draft
     formData.append("instructions", JSON.stringify(data.courseRequirements));
     formData.append("instructors", JSON.stringify(data.courseInstructor));

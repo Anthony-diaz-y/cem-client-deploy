@@ -25,7 +25,7 @@ export default function GlobalProviders({
             duration: 4000,
           }}
           containerStyle={{
-            top: 80,
+            top: 155,
             right: 20,
           }}
         />

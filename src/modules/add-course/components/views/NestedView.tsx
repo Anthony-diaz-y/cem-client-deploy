@@ -21,6 +21,8 @@ export default function NestedView({
     setAddSubsection,
     setViewSubSection,
     setEditSubSection,
+    editQuiz,
+    setEditQuiz,
     setConfirmationModal,
     setWasJustDragged,
     handleSectionDragStart,
@@ -83,6 +85,7 @@ export default function NestedView({
                 onEditSectionName={handleChangeEditSectionName}
                 onDeleteSection={handleDeleteSectionWithModal}
                 onAddLecture={setAddSubsection}
+                onQuizLecture={(lecture, sectionId) => setEditQuiz({ ...lecture, sectionId })}
                 onViewLecture={setViewSubSection}
                 onEditLecture={(lecture, sectionId) => setEditSubSection({ ...lecture, sectionId })}
                 onDeleteLecture={handleDeleteLectureWithModal}
@@ -98,13 +101,14 @@ export default function NestedView({
         addSubSection={addSubSection}
         viewSubSection={viewSubSection}
         editSubSection={editSubSection}
+        editQuiz={editQuiz}
         confirmationModal={confirmationModal}
         showMoveWarning={showMoveWarning}
         pendingMove={pendingMove}
         setAddSubsection={setAddSubsection}
         setViewSubSection={setViewSubSection}
         setEditSubSection={setEditSubSection}
-        setConfirmationModal={setConfirmationModal}
+        setEditQuiz={setEditQuiz}
         confirmMoveLecture={confirmMoveLecture}
         cancelMoveLecture={cancelMoveLecture}
       />
