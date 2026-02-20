@@ -46,7 +46,13 @@ export const useSubSectionHandlers = ({
     formData.append("description", data.lectureContent || "");
 
     if (data.lectureVideo) {
-      formData.append("video", data.lectureVideo);
+      if (data.lectureVideo instanceof File) {
+        // Archivo subido
+        formData.append("video", data.lectureVideo);
+      } else if (typeof data.lectureVideo === 'string' && data.lectureVideo.trim()) {
+        // URL de YouTube/Vimeo
+        formData.append("videoUrl", data.lectureVideo.trim());
+      }
     }
 
     if (data.lectureAttachments && data.lectureAttachments.length > 0) {
@@ -121,9 +127,11 @@ export const useSubSectionHandlers = ({
     const lectureVideo = currentValues.lectureVideo;
     if (lectureVideo && lectureVideo !== subSectionData.videoUrl) {
       if (lectureVideo instanceof File) {
+        // Archivo subido
         formData.append("video", lectureVideo);
       } else if (typeof lectureVideo === 'string' && lectureVideo.trim()) {
-        formData.append("video", lectureVideo.trim());
+        // URL de YouTube/Vimeo
+        formData.append("videoUrl", lectureVideo.trim());
       }
     }
 
