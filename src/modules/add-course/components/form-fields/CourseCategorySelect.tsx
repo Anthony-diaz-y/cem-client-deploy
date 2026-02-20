@@ -24,7 +24,7 @@ interface CourseCategorySelectProps<T extends FieldValues = FieldValues> {
     categories: Category[];
     initialData?: string; // Single ID for category
     loading?: boolean;
-    domainName?: string; // New: filter by domain name (e.g., "Carreras" or "Sectores")
+    domainName?: string; // Filter categories by domain name
 }
 
 export default function CourseCategorySelect<T extends FieldValues = FieldValues>({
@@ -93,9 +93,13 @@ export default function CourseCategorySelect<T extends FieldValues = FieldValues
     // Filter available categories based on domain and search term
     const filteredCategories = categories.filter((category) => {
         const matchesSearch = category.name.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesDomain = domainName
-            ? category.domain?.name.toLowerCase() === domainName.toLowerCase()
+        const categoryDomainName = category.domain?.name?.toLowerCase() || "";
+        const targetDomainName = domainName?.toLowerCase() || "";
+
+        const matchesDomain = targetDomainName
+            ? categoryDomainName.includes(targetDomainName) || targetDomainName.includes(categoryDomainName)
             : true;
+
         return matchesSearch && matchesDomain;
     });
 

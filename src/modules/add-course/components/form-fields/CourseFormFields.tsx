@@ -169,13 +169,9 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         setValue={setValue}
         errors={errors}
         categories={courseCategories}
-        initialData={
-          Array.isArray(course?.category)
-            ? getCategoryIds(course?.category).carreraId
-            : getCategoryIds(course?.category).carreraId || (course?.category as unknown as string) || ""
-        }
+        initialData={getCategoryIds(course?.category).carreraId}
         loading={loading}
-        domainName="Carreras"
+        domainName="Según tu carrera"
       />
 
       {/* 5. Course Sector */}
@@ -186,13 +182,9 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         setValue={setValue as any}
         errors={errors as any}
         categories={courseCategories}
-        initialData={
-          Array.isArray(course?.category)
-            ? getCategoryIds(course?.category).sectorId
-            : getCategoryIds(course?.category).sectorId || ""
-        }
+        initialData={getCategoryIds(course?.category).sectorId}
         loading={loading}
-        domainName="Sectores"
+        domainName="Según tu sector"
       />
 
       {/* 6. Docente del curso */}

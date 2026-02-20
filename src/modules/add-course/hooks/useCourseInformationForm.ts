@@ -53,9 +53,9 @@ export const getCategoryIds = (cat: any): { carreraId: string, sectorId: string 
     const id = c.id || c._id || (typeof c === "string" ? c : "");
     if (!id) return;
 
-    if (domainName === "carreras") {
+    if (domainName?.includes("carrera")) {
       result.carreraId = id;
-    } else if (domainName === "sectores") {
+    } else if (domainName?.includes("sector")) {
       result.sectorId = id;
     } else if (!result.carreraId) {
       // Fallback: first one with no domain info or unknown domain goes to carrera
@@ -155,7 +155,7 @@ export const useCourseInformationForm = () => {
     const courseData = course as Course;
     const currentValues = getValues();
 
-    // Normalizar ID de categoría para comparación
+    // Normalizar IDs de categorías para comparación
     const { carreraId: currentCourseCarreraId, sectorId: currentCourseSectorId } = getCategoryIds(courseData.category);
 
     // Normalizar instructores para comparación (IDs solamente)
