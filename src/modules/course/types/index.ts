@@ -137,6 +137,7 @@ export interface Category {
 export interface CartItem {
   id?: string; // UUID del backend PostgreSQL
   _id?: string; // Mantener compatibilidad si se usa
+  courseName?: string;
   price: number;
   priceUSD?: number;
   thumbnail: string;

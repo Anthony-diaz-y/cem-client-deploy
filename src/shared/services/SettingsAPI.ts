@@ -65,9 +65,7 @@ export function updateUserProfileImage(token: string, formData: FormData | Recor
       // below line is must - if not code - then as we refresh the page after changing profile image then old profile image will show 
       // as we only changes in user(store) not in localStorage
       localStorage.setItem("user", JSON.stringify(response.data.data));
-    } catch (error) {
-      const apiError = error as ApiError;
-
+    } catch {
       toast.error("Could Not Update Profile Picture")
     }
     toast.dismiss(toastId)
@@ -154,9 +152,7 @@ export function deleteProfile(token: string, navigate: NavigateFunction) {
       }
       toast.success("Profile Deleted Successfully")
       dispatch(logout(navigate))
-    } catch (error) {
-      const apiError = error as ApiError;
-
+    } catch {
       toast.error("Could Not Delete Profile")
     }
     toast.dismiss(toastId)
