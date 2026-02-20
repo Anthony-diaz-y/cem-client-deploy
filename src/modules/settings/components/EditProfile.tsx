@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -19,8 +20,23 @@ export default function EditProfile() {
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm<ProfileFormData>();
+
+    // Sincronizar el formulario cuando los datos del usuario estén disponibles
+    useEffect(() => {
+        if (user) {
+            reset({
+                firstName: user.firstName || "",
+                lastName: user.lastName || "",
+                dateOfBirth: user.additionalDetails?.dateOfBirth || "",
+                gender: user.additionalDetails?.gender || "Male",
+                contactNumber: user.additionalDetails?.contactNumber?.toString() || "",
+                about: user.additionalDetails?.about || user.additionalDetails?.biography || "",
+            });
+        }
+    }, [user, reset]);
 
     const submitProfileForm = async (data: ProfileFormData) => {
         if (!token) return;
