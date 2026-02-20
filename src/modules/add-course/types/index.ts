@@ -22,6 +22,11 @@ export interface CourseInformationFormData {
   courseTitle: string;
   courseShortDesc: string;
   coursePrice: number;
+  coursePrice_int?: string;
+  coursePrice_cents?: string;
+  coursePriceUSD?: number;
+  coursePriceUSD_int?: string;
+  coursePriceUSD_cents?: string;
   courseTags?: string[];
   courseBenefits: string;
   courseCategory: string; // Carrera
