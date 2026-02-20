@@ -18,7 +18,6 @@ const getYouTubeId = (url: string): string | null => {
   }
   return null;
 };
-
 /**
  * Detecta si una URL es de Vimeo y retorna { id, hash } donde hash es opcional
  */
