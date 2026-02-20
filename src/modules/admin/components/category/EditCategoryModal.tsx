@@ -28,35 +28,43 @@ export default function EditCategoryModal({
 }: EditCategoryModalProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [categoryType, setCategoryType] = useState("");
-  const [isSelectOpen, setIsSelectOpen] = useState(false);
+  const [icon, setIcon] = useState("");
+  const [domainId, setDomainId] = useState("");
+  const [domains, setDomains] = useState<Array<{ id: string; name: string }>>([]);
   const [loading, setLoading] = useState(false);
 
-  // Actualizar estado cuando cambia la categoría
+  // Cargar dominios al abrir el modal
+  useEffect(() => {
+    if (isOpen) {
+      const fetchDomains = async () => {
+        try {
+          const { getAllDomains } = await import("../../../../modules/categories/services/domainsAPI");
+          const data = await getAllDomains();
+          setDomains(data || []);
+        } catch (error) {
+          // Error silenciado
+        }
+      };
+      fetchDomains();
+    }
+  }, [isOpen]);
+
+  // Cargar datos al abrir
   useEffect(() => {
     if (category) {
       setName(category.name || "");
       setDescription(category.description || "");
-      // Mockup: assume career/sector based on name or description if not in data
-      // For now we keep it empty or as per real data if available
+      setIcon(category.icon || "");
+      setDomainId(category.domain?.id || "");
     }
   }, [category]);
-
-  // Cerrar dropdown al hacer click fuera
-  useEffect(() => {
-    const handleClickOutside = () => setIsSelectOpen(false);
-    if (isSelectOpen) {
-      window.addEventListener("click", handleClickOutside);
-    }
-    return () => window.removeEventListener("click", handleClickOutside);
-  }, [isSelectOpen]);
 
   if (!isOpen || !category) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !description.trim()) {
+    if (!name.trim() || !description.trim() || !domainId) {
       toast.error("Todos los campos son requeridos");
       return;
     }
@@ -67,7 +75,9 @@ export default function EditCategoryModal({
         category.id,
         name.trim(),
         description.trim(),
-        token
+        token,
+        icon || undefined,
+        domainId,
       );
 
       if (result) {
@@ -127,10 +137,11 @@ export default function EditCategoryModal({
           setName={setName}
           description={description}
           setDescription={setDescription}
-          categoryType={categoryType}
-          setCategoryType={setCategoryType}
-          isSelectOpen={isSelectOpen}
-          setIsSelectOpen={setIsSelectOpen}
+          icon={icon}
+          setIcon={setIcon}
+          domainId={domainId}
+          setDomainId={setDomainId}
+          domains={domains}
           loading={loading}
         />
       </form>

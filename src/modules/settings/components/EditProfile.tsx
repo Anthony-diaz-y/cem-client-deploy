@@ -36,7 +36,7 @@ export default function EditProfile() {
       <form onSubmit={handleSubmit(submitProfileForm)}>
         {/* Profile Information */}
         <div className="my-10 flex flex-col gap-y-6 rounded-2xl border border-cem-neutral-gray-100 bg-cem-cardbackground p-8 px-6 sm:px-12 shadow-sm">
-          <h2 className="text-2xl font-bold text-cem-neutral-gray-900">
+          <h2 className="text-2xl font-semibold text-cem-neutral-gray-900">
             {SETTINGS_TEXTS.editProfile.title}
           </h2>
 
@@ -187,7 +187,7 @@ export default function EditProfile() {
             onClick={() => {
               router.push(SETTINGS_TEXTS.editProfile.links.myProfile);
             }}
-            className="cursor-pointer rounded-xl bg-cem-neutral-gray-100 py-2.5 px-6 font-bold text-cem-neutral-gray-700 hover:bg-cem-neutral-gray-200 border border-cem-neutral-gray-200 transition-all shadow-sm"
+            className="cursor-pointer rounded-xl bg-cem-neutral-gray-100 py-2.5 px-6 font-semibold text-cem-neutral-gray-700 hover:bg-cem-neutral-gray-200 border border-cem-neutral-gray-200 transition-all shadow-sm"
           >
             {SETTINGS_TEXTS.editProfile.buttons.cancel}
           </button>

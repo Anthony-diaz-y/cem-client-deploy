@@ -26,16 +26,33 @@ export default function CreateCategoryModal({
 }: CreateCategoryModalProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [categoryType, setCategoryType] = useState("");
-  const [isSelectOpen, setIsSelectOpen] = useState(false);
+  const [icon, setIcon] = useState("");
+  const [domainId, setDomainId] = useState("");
+  const [domains, setDomains] = useState<Array<{ id: string; name: string }>>([]);
   const [loading, setLoading] = useState(false);
+
+  // Cargar dominios al abrir el modal
+  React.useEffect(() => {
+    if (isOpen) {
+      const fetchDomains = async () => {
+        try {
+          const { getAllDomains } = await import("../../../../modules/categories/services/domainsAPI");
+          const data = await getAllDomains();
+          setDomains(data || []);
+        } catch (error) {
+          // Error silenciado
+        }
+      };
+      fetchDomains();
+    }
+  }, [isOpen]);
 
   // Maneja el envío del formulario y crea la categoría
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !description.trim()) {
-      toast.error("Nombre y descripción son requeridos");
+    if (!name.trim() || !description.trim() || !domainId) {
+      toast.error("Nombre, descripción y tipo de categoría son requeridos");
       return;
     }
 
@@ -45,6 +62,8 @@ export default function CreateCategoryModal({
         {
           name: name.trim(),
           description: description.trim(),
+          icon: icon || undefined,
+          domainId: domainId,
         },
         token
       );
@@ -65,7 +84,8 @@ export default function CreateCategoryModal({
         // Reset states
         setName("");
         setDescription("");
-        setCategoryType("");
+        setIcon("");
+        setDomainId("");
 
         onSuccess();
         onClose();
@@ -91,14 +111,14 @@ export default function CreateCategoryModal({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="px-10 py-4 bg-[#DCEEEF] text-cem-primary rounded-lg font-bold text-lg hover:bg-[#D5E8E9] transition-all disabled:opacity-50"
+            className="px-10 py-4 bg-[#DCEEEF] text-cem-primary rounded-xl font-bold text-lg hover:bg-[#D5E8E9] transition-all disabled:opacity-50"
           >
             Cancelar
           </button>
           <button
             onClick={onSubmit}
             disabled={loading}
-            className="px-10 py-4 bg-cem-primary text-white rounded-lg font-bold text-lg hover:bg-cem-primary-dark transition-all shadow-lg shadow-cem-primary/20 disabled:opacity-50 flex items-center justify-center min-w-[200px]"
+            className="px-10 py-4 bg-cem-primary text-white rounded-xl font-bold text-lg hover:bg-cem-primary-dark transition-all shadow-lg shadow-cem-primary/20 disabled:opacity-50 flex items-center justify-center min-w-[200px]"
           >
             {loading ? "Creando..." : "Crear Categoría"}
           </button>
@@ -111,10 +131,11 @@ export default function CreateCategoryModal({
           setName={setName}
           description={description}
           setDescription={setDescription}
-          categoryType={categoryType}
-          setCategoryType={setCategoryType}
-          isSelectOpen={isSelectOpen}
-          setIsSelectOpen={setIsSelectOpen}
+          icon={icon}
+          setIcon={setIcon}
+          domainId={domainId}
+          setDomainId={setDomainId}
+          domains={domains}
           loading={loading}
         />
       </form>

@@ -34,7 +34,7 @@ export function getUserDetails(token: string, navigate: NavigateFunction) {
     dispatch(setLoading(true))
     try {
       const response = await apiConnector<ApiResponse<UserData>>("GET", GET_USER_DETAILS_API, undefined, { Authorization: `Bearer ${token}`, })
-      console.log("GET_USER_DETAILS API RESPONSE............", response)
+
 
       if (!response.data.success || !response.data.data) {
         throw new Error(response.data.message || "Could not get user details")
@@ -45,7 +45,7 @@ export function getUserDetails(token: string, navigate: NavigateFunction) {
         : `https://api.dicebear.com/5.x/initials/svg?seed=${userData.firstName} ${userData.lastName}`
       dispatch(setUser({ ...userData, image: userImage }))
     } catch (error: any) {
-      console.log("GET_USER_DETAILS API ERROR............", error)
+
       // No mostrar toast si es error 401 (el interceptor ya lo maneja)
       if (error?.response?.status !== 401) {
         toast.error("No se pudieron obtener los detalles del usuario")
@@ -64,14 +64,14 @@ export async function getUserEnrolledCourses(token: string) {
   try {
     const response = await apiConnector<ApiResponse<unknown[]>>("GET", GET_USER_ENROLLED_COURSES_API, { token } as Record<string, unknown>, { Authorization: `Bearer ${token}`, })
 
-    console.log("GET_USER_ENROLLED_COURSES_API API RESPONSE............", response)
+
 
     if (!response.data.success) {
       throw new Error(response.data.message || "Could not get enrolled courses")
     }
     result = response.data.data || []
   } catch (error: any) {
-    console.log("GET_USER_ENROLLED_COURSES_API API ERROR............", error)
+
     // No mostrar toast si es error 401 (el interceptor ya lo maneja)
     if (error?.response?.status !== 401) {
       toast.error("No se pudieron obtener los cursos inscritos")
@@ -93,12 +93,12 @@ export async function getInstructorData(token: string) {
     const response = await apiConnector<InstructorDataResponse>("GET", GET_INSTRUCTOR_DATA_API, undefined, {
       Authorization: `Bearer ${token}`,
     })
-    console.log("GET_INSTRUCTOR_DATA_API API RESPONSE............", response)
+
     if (response?.data?.courses) {
       result = response.data.courses
     }
   } catch (error: any) {
-    console.log("GET_INSTRUCTOR_DATA_API API ERROR............", error)
+
     // No mostrar toast aquí si es un error 401 (el interceptor ya lo maneja)
     // Solo mostrar toast para otros tipos de errores
     if (error?.response?.status !== 401) {

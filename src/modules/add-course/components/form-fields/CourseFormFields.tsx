@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { HiOutlineCurrencyRupee } from "react-icons/hi";
 import { UseFormRegister, UseFormSetValue, FieldErrors } from "react-hook-form";
 import ChipInput from "./ChipInput";
 import Upload from "../upload/Upload";
@@ -24,14 +23,14 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
 }) => {
   return (
     <>
-      {/* Course Title */}
+      {/* 1. Course Title */}
       <div className="flex flex-col space-y-2">
         <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="courseTitle">
           Título del Curso <sup className="text-pink-200">*</sup>
         </label>
         <input
           id="courseTitle"
-          placeholder="Ingresa el título del curso"
+          placeholder="Ejemplo:"
           {...register("courseTitle", { required: true })}
           className="form-style w-full"
         />
@@ -42,14 +41,14 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         )}
       </div>
 
-      {/* Course Short Description */}
+      {/* 2. Course Description / Why take the course? */}
       <div className="flex flex-col space-y-2">
         <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="courseShortDesc">
-          Descripción Corta del Curso <sup className="text-pink-200">*</sup>
+          Descripción / ¿Por qué llevar el Curso? <sup className="text-pink-200">*</sup>
         </label>
         <textarea
           id="courseShortDesc"
-          placeholder="Ingresa la descripción"
+          placeholder="Ejemplo:"
           {...register("courseShortDesc", { required: true })}
           className="form-style resize-x-none h-[103px] w-full"
         />
@@ -60,10 +59,10 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         )}
       </div>
 
-      {/* Course Price */}
+      {/* 3. Course Price */}
       <div className="flex flex-col space-y-2">
         <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="coursePrice">
-          Precio del Curso <sup className="text-pink-200">*</sup>
+          Precio <sup className="text-pink-200">*</sup>
         </label>
         <div className="relative">
           <input
@@ -79,7 +78,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
             })}
             className="form-style w-full !pl-12"
           />
-          <HiOutlineCurrencyRupee className="absolute left-3 top-1/2 inline-block -translate-y-1/2 text-2xl text-richblack-400" />
+          <span className="absolute left-6 top-1/2 -translate-y-1/2 text-lg text-cem-neutral-gray-400 font-medium">$</span>
         </div>
         {errors.coursePrice && (
           <span className="ml-2 text-xs tracking-wide text-pink-200">
@@ -88,10 +87,10 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         )}
       </div>
 
-      {/* Course Category */}
+      {/* 4. Course Category (Carrera) */}
       <CourseCategorySelect
         name="courseCategory"
-        label="Categoría del Curso"
+        label="Carrera"
         register={register}
         setValue={setValue}
         errors={errors}
@@ -104,65 +103,22 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         loading={loading}
       />
 
-      {/* Course Tags */}
-      <ChipInput
-        label="Etiquetas"
-        name="courseTags"
-        placeholder="Ingresa etiquetas y presiona Enter o Coma"
-        register={register as UseFormRegister<any>}
-        setValue={setValue as UseFormSetValue<any>}
+      {/* 5. Course Sector */}
+      <CourseCategorySelect
+        name="courseSector"
+        label="Sector"
+        register={register as any}
+        setValue={setValue as any}
+        errors={errors as any}
+        categories={courseCategories}
+        initialData={""}
+        loading={loading}
       />
 
-      {/* Course Thumbnail Image */}
-      <Upload
-        name="courseImage"
-        label="Miniatura del Curso"
-        register={register as UseFormRegister<any>}
-        setValue={setValue as UseFormSetValue<any>}
-        errors={errors as FieldErrors<any>}
-        editData={editCourse && course ? (course as Course).thumbnail : null}
-      />
-
-      {/* Course Promotional Video Link */}
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="courseVideoUrl">
-          Video Promocional (Link)
-        </label>
-        <input
-          id="courseVideoUrl"
-          placeholder="Ingresa el link del video promocional (YouTube, Vimeo, etc.)"
-          {...register("courseVideoUrl")}
-          className="form-style w-full"
-        />
-        {errors.courseVideoUrl && (
-          <span className="ml-2 text-xs tracking-wide text-pink-200">
-            {errors.courseVideoUrl.message}
-          </span>
-        )}
-      </div>
-
-      {/* Benefits of the course */}
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="courseBenefits">
-          Beneficios del Curso <sup className="text-pink-200">*</sup>
-        </label>
-        <textarea
-          id="courseBenefits"
-          placeholder="Ingresa los beneficios del curso"
-          {...register("courseBenefits", { required: true })}
-          className="form-style resize-x-none min-h-[130px] w-full"
-        />
-        {errors.courseBenefits && (
-          <span className="ml-2 text-xs tracking-wide text-pink-200">
-            Los beneficios del curso son requeridos
-          </span>
-        )}
-      </div>
-
-      {/* Instructor(es) del curso */}
+      {/* 6. Docente del curso */}
       <CourseInstructorSelect
         name="courseInstructor"
-        label="Docente(s) del curso"
+        label="Docente del curso"
         register={register}
         setValue={setValue}
         errors={errors}
@@ -173,7 +129,62 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         }
       />
 
-      {/* Requirements/Instructions */}
+      {/* 7. Course Tags */}
+      <ChipInput
+        label="Etiquetas"
+        name="courseTags"
+        placeholder="Ingresa etiquetas presionando enter o coma"
+        register={register as any}
+        setValue={setValue as any}
+      />
+
+      {/* 8. Course Thumbnail Image */}
+      <Upload
+        name="courseImage"
+        label="Miniatura del Curso"
+        register={register as any}
+        setValue={setValue as any}
+        errors={errors as any}
+        editData={editCourse && course ? (course as Course).thumbnail : null}
+      />
+
+      {/* 9. Course Promotional Video Link */}
+      <div className="flex flex-col space-y-2">
+        <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="courseVideoUrl">
+          Link del video promocional <sup className="text-pink-200">*</sup>
+        </label>
+        <input
+          id="courseVideoUrl"
+          placeholder="Pega aquí la url del video de Youtube o Vimeo"
+          {...register("courseVideoUrl")}
+          className="form-style w-full"
+        />
+        {errors.courseVideoUrl && (
+          <span className="ml-2 text-xs tracking-wide text-pink-200">
+            {errors.courseVideoUrl.message}
+          </span>
+        )}
+      </div>
+
+      {/* 10. Benefits of the course */}
+      <div className="flex flex-col space-y-2">
+        <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="courseBenefits">
+          Beneficios del Curso <sup className="text-pink-200">*</sup>
+        </label>
+        <textarea
+          id="courseBenefits"
+          placeholder="Escribe aquí.."
+          {...register("courseBenefits", { required: true })}
+          className="form-style resize-x-none min-h-[130px] w-full"
+        />
+        {errors.courseBenefits && (
+          <span className="ml-2 text-xs tracking-wide text-pink-200">
+            Los beneficios del curso son requeridos
+          </span>
+        )}
+      </div>
+
+      {/* 11. Requirements/Instructions */}
       <RequirementsField
         name="courseRequirements"
         label="Requisitos/Instrucciones"
@@ -183,7 +194,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         initialData={editCourse && course ? (course as Course).instructions || [] : []}
       />
 
-      {/* Course Syllabus PDF */}
+      {/* 12. Course Syllabus PDF */}
       <SyllabusUpload
         name="courseSyllabus"
         label="Subir Syllabys"
@@ -198,4 +209,3 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
 };
 
 export default CourseFormFields;
-

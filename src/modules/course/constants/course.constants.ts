@@ -22,7 +22,7 @@ export const COURSE_TEXTS = {
     pricePrefix: "S/",
   },
   infoSection: {
-    whatYouWillLearn: "Lo que aprenderás",
+    whatYouWillLearn: "¿Por qué llevar el curso?",
     tags: "Etiquetas",
   },
   contentSection: {
@@ -46,6 +46,7 @@ export const COURSE_TEXTS = {
     errors: {
       invalidCourseId: "ID de curso no válido",
       instructorCannotBuy: "Eres un Instructor. No puedes comprar un curso.",
+      adminCannotBuy: "Eres Administrador. No puedes comprar un curso.",
       notAuthenticated: "¡No estás autenticado!",
       loginToBuy: "Por favor, inicia sesión para comprar el curso.",
       loginToAddToCart: "Por favor, inicia sesión para agregar al carrito",

@@ -16,6 +16,8 @@ import type {
   UpdateInstructorResponse,
   ToggleInstructorStatusResponse,
   ApproveInstructorResponse,
+  CreateInstructorData,
+  CreateInstructorResponse,
 } from "./types";
 
 const {
@@ -26,7 +28,45 @@ const {
   GET_INSTRUCTOR_DETAILS_API,
   TOGGLE_INSTRUCTOR_STATUS_API,
   UPDATE_INSTRUCTOR_API,
+  CREATE_INSTRUCTOR_API,
 } = adminEndpoints;
+
+/**
+ * Crea un nuevo instructor manualmente (Admin)
+ */
+export async function createInstructor(
+  data: CreateInstructorData,
+  token: string
+): Promise<boolean> {
+  const toastId = toast.loading("Creando instructor...");
+  try {
+    const response = await apiConnector<CreateInstructorResponse>(
+      "POST",
+      CREATE_INSTRUCTOR_API,
+      data as unknown as Record<string, unknown>,
+      {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    );
+
+    if (!response.data.success) {
+      throw new Error(response.data.message);
+    }
+
+    toast.success(response.data.message || "Instructor creado exitosamente");
+    toast.dismiss(toastId);
+    return true;
+  } catch (error) {
+    const apiError = error as ApiError;
+    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    if (apiError.response?.status !== 401) {
+      toast.error(apiError.response?.data?.message || "Error al crear instructor");
+    }
+    toast.dismiss(toastId);
+    return false;
+  }
+}
 
 /**
  * Obtiene la lista de instructores pendientes de aprobación
@@ -296,6 +336,10 @@ export async function updateInstructor(
       } else {
         body.contactNumber = updates.contactNumber;
       }
+    }
+
+    if (updates.professional_title !== undefined) {
+      body.professional_title = updates.professional_title;
     }
 
     const response = await apiConnector<UpdateInstructorResponse>(

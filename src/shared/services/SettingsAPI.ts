@@ -54,7 +54,7 @@ export function updateUserProfileImage(token: string, formData: FormData | Recor
           Authorization: `Bearer ${token}`,
         }
       )
-      console.log("UPDATE_DISPLAY_PICTURE_API API RESPONSE............", response);
+
 
       if (!response.data.success || !response.data.data) {
         throw new Error(response.data.message || "Could not update profile picture")
@@ -67,7 +67,7 @@ export function updateUserProfileImage(token: string, formData: FormData | Recor
       localStorage.setItem("user", JSON.stringify(response.data.data));
     } catch (error) {
       const apiError = error as ApiError;
-      console.log("UPDATE_DISPLAY_PICTURE_API API ERROR............", apiError)
+
       toast.error("Could Not Update Profile Picture")
     }
     toast.dismiss(toastId)
@@ -83,7 +83,7 @@ export function updateProfile(token: string, formData: Record<string, unknown>) 
       const response = await apiConnector<UpdateProfileResponse>("PUT", UPDATE_PROFILE_API, formData as unknown as (Record<string, unknown> | FormData), {
         Authorization: `Bearer ${token}`,
       })
-      console.log("UPDATE_PROFILE_API API RESPONSE............", response)
+
 
       if (!response.data.success || !response.data.updatedUserDetails) {
         throw new Error(response.data.message || "Could not update profile")
@@ -101,7 +101,7 @@ export function updateProfile(token: string, formData: Record<string, unknown>) 
       toast.success("Profile Updated Successfully")
     } catch (error) {
       const apiError = error as ApiError;
-      console.log("UPDATE_PROFILE_API API ERROR............", apiError)
+
       toast.error("Could Not Update Profile")
     }
     toast.dismiss(toastId)
@@ -116,7 +116,7 @@ export async function changePassword(token: string, formData: Record<string, unk
     const response = await apiConnector<ApiResponse>("POST", CHANGE_PASSWORD_API, formData as unknown as Record<string, unknown>, {
       Authorization: `Bearer ${token}`,
     })
-    console.log("CHANGE_PASSWORD_API API RESPONSE............", response)
+
 
     if (!response.data.success) {
       throw new Error(response.data.message || "Could not change password")
@@ -124,7 +124,7 @@ export async function changePassword(token: string, formData: Record<string, unk
     toast.success("Password Changed Successfully")
   } catch (error) {
     const apiError = error as ApiError;
-    console.log("CHANGE_PASSWORD_API API ERROR............", apiError)
+
     toast.error(apiError.response?.data?.message || "Could Not Change Password")
   }
   toast.dismiss(toastId)
@@ -138,7 +138,7 @@ export function deleteProfile(token: string, navigate: NavigateFunction) {
       const response = await apiConnector<ApiResponse>("DELETE", DELETE_PROFILE_API, undefined, {
         Authorization: `Bearer ${token}`,
       })
-      console.log("DELETE_PROFILE_API API RESPONSE............", response)
+
 
       if (!response.data.success) {
         throw new Error(response.data.message || "Could not delete profile")
@@ -147,7 +147,7 @@ export function deleteProfile(token: string, navigate: NavigateFunction) {
       dispatch(logout(navigate))
     } catch (error) {
       const apiError = error as ApiError;
-      console.log("DELETE_PROFILE_API API ERROR............", apiError)
+
       toast.error("Could Not Delete Profile")
     }
     toast.dismiss(toastId)

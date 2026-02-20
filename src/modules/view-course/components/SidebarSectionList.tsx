@@ -4,6 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { BsChevronDown } from "react-icons/bs";
+import { HiLockClosed } from "react-icons/hi";
 import { setCourseViewSidebar } from "@modules/dashboard/store/sidebarSlice";
 import { RootState, AppDispatch } from "@shared/store/store";
 import { Section, SubSection, SidebarSectionListProps } from "../types";
@@ -57,15 +58,13 @@ const SidebarSectionList: React.FC<SidebarSectionListProps> = ({
   // Función para toggle de completado de lecture
   const handleToggleCompletion = async (
     e: React.MouseEvent,
-    topicId: string,
-    sectionId: string,
-    isCurrentlyCompleted: boolean
+    topicId: string
   ) => {
     e.stopPropagation(); // Evitar que se expanda/colapse la sección
-    
+
     // Obtener courseId del prop o de courseEntireData
     const currentCourseId = courseId || courseEntireData?._id || (courseEntireData as any)?.id;
-    
+
     if (!token || !currentCourseId) {
       console.error(VIEW_COURSE_TEXTS.sidebarSectionList.errors.tokenOrCourseId);
       return;
@@ -73,9 +72,9 @@ const SidebarSectionList: React.FC<SidebarSectionListProps> = ({
 
     // Llamar al backend (el backend maneja el toggle automáticamente)
     const result = await toggleLectureCompletion(
-      { 
-        courseId: currentCourseId, 
-        subsectionId: topicId 
+      {
+        courseId: currentCourseId,
+        subsectionId: topicId
       },
       token
     );
@@ -99,7 +98,7 @@ const SidebarSectionList: React.FC<SidebarSectionListProps> = ({
   // Función para formatear la duración del video
   const formatDuration = (duration: string | number | undefined): string => {
     if (!duration) return "";
-    
+
     // Si es un número (segundos), convertir a minutos y segundos
     let seconds: number;
     if (typeof duration === "string") {
@@ -113,16 +112,40 @@ const SidebarSectionList: React.FC<SidebarSectionListProps> = ({
 
     // Redondear a entero
     seconds = Math.round(seconds);
-    
+
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    
+
     if (minutes > 0) {
       return `${minutes}m ${remainingSeconds}s`;
     } else {
       return `${remainingSeconds}s`;
     }
   };
+
+  // Pre-calcular el estado de bloqueo para todas las subsecciones basado en la secuencia global
+  const lockedSubSections = new Set<string>();
+  let hasIncompletePrevious = false;
+
+  courseSectionData.forEach((section) => {
+    const subSections = (section.subSection && Array.isArray(section.subSection))
+      ? section.subSection
+      : ((section as any).subSections && Array.isArray((section as any).subSections))
+        ? (section as any).subSections as SubSection[]
+        : [];
+
+    subSections.forEach((topic) => {
+      const topicId = topic?._id || (topic as any)?.id;
+      if (topicId) {
+        if (hasIncompletePrevious) {
+          lockedSubSections.add(topicId);
+        }
+        if (!completedLectures.includes(topicId)) {
+          hasIncompletePrevious = true;
+        }
+      }
+    });
+  });
 
   return (
     <div className="h-full w-full overflow-y-auto custom-scrollbar">
@@ -134,15 +157,16 @@ const SidebarSectionList: React.FC<SidebarSectionListProps> = ({
         <div className="p-2 space-y-2">
           {courseSectionData.map((section: Section, index: number) => {
             // Manejar tanto subSection como subSections (del backend)
-            const subSectionsArray = (section.subSection && Array.isArray(section.subSection)) 
-              ? section.subSection 
+            const subSectionsArray: SubSection[] = (section.subSection && Array.isArray(section.subSection))
+              ? section.subSection
               : ((section as any).subSections && Array.isArray((section as any).subSections))
-                ? (section as any).subSections
+                ? (section as any).subSections as SubSection[]
                 : [];
-            
-            const sectionId = section?._id || (section as any)?.id;
+
+            const id = section?._id || (section as any)?.id;
+            const sectionId = id ? String(id) : "";
             const isExpanded = activeStatus === sectionId;
-            
+
             return (
               <div
                 className="cursor-pointer text-sm text-richblack-5 rounded-lg overflow-hidden border border-richblack-700 hover:border-richblack-600 transition-all"
@@ -167,11 +191,10 @@ const SidebarSectionList: React.FC<SidebarSectionListProps> = ({
                       </span>
                     )}
                     <span
-                      className={`transition-transform duration-300 text-richblack-400 ${
-                        isExpanded
-                          ? "rotate-180"
-                          : "rotate-0"
-                      }`}
+                      className={`transition-transform duration-300 text-richblack-400 ${isExpanded
+                        ? "rotate-180"
+                        : "rotate-0"
+                        }`}
                     >
                       <BsChevronDown size={18} />
                     </span>
@@ -183,52 +206,60 @@ const SidebarSectionList: React.FC<SidebarSectionListProps> = ({
                     {subSectionsArray.length > 0 ? (
                       <div className="py-2">
                         {subSectionsArray.map((topic: SubSection, i: number) => {
-                          const topicId = topic?._id || (topic as any)?.id;
+                          const id = topic?._id || (topic as any)?.id;
+                          const topicId = id ? String(id) : "";
                           const isActive = videoBarActive === topicId;
                           const isCompleted = completedLectures.includes(topicId);
-                          
+                          // Usar exclusivamente el estado de bloqueo calculado dinámicamente para permitir actualizaciones en tiempo real
+                          const isLocked = lockedSubSections.has(topicId);
+
                           return (
                             <div
-                              className={`flex items-center gap-3 px-4 py-2.5 transition-all border-l-4 mx-2 my-1 rounded ${
-                                isActive
-                                  ? "bg-yellow-50 font-semibold text-richblack-900 border-yellow-400 shadow-md"
+                              className={`flex items-center gap-3 px-4 py-2.5 transition-all border-l-4 mx-2 my-1 rounded ${isActive
+                                ? "bg-yellow-50 font-semibold text-richblack-900 border-yellow-400 shadow-md"
+                                : isLocked
+                                  ? "bg-richblack-800/50 text-richblack-500 border-transparent cursor-not-allowed opacity-70"
                                   : "hover:bg-richblack-900 text-richblack-5 border-transparent hover:border-richblack-600"
-                              }`}
+                                }`}
                               key={topicId || i}
                             >
-                              <div 
-                                className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center cursor-pointer transition-all hover:scale-110 ${
-                                  isCompleted 
-                                    ? 'bg-yellow-200 border-yellow-400 hover:bg-yellow-300' 
-                                    : isActive 
-                                      ? 'border-richblack-600 hover:border-yellow-400' 
+                              {isLocked ? (
+                                <div className="flex-shrink-0 w-5 h-5 flex items-center justify-center text-richblack-400">
+                                  <HiLockClosed size={16} />
+                                </div>
+                              ) : (
+                                <div
+                                  className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center cursor-pointer transition-all hover:scale-110 ${isCompleted
+                                    ? 'bg-yellow-200 border-yellow-400 hover:bg-yellow-300'
+                                    : isActive
+                                      ? 'border-richblack-600 hover:border-yellow-400'
                                       : 'border-richblack-500 hover:border-yellow-400'
-                                }`}
-                                onClick={(e) => handleToggleCompletion(e, topicId, sectionId, isCompleted)}
-                                title={isCompleted ? VIEW_COURSE_TEXTS.sidebarSectionList.completion.unmark : VIEW_COURSE_TEXTS.sidebarSectionList.completion.mark}
-                              >
-                                {isCompleted && (
-                                  <span className="text-richblack-900 text-xs font-bold">✓</span>
-                                )}
-                              </div>
-                              <div 
+                                    }`}
+                                  onClick={(e) => handleToggleCompletion(e, topicId)}
+                                  title={isCompleted ? VIEW_COURSE_TEXTS.sidebarSectionList.completion.unmark : VIEW_COURSE_TEXTS.sidebarSectionList.completion.mark}
+                                >
+                                  {isCompleted && (
+                                    <span className="text-richblack-900 text-xs font-bold">✓</span>
+                                  )}
+                                </div>
+                              )}
+                              <div
                                 className="flex-1 flex flex-col gap-1 min-w-0 cursor-pointer"
                                 onClick={(e) => {
                                   e.stopPropagation();
+                                  if (isLocked) return;
                                   if (sectionId && topicId) {
                                     handleSubSectionClick(sectionId, topicId);
                                   }
                                 }}
                               >
-                                <span className={`text-sm font-medium truncate ${
-                                  isActive ? 'text-richblack-900' : 'text-richblack-5'
-                                }`}>
+                                <span className={`text-sm font-medium truncate ${isActive ? 'text-richblack-900' : 'text-richblack-5'
+                                  }`}>
                                   {topic.title || VIEW_COURSE_TEXTS.sidebarSectionList.defaultLecture(i + 1)}
                                 </span>
                                 {topic.timeDuration && (
-                                  <span className={`text-xs ${
-                                    isActive ? 'text-richblack-700' : 'text-richblack-400'
-                                  }`}>
+                                  <span className={`text-xs ${isActive ? 'text-richblack-700' : 'text-richblack-400'
+                                    }`}>
                                     ⏱️ {formatDuration(topic.timeDuration)}
                                   </span>
                                 )}
