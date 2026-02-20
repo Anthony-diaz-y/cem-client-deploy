@@ -189,7 +189,6 @@ export default function SectionItem({
                 lecture={lecture}
                 subSectionId={subSectionId}
                 sectionId={sectionId}
-                sectionIndex={sectionIndex}
                 subSectionIndex={subSectionIndex}
                 isDragged={isLectureDragged}
                 isDragOver={isLectureDragOver}
