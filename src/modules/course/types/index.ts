@@ -76,7 +76,17 @@ export interface SubSection {
   }[];
   content?: string;
   isLocked?: boolean;
+  type?: "lecture" | "quiz";
+  quizTitle?: string;
+  questions?: QuizQuestion[];
 }
+
+export interface QuizQuestion {
+  questionText: string;
+  options: string[];
+  correctOptionIndex: number;
+}
+
 
 export interface Course {
   _id: string;

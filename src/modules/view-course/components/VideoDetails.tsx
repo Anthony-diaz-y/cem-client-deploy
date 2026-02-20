@@ -4,7 +4,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "next/navigation";
 import { HiMenuAlt1 } from "react-icons/hi";
-import { AiOutlineFilePdf, AiOutlineFileWord, AiOutlineFileExcel, AiOutlineFile, AiOutlineDownload } from "react-icons/ai";
+import { AiOutlineFilePdf, AiOutlineFileWord, AiOutlineFileExcel, AiOutlineFile } from "react-icons/ai";
 import { setCourseViewSidebar, setDiscussionSidebarOpen } from "@modules/dashboard/store/sidebarSlice";
 import { RootState } from "@shared/store/store";
 import VideoPlayer from "./VideoPlayer";
@@ -13,6 +13,7 @@ import { useVideoPlayer } from "../hooks/useVideoPlayer";
 import DiscussionButton from "./discussions/DiscussionButton";
 import { getDiscussions } from "../services/discussionAPI";
 import { VIEW_COURSE_TEXTS } from "../constants/viewCourse.constants";
+import StudentQuizView from "./StudentQuizView";
 
 /**
  * VideoDetails - Main component for video details page
@@ -24,7 +25,7 @@ const VideoDetails = () => {
   const { courseSectionData, courseEntireData } = useSelector(
     (state: RootState) => state.viewCourse
   );
-  const { courseViewSidebar, discussionSidebarOpen } = useSelector(
+  const { courseViewSidebar } = useSelector(
     (state: RootState) => state.sidebar
   );
 
@@ -124,9 +125,9 @@ const VideoDetails = () => {
         </div>
       ) : null}
 
-      {/* 2. Video Player */}
-      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6">
-        {videoData?.videoUrl ? (
+      {/* 2. Video Player / Quiz */}
+      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 space-y-8">
+        {videoData?.videoUrl && (
           <VideoPlayer
             videoData={videoData}
             previewSource={previewSource}
@@ -143,7 +144,24 @@ const VideoDetails = () => {
             isLast={isLastVideo()}
             nextVideoInfo={getNextVideoInfo()}
           />
-        ) : videoData ? (
+        )}
+
+        {videoData?.questions && videoData.questions.length > 0 && (
+          <div className={`${videoData?.videoUrl ? "mt-12 border-t border-richblack-700 pt-12" : ""}`}>
+            {videoData?.videoUrl && (
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-1.5 h-8 bg-yellow-400 rounded-full shadow-[0_0_15px_rgba(250,204,21,0.5)]"></div>
+                <h2 className="text-2xl font-bold text-white tracking-tight">Evaluación de la Lección</h2>
+              </div>
+            )}
+            <StudentQuizView
+              questions={videoData.questions}
+              quizTitle={videoData.quizTitle || (videoData?.videoUrl ? "Evaluación Rápida" : (videoData.title || "Quiz"))}
+            />
+          </div>
+        )}
+
+        {!videoData?.videoUrl && (!videoData?.questions || videoData.questions.length === 0) && videoData && (
           <div className="w-full aspect-video rounded-xl flex flex-col items-center justify-center bg-richblack-800 border border-richblack-700 gap-4 p-8">
             <svg className="w-16 h-16 text-richblack-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
@@ -151,11 +169,11 @@ const VideoDetails = () => {
               />
             </svg>
             <div className="text-center">
-              <p className="text-richblack-300 font-semibold text-lg">Esta lección no tiene un video configurado</p>
-              <p className="text-richblack-500 text-sm mt-1">El instructor aún no ha añadido un enlace de YouTube o Vimeo.</p>
+              <p className="text-richblack-300 font-semibold text-lg">Esta lección no tiene un video configurado ni un quiz activo</p>
+              <p className="text-richblack-500 text-sm mt-1">El instructor aún no ha añadido contenido a esta lección.</p>
             </div>
           </div>
-        ) : null}
+        )}
       </div>
 
       {/* 3. Línea separadora + metadata + botón de discusión */}
@@ -309,7 +327,7 @@ const VideoDetails = () => {
                 </h2>
               </div>
               <div className="grid grid-cols-1 gap-4">
-                {videoData.attachments.map((attachment: any, index: number) => {
+                {videoData.attachments.map((attachment: { url: string; name: string; type: string }, index: number) => {
                   const renderIcon = (type: string) => {
                     if (type.includes("pdf")) return <AiOutlineFilePdf className="text-pink-200 text-2xl" />;
                     if (type.includes("word") || type.includes("officedocument.wordprocessingml")) return <AiOutlineFileWord className="text-blue-200 text-2xl" />;

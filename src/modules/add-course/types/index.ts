@@ -107,3 +107,24 @@ export interface SubSectionModalProps {
   view?: boolean;
   edit?: boolean;
 }
+
+export interface QuizQuestion {
+  questionText: string;
+  options: string[];
+  correctOptionIndex: number;
+}
+
+export interface QuizFormData {
+  quizTitle: string;
+  questions: QuizQuestion[];
+}
+
+export interface QuizModalProps {
+  modalData: string | (SubSection & { sectionId?: string }) | null;
+  setModalData: React.Dispatch<
+    React.SetStateAction<string | (SubSection & { sectionId?: string }) | null>
+  >;
+  add?: boolean;
+  view?: boolean;
+  edit?: boolean;
+}

@@ -12,6 +12,7 @@ export interface UseNestedViewReturn {
   addSubSection: string | null;
   viewSubSection: SubSection | null;
   editSubSection: (SubSection & { sectionId: string }) | null;
+  editQuiz: (SubSection & { sectionId: string }) | null;
   confirmationModal: ConfirmationModalData | null;
   wasJustDragged: boolean;
   draggedItem: ReturnType<typeof useDragAndDrop>["draggedItem"];
@@ -21,6 +22,7 @@ export interface UseNestedViewReturn {
   setAddSubsection: React.Dispatch<React.SetStateAction<string | null>>;
   setViewSubSection: React.Dispatch<React.SetStateAction<SubSection | null>>;
   setEditSubSection: React.Dispatch<React.SetStateAction<(SubSection & { sectionId: string }) | null>>;
+  setEditQuiz: React.Dispatch<React.SetStateAction<(SubSection & { sectionId: string }) | null>>;
   setConfirmationModal: React.Dispatch<React.SetStateAction<ConfirmationModalData | null>>;
   setWasJustDragged: React.Dispatch<React.SetStateAction<boolean>>;
   handleSectionDragStart: (e: React.DragEvent, sectionId: string) => void;
@@ -39,10 +41,13 @@ export interface UseNestedViewReturn {
 
 export function useNestedView(): UseNestedViewReturn {
   const { course } = useSelector((state: RootState) => state.course);
-  
+
   const [addSubSection, setAddSubsection] = useState<string | null>(null);
   const [viewSubSection, setViewSubSection] = useState<SubSection | null>(null);
   const [editSubSection, setEditSubSection] = useState<
+    (SubSection & { sectionId: string }) | null
+  >(null);
+  const [editQuiz, setEditQuiz] = useState<
     (SubSection & { sectionId: string }) | null
   >(null);
   const [confirmationModal, setConfirmationModal] =
@@ -119,6 +124,8 @@ export function useNestedView(): UseNestedViewReturn {
     setAddSubsection,
     setViewSubSection,
     setEditSubSection,
+    editQuiz,
+    setEditQuiz,
     setConfirmationModal,
     setWasJustDragged,
     handleSectionDragStart,
