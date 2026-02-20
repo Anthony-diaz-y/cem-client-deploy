@@ -111,14 +111,14 @@ export default function CreateCategoryModal({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="px-10 py-4 bg-[#DCEEEF] text-cem-primary rounded-lg font-bold text-lg hover:bg-[#D5E8E9] transition-all disabled:opacity-50"
+            className="px-10 py-4 bg-[#DCEEEF] text-cem-primary rounded-xl font-bold text-lg hover:bg-[#D5E8E9] transition-all disabled:opacity-50"
           >
             Cancelar
           </button>
           <button
             onClick={onSubmit}
             disabled={loading}
-            className="px-10 py-4 bg-cem-primary text-white rounded-lg font-bold text-lg hover:bg-cem-primary-dark transition-all shadow-lg shadow-cem-primary/20 disabled:opacity-50 flex items-center justify-center min-w-[200px]"
+            className="px-10 py-4 bg-cem-primary text-white rounded-xl font-bold text-lg hover:bg-cem-primary-dark transition-all shadow-lg shadow-cem-primary/20 disabled:opacity-50 flex items-center justify-center min-w-[200px]"
           >
             {loading ? "Creando..." : "Crear Categoría"}
           </button>

@@ -31,31 +31,78 @@ export const CategoryFormFields: React.FC<CategoryFormFieldsProps> = ({
     domains,
     loading,
 }) => {
+    const [isOpen, setIsOpen] = React.useState(false);
+    const dropdownRef = React.useRef<HTMLDivElement>(null);
+
+    // Cierre al hacer click fuera
+    React.useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
     return (
         <div className="flex-1 py-2 space-y-4 flex flex-col items-center justify-center">
             {/* Tipo de categoría (Dominio) */}
-            <div className="w-[744px] flex flex-col space-y-1 flex-shrink-0">
+            <div className="w-[744px] flex flex-col space-y-1 flex-shrink-0 relative">
                 <label className="text-sm font-semibold text-cem-neutral-gray-800 ml-1">
                     Tipo de categoría<span className="text-red-500">*</span>
                 </label>
-                <select
-                    value={domainId}
-                    onChange={(e) => setDomainId(e.target.value)}
-                    className="w-full h-[56px] px-6 bg-cem-neutral-gray-50/50 border-b-2 border-cem-neutral-gray-300 rounded-2xl text-cem-neutral-gray-900 font-medium focus:outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary transition-all appearance-none cursor-pointer"
-                    disabled={loading}
-                    required
-                >
-                    <option value="" disabled>Elige si es carrera o sector</option>
-                    {domains
-                        .filter(d => !d.name.toLowerCase().includes("ruta"))
-                        .map((d) => (
-                            <option key={d.id} value={d.id}>
-                                {d.id === "9729864d-9669-450f-90e6-b080517f694a" || d.name.toLowerCase().includes("sector")
-                                    ? "Sector"
-                                    : "Carrera"}
-                            </option>
-                        ))}
-                </select>
+
+                {/* Custom Premium Dropdown */}
+                <div className="relative group" ref={dropdownRef}>
+                    <div
+                        onClick={() => !loading && setIsOpen(!isOpen)}
+                        className={`w-full h-[58px] px-6 bg-[#F8FDFE] border-b-2 rounded-2xl flex items-center justify-between cursor-pointer transition-all focus-within:ring-4 focus-within:ring-cem-primary/5
+                            ${isOpen ? 'border-cem-primary ring-4 ring-cem-primary/5' : 'border-cem-neutral-gray-300'}
+                            ${loading ? 'opacity-50 cursor-wait' : ''}
+                        `}
+                    >
+                        <span className={`font-medium ${domainId ? 'text-cem-neutral-gray-900' : 'text-cem-neutral-gray-400'}`}>
+                            {domainId
+                                ? domains.find(d => d.id === domainId)?.name?.toLowerCase().includes("sector") ? "Sector" : "Carrera"
+                                : "Elige si es carrera o sector"
+                            }
+                        </span>
+                        <div className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+                            <svg className="w-6 h-6 text-cem-neutral-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    {/* Dropdown Menu */}
+                    {isOpen && (
+                        <div className="absolute top-[68px] left-0 w-full bg-white border border-cem-neutral-gray-100 rounded-2xl shadow-2xl py-2 z-50 animate-fadeInUp">
+                            {domains
+                                .filter(d => !d.name.toLowerCase().includes("ruta"))
+                                .map((d) => {
+                                    const label = d.id === "9729864d-9669-450f-90e6-b080517f694a" || d.name.toLowerCase().includes("sector")
+                                        ? "Sector"
+                                        : "Carrera";
+                                    return (
+                                        <div
+                                            key={d.id}
+                                            onClick={() => {
+                                                setDomainId(d.id);
+                                                setIsOpen(false);
+                                            }}
+                                            className={`mx-2 px-6 py-4 rounded-xl cursor-pointer transition-all font-medium ${domainId === d.id
+                                                ? "bg-[#DCEEEF] text-cem-primary font-bold"
+                                                : "text-cem-neutral-gray-700 hover:bg-[#DCEEEF] hover:text-cem-primary"
+                                                }`}
+                                        >
+                                            {label}
+                                        </div>
+                                    );
+                                })}
+                        </div>
+                    )}
+                </div>
             </div>
             {/* Nombre de la Categoría */}
             <div className="w-[744px] flex flex-col space-y-1 flex-shrink-0">
@@ -67,7 +114,7 @@ export const CategoryFormFields: React.FC<CategoryFormFieldsProps> = ({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Ej. Programación, Diseño"
-                    className="w-full h-[56px] px-6 bg-cem-neutral-gray-50/50 border-b-2 border-cem-neutral-gray-300 rounded-2xl text-cem-neutral-gray-900 font-medium placeholder-cem-neutral-gray-400 focus:outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary transition-all"
+                    className="w-full h-[58px] px-6 bg-[#F8FDFE] border-b-2 border-cem-neutral-gray-300 rounded-2xl text-cem-neutral-gray-900 font-medium placeholder-cem-neutral-gray-400 focus:outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary transition-all shadow-sm"
                     required
                     disabled={loading}
                 />
@@ -82,7 +129,7 @@ export const CategoryFormFields: React.FC<CategoryFormFieldsProps> = ({
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Describe brevemente qué tipo de cursos pertenecen a esta categoría"
-                    className="w-full h-[56px] px-6 py-4 bg-cem-neutral-gray-50/50 border-b-2 border-cem-neutral-gray-300 rounded-2xl text-cem-neutral-gray-900 font-medium placeholder-cem-neutral-gray-400 focus:outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary transition-all resize-none overflow-hidden"
+                    className="w-full min-h-[58px] px-6 py-4 bg-[#F8FDFE] border-b-2 border-cem-neutral-gray-300 rounded-2xl text-cem-neutral-gray-900 font-medium placeholder-cem-neutral-gray-400 focus:outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary transition-all resize-none shadow-sm"
                     required
                     disabled={loading}
                 />
