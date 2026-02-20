@@ -20,12 +20,14 @@ const CourseListItem: React.FC<CourseListItemProps> = ({ course }) => {
   return (
     <button
       onClick={handleClick}
-      className="w-full px-4 py-2.5 flex items-center justify-between hover:bg-gray-100 transition-colors text-left group bg-gray-50"
+      className="w-[290px] h-[40px] px-4 flex items-center justify-between hover:bg-cem-neutral-gray-50 transition-all text-left group bg-white border border-cem-neutral-gray-200 rounded-[10px] mb-3 transition-colors"
     >
-      <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">
+      <span className="text-[14px] text-cem-neutral-gray-700 font-medium group-hover:text-cem-neutral-gray-900 transition-colors truncate pr-2">
         {course.courseName}
       </span>
-      <BiChevronRight className="text-gray-400 group-hover:text-gray-600 transition-colors flex-shrink-0 text-lg" />
+      <div className="w-6 h-6 rounded-full border border-cem-neutral-gray-300 flex items-center justify-center text-cem-neutral-gray-500 group-hover:border-cem-primary group-hover:text-cem-primary transition-all flex-shrink-0">
+        <BiChevronRight className="text-lg" />
+      </div>
     </button>
   );
 };

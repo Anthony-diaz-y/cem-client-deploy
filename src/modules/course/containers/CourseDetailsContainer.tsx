@@ -78,14 +78,7 @@ const CourseDetailsContainer = () => {
   }
 
   const { courseDetails } = response.data;
-  const { whatYouWillLearn, category, instructor, instructors } = courseDetails;
-
-  // Ensure categories is always an array
-  const categories = Array.isArray(category)
-    ? category
-    : category
-      ? [category]
-      : [];
+  const { whatYouWillLearn, instructor, instructors } = courseDetails;
 
   return (
     <>
@@ -122,7 +115,8 @@ const CourseDetailsContainer = () => {
             <div className="w-full lg:max-w-[760px] space-y-8 lg:space-y-12">
               <CourseInfoSection
                 whatYouWillLearn={whatYouWillLearn}
-                categories={categories}
+                tag={courseDetails.tag}
+                category={courseDetails.category}
               />
 
               <CourseContentSection
@@ -142,8 +136,8 @@ const CourseDetailsContainer = () => {
         <div className="hidden lg:block absolute top-0 left-0 w-full h-full pointer-events-none z-30 course-sidebar-enter">
           <div className="mx-auto max-w-[1260px] px-4 h-full relative">
             {/* Position Sidebar on the right */}
-            <div className="absolute right-4 top-0 bottom-5">
-              <div className="sticky top-24 pt-20 w-[380px] pointer-events-auto">
+            <div className="absolute right-0 top-0 bottom-5">
+              <div className="sticky top-24 pt-11 w-[410px] pointer-events-auto">
                 <CourseDetailsCard
                   course={courseDetails}
                   setConfirmationModal={setConfirmationModal}

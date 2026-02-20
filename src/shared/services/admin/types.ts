@@ -70,6 +70,7 @@ export interface Instructor {
     dateOfBirth?: string | null;
     about?: string | null;
     contactNumber?: number | null;
+    professional_title?: string | null;
   };
 }
 
@@ -154,12 +155,34 @@ export interface UpdateInstructorData {
   email?: string;
   approved?: boolean;
   contactNumber?: number | string | null;
+  professional_title?: string | null;
 }
 
 export interface UpdateInstructorResponse {
   success: boolean;
   message: string;
   data: Instructor;
+}
+
+export interface CreateInstructorData {
+  name: string;
+  email: string;
+  password?: string;
+  contactNumber?: string | number;
+  professional_title?: string;
+}
+
+export interface CreateInstructorResponse {
+  success: boolean;
+  message: string;
+  data: {
+    id: string;
+    name: string;
+    email: string;
+    accountType: string;
+    approved: boolean;
+    tempPassword?: string;
+  };
 }
 
 export interface ToggleInstructorStatusResponse {
@@ -485,11 +508,18 @@ export interface Category {
   id: string;
   name: string;
   description: string;
+  icon?: string | null;
+  domain?: {
+    id: string;
+    name: string;
+  } | null;
 }
 
 export interface CreateCategoryRequest {
   name: string;
   description: string;
+  icon?: string;
+  domainId?: string;
 }
 
 export interface CreateCategoryResponse {
@@ -506,6 +536,8 @@ export interface UpdateCategoryRequest {
   categoryId: string;
   name: string;
   description: string;
+  icon?: string;
+  domainId?: string;
 }
 
 export interface UpdateCategoryResponse {

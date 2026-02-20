@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import type { Course } from "../../../../courses/types";
-import { fetchCourseCategories } from "@shared/services/courseDetailsAPI";
 import { HomeCourseCard } from "./HomeCourseCard";
 import { CoursesError } from "./CoursesError";
 import { CoursesSectionHeader } from "./CoursesSectionHeader";
 import LoadingSpinner from "@shared/components/ui/Loading";
+import { useCarousel } from "@shared/hooks/useCarousel";
 
 interface CoursesSectionProps {
   courses: Course[] | null | undefined;
@@ -15,13 +15,22 @@ interface CoursesSectionProps {
   error?: boolean;
 }
 
-const MAX_COURSES_DISPLAY = 6;
+
 
 export const CoursesSection: React.FC<CoursesSectionProps> = ({
   courses,
   loading,
   error,
 }) => {
+  const {
+    scrollRef,
+    isDragging,
+    handleMouseDown,
+    handleMouseLeave,
+    handleMouseUp,
+    handleMouseMove,
+  } = useCarousel();
+
   if (loading) return <LoadingSpinner />;
   if (error) return <CoursesError />;
 
@@ -30,7 +39,37 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
       <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8">
         <CoursesSectionHeader />
 
-        <div className="w-full mx-auto">
+        {/* Mobile Carousel - ONLY MOBILE */}
+        <div className="w-full md:hidden">
+          <div
+            ref={scrollRef}
+            onMouseDown={handleMouseDown}
+            onMouseLeave={handleMouseLeave}
+            onMouseUp={handleMouseUp}
+            onMouseMove={handleMouseMove}
+            className={`flex overflow-x-auto gap-4 px-6 -mx-4 pb-10 no-scrollbar cursor-grab active:cursor-grabbing ${!isDragging ? "snap-x snap-mandatory" : ""
+              }`}
+            style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
+          >
+            <style dangerouslySetInnerHTML={{
+              __html: `
+                        .no-scrollbar::-webkit-scrollbar {
+                            display: none;
+                        }
+                    `}} />
+            {courses?.map((course, index) => (
+              <div
+                key={course.id || index}
+                className="flex-shrink-0 w-[88%] snap-center"
+              >
+                <HomeCourseCard course={course} index={index} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop Grid Layout - HIDDEN ON MOBILE */}
+        <div className="w-full mx-auto hidden md:block">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:max-w-[calc(100%-160px)] mx-auto">
             {courses?.map((course, index) => (
               <div

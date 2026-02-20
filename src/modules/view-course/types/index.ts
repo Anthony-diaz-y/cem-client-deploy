@@ -47,6 +47,7 @@ export interface SubSection {
     type: string;
   }[];
   content?: string;
+  isLocked?: boolean;
 }
 
 export interface Course {

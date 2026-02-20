@@ -195,18 +195,18 @@ export default function CoursesTable({
                         </p>
 
                         {/* course status */}
-                        {course.status === COURSE_STATUS.DRAFT ? (
-                          <p className="mt-2 flex w-fit flex-row items-center gap-1.5 rounded-full bg-pink-50 px-3 py-1 text-[11px] font-bold text-pink-600 border border-pink-100 uppercase">
-                            <HiClock size={12} />
-                            Borrador
-                          </p>
-                        ) : (
+                        {course.status === COURSE_STATUS.PUBLISHED ? (
                           <div className="mt-2 flex w-fit flex-row items-center gap-1.5 rounded-full bg-cem-teal-50 px-3 py-1 text-[11px] font-bold text-cem-primary border border-cem-teal-100 uppercase">
                             <div className="flex h-4 w-4 items-center justify-center rounded-full bg-cem-primary text-white">
                               <FaCheck size={8} />
                             </div>
                             Publicado
                           </div>
+                        ) : (
+                          <p className="mt-2 flex w-fit flex-row items-center gap-1.5 rounded-full bg-pink-50 px-3 py-1 text-[11px] font-bold text-pink-600 border border-pink-100 uppercase">
+                            <HiClock size={12} />
+                            Borrador
+                          </p>
                         )}
                       </div>
                     </td>

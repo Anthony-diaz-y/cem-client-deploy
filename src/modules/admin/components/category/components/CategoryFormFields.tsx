@@ -1,16 +1,18 @@
 "use client";
 
 import React from "react";
+import { SvgIconUploader } from "./SvgIconUploader";
 
 interface CategoryFormFieldsProps {
     name: string;
     setName: (name: string) => void;
     description: string;
     setDescription: (description: string) => void;
-    categoryType: string;
-    setCategoryType: (type: string) => void;
-    isSelectOpen: boolean;
-    setIsSelectOpen: (isOpen: boolean) => void;
+    icon: string;
+    setIcon: (icon: string) => void;
+    domainId: string;
+    setDomainId: (id: string) => void;
+    domains: Array<{ id: string; name: string }>;
     loading: boolean;
 }
 
@@ -22,74 +24,86 @@ export const CategoryFormFields: React.FC<CategoryFormFieldsProps> = ({
     setName,
     description,
     setDescription,
-    categoryType,
-    setCategoryType,
-    isSelectOpen,
-    setIsSelectOpen,
+    icon,
+    setIcon,
+    domainId,
+    setDomainId,
+    domains,
     loading,
 }) => {
+    const [isOpen, setIsOpen] = React.useState(false);
+    const dropdownRef = React.useRef<HTMLDivElement>(null);
+
+    // Cierre al hacer click fuera
+    React.useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
     return (
         <div className="flex-1 py-2 space-y-4 flex flex-col items-center justify-center">
-            {/* Tipo de categoría - Custom Select */}
-            <div className="w-full max-w-[744px] flex flex-col space-y-1 z-20">
+            {/* Tipo de categoría (Dominio) */}
+            <div className="w-[744px] flex flex-col space-y-1 flex-shrink-0 relative">
                 <label className="text-sm font-semibold text-cem-neutral-gray-800 ml-1">
-                    Tipo de categoría
+                    Tipo de categoría<span className="text-red-500">*</span>
                 </label>
-                <div className="relative">
-                    <button
-                        type="button"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setIsSelectOpen(!isSelectOpen);
-                        }}
-                        className={`w-full h-[56px] px-6 bg-cem-neutral-gray-50/50 border-b-2 border-cem-neutral-gray-300 rounded-2xl text-left font-medium transition-all flex items-center justify-between ${categoryType ? "text-cem-neutral-gray-900" : "text-cem-neutral-gray-400"
-                            }`}
-                    >
-                        <span>{categoryType === "carrera" ? "Carrera" : categoryType === "sector" ? "Sector" : "Elige si es carrera o sector"}</span>
-                        <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 20 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className={`transition-transform duration-200 ${isSelectOpen ? "rotate-180" : ""}`}
-                        >
-                            <path d="M5 7.5L10 12.5L15 7.5" stroke="#94A3B8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                    </button>
 
-                    {/* Dropdown Options */}
-                    {isSelectOpen && (
-                        <div className="absolute top-[64px] left-0 w-full bg-white border border-cem-neutral-gray-100 rounded-2xl shadow-xl py-2 z-50 animate-fadeInUp">
-                            <div
-                                onClick={() => {
-                                    setCategoryType("carrera");
-                                    setIsSelectOpen(false);
-                                }}
-                                className={`mx-2 px-6 py-3 rounded-xl cursor-pointer transition-all font-medium ${categoryType === "carrera"
-                                    ? "bg-[#DCEEEF] text-cem-primary"
-                                    : "text-cem-neutral-gray-700 hover:bg-[#DCEEEF] hover:text-cem-primary"
-                                    }`}
-                            >
-                                Carrera
-                            </div>
-                            <div
-                                onClick={() => {
-                                    setCategoryType("sector");
-                                    setIsSelectOpen(false);
-                                }}
-                                className={`mx-2 px-6 py-3 rounded-xl cursor-pointer transition-all font-medium ${categoryType === "sector"
-                                    ? "bg-[#DCEEEF] text-cem-primary"
-                                    : "text-cem-neutral-gray-700 hover:bg-[#DCEEEF] hover:text-cem-primary"
-                                    }`}
-                            >
-                                Sector
-                            </div>
+                {/* Custom Premium Dropdown */}
+                <div className="relative group" ref={dropdownRef}>
+                    <div
+                        onClick={() => !loading && setIsOpen(!isOpen)}
+                        className={`w-full h-[58px] px-6 bg-[#F8FDFE] border-b-2 rounded-2xl flex items-center justify-between cursor-pointer transition-all focus-within:ring-4 focus-within:ring-cem-primary/5
+                            ${isOpen ? 'border-cem-primary ring-4 ring-cem-primary/5' : 'border-cem-neutral-gray-300'}
+                            ${loading ? 'opacity-50 cursor-wait' : ''}
+                        `}
+                    >
+                        <span className={`font-medium ${domainId ? 'text-cem-neutral-gray-900' : 'text-cem-neutral-gray-400'}`}>
+                            {domainId
+                                ? domains.find(d => d.id === domainId)?.name?.toLowerCase().includes("sector") ? "Sector" : "Carrera"
+                                : "Elige si es carrera o sector"
+                            }
+                        </span>
+                        <div className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+                            <svg className="w-6 h-6 text-cem-neutral-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    {/* Dropdown Menu */}
+                    {isOpen && (
+                        <div className="absolute top-[68px] left-0 w-full bg-white border border-cem-neutral-gray-100 rounded-2xl shadow-2xl py-2 z-50 animate-fadeInUp">
+                            {domains
+                                .filter(d => !d.name.toLowerCase().includes("ruta"))
+                                .map((d) => {
+                                    const label = d.id === "9729864d-9669-450f-90e6-b080517f694a" || d.name.toLowerCase().includes("sector")
+                                        ? "Sector"
+                                        : "Carrera";
+                                    return (
+                                        <div
+                                            key={d.id}
+                                            onClick={() => {
+                                                setDomainId(d.id);
+                                                setIsOpen(false);
+                                            }}
+                                            className={`mx-2 px-6 py-4 rounded-xl cursor-pointer transition-all font-medium ${domainId === d.id
+                                                ? "bg-[#DCEEEF] text-cem-primary font-bold"
+                                                : "text-cem-neutral-gray-700 hover:bg-[#DCEEEF] hover:text-cem-primary"
+                                                }`}
+                                        >
+                                            {label}
+                                        </div>
+                                    );
+                                })}
                         </div>
                     )}
                 </div>
             </div>
-
             {/* Nombre de la Categoría */}
             <div className="w-[744px] flex flex-col space-y-1 flex-shrink-0">
                 <label className="text-sm font-semibold text-cem-neutral-gray-800 ml-1">
@@ -100,7 +114,7 @@ export const CategoryFormFields: React.FC<CategoryFormFieldsProps> = ({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Ej. Programación, Diseño"
-                    className="w-full h-[56px] px-6 bg-cem-neutral-gray-50/50 border-b-2 border-cem-neutral-gray-300 rounded-2xl text-cem-neutral-gray-900 font-medium placeholder-cem-neutral-gray-400 focus:outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary transition-all"
+                    className="w-full h-[58px] px-6 bg-[#F8FDFE] border-b-2 border-cem-neutral-gray-300 rounded-2xl text-cem-neutral-gray-900 font-medium placeholder-cem-neutral-gray-400 focus:outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary transition-all shadow-sm"
                     required
                     disabled={loading}
                 />
@@ -115,11 +129,14 @@ export const CategoryFormFields: React.FC<CategoryFormFieldsProps> = ({
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Describe brevemente qué tipo de cursos pertenecen a esta categoría"
-                    className="w-full h-[56px] px-6 py-4 bg-cem-neutral-gray-50/50 border-b-2 border-cem-neutral-gray-300 rounded-2xl text-cem-neutral-gray-900 font-medium placeholder-cem-neutral-gray-400 focus:outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary transition-all resize-none overflow-hidden"
+                    className="w-full min-h-[58px] px-6 py-4 bg-[#F8FDFE] border-b-2 border-cem-neutral-gray-300 rounded-2xl text-cem-neutral-gray-900 font-medium placeholder-cem-neutral-gray-400 focus:outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary transition-all resize-none shadow-sm"
                     required
                     disabled={loading}
                 />
             </div>
+
+            {/* Ícono SVG */}
+            <SvgIconUploader value={icon} onChange={setIcon} disabled={loading} />
         </div>
     );
 };

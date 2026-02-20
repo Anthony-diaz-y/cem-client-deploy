@@ -6,55 +6,58 @@ import { COURSE_TEXTS } from "../../constants/course.constants";
 
 /**
  * CourseInfoSection - Section for course information
- * Displays what you'll learn and tags
+ * Displays what you'll learn (benefits) and tags
  */
 const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({
   whatYouWillLearn,
-  categories,
+  tag,
+  category
 }) => {
+  // Combine tags and categories for display under "Etiquetas"
+  const allTags = [
+    ...(Array.isArray(category) ? category : category ? [category] : []).map(c => c.name),
+    ...(tag || [])
+  ];
+
   return (
-    <div className="mb-12">
-      {/* What you'll learn */}
+    <div className="mb-0">
+      {/* Header: ¿Por qué llevar el curso? */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-cem-neutral-gray-900 mb-4">
+        <h2 className="text-[28px] font-bold text-cem-neutral-gray-900 mb-6">
           {COURSE_TEXTS.infoSection.whatYouWillLearn}
         </h2>
         <div className="space-y-4 text-cem-neutral-gray-700 leading-relaxed text-[16px]">
           {whatYouWillLearn ? (
             whatYouWillLearn
               .split("\n")
-              .map((line, index) => <p key={index}>{line}</p>)
+              .map((line, index) => line.trim() && <p key={index}>{line}</p>)
           ) : (
             <p>No hay información disponible.</p>
           )}
         </div>
       </div>
 
-      {/* Tags/Categories */}
-      {categories && categories.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[16px] text-cem-neutral-gray-700 mr-1">
-            Etiquetas:
+      {/* Labels Section: Etiquetas */}
+      {allTags.length > 0 && (
+        <div className="flex flex-wrap items-center gap-3 mb-12">
+          <span className="text-cem-neutral-gray-900 font-bold text-lg mr-1">
+            {COURSE_TEXTS.infoSection.tags}
           </span>
-          {categories.map((category, ind) => {
-            // Colors palette similar to the requested design (Pastel backgrounds with darker text)
-            // Pink, Green, Blue, Purple, Amber, Cyan
+          {allTags.map((t, ind) => {
             const colors = [
-              "bg-pink-100 text-pink-700",
-              "bg-green-100 text-green-700",
-              "bg-blue-100 text-blue-700",
-              "bg-purple-100 text-purple-700",
-              "bg-amber-100 text-amber-700",
-              "bg-cyan-100 text-cyan-700",
+              "bg-pink-100/50 text-pink-500",
+              "bg-green-100/50 text-green-500",
+              "bg-blue-100/50 text-blue-500",
+              "bg-purple-100/50 text-purple-500",
             ];
             const colorClass = colors[ind % colors.length];
 
             return (
               <span
                 key={ind}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 hover:scale-105 hover:shadow-sm cursor-default ${colorClass}`}
+                className={`px-4 py-1 rounded-full text-[13px] font-medium transition-all duration-300 hover:scale-105 ${colorClass}`}
               >
-                {category.name}
+                {t}
               </span>
             );
           })}

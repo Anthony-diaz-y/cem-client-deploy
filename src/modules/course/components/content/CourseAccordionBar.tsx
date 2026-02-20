@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState, useMemo } from "react";
-import { CourseSubSectionAccordion } from "./";
-import { CourseAccordionBarProps, SubSection } from "../../types";
+import { CourseAccordionBarProps } from "../../types";
 
 /**
  * CourseAccordionBar - Accordion item for course section
- * Displays section name with expandable content
+ * Displays section name with expandable content matching the design in Step 1131
  */
 export default function CourseAccordionBar({
   course,
@@ -51,30 +50,35 @@ export default function CourseAccordionBar({
   const firstSubSectionDescription = subSectionsArray[0]?.description;
 
   return (
-    <div className="bg-white">
+    <div className="bg-white border-b border-cem-neutral-gray-100 last:border-b-0">
       <div
-        className="w-full flex items-center justify-between py-5 px-6 cursor-pointer hover:bg-gray-50 transition-colors"
+        className="w-full flex items-center justify-between py-6 px-1 cursor-pointer transition-colors"
         onClick={() => handleActive(sectionId)}
       >
         <div className="flex items-center gap-4 flex-1 min-w-0">
+          {/* Blue Plus Icon */}
           <span
-            className={`text-2xl font-medium flex-shrink-0 transition-transform duration-200 ${
-              active ? "text-cem-primary rotate-45" : "text-cem-primary"
-            }`}
+            className={`text-xl font-bold flex-shrink-0 text-cem-primary transition-transform duration-300 ${active ? "rotate-45" : ""
+              }`}
           >
             +
           </span>
-          <span className="text-lg font-bold text-cem-neutral-gray-900 truncate">
+          {/* Blue Title */}
+          <span className={`text-[19px] font-bold truncate transition-colors duration-300 ${active ? "text-cem-primary" : "text-cem-primary"
+            }`}>
             {course?.sectionName}
           </span>
         </div>
+
+        {/* Circular Chevron Icon */}
         <div
-          className={`flex-shrink-0 ml-4 transition-transform duration-200 ${
-            active ? "rotate-180 text-cem-primary" : "text-cem-neutral-gray-400"
-          }`}
+          className={`flex-shrink-0 ml-4 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${active
+            ? "bg-transparent border-cem-primary text-cem-primary rotate-180"
+            : "bg-transparent border-cem-neutral-gray-400 text-cem-neutral-gray-400"
+            }`}
         >
           <svg
-            className="w-6 h-6"
+            className="w-4 h-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -82,7 +86,7 @@ export default function CourseAccordionBar({
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2}
+              strokeWidth={3}
               d="M19 9l-7 7-7-7"
             />
           </svg>
@@ -97,10 +101,10 @@ export default function CourseAccordionBar({
           opacity: active ? 1 : 0,
         }}
       >
-        <div className="pb-6 px-6">
-          <p className="text-cem-neutral-gray-600 leading-relaxed text-[15px]">
+        <div className="pb-8 pl-10 pr-6">
+          <p className="text-cem-neutral-gray-800 leading-relaxed text-[16px] max-w-[650px]">
             {firstSubSectionDescription ||
-              "El curso de Biología Molecular explora en profundidad cómo las moléculas como el ADN, ARN y proteínas controlan los procesos fundamentales de la vida celular."}
+              "No hay descripción disponible para esta sección."}
           </p>
         </div>
       </div>

@@ -7,26 +7,24 @@ import { COURSE_TEXTS } from "../../constants/course.constants";
 
 /**
  * CourseContentSection - Section for course content
- * Displays course sections in accordion format
+ * Displays course sections in accordion format matching design Step 1131
  */
 const CourseContentSection: React.FC<CourseContentSectionProps> = ({
   response,
-  totalNoOfLectures,
   isActive,
   handleActive,
-  onCollapseAll,
 }) => {
   const { courseContent } = response.data.courseDetails;
 
   return (
     <div className="mb-12">
       <div className="flex flex-col gap-2 mb-6">
-        <h2 className="text-2xl font-bold text-cem-neutral-gray-900">
+        <h2 className="text-[28px] font-bold text-cem-neutral-gray-900">
           {COURSE_TEXTS.contentSection.title}
         </h2>
       </div>
 
-      <div className="rounded-xl shadow-sm border border-cem-neutral-gray-200 overflow-hidden transition-shadow duration-300 hover:shadow-md">
+      <div className="w-full">
         {courseContent?.map((course, index) => (
           <CourseAccordionBar
             course={course}

@@ -82,7 +82,7 @@ export default function ChangeProfilePicture() {
           />
 
           <div className="space-y-2">
-            <p className="font-bold text-lg text-cem-neutral-gray-900">{SETTINGS_TEXTS.changeProfilePicture.title}</p>
+            <p className="font-semibold text-lg text-cem-neutral-gray-900">{SETTINGS_TEXTS.changeProfilePicture.title}</p>
             <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="file"
@@ -95,7 +95,7 @@ export default function ChangeProfilePicture() {
               <button
                 onClick={handleClick}
                 disabled={loading}
-                className="cursor-pointer rounded-xl py-2.5 px-6 font-bold bg-cem-neutral-gray-100 text-cem-neutral-gray-700 hover:bg-cem-neutral-gray-200 border border-cem-neutral-gray-200 duration-300 transition-all shadow-sm"
+                className="cursor-pointer rounded-xl py-2.5 px-6 font-semibold bg-cem-neutral-gray-100 text-cem-neutral-gray-700 hover:bg-cem-neutral-gray-200 border border-cem-neutral-gray-200 duration-300 transition-all shadow-sm"
               >
                 {SETTINGS_TEXTS.changeProfilePicture.buttons.select}
               </button>

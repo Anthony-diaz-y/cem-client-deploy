@@ -46,7 +46,7 @@ export function sendOtp(email: string, navigate: NavigateFunction) {
       toast.success("OTP Sent Successfully");
     } catch (error) {
       const apiError = error as ApiError;
-      console.log("SENDOTP API ERROR --> ", apiError);
+
       toast.error(apiError.response?.data?.message || "Could Not Send OTP");
     }
     dispatch(setLoading(false));
@@ -89,7 +89,7 @@ export function signUp(
       navigate("/login");
     } catch (error) {
       const apiError = error as ApiError;
-      console.log("SIGNUP API ERROR --> ", apiError);
+
       toast.error(apiError.response?.data?.message || "Invalid OTP");
     }
     dispatch(setLoading(false));
@@ -113,7 +113,7 @@ export function login(
         password,
       } as Record<string, unknown>);
 
-      console.log("LOGIN API RESPONSE............", response);
+
 
       if (!response.data.success) {
         throw new Error(response.data.message);
@@ -137,7 +137,7 @@ export function login(
       navigate("/dashboard/my-profile");
     } catch (error) {
       const apiError = error as ApiError;
-      console.log("LOGIN API ERROR.......", apiError);
+
       toast.error(apiError.response?.data?.message || "Login failed");
     }
     dispatch(setLoading(false));
@@ -158,7 +158,7 @@ export function getPasswordResetToken(
         email,
       } as Record<string, unknown>);
 
-      console.log("RESET PASS TOKEN RESPONSE............", response);
+
 
       if (!response.data.success) {
         throw new Error(response.data.message);
@@ -168,7 +168,7 @@ export function getPasswordResetToken(
       setEmailSent(true);
     } catch (error) {
       const apiError = error as ApiError;
-      console.log("RESET PASS TOKEN ERROR............", apiError);
+
       toast.error(
         apiError.response?.data?.message || "Failed To Send Reset Email"
       );
@@ -196,7 +196,7 @@ export function resetPassword(
         token,
       } as Record<string, unknown>);
 
-      console.log("RESETPASSWORD RESPONSE............", response);
+
 
       if (!response.data.success) {
         throw new Error(response.data.message);
@@ -206,7 +206,7 @@ export function resetPassword(
       navigate("/login");
     } catch (error) {
       const apiError = error as ApiError;
-      console.log("RESETPASSWORD ERROR............", apiError);
+
       toast.error(
         apiError.response?.data?.message || "Failed To Reset Password"
       );

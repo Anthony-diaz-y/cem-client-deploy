@@ -113,6 +113,7 @@ export const useCourseInformationForm = () => {
             currentCategoryId !== "NaN"
             ? currentCategoryId
             : "",
+        courseSector: "", // Inicializar vacío o con valor del curso si existiera
         courseRequirements: courseData.instructions || [],
         courseInstructor:
           (courseData as any).instructors?.map((i: any) => i.id || i._id) || [],
@@ -161,6 +162,7 @@ export const useCourseInformationForm = () => {
       (currentValues.courseTags ?? []).toString() !== (courseData.tag ?? []).toString() ||
       currentValues.courseBenefits !== courseData.whatYouWillLearn ||
       currentFormCatId !== currentCourseCatId ||
+      currentValues.courseSector !== "" || // Evaluar si el sector cambió (placeholder por ahora)
       (currentValues.courseRequirements ?? []).toString() !==
       (courseData.instructions ?? []).toString() ||
       currentFormInstructors !== currentCourseInstructors ||

@@ -112,7 +112,7 @@ body {
 }
 
 .lable-style {
-  @apply text-[14px] font-bold uppercase tracking-tight text-cem-neutral-gray-500;
+  @apply text-[14px] font-semibold tracking-tight text-cem-neutral-gray-500;
 }
 
 .form-style {
