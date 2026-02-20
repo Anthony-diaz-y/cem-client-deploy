@@ -220,11 +220,15 @@ const CourseAuthorSection: React.FC<CourseAuthorSectionProps> = ({
   instructor,
   instructors,
 }) => {
-  // Combinar el instructor principal con la lista de co-instructores sin duplicados
-  const allInstructors = [
-    ...(instructor ? [instructor] : []),
-    ...(instructors || []),
-  ];
+  // Si hay docentes asignados, mostrar SOLO ellos.
+  // Solo usar el instructor creador como fallback cuando no hay docentes asignados.
+  const hasAssignedInstructors = instructors && instructors.length > 0;
+
+  const allInstructors = hasAssignedInstructors
+    ? instructors!
+    : instructor
+      ? [instructor]
+      : [];
 
   const finalInstructors = allInstructors.filter(
     (inst, index, self) =>

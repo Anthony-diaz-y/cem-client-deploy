@@ -1,11 +1,11 @@
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@shared/store/store";
-import { Course, Section, SubSection } from "../../course/types";
+import { Course, SubSection } from "../../course/types";
 import { SubSectionModalFormData } from "../types";
 import { createSubSection, updateSubSection } from "@shared/services/courseDetailsAPI";
 import { setCourse } from "../../course/store/courseSlice";
-import { updateCourseWithSubSections, getSectionId, getSubSectionId } from "../utils/subSectionHelpers";
+import { updateCourseWithSubSections, getSubSectionId } from "../utils/subSectionHelpers";
 
 interface UseSubSectionHandlersProps {
   modalData: string | SubSection | null;
@@ -14,6 +14,12 @@ interface UseSubSectionHandlersProps {
   getValues: () => SubSectionModalFormData;
   isFormUpdated: () => boolean;
 }
+
+type SubSectionActionData = Partial<SubSectionModalFormData> & {
+  lectureTitle?: string;
+  quizTitle?: string;
+  questions?: unknown[];
+};
 
 // Hook para manejar las acciones de crear y editar subsecciones
 export const useSubSectionHandlers = ({
@@ -28,7 +34,7 @@ export const useSubSectionHandlers = ({
   const { course } = useSelector((state: RootState) => state.course);
 
   // Crear nueva subsección
-  const handleCreate = async (data: SubSectionModalFormData) => {
+  const handleCreate = async (data: SubSectionActionData, isQuiz = false) => {
     if (!modalData || typeof modalData !== "string" || !token || !course) {
       return;
     }
@@ -42,17 +48,32 @@ export const useSubSectionHandlers = ({
     const courseData = course as Course;
     const formData = new FormData();
     formData.append("sectionId", modalData);
-    formData.append("title", data.lectureTitle);
+    formData.append("title", data.lectureTitle || "");
     formData.append("description", data.lectureContent || "");
 
+    if (isQuiz && data.quizTitle) {
+      formData.append("quizTitle", data.quizTitle);
+    }
+
     if (data.lectureVideo) {
-      formData.append("video", data.lectureVideo);
+      if (data.lectureVideo instanceof File) {
+        formData.append("video", data.lectureVideo);
+      } else if (typeof data.lectureVideo === 'string' && data.lectureVideo.trim()) {
+        formData.append("videoUrl", data.lectureVideo.trim());
+      }
     }
 
     if (data.lectureAttachments && data.lectureAttachments.length > 0) {
-      data.lectureAttachments.forEach((file) => {
+      data.lectureAttachments.forEach((file: File) => {
         formData.append("attachments", file);
       });
+    }
+
+    if (isQuiz) {
+      formData.append("type", "quiz");
+      if (data.questions) {
+        formData.append("questions", JSON.stringify(data.questions));
+      }
     }
 
     const createPromise = async () => {
@@ -72,9 +93,9 @@ export const useSubSectionHandlers = ({
     toast.promise(
       createPromise(),
       {
-        loading: 'Creando lección...',
+        loading: isQuiz ? 'Creando quiz...' : 'Creando lección...',
         success: (msg) => msg,
-        error: (err) => err?.message || 'Error al crear la lección',
+        error: (err) => err?.message || (isQuiz ? 'Error al crear el quiz' : 'Error al crear la lección'),
       },
       {
         style: { minWidth: '250px' },
@@ -86,7 +107,7 @@ export const useSubSectionHandlers = ({
   };
 
   // Editar subsección existente
-  const handleEdit = async () => {
+  const handleEdit = async (quizData?: SubSectionActionData, isQuiz = false) => {
     if (!modalData || typeof modalData === "string" || !token || !course) {
       return;
     }
@@ -112,21 +133,24 @@ export const useSubSectionHandlers = ({
     formData.append("sectionId", String(sectionId));
     formData.append("subSectionId", String(subSectionId));
 
+    // El título principal siempre es el de la lección
     const title = currentValues.lectureTitle?.trim() || subSectionData.title || '';
     const description = currentValues.lectureContent?.trim() || subSectionData.description || '';
 
     if (title) formData.append("title", title);
     if (description) formData.append("description", description);
 
+    // Manejar video
     const lectureVideo = currentValues.lectureVideo;
     if (lectureVideo && lectureVideo !== subSectionData.videoUrl) {
       if (lectureVideo instanceof File) {
         formData.append("video", lectureVideo);
       } else if (typeof lectureVideo === 'string' && lectureVideo.trim()) {
-        formData.append("video", lectureVideo.trim());
+        formData.append("videoUrl", lectureVideo.trim());
       }
     }
 
+    // Manejar adjuntos
     if (currentValues.lectureAttachments && currentValues.lectureAttachments.length > 0) {
       currentValues.lectureAttachments.forEach((file) => {
         formData.append("attachments", file);
@@ -137,6 +161,17 @@ export const useSubSectionHandlers = ({
       currentValues.deletedAttachments.forEach((url) => {
         formData.append("deletedAttachments", url);
       });
+    }
+
+    // Campos específicos de Quiz
+    if (isQuiz && quizData) {
+      formData.append("type", "quiz");
+      if (quizData.quizTitle) {
+        formData.append("quizTitle", quizData.quizTitle.trim());
+      }
+      if (quizData.questions) {
+        formData.append("questions", JSON.stringify(quizData.questions));
+      }
     }
 
     const updatePromise = async () => {
@@ -156,9 +191,9 @@ export const useSubSectionHandlers = ({
     toast.promise(
       updatePromise(),
       {
-        loading: 'Actualizando lección...',
+        loading: isQuiz ? 'Actualizando quiz...' : 'Actualizando lección...',
         success: (msg) => msg,
-        error: (err) => err?.message || 'Error al actualizar la lección',
+        error: (err) => err?.message || (isQuiz ? 'Error al actualizar el quiz' : 'Error al actualizar la lección'),
       },
       {
         style: { minWidth: '250px' },

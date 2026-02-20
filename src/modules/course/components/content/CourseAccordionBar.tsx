@@ -102,10 +102,16 @@ export default function CourseAccordionBar({
         }}
       >
         <div className="pb-8 pl-10 pr-6">
-          <p className="text-cem-neutral-gray-800 leading-relaxed text-[16px] max-w-[650px]">
-            {firstSubSectionDescription ||
-              "No hay descripción disponible para esta sección."}
-          </p>
+          {firstSubSectionDescription ? (
+            <div
+              className="text-cem-neutral-gray-800 leading-relaxed text-[16px] max-w-[650px] prose prose-sm"
+              dangerouslySetInnerHTML={{ __html: firstSubSectionDescription }}
+            />
+          ) : (
+            <p className="text-cem-neutral-gray-800 leading-relaxed text-[16px] max-w-[650px] italic opacity-60">
+              No hay descripción disponible para esta sección.
+            </p>
+          )}
         </div>
       </div>
     </div>

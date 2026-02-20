@@ -7,6 +7,7 @@ export interface CoursePreview {
   instructorId: string;
   whatYouWillLearn: string;
   price: string;
+  priceUSD?: string | number;
   thumbnail: string;
   totalDuration: string | null;
   categoryId: string;

@@ -117,6 +117,11 @@ export const useCourseInformationForm = () => {
         courseTitle: courseData.courseName || "",
         courseShortDesc: courseData.courseDescription || "",
         coursePrice: courseData.price !== undefined ? courseData.price : 0,
+        coursePrice_int: courseData.price !== undefined ? Math.floor(courseData.price).toString() : "0",
+        coursePrice_cents: courseData.price !== undefined ? (courseData.price % 1).toFixed(2).split(".")[1] : "00",
+        coursePriceUSD: courseData.priceUSD !== undefined ? courseData.priceUSD : 0,
+        coursePriceUSD_int: courseData.priceUSD !== undefined ? Math.floor(courseData.priceUSD).toString() : "",
+        coursePriceUSD_cents: courseData.priceUSD !== undefined ? (courseData.priceUSD % 1).toFixed(2).split(".")[1] : "",
         courseTags: courseData.tag || [],
         courseBenefits: courseData.whatYouWillLearn || "",
         courseCategory: carreraId,
@@ -164,7 +169,10 @@ export const useCourseInformationForm = () => {
     return (
       currentValues.courseTitle !== courseData.courseName ||
       currentValues.courseShortDesc !== courseData.courseDescription ||
-      currentValues.coursePrice !== courseData.price ||
+      currentValues.coursePrice_int !== Math.floor(courseData.price || 0).toString() ||
+      currentValues.coursePrice_cents !== ((courseData.price || 0) % 1).toFixed(2).split(".")[1] ||
+      (currentValues.coursePriceUSD_int ?? "") !== (courseData.priceUSD !== undefined ? Math.floor(courseData.priceUSD).toString() : "") ||
+      (currentValues.coursePriceUSD_cents ?? "") !== (courseData.priceUSD !== undefined ? (courseData.priceUSD % 1).toFixed(2).split(".")[1] : "") ||
       (currentValues.courseTags ?? []).toString() !== (courseData.tag ?? []).toString() ||
       currentValues.courseBenefits !== courseData.whatYouWillLearn ||
       currentValues.courseCategory !== currentCourseCarreraId ||
@@ -203,8 +211,16 @@ export const useCourseInformationForm = () => {
         if (currentValues.courseShortDesc !== courseData.courseDescription) {
           formData.append("courseDescription", data.courseShortDesc);
         }
-        if (currentValues.coursePrice !== courseData.price) {
-          formData.append("price", data.coursePrice.toString());
+        const combinedPrice = parseFloat(`${data.coursePrice_int || "0"}.${data.coursePrice_cents || "00"}`);
+        const combinedPriceUSD = (data.coursePriceUSD_int || data.coursePriceUSD_cents)
+          ? parseFloat(`${data.coursePriceUSD_int || "0"}.${data.coursePriceUSD_cents || "00"}`)
+          : undefined;
+
+        if (combinedPrice !== courseData.price) {
+          formData.append("price", combinedPrice.toString());
+        }
+        if (combinedPriceUSD !== undefined && combinedPriceUSD !== courseData.priceUSD) {
+          formData.append("priceUSD", combinedPriceUSD.toString());
         }
         if ((currentValues.courseTags ?? []).toString() !== (courseData.tag ?? []).toString()) {
           formData.append("tag", JSON.stringify(data.courseTags));
@@ -305,7 +321,15 @@ export const useCourseInformationForm = () => {
     const formData = new FormData();
     formData.append("courseName", data.courseTitle);
     formData.append("courseDescription", data.courseShortDesc);
-    formData.append("price", data.coursePrice.toString());
+    const combinedPrice = parseFloat(`${data.coursePrice_int || "0"}.${data.coursePrice_cents || "00"}`);
+    const combinedPriceUSD = (data.coursePriceUSD_int || data.coursePriceUSD_cents)
+      ? parseFloat(`${data.coursePriceUSD_int || "0"}.${data.coursePriceUSD_cents || "00"}`)
+      : undefined;
+
+    formData.append("price", combinedPrice.toString());
+    if (combinedPriceUSD !== undefined) {
+      formData.append("priceUSD", combinedPriceUSD.toString());
+    }
     formData.append("tag", JSON.stringify(data.courseTags));
     formData.append("whatYouWillLearn", data.courseBenefits);
 

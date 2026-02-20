@@ -22,6 +22,11 @@ export interface CourseInformationFormData {
   courseTitle: string;
   courseShortDesc: string;
   coursePrice: number;
+  coursePrice_int?: string;
+  coursePrice_cents?: string;
+  coursePriceUSD?: number;
+  coursePriceUSD_int?: string;
+  coursePriceUSD_cents?: string;
   courseTags?: string[];
   courseBenefits: string;
   courseCategory: string; // Carrera
@@ -99,6 +104,27 @@ export interface SubSectionModalFormData {
 }
 
 export interface SubSectionModalProps {
+  modalData: string | (SubSection & { sectionId?: string }) | null;
+  setModalData: React.Dispatch<
+    React.SetStateAction<string | (SubSection & { sectionId?: string }) | null>
+  >;
+  add?: boolean;
+  view?: boolean;
+  edit?: boolean;
+}
+
+export interface QuizQuestion {
+  questionText: string;
+  options: string[];
+  correctOptionIndex: number;
+}
+
+export interface QuizFormData {
+  quizTitle: string;
+  questions: QuizQuestion[];
+}
+
+export interface QuizModalProps {
   modalData: string | (SubSection & { sectionId?: string }) | null;
   setModalData: React.Dispatch<
     React.SetStateAction<string | (SubSection & { sectionId?: string }) | null>
