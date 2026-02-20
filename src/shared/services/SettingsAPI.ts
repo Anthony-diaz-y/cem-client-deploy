@@ -75,10 +75,13 @@ export function updateUserProfileImage(token: string, formData: FormData | Recor
 }
 
 // ================ update Profile  ================
-export function updateProfile(token: string, formData: Record<string, unknown>) {
+export function updateProfile(
+  token: string,
+  formData: Record<string, unknown>,
+  navigate?: (path: string) => void
+) {
   return async (dispatch: AppDispatch) => {
-    // console.log('This is formData for updated profile -> ', formData)
-    const toastId = toast.loading("Loading...")
+    const toastId = toast.loading("Cargando...")
     try {
       const response = await apiConnector<UpdateProfileResponse>("PUT", UPDATE_PROFILE_API, formData as unknown as (Record<string, unknown> | FormData), {
         Authorization: `Bearer ${token}`,
@@ -86,7 +89,7 @@ export function updateProfile(token: string, formData: Record<string, unknown>) 
 
 
       if (!response.data.success || !response.data.updatedUserDetails) {
-        throw new Error(response.data.message || "Could not update profile")
+        throw new Error(response.data.message || "No se pudo actualizar el perfil");
       }
       const updatedUser = response.data.updatedUserDetails;
       const userImage = updatedUser.image
@@ -95,14 +98,20 @@ export function updateProfile(token: string, formData: Record<string, unknown>) 
 
       dispatch(setUser({ ...updatedUser, image: userImage }))
 
-
-      // console.log('DATA = ', data)
       localStorage.setItem("user", JSON.stringify({ ...updatedUser, image: userImage }));
-      toast.success("Profile Updated Successfully")
-    } catch (error) {
-      const apiError = error as ApiError;
 
-      toast.error("Could Not Update Profile")
+      toast.success("Perfil actualizado");
+
+      // Intentar redirección
+      if (navigate) {
+        navigate("/dashboard/my-profile");
+      } else {
+        // Fallback si no hay navigate
+        window.location.href = "/dashboard/my-profile";
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al actualizar el perfil")
     }
     toast.dismiss(toastId)
   }

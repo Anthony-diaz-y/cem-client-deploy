@@ -80,15 +80,17 @@ export function updateUserProfileImage(token: string, formData: FormData) {
 }
 
 // ================ update Profile  ================
-export function updateProfile(token: string, formData: ProfileFormData) {
+export function updateProfile(
+  token: string,
+  formData: ProfileFormData,
+  navigate?: (path: string) => void
+) {
   return async (dispatch: AppDispatch) => {
-    // console.log('This is formData for updated profile -> ', formData)
     const toastId = toast.loading(SETTINGS_TEXTS.api.loading);
     try {
       const response = await apiConnector<UpdateProfileResponse>("PUT", UPDATE_PROFILE_API, formData as unknown as (Record<string, unknown> | FormData), {
         Authorization: `Bearer ${token} `,
       });
-      console.log("UPDATE_PROFILE_API API RESPONSE............", response);
 
       if (!response.data.success || !response.data.updatedUserDetails) {
         throw new Error(response.data.message || SETTINGS_TEXTS.api.errors.defaultUpdateProfile);
@@ -102,7 +104,6 @@ export function updateProfile(token: string, formData: ProfileFormData) {
         setUser({ ...updatedUser, image: userImage })
       );
 
-      // console.log('DATA = ', data)
       localStorage.setItem(
         "user",
         JSON.stringify({
@@ -111,9 +112,16 @@ export function updateProfile(token: string, formData: ProfileFormData) {
         })
       );
       toast.success(SETTINGS_TEXTS.api.success.updateProfile);
+
+      // Intentar redirección
+      if (navigate) {
+        navigate(SETTINGS_TEXTS.editProfile.links.myProfile);
+      } else {
+        window.location.href = SETTINGS_TEXTS.editProfile.links.myProfile;
+      }
     } catch (error) {
       const apiError = error as ApiError;
-      console.log("UPDATE_PROFILE_API API ERROR............", apiError);
+      console.error(apiError);
       toast.error(
         apiError.response?.data?.message || SETTINGS_TEXTS.api.errors.updateProfile
       );

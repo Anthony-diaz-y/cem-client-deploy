@@ -23,10 +23,12 @@ export default function EditProfile() {
   } = useForm<ProfileFormData>();
 
   const submitProfileForm = async (data: ProfileFormData) => {
-    // console.log("Form Data - ", data)
     if (!token) return;
     try {
-      dispatch(updateProfile(token, data));
+      // Pasamos la función de navegación explícitamente
+      dispatch(updateProfile(token, data, (path) => {
+        router.push(path);
+      }));
     } catch (error) {
       console.log("ERROR MESSAGE - ", (error as Error).message);
     }
@@ -184,6 +186,7 @@ export default function EditProfile() {
 
         <div className="flex justify-end gap-2">
           <button
+            type="button"
             onClick={() => {
               router.push(SETTINGS_TEXTS.editProfile.links.myProfile);
             }}
