@@ -49,6 +49,10 @@ function CourseDetailsCard({
       toast.error(COURSE_TEXTS.actions.errors.instructorCannotBuy);
       return;
     }
+    if (user?.accountType === ACCOUNT_TYPE.ADMIN) {
+      toast.error(COURSE_TEXTS.actions.errors.adminCannotBuy);
+      return;
+    }
     if (token) {
       dispatch(addToCart(course));
       return;
@@ -188,18 +192,29 @@ function CourseDetailsCard({
             </div>
           ) : (
             <div className="flex flex-col gap-3.5">
-              <button
-                className="w-full h-[54px] rounded-xl bg-cem-primary text-white font-bold hover:bg-cem-primary-dark transition-all shadow-sm"
-                onClick={() => setShowPaymentModal(true)}
-              >
-                {COURSE_TEXTS.detailsCard.buyNow}
-              </button>
-              <button
-                className="w-full py-3.5 px-4 rounded-xl border border-cem-neutral-gray-200 text-cem-neutral-gray-900 font-bold hover:bg-gray-50"
-                onClick={onAddToCart}
-              >
-                {COURSE_TEXTS.detailsCard.addToCart}
-              </button>
+              {user?.accountType !== ACCOUNT_TYPE.ADMIN && user?.accountType !== ACCOUNT_TYPE.INSTRUCTOR && (
+                <>
+                  <button
+                    className="w-full h-[54px] rounded-xl bg-cem-primary text-white font-bold hover:bg-cem-primary-dark transition-all shadow-sm"
+                    onClick={() => setShowPaymentModal(true)}
+                  >
+                    {COURSE_TEXTS.detailsCard.buyNow}
+                  </button>
+                  <button
+                    className="w-full py-3.5 px-4 rounded-xl border border-cem-neutral-gray-200 text-cem-neutral-gray-900 font-bold hover:bg-gray-50"
+                    onClick={onAddToCart}
+                  >
+                    {COURSE_TEXTS.detailsCard.addToCart}
+                  </button>
+                </>
+              )}
+              {(user?.accountType === ACCOUNT_TYPE.ADMIN || user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) && (
+                <div className="text-center p-4 rounded-xl bg-cem-neutral-gray-50 border border-cem-neutral-gray-100 italic text-cem-neutral-gray-500 text-sm">
+                  {user.accountType === ACCOUNT_TYPE.ADMIN
+                    ? "Los administradores no pueden inscribirse en cursos."
+                    : "Los instructores no pueden inscribirse en cursos."}
+                </div>
+              )}
             </div>
           )}
         </div>

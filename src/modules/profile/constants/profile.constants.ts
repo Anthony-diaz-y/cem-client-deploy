@@ -3,26 +3,26 @@
 
 export const PROFILE_TEXTS = {
   myProfile: {
-    title: "My Profile",
-    edit: "Edit",
+    title: "Mi Perfil",
+    edit: "Editar",
     sections: {
-      about: "About",
-      personalDetails: "Personal Details",
+      about: "Acerca de mí",
+      personalDetails: "Detalles Personales",
     },
     fields: {
-      firstName: "First Name",
-      lastName: "Last Name",
-      accountType: "Account Type",
-      email: "Email",
-      gender: "Gender",
-      phoneNumber: "Phone Number",
-      dateOfBirth: "Date Of Birth",
+      firstName: "Nombre",
+      lastName: "Apellido",
+      accountType: "Tipo de Cuenta",
+      email: "Correo Electrónico",
+      gender: "Género",
+      phoneNumber: "Número de Teléfono",
+      dateOfBirth: "Fecha de Nacimiento",
     },
     placeholders: {
-      about: "Write Something About Yourself",
-      gender: "Add Gender",
-      contactNumber: "Add Contact Number",
-      dateOfBirth: "Add Date Of Birth",
+      about: "Escribe algo sobre ti...",
+      gender: "Agregar género",
+      contactNumber: "Agregar número de contacto",
+      dateOfBirth: "Agregar fecha de nacimiento",
     },
   },
   api: {
