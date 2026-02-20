@@ -8,6 +8,10 @@ export interface CourseCategory {
   id?: string;
   _id?: string;
   name: string;
+  domain?: {
+    id: string;
+    name: string;
+  };
 }
 
 export interface FullCourseDetailsResponse {

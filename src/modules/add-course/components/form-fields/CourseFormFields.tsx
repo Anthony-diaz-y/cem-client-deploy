@@ -10,6 +10,7 @@ import CourseCategorySelect from "./CourseCategorySelect";
 import SyllabusUpload from "../upload/SyllabusUpload";
 import { CourseFormFieldsProps } from "../../types";
 import { Course } from "../../../course/types";
+import { getCategoryIds } from "../../hooks/useCourseInformationForm";
 
 // Campos del formulario de información del curso
 const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
@@ -95,12 +96,9 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         setValue={setValue}
         errors={errors}
         categories={courseCategories}
-        initialData={
-          Array.isArray(course?.category)
-            ? (course?.category[0] as any)?.id || (course?.category[0] as any)?._id
-            : (course?.category as any)?.id || (course?.category as any)?._id || (course?.category as unknown as string) || ""
-        }
+        initialData={getCategoryIds(course?.category).carreraId}
         loading={loading}
+        domainName="Según tu carrera"
       />
 
       {/* 5. Course Sector */}
@@ -111,8 +109,9 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         setValue={setValue as any}
         errors={errors as any}
         categories={courseCategories}
-        initialData={""}
+        initialData={getCategoryIds(course?.category).sectorId}
         loading={loading}
+        domainName="Según tu sector"
       />
 
       {/* 6. Docente del curso */}
