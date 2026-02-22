@@ -1,7 +1,7 @@
 // Hook para manejar el estado y lógica de ForgotPassword
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@shared/store/hooks";
-import { getPasswordResetToken } from "@shared/services/authAPI";
+import { getPasswordResetToken } from "@modules/auth/services/authAPI";
 
 export interface UseForgotPasswordReturn {
   email: string;

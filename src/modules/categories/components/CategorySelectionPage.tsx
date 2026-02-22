@@ -8,14 +8,15 @@ import { brandColors } from "../../../shared/design-tokens";
 import CategorySkeleton from "./CategorySkeleton";
 import { HomeCourseCard } from "@/modules/home/components/courses/components/HomeCourseCard";
 import { useCoursesData } from "../../courses/hooks/useCoursesData";
-import { FiSearch } from "react-icons/fi";
 import { CoursesListSection } from "../../courses/components/coursesList/components/CoursesListSection";
+import ExperienceSection from "@/modules/courses/components/experience/ExperienceSection";
 import ScrollToTop from "../../../shared/components/navigation/ScrollToTop";
 import { resolveCategoryIcon } from "../utils/categoryIcons";
 import { getCatalogGroups } from "../services/catalogAPI";
 import { getPublicLearningPaths } from "@/shared/services/learningPathAPI";
 import type { CatalogGroup, Category, CoursePreview } from "../types";
 import { LearningPathPublicCard } from "./LearningPathPublicCard";
+import { CategorySelectionHeader } from "./CategorySelectionHeader";
 
 /** Página principal de cursos con categorías y cursos inline */
 const CategorySelectionPage: React.FC = () => {
@@ -42,7 +43,6 @@ const CategorySelectionPage: React.FC = () => {
 
   const [localSearchQuery, setLocalSearchQuery] = useState(search || "");
 
-  // Sincronizar búsqueda local con la de la URL (por ejemplo si se borra el filtro)
   useEffect(() => {
     setLocalSearchQuery(search || "");
   }, [search]);
@@ -74,7 +74,6 @@ const CategorySelectionPage: React.FC = () => {
   }, []);
 
   const handleCategoryClick = (category: Category) => {
-    // Si la misma categoría está seleccionada, deseleccionarla
     if (selectedCategory?.id === category.id) {
       setSelectedCategory(null);
     } else {
@@ -86,7 +85,7 @@ const CategorySelectionPage: React.FC = () => {
     e.preventDefault();
     setSearch(localSearchQuery);
     if (localSearchQuery) {
-      setSelectedCategory(null); // Limpiar categoría seleccionada al buscar
+      setSelectedCategory(null);
     }
   };
 
@@ -108,7 +107,6 @@ const CategorySelectionPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-cem-neutral-white mt-20 relative overflow-hidden">
-      {/* Decoración de fondo: Círculos Concéntricos */}
       <ConcentricCircles
         size={500}
         circles={3}
@@ -119,68 +117,21 @@ const CategorySelectionPage: React.FC = () => {
       />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-12">
-        {/* Header - Conditionally rendered based on search state */}
         <AnimatePresence mode="wait">
-          {!search ? (
-            <motion.div
-              key="main-header"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="text-center mb-12"
-            >
-              <h1 className="text-4xl md:text-[67px] font-bold text-cem-neutral-gray-900 mb-16 leading-[1.26]">
-                Nuestros cursos para <br /> crecer en{" "}
-                <span className="text-cem-primary relative">ciencia</span>
-              </h1>
-
-              {/* Search Bar */}
-              <div className="max-w-[506px] mx-auto mb-16">
-                <form
-                  onSubmit={handleSearchSubmit}
-                  className="relative flex items-center w-full bg-white border border-cem-neutral-gray-300 rounded-xl shadow-sm overflow-hidden group focus-within:ring-2 focus-within:ring-cem-primary/5 focus-within:border-cem-neutral-gray-400 transition-all h-[61.57px]"
-                >
-                  <div className="pl-5 text-cem-neutral-gray-400 group-focus-within:text-cem-primary transition-colors">
-                    <FiSearch size={22} className="stroke-[2.5]" />
-                  </div>
-                  <input
-                    type="text"
-                    value={localSearchQuery}
-                    onChange={(e) => setLocalSearchQuery(e.target.value)}
-                    placeholder="¿Qué quieres aprender?"
-                    className="flex-1 pl-3 pr-6 bg-transparent outline-none text-[17px] text-cem-neutral-gray-700 placeholder:text-cem-neutral-gray-400 font-medium"
-                  />
-                </form>
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="search-header"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="mb-12"
-            >
-              <button
-                onClick={() => setSearch("")}
-                className="flex items-center gap-2 text-cem-neutral-gray-500 hover:text-cem-primary transition-colors mb-8 group"
-              >
-                <span className="text-xl group-hover:-translate-x-1 transition-transform">
-                  ←
-                </span>
-                <span className="font-medium">Volver a categorías</span>
-              </button>
-
-              <div className="text-center">
-                <h1 className="text-4xl md:text-5xl font-bold text-cem-neutral-gray-900 mb-2 leading-tight">
-                  Resultados de búsqueda con
-                </h1>
-                <p className="text-4xl md:text-5xl font-bold text-cem-primary">
-                  {search.toLowerCase()}
-                </p>
-              </div>
-            </motion.div>
-          )}
+          <motion.div
+            key={search ? "search-header" : "main-header"}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <CategorySelectionHeader
+              search={search}
+              localSearchQuery={localSearchQuery}
+              onSearchChange={setLocalSearchQuery}
+              onSearchSubmit={handleSearchSubmit}
+              onBackToCategories={() => setSearch("")}
+            />
+          </motion.div>
         </AnimatePresence>
 
         {/* Content: Search Results OR Domains */}
@@ -366,6 +317,8 @@ const CategorySelectionPage: React.FC = () => {
             </motion.div>
           )}
         </AnimatePresence>
+
+        <ExperienceSection />
         <ScrollToTop />
       </div>
     </div>

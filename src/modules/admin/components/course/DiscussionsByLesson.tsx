@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import {
+import React from "react";
+import type {
   DiscussionBySubSection,
   DiscussionReply,
 } from "@shared/services/adminAPI";
@@ -15,22 +15,11 @@ import {
   FiTrash2,
   FiSend,
 } from "react-icons/fi";
-import { toast } from "react-hot-toast";
-import { apiConnector } from "@shared/services/apiConnector";
-import { subsectionDiscussionsEndpoints } from "@/shared/services/apis";
 import { ConfirmationModal } from "@shared/components";
-
-interface DiscussionWithReplies {
-  id: string;
-  question: string;
-  userId: string;
-  userName: string;
-  userAccountType: "Admin" | "Instructor" | "Student";
-  repliesCount: number;
-  createdAt: string;
-  updatedAt: string;
-  replies?: DiscussionReply[];
-}
+import {
+  useDiscussionsByLesson,
+  type DiscussionWithReplies,
+} from "./hooks/useDiscussionsByLesson";
 
 interface DiscussionsByLessonProps {
   discussions: DiscussionBySubSection[];
@@ -43,320 +32,41 @@ export default function DiscussionsByLesson({
   token,
   onUpdate,
 }: DiscussionsByLessonProps) {
-  const [expandedLessons, setExpandedLessons] = useState<Set<string>>(
-    new Set(),
-  );
-  const [expandedDiscussions, setExpandedDiscussions] = useState<Set<string>>(
-    new Set(),
-  );
-  const [editingDiscussion, setEditingDiscussion] = useState<string | null>(
-    null,
-  );
-  const [editingReply, setEditingReply] = useState<string | null>(null);
-  const [newQuestion, setNewQuestion] = useState<{ [key: string]: string }>({});
-  const [editQuestion, setEditQuestion] = useState<{ [key: string]: string }>(
-    {},
-  );
-  const [newReply, setNewReply] = useState<{ [key: string]: string }>({});
-  const [editReply, setEditReply] = useState<{ [key: string]: string }>({});
-  const [deleteConfirm, setDeleteConfirm] = useState<{
-    type: "discussion" | "reply";
-    id: string;
-  } | null>(null);
-  const toggleLesson = (lessonId: string) => {
-    const newExpanded = new Set(expandedLessons);
-    if (newExpanded.has(lessonId)) {
-      newExpanded.delete(lessonId);
-    } else {
-      newExpanded.add(lessonId);
-    }
-    setExpandedLessons(newExpanded);
-  };
-
-  const toggleDiscussion = (discussionId: string) => {
-    const newExpanded = new Set(expandedDiscussions);
-    if (newExpanded.has(discussionId)) {
-      newExpanded.delete(discussionId);
-    } else {
-      newExpanded.add(discussionId);
-    }
-    setExpandedDiscussions(newExpanded);
-  };
-
-  const formatDate = (dateString: string) => {
-    try {
-      return new Date(dateString).toLocaleString("es-ES", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } catch {
-      return "Fecha inválida";
-    }
-  };
-
-  const getAccountTypeBadge = (type: string) => {
-    const badges = {
-      Admin: "bg-purple-50 text-purple-600 border-purple-100",
-      Instructor: "bg-blue-50 text-blue-600 border-blue-100",
-      Student: "bg-emerald-50 text-emerald-600 border-emerald-100",
-    };
-    return (
-      badges[type as keyof typeof badges] ||
-      "bg-cem-neutral-gray-50 text-cem-neutral-gray-500 border-cem-neutral-gray-100"
-    );
-  };
-
-  // CRUD Operations
-  const handleCreateDiscussion = async (subSectionId: string) => {
-    const question = newQuestion[subSectionId]?.trim();
-    if (!question) {
-      toast.error("Por favor ingresa una pregunta");
-      return;
-    }
-
-    const toastId = toast.loading("Creando pregunta...");
-    try {
-      const response = await apiConnector<{
-        success: boolean;
-        message?: string;
-      }>(
-        "POST",
-        subsectionDiscussionsEndpoints.CREATE_DISCUSSION,
-        { question, subSectionId },
-        { Authorization: `Bearer ${token}` },
-      );
-
-      if (response?.data?.success) {
-        toast.success("Pregunta creada exitosamente", { id: toastId });
-        setNewQuestion({ ...newQuestion, [subSectionId]: "" });
-        onUpdate?.();
-      } else {
-        throw new Error(
-          response?.data?.message || "Error al crear la pregunta",
-        );
-      }
-    } catch (error: unknown) {
-      const apiError = error as {
-        response?: { data?: { message?: string } };
-        message?: string;
-      };
-      toast.error(
-        apiError?.response?.data?.message ||
-        apiError?.message ||
-        "Error al crear la pregunta",
-        { id: toastId },
-      );
-    }
-  };
-
-  const handleUpdateDiscussion = async (discussionId: string) => {
-    const question = editQuestion[discussionId]?.trim();
-    if (!question) {
-      toast.error("Por favor ingresa una pregunta");
-      return;
-    }
-
-    const toastId = toast.loading("Actualizando pregunta...");
-    try {
-      const response = await apiConnector<{
-        success: boolean;
-        message?: string;
-      }>(
-        "PUT",
-        `${subsectionDiscussionsEndpoints.UPDATE_DISCUSSION}/${discussionId}`,
-        { question },
-        { Authorization: `Bearer ${token}` },
-      );
-
-      if (response?.data?.success) {
-        toast.success("Pregunta actualizada exitosamente", { id: toastId });
-        setEditingDiscussion(null);
-        setEditQuestion({ ...editQuestion, [discussionId]: "" });
-        onUpdate?.();
-      } else {
-        throw new Error(
-          response?.data?.message || "Error al actualizar la pregunta",
-        );
-      }
-    } catch (error: unknown) {
-      const apiError = error as {
-        response?: { data?: { message?: string } };
-        message?: string;
-      };
-      toast.error(
-        apiError?.response?.data?.message ||
-        apiError?.message ||
-        "Error al actualizar la pregunta",
-        { id: toastId },
-      );
-    }
-  };
-
-  const handleDeleteDiscussion = async (discussionId: string) => {
-    const toastId = toast.loading("Eliminando pregunta...");
-    try {
-      const response = await apiConnector<{
-        success: boolean;
-        data?: any[];
-        message?: string;
-      }>(
-        "DELETE",
-        `${subsectionDiscussionsEndpoints.DELETE_DISCUSSION}/${discussionId}`,
-        undefined,
-        { Authorization: `Bearer ${token}` },
-      );
-
-      if (response?.data?.success) {
-        toast.success("Pregunta eliminada exitosamente", { id: toastId });
-        // El backend ahora devuelve la lista completa actualizada en response.data.data
-        // Notificar al componente padre para que actualice las discusiones
-        onUpdate?.();
-      } else {
-        throw new Error(
-          response?.data?.message || "Error al eliminar la pregunta",
-        );
-      }
-    } catch (error: unknown) {
-      const apiError = error as {
-        response?: { data?: { message?: string } };
-        message?: string;
-      };
-      toast.error(
-        apiError?.response?.data?.message ||
-        apiError?.message ||
-        "Error al eliminar la pregunta",
-        { id: toastId },
-      );
-    }
-  };
-
-  const handleCreateReply = async (discussionId: string) => {
-    const reply = newReply[discussionId]?.trim();
-    if (!reply) {
-      toast.error("Por favor ingresa una respuesta");
-      return;
-    }
-
-    const toastId = toast.loading("Enviando respuesta...");
-    try {
-      const response = await apiConnector<{
-        success: boolean;
-        message?: string;
-      }>(
-        "POST",
-        subsectionDiscussionsEndpoints.CREATE_REPLY,
-        { reply, discussionId },
-        { Authorization: `Bearer ${token}` },
-      );
-
-      if (response?.data?.success) {
-        toast.success("Respuesta creada exitosamente", { id: toastId });
-        setNewReply({ ...newReply, [discussionId]: "" });
-        onUpdate?.();
-      } else {
-        throw new Error(
-          response?.data?.message || "Error al crear la respuesta",
-        );
-      }
-    } catch (error: unknown) {
-      const apiError = error as {
-        response?: { data?: { message?: string } };
-        message?: string;
-      };
-      toast.error(
-        apiError?.response?.data?.message ||
-        apiError?.message ||
-        "Error al crear la respuesta",
-        { id: toastId },
-      );
-    }
-  };
-
-  const handleUpdateReply = async (replyId: string) => {
-    const reply = editReply[replyId]?.trim();
-    if (!reply) {
-      toast.error("Por favor ingresa una respuesta");
-      return;
-    }
-
-    const toastId = toast.loading("Actualizando respuesta...");
-    try {
-      const response = await apiConnector<{
-        success: boolean;
-        message?: string;
-      }>(
-        "PUT",
-        `${subsectionDiscussionsEndpoints.UPDATE_REPLY}/${replyId}`,
-        { reply },
-        { Authorization: `Bearer ${token}` },
-      );
-
-      if (response?.data?.success) {
-        toast.success("Respuesta actualizada exitosamente", { id: toastId });
-        setEditingReply(null);
-        setEditReply({ ...editReply, [replyId]: "" });
-        onUpdate?.();
-      } else {
-        throw new Error(
-          response?.data?.message || "Error al actualizar la respuesta",
-        );
-      }
-    } catch (error: unknown) {
-      const apiError = error as {
-        response?: { data?: { message?: string } };
-        message?: string;
-      };
-      toast.error(
-        apiError?.response?.data?.message ||
-        apiError?.message ||
-        "Error al actualizar la respuesta",
-        { id: toastId },
-      );
-    }
-  };
-
-  const handleDeleteReply = async (replyId: string) => {
-    const toastId = toast.loading("Eliminando respuesta...");
-    try {
-      const response = await apiConnector<{
-        success: boolean;
-        message?: string;
-      }>(
-        "DELETE",
-        `${subsectionDiscussionsEndpoints.DELETE_REPLY}/${replyId}`,
-        undefined,
-        { Authorization: `Bearer ${token}` },
-      );
-
-      if (response?.data?.success) {
-        toast.success("Respuesta eliminada exitosamente", { id: toastId });
-        onUpdate?.();
-      } else {
-        throw new Error(
-          response?.data?.message || "Error al eliminar la respuesta",
-        );
-      }
-    } catch (error: unknown) {
-      const apiError = error as {
-        response?: { data?: { message?: string } };
-        message?: string;
-      };
-      toast.error(
-        apiError?.response?.data?.message ||
-        apiError?.message ||
-        "Error al eliminar la respuesta",
-        { id: toastId },
-      );
-    }
-  };
+  const {
+    expandedLessons,
+    expandedDiscussions,
+    editingDiscussion,
+    setEditingDiscussion,
+    editingReply,
+    setEditingReply,
+    newQuestion,
+    setNewQuestion,
+    editQuestion,
+    setEditQuestion,
+    newReply,
+    setNewReply,
+    editReply,
+    setEditReply,
+    deleteConfirm,
+    setDeleteConfirm,
+    toggleLesson,
+    toggleDiscussion,
+    formatDate,
+    getAccountTypeBadge,
+    handleCreateDiscussion,
+    handleUpdateDiscussion,
+    handleDeleteDiscussion,
+    handleCreateReply,
+    handleUpdateReply,
+    handleDeleteReply,
+  } = useDiscussionsByLesson({ discussions, token, onUpdate });
 
   if (discussions.length === 0) {
     return (
       <div className="bg-cem-neutral-gray-50 rounded-lg p-8 text-center border border-cem-neutral-gray-100 shadow-sm">
-        <p className="text-[14px] font-medium text-cem-neutral-gray-500">No hay discusiones en este curso</p>
+        <p className="text-[14px] font-medium text-cem-neutral-gray-500">
+          No hay discusiones en este curso
+        </p>
       </div>
     );
   }
@@ -585,8 +295,8 @@ export default function DiscussionsByLesson({
 
                               {/* Lista de respuestas */}
                               {(discussion as DiscussionWithReplies).replies &&
-                                (discussion as DiscussionWithReplies).replies!
-                                  .length > 0 ? (
+                              (discussion as DiscussionWithReplies).replies!
+                                .length > 0 ? (
                                 <div className="space-y-2">
                                   {(
                                     discussion as DiscussionWithReplies

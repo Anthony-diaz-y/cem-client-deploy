@@ -1,7 +1,7 @@
 import type { Config } from 'tailwindcss';
-import { brandColors, systemColors } from './src/shared/design-tokens/';
+import { brandColors } from './src/shared/design-tokens/brand-colors';
+import { systemColors } from './src/shared/design-tokens/system-colors';
 
-// Asegurar que los colores se exporten correctamente para Tailwind
 const allColors = {
   cem: brandColors,
   ...systemColors,

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@shared/store/hooks";
-import { login } from "@shared/services/authAPI";
+import { login } from "@modules/auth/services/authAPI";
 import { API_URL } from "@shared/config/api.config";
 import {
   isValidEmail as validateEmail,
