@@ -10,7 +10,20 @@ export interface CoursePreview {
   priceUSD?: string | number;
   thumbnail: string;
   totalDuration: string | null;
+  instructor?: {
+    id: string;
+    name: string;
+    image?: string;
+    additionalDetails?: {
+      professional_title: string;
+    };
+  };
   categoryId: string;
+  category?: {
+    id: string;
+    name: string;
+    type?: "career" | "sector";
+  }[];
   tag: string[];
   instructions: string[];
   status: string;
@@ -28,7 +41,7 @@ export interface Category {
   updatedAt: string;
 }
 
-export interface Domain {
+export interface CatalogGroup {
   id: string;
   name: string;
   description: string;

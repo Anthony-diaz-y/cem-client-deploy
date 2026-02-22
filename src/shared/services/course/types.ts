@@ -8,6 +8,7 @@ export interface CourseCategory {
   id?: string;
   _id?: string;
   name: string;
+  type?: "career" | "sector";
   domain?: {
     id: string;
     name: string;
@@ -38,4 +39,3 @@ export interface InstructorCourse {
   _id?: string;
   [key: string]: unknown;
 }
-

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { useLoginForm } from "../hooks";
 import {
   LoginFormHeader,
@@ -8,7 +9,11 @@ import {
   FormSeparator,
   RegisterLink,
 } from "../components";
-import { EmailInput, PasswordInput, FormButton } from "../../register/components";
+import {
+  EmailInput,
+  PasswordInput,
+  FormButton,
+} from "../../register/components";
 
 const LoginFormView: React.FC = () => {
   const {
@@ -80,6 +85,14 @@ const LoginFormView: React.FC = () => {
           isValid={passwordIsValid}
         />
 
+        <div className="w-[296px] flex justify-end -mt-2 mb-2">
+          <Link href="/auth/forgot-password">
+            <span className="text-sm font-medium text-cem-primary hover:text-cem-primary-dark transition-colors cursor-pointer">
+              ¿Olvidaste tu contraseña?
+            </span>
+          </Link>
+        </div>
+
         <FormButton type="submit" disabled={!isFormValid} isLoading={isLoading}>
           {isLoading ? "Ingresando..." : "Ingresar"}
         </FormButton>
@@ -97,4 +110,3 @@ const LoginFormView: React.FC = () => {
 };
 
 export default LoginFormView;
-

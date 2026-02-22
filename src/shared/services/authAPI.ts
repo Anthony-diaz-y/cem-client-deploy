@@ -223,23 +223,8 @@ export function signUpNew(
       ) {
         toast.error("Este email ya está registrado. Por favor, inicia sesión.");
       } else if (apiError.response?.data?.errors) {
-        const validationErrors = apiError.response.data.errors;
-        if (Array.isArray(validationErrors) && validationErrors.length > 0) {
-          const firstError = validationErrors[0];
-          if (
-            firstError &&
-            typeof firstError === "object" &&
-            "constraints" in firstError &&
-            firstError.constraints
-          ) {
-            const constraintMessage = Object.values(firstError.constraints)[0];
-            toast.error(constraintMessage as string);
-          } else {
-            toast.error(errorMessage || "Error de validación");
-          }
-        } else {
-          toast.error(errorMessage || "Error de validación");
-        }
+        // Errores de validación genéricos si el frontend fallara (fallback de seguridad)
+        toast.error(errorMessage || "Datos de registro inválidos");
       } else {
         toast.error(errorMessage || "Error al registrar usuario");
       }

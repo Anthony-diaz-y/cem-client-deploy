@@ -42,7 +42,9 @@ const normalizeCourseStructure = (course: any): Course => {
 };
 
 // Helper to safely extract category ID whether it's an object or array
-export const getCategoryIds = (cat: any): { carreraId: string, sectorId: string } => {
+export const getCategoryIds = (
+  cat: any,
+): { carreraId: string; sectorId: string } => {
   const result = { carreraId: "", sectorId: "" };
   if (!cat) return result;
 
@@ -50,12 +52,13 @@ export const getCategoryIds = (cat: any): { carreraId: string, sectorId: string 
 
   categories.forEach((c: any) => {
     const domainName = c.domain?.name?.toLowerCase();
+    const type = c.type?.toLowerCase(); // Check explicit type field
     const id = c.id || c._id || (typeof c === "string" ? c : "");
     if (!id) return;
 
-    if (domainName?.includes("carrera")) {
+    if (type === "career" || domainName?.includes("carrera")) {
       result.carreraId = id;
-    } else if (domainName?.includes("sector")) {
+    } else if (type === "sector" || domainName?.includes("sector")) {
       result.sectorId = id;
     } else if (!result.carreraId) {
       // Fallback: first one with no domain info or unknown domain goes to carrera
@@ -85,7 +88,12 @@ export const useCourseInformationForm = () => {
   );
   const [loading, setLoading] = useState(false);
   const [courseCategories, setCourseCategories] = useState<
-    Array<{ id?: string; _id?: string; name: string; domain?: { name: string } }>
+    Array<{
+      id?: string;
+      _id?: string;
+      name: string;
+      domain?: { name: string };
+    }>
   >([]);
 
   useEffect(() => {
@@ -117,11 +125,24 @@ export const useCourseInformationForm = () => {
         courseTitle: courseData.courseName || "",
         courseShortDesc: courseData.courseDescription || "",
         coursePrice: courseData.price !== undefined ? courseData.price : 0,
-        coursePrice_int: courseData.price !== undefined ? Math.floor(courseData.price).toString() : "0",
-        coursePrice_cents: courseData.price !== undefined ? (courseData.price % 1).toFixed(2).split(".")[1] : "00",
-        coursePriceUSD: courseData.priceUSD !== undefined ? courseData.priceUSD : 0,
-        coursePriceUSD_int: courseData.priceUSD !== undefined ? Math.floor(courseData.priceUSD).toString() : "",
-        coursePriceUSD_cents: courseData.priceUSD !== undefined ? (courseData.priceUSD % 1).toFixed(2).split(".")[1] : "",
+        coursePrice_int:
+          courseData.price !== undefined
+            ? Math.floor(courseData.price).toString()
+            : "0",
+        coursePrice_cents:
+          courseData.price !== undefined
+            ? (courseData.price % 1).toFixed(2).split(".")[1]
+            : "00",
+        coursePriceUSD:
+          courseData.priceUSD !== undefined ? courseData.priceUSD : 0,
+        coursePriceUSD_int:
+          courseData.priceUSD !== undefined
+            ? Math.floor(courseData.priceUSD).toString()
+            : "",
+        coursePriceUSD_cents:
+          courseData.priceUSD !== undefined
+            ? (courseData.priceUSD % 1).toFixed(2).split(".")[1]
+            : "",
         courseTags: courseData.tag || [],
         courseBenefits: courseData.whatYouWillLearn || "",
         courseCategory: carreraId,
@@ -156,29 +177,46 @@ export const useCourseInformationForm = () => {
     const currentValues = getValues();
 
     // Normalizar IDs de categorías para comparación
-    const { carreraId: currentCourseCarreraId, sectorId: currentCourseSectorId } = getCategoryIds(courseData.category);
+    const {
+      carreraId: currentCourseCarreraId,
+      sectorId: currentCourseSectorId,
+    } = getCategoryIds(courseData.category);
 
     // Normalizar instructores para comparación (IDs solamente)
     const currentFormInstructors = Array.isArray(currentValues.courseInstructor)
       ? [...currentValues.courseInstructor].sort().toString()
       : "";
-    const currentCourseInstructors = Array.isArray((courseData as any).instructors)
-      ? (courseData as any).instructors.map((i: any) => i.id || i._id).sort().toString()
+    const currentCourseInstructors = Array.isArray(
+      (courseData as any).instructors,
+    )
+      ? (courseData as any).instructors
+          .map((i: any) => i.id || i._id)
+          .sort()
+          .toString()
       : "";
 
     return (
       currentValues.courseTitle !== courseData.courseName ||
       currentValues.courseShortDesc !== courseData.courseDescription ||
-      currentValues.coursePrice_int !== Math.floor(courseData.price || 0).toString() ||
-      currentValues.coursePrice_cents !== ((courseData.price || 0) % 1).toFixed(2).split(".")[1] ||
-      (currentValues.coursePriceUSD_int ?? "") !== (courseData.priceUSD !== undefined ? Math.floor(courseData.priceUSD).toString() : "") ||
-      (currentValues.coursePriceUSD_cents ?? "") !== (courseData.priceUSD !== undefined ? (courseData.priceUSD % 1).toFixed(2).split(".")[1] : "") ||
-      (currentValues.courseTags ?? []).toString() !== (courseData.tag ?? []).toString() ||
+      currentValues.coursePrice_int !==
+        Math.floor(courseData.price || 0).toString() ||
+      currentValues.coursePrice_cents !==
+        ((courseData.price || 0) % 1).toFixed(2).split(".")[1] ||
+      (currentValues.coursePriceUSD_int ?? "") !==
+        (courseData.priceUSD !== undefined
+          ? Math.floor(courseData.priceUSD).toString()
+          : "") ||
+      (currentValues.coursePriceUSD_cents ?? "") !==
+        (courseData.priceUSD !== undefined
+          ? (courseData.priceUSD % 1).toFixed(2).split(".")[1]
+          : "") ||
+      (currentValues.courseTags ?? []).toString() !==
+        (courseData.tag ?? []).toString() ||
       currentValues.courseBenefits !== courseData.whatYouWillLearn ||
       currentValues.courseCategory !== currentCourseCarreraId ||
       currentValues.courseSector !== currentCourseSectorId ||
       (currentValues.courseRequirements ?? []).toString() !==
-      (courseData.instructions ?? []).toString() ||
+        (courseData.instructions ?? []).toString() ||
       currentFormInstructors !== currentCourseInstructors ||
       currentValues.courseImage !== courseData.thumbnail ||
       currentValues.courseSyllabus !== ((courseData as any).syllabus || "") ||
@@ -211,35 +249,40 @@ export const useCourseInformationForm = () => {
         if (currentValues.courseShortDesc !== courseData.courseDescription) {
           formData.append("courseDescription", data.courseShortDesc);
         }
-        const combinedPrice = parseFloat(`${data.coursePrice_int || "0"}.${data.coursePrice_cents || "00"}`);
-        const combinedPriceUSD = (data.coursePriceUSD_int || data.coursePriceUSD_cents)
-          ? parseFloat(`${data.coursePriceUSD_int || "0"}.${data.coursePriceUSD_cents || "00"}`)
-          : undefined;
+        const combinedPrice = parseFloat(
+          `${data.coursePrice_int || "0"}.${data.coursePrice_cents || "00"}`,
+        );
+        const combinedPriceUSD =
+          data.coursePriceUSD_int || data.coursePriceUSD_cents
+            ? parseFloat(
+                `${data.coursePriceUSD_int || "0"}.${data.coursePriceUSD_cents || "00"}`,
+              )
+            : undefined;
 
         if (combinedPrice !== courseData.price) {
           formData.append("price", combinedPrice.toString());
         }
-        if (combinedPriceUSD !== undefined && combinedPriceUSD !== courseData.priceUSD) {
+        if (
+          combinedPriceUSD !== undefined &&
+          combinedPriceUSD !== courseData.priceUSD
+        ) {
           formData.append("priceUSD", combinedPriceUSD.toString());
         }
-        if ((currentValues.courseTags ?? []).toString() !== (courseData.tag ?? []).toString()) {
+        if (
+          (currentValues.courseTags ?? []).toString() !==
+          (courseData.tag ?? []).toString()
+        ) {
           formData.append("tag", JSON.stringify(data.courseTags));
         }
         if (currentValues.courseBenefits !== courseData.whatYouWillLearn) {
           formData.append("whatYouWillLearn", data.courseBenefits);
         }
-        // Enviar múltiples categorías si están presentes
-        const categoryIds = [currentValues.courseCategory, currentValues.courseSector].filter(id =>
-          id && id !== "" && !["undefined", "null", "NaN"].includes(String(id).trim())
-        );
-
-        categoryIds.forEach((id, index) => {
-          const cleanId = String(id).trim();
-          const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-          if (uuidRegex.test(cleanId)) {
-            formData.append(`categories[${index}]`, cleanId);
-          }
-        });
+        if (currentValues.courseCategory) {
+          formData.append("careerId", currentValues.courseCategory);
+        }
+        if (currentValues.courseSector) {
+          formData.append("sectorId", currentValues.courseSector);
+        }
         if (
           (currentValues.courseRequirements ?? []).toString() !==
           (courseData.instructions ?? []).toString()
@@ -253,15 +296,14 @@ export const useCourseInformationForm = () => {
           currentValues.courseInstructor?.toString() !==
           ((courseData as any).instructors || []).toString()
         ) {
-          formData.append(
-            "instructors",
-            JSON.stringify(data.courseInstructor),
-          );
+          formData.append("instructors", JSON.stringify(data.courseInstructor));
         }
         if (currentValues.courseImage !== courseData.thumbnail) {
           formData.append("thumbnailImage", data.courseImage);
         }
-        if (currentValues.courseSyllabus !== ((courseData as any).syllabus || "")) {
+        if (
+          currentValues.courseSyllabus !== ((courseData as any).syllabus || "")
+        ) {
           formData.append("syllabus", data.courseSyllabus as any);
         }
         if (currentValues.courseVideoUrl !== (courseData.promoVideoUrl || "")) {
@@ -321,10 +363,15 @@ export const useCourseInformationForm = () => {
     const formData = new FormData();
     formData.append("courseName", data.courseTitle);
     formData.append("courseDescription", data.courseShortDesc);
-    const combinedPrice = parseFloat(`${data.coursePrice_int || "0"}.${data.coursePrice_cents || "00"}`);
-    const combinedPriceUSD = (data.coursePriceUSD_int || data.coursePriceUSD_cents)
-      ? parseFloat(`${data.coursePriceUSD_int || "0"}.${data.coursePriceUSD_cents || "00"}`)
-      : undefined;
+    const combinedPrice = parseFloat(
+      `${data.coursePrice_int || "0"}.${data.coursePrice_cents || "00"}`,
+    );
+    const combinedPriceUSD =
+      data.coursePriceUSD_int || data.coursePriceUSD_cents
+        ? parseFloat(
+            `${data.coursePriceUSD_int || "0"}.${data.coursePriceUSD_cents || "00"}`,
+          )
+        : undefined;
 
     formData.append("price", combinedPrice.toString());
     if (combinedPriceUSD !== undefined) {
@@ -333,18 +380,12 @@ export const useCourseInformationForm = () => {
     formData.append("tag", JSON.stringify(data.courseTags));
     formData.append("whatYouWillLearn", data.courseBenefits);
 
-    // Enviar múltiples categorías (Carrera y Sector)
-    const categoryIds = [data.courseCategory, data.courseSector].filter(id =>
-      id && id !== "" && !["undefined", "null", "NaN"].includes(String(id).trim())
-    );
-
-    categoryIds.forEach((id, index) => {
-      const cleanId = String(id).trim();
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-      if (uuidRegex.test(cleanId)) {
-        formData.append(`categories[${index}]`, cleanId);
-      }
-    });
+    if (data.courseCategory) {
+      formData.append("careerId", data.courseCategory);
+    }
+    if (data.courseSector) {
+      formData.append("sectorId", data.courseSector);
+    }
     // El campo status ya no es necesario - el backend siempre crea el curso como Draft
     formData.append("instructions", JSON.stringify(data.courseRequirements));
     formData.append("instructors", JSON.stringify(data.courseInstructor));

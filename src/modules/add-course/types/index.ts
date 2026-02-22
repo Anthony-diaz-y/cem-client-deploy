@@ -96,7 +96,6 @@ export interface SectionFormProps {
 
 export interface SubSectionModalFormData {
   lectureTitle: string;
-  lectureDesc: string;
   lectureVideo: string | File;
   lectureAttachments?: File[];
   lectureContent?: string;

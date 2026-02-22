@@ -15,6 +15,14 @@ interface CategoryWithCourses extends Category {
   courseCount?: number;
 }
 
+interface MoveConfirmation {
+  courseId: string;
+  courseName: string;
+  targetCategoryId: string;
+  targetCategoryName: string;
+  sourceCategoryId: string;
+}
+
 interface UseCategoriesTableProps {
   categories: Category[];
   token: string;
@@ -24,17 +32,25 @@ interface UseCategoriesTableProps {
 export function useCategoriesTable({
   categories,
   token,
+  onUpdate,
 }: UseCategoriesTableProps) {
-  const [categoriesWithCourses, setCategoriesWithCourses] = useState<CategoryWithCourses[]>([]);
+  const [categoriesWithCourses, setCategoriesWithCourses] = useState<
+    CategoryWithCourses[]
+  >([]);
   const [draggedCourse, setDraggedCourse] = useState<{
     courseId: string;
     sourceCategoryId: string;
     courseName: string;
   } | null>(null);
   const [dragOverCategory, setDragOverCategory] = useState<string | null>(null);
+  const [moveConfirmation, setMoveConfirmation] =
+    useState<MoveConfirmation | null>(null);
 
   const loadInitialCourseCounts = useCallback(async () => {
-    const countsPromises = categories.map(async (cat) => {
+    const toFetch = categories.filter((c) => c.courseCount === undefined);
+    if (toFetch.length === 0) return;
+
+    const countsPromises = toFetch.map(async (cat) => {
       try {
         const result = await getCategoryCourses(cat.id, token);
         return {
@@ -54,24 +70,39 @@ export function useCategoriesTable({
     setCategoriesWithCourses((prev) =>
       prev.map((cat) => {
         const countData = counts.find((c) => c.categoryId === cat.id);
+        if (!countData) return cat;
         return {
           ...cat,
-          courseCount: countData?.count ?? 0,
+          courseCount: countData.count,
         };
-      })
+      }),
     );
   }, [categories, token]);
 
   useEffect(() => {
-    setCategoriesWithCourses(
-      categories.map((cat) => ({
-        ...cat,
-        expanded: false,
-        courses: [],
-        loading: false,
-        courseCount: 0,
-      }))
-    );
+    setCategoriesWithCourses((prev) => {
+      const existingState = new Map(prev.map((cat) => [cat.id, cat]));
+
+      return categories.map((cat) => {
+        const existing = existingState.get(cat.id);
+        if (existing) {
+          return {
+            ...cat,
+            courses: existing.courses,
+            expanded: existing.expanded,
+            loading: existing.loading,
+            courseCount: existing.courseCount ?? 0,
+          };
+        }
+        return {
+          ...cat,
+          expanded: false,
+          courses: [],
+          loading: false,
+          courseCount: 0,
+        };
+      });
+    });
 
     loadInitialCourseCounts();
   }, [categories, loadInitialCourseCounts]);
@@ -80,8 +111,8 @@ export function useCategoriesTable({
     async (categoryId: string) => {
       setCategoriesWithCourses((prev) =>
         prev.map((cat) =>
-          cat.id === categoryId ? { ...cat, loading: true } : cat
-        )
+          cat.id === categoryId ? { ...cat, loading: true } : cat,
+        ),
       );
 
       try {
@@ -92,72 +123,99 @@ export function useCategoriesTable({
             id: c.id,
             courseName: c.courseName,
             status: c.status,
-            instructor: {
-              id: c.instructor.id,
-              firstName: c.instructor.name.split(" ")[0] || "",
-              lastName: c.instructor.name.split(" ").slice(1).join(" ") || "",
-              email: c.instructor.email,
-            },
+            instructor: c.instructor
+              ? {
+                  id: c.instructor.id,
+                  firstName: c.instructor.name?.split(" ")[0] || "",
+                  lastName:
+                    c.instructor.name?.split(" ").slice(1).join(" ") || "",
+                  email: c.instructor.email || "",
+                }
+              : {
+                  id: "no-instructor",
+                  firstName: "Sin",
+                  lastName: "Instructor",
+                  email: "",
+                },
             createdAt: c.createdAt,
           }));
           setCategoriesWithCourses((prev) =>
             prev.map((cat) =>
               cat.id === categoryId
                 ? {
-                  ...cat,
-                  courses: coursesList,
-                  courseCount: coursesList.length,
-                  loading: false,
-                }
-                : cat
-            )
+                    ...cat,
+                    courses: coursesList,
+                    courseCount: coursesList.length,
+                    loading: false,
+                  }
+                : cat,
+            ),
+          );
+        } else {
+          setCategoriesWithCourses((prev) =>
+            prev.map((cat) =>
+              cat.id === categoryId ? { ...cat, loading: false } : cat,
+            ),
           );
         }
-      } catch {
+      } catch (error) {
+        console.error("Error loading courses:", error);
         setCategoriesWithCourses((prev) =>
           prev.map((cat) =>
-            cat.id === categoryId ? { ...cat, loading: false } : cat
-          )
+            cat.id === categoryId ? { ...cat, loading: false } : cat,
+          ),
         );
       }
     },
-    [token]
+    [token],
   );
 
   const toggleCategory = useCallback(
     (categoryId: string) => {
+      const targetCategory = categoriesWithCourses.find(
+        (c) => c.id === categoryId,
+      );
+      const willExpand = !targetCategory?.expanded;
+      const needsToLoad =
+        willExpand &&
+        (!targetCategory?.courses || targetCategory.courses.length === 0);
+
       setCategoriesWithCourses((prev) => {
-        const targetCategory = prev.find((c) => c.id === categoryId);
-        const willExpand = !targetCategory?.expanded;
-
-        // Si vamos a expandir y no tiene datos, cargarlos
-        if (willExpand && (!targetCategory?.courses || targetCategory.courses.length === 0)) {
-          loadCategoryCourses(categoryId);
-        }
-
         return prev.map((cat) => {
           if (cat.id === categoryId) {
-            return { ...cat, expanded: willExpand };
+            return {
+              ...cat,
+              expanded: willExpand,
+              loading: needsToLoad ? true : cat.loading,
+            };
           }
-          // Si estamos expandiendo una nueva, cerrar las demás
           if (willExpand) {
             return { ...cat, expanded: false };
           }
           return cat;
         });
       });
+
+      if (needsToLoad) {
+        loadCategoryCourses(categoryId);
+      }
     },
-    [loadCategoryCourses]
+    [loadCategoryCourses, categoriesWithCourses],
   );
 
   const handleDragStart = useCallback(
-    (e: React.DragEvent, courseId: string, sourceCategoryId: string, courseName: string) => {
+    (
+      e: React.DragEvent,
+      courseId: string,
+      sourceCategoryId: string,
+      courseName: string,
+    ) => {
       e.stopPropagation();
       setDraggedCourse({ courseId, sourceCategoryId, courseName });
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.setData("text/plain", courseId);
     },
-    []
+    [],
   );
 
   const handleDragOver = useCallback(
@@ -168,7 +226,7 @@ export function useCategoriesTable({
         setDragOverCategory(categoryId);
       }
     },
-    [draggedCourse]
+    [draggedCourse],
   );
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
@@ -187,7 +245,10 @@ export function useCategoriesTable({
       e.preventDefault();
       e.stopPropagation();
 
-      if (!draggedCourse || draggedCourse.sourceCategoryId === targetCategoryId) {
+      if (
+        !draggedCourse ||
+        draggedCourse.sourceCategoryId === targetCategoryId
+      ) {
         setDraggedCourse(null);
         setDragOverCategory(null);
         return;
@@ -199,10 +260,29 @@ export function useCategoriesTable({
 
       setDragOverCategory(null);
 
+      const targetCategory = categoriesWithCourses.find(
+        (c) => c.id === targetCategoryId,
+      );
+      const isMoveToSector = targetCategory?.type === "sector";
+
+      if (isMoveToSector) {
+        setMoveConfirmation({
+          courseId,
+          courseName,
+          targetCategoryId,
+          targetCategoryName: targetCategory?.name || "esta categoría",
+          sourceCategoryId,
+        });
+        setDraggedCourse(null);
+        return;
+      }
+
+      // Optimistic update for Career to Career move (where it DOES disappear from source)
       setCategoriesWithCourses((prev) =>
         prev.map((cat) => {
           if (cat.id === sourceCategoryId) {
-            const newCourses = cat.courses?.filter((c) => c.id !== courseId) || [];
+            const newCourses =
+              cat.courses?.filter((c) => c.id !== courseId) || [];
             return {
               ...cat,
               courses: newCourses,
@@ -213,15 +293,16 @@ export function useCategoriesTable({
             const sourceCat = prev.find((c) => c.id === sourceCategoryId);
             const course = sourceCat?.courses?.find((c) => c.id === courseId);
             if (course) {
+              const updatedCourses = [...(cat.courses || []), course];
               return {
                 ...cat,
-                courses: [...(cat.courses || []), course],
-                courseCount: (cat.courseCount || 0) + 1,
+                courses: updatedCourses,
+                courseCount: updatedCourses.length,
               };
             }
           }
           return cat;
-        })
+        }),
       );
 
       try {
@@ -229,13 +310,12 @@ export function useCategoriesTable({
           courseId,
           targetCategoryId,
           token,
-          true
+          true,
         );
 
         if (success) {
-          const targetCategory = categoriesWithCourses.find((c) => c.id === targetCategoryId);
           toast.success(
-            `"${courseName}" movido a "${targetCategory?.name || "nueva categoría"}"`
+            `"${courseName}" movido a "${targetCategory?.name || "nueva categoría"}"`,
           );
 
           await Promise.all([
@@ -264,8 +344,74 @@ export function useCategoriesTable({
 
       setDraggedCourse(null);
     },
-    [draggedCourse, token, loadCategoryCourses, categoriesWithCourses]
+    [draggedCourse, token, loadCategoryCourses, categoriesWithCourses],
   );
+
+  const confirmMove = useCallback(async () => {
+    if (!moveConfirmation) return;
+
+    const {
+      courseId,
+      targetCategoryId,
+      sourceCategoryId,
+      courseName,
+      targetCategoryName,
+    } = moveConfirmation;
+    setMoveConfirmation(null);
+
+    // Optimistic update (adding only, NOT removing from source since it's a sector)
+    setCategoriesWithCourses((prev) =>
+      prev.map((cat) => {
+        if (cat.id === targetCategoryId) {
+          const sourceCat = prev.find((c) => c.id === sourceCategoryId);
+          const course = sourceCat?.courses?.find((c) => c.id === courseId);
+          if (course) {
+            const updatedCourses = [...(cat.courses || []), course];
+            return {
+              ...cat,
+              courses: updatedCourses,
+              courseCount: updatedCourses.length,
+            };
+          }
+        }
+        return cat;
+      }),
+    );
+
+    try {
+      const success = await changeCourseCategory(
+        courseId,
+        targetCategoryId,
+        token,
+        true,
+      );
+
+      if (success) {
+        toast.success(
+          `"${courseName}" también asignado a "${targetCategoryName}"`,
+        );
+        await Promise.all([
+          loadCategoryCourses(sourceCategoryId),
+          loadCategoryCourses(targetCategoryId),
+        ]);
+        try {
+          await getPublicCategories();
+        } catch {
+          console.error("Error al refrescar categorías públicas");
+        }
+      }
+    } catch {
+      toast.error(`No se pudo mover "${courseName}"`);
+      await Promise.all([
+        loadCategoryCourses(sourceCategoryId),
+        loadCategoryCourses(targetCategoryId),
+      ]);
+    }
+  }, [moveConfirmation, token, loadCategoryCourses]);
+
+  const cancelMove = useCallback(() => {
+    setMoveConfirmation(null);
+  }, []);
 
   const handleDragEnd = useCallback(() => {
     setDraggedCourse(null);
@@ -276,6 +422,9 @@ export function useCategoriesTable({
     categoriesWithCourses,
     draggedCourse,
     dragOverCategory,
+    moveConfirmation,
+    confirmMove,
+    cancelMove,
     toggleCategory,
     handleDragStart,
     handleDragOver,
@@ -284,5 +433,3 @@ export function useCategoriesTable({
     handleDragEnd,
   };
 }
-
-

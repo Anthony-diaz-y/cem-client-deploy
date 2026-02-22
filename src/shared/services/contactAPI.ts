@@ -28,41 +28,53 @@ export interface ContactFormData {
   message: string;
 }
 
-export const sendContactMessage = async (data: ContactFormData | Record<string, unknown>) => {
+export const sendContactMessage = async (
+  data: ContactFormData | Record<string, unknown>,
+) => {
   const toastId = toast.loading("Enviando mensaje...", {
     id: "contact-loading",
   });
   let result = null;
 
   try {
-    const response = await apiConnector<ApiResponse<unknown>>("POST", CONTACT_US_API, data as unknown as Record<string, unknown>);
-    
+    const response = await apiConnector<ApiResponse<unknown>>(
+      "POST",
+      CONTACT_US_API,
+      data as unknown as Record<string, unknown>,
+    );
+
     if (!response?.data?.success) {
-      throw new Error(response?.data?.message || "No se pudo enviar el mensaje");
+      throw new Error(
+        response?.data?.message || "No se pudo enviar el mensaje",
+      );
     }
 
     result = response.data.data;
-    
+
     // Cerrar el toast de loading y mostrar éxito
     toast.dismiss("contact-loading");
-    
+
     // Pequeño delay para asegurar que el toast de loading se cierre
     setTimeout(() => {
       toast.success(
-        response.data.message || "¡Mensaje enviado exitosamente! Nos pondremos en contacto contigo pronto.",
+        response.data.message ||
+          "¡Mensaje enviado exitosamente! Nos pondremos en contacto contigo pronto.",
         {
           duration: 5000,
           id: "contact-success",
-        }
+        },
       );
     }, 100);
   } catch (error) {
     const apiError = error as ApiError;
-    const errorMessage = apiError?.response?.data?.message || apiError?.message || "No se pudo enviar el mensaje";
-    
+    const errorMessage =
+      apiError?.response?.data?.message ||
+      apiError?.message ||
+      "No se pudo enviar el mensaje";
+
     // Cerrar el toast de loading
     toast.dismiss("contact-loading");
-    
+
     // Pequeño delay para asegurar que el toast de loading se cierre
     setTimeout(() => {
       toast.error(errorMessage, {
@@ -103,7 +115,10 @@ export interface GetMessagesParams {
   sortOrder?: "ASC" | "DESC"; // ASC = más antiguos primero, DESC = más recientes primero
 }
 
-export const getContactMessages = async (token: string, params?: GetMessagesParams) => {
+export const getContactMessages = async (
+  token: string,
+  params?: GetMessagesParams,
+) => {
   let result: ContactMessage[] = [];
 
   try {
@@ -121,20 +136,28 @@ export const getContactMessages = async (token: string, params?: GetMessagesPara
       queryParams.append("sortOrder", params.sortOrder);
     }
 
-    const url = queryParams.toString() 
+    const url = queryParams.toString()
       ? `${GET_CONTACT_MESSAGES_API}?${queryParams.toString()}`
       : GET_CONTACT_MESSAGES_API;
 
-    const response = await apiConnector<ApiResponse<ContactMessage[]>>("GET", url, undefined, {
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await apiConnector<ApiResponse<ContactMessage[]>>(
+      "GET",
+      url,
+      undefined,
+      {
+        Authorization: `Bearer ${token}`,
+      },
+    );
 
     if (response?.data?.success) {
       result = response.data.data || [];
     }
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError?.response?.data?.message || "No se pudieron obtener los mensajes");
+    toast.error(
+      apiError?.response?.data?.message ||
+        "No se pudieron obtener los mensajes",
+    );
   }
 
   return result;
@@ -145,16 +168,23 @@ export const getContactMessage = async (messageId: string, token: string) => {
   let result: ContactMessage | null = null;
 
   try {
-    const response = await apiConnector<ApiResponse<ContactMessage>>("GET", `${GET_CONTACT_MESSAGES_API}/${messageId}`, undefined, {
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await apiConnector<ApiResponse<ContactMessage>>(
+      "GET",
+      `${GET_CONTACT_MESSAGES_API}/${messageId}`,
+      undefined,
+      {
+        Authorization: `Bearer ${token}`,
+      },
+    );
 
     if (response?.data?.success) {
       result = response.data.data || null;
     }
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError?.response?.data?.message || "No se pudo obtener el mensaje");
+    toast.error(
+      apiError?.response?.data?.message || "No se pudo obtener el mensaje",
+    );
   }
 
   return result;
@@ -172,16 +202,24 @@ export const getContactStats = async (token: string) => {
   let result: ContactStats | null = null;
 
   try {
-    const response = await apiConnector<ApiResponse<ContactStats>>("GET", GET_CONTACT_STATS_API, undefined, {
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await apiConnector<ApiResponse<ContactStats>>(
+      "GET",
+      GET_CONTACT_STATS_API,
+      undefined,
+      {
+        Authorization: `Bearer ${token}`,
+      },
+    );
 
     if (response?.data?.success) {
       result = response.data.data || null;
     }
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError?.response?.data?.message || "No se pudieron obtener las estadísticas");
+    toast.error(
+      apiError?.response?.data?.message ||
+        "No se pudieron obtener las estadísticas",
+    );
   }
 
   return result;
@@ -193,9 +231,14 @@ export const markMessageAsRead = async (messageId: string, token: string) => {
   const toastId = toast.loading("Marcando como leído...");
 
   try {
-    const response = await apiConnector<ApiResponse>("PATCH", `${MARK_MESSAGE_READ_API}/${messageId}/read`, {}, {
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await apiConnector<ApiResponse>(
+      "PATCH",
+      `${MARK_MESSAGE_READ_API}/${messageId}/read`,
+      {},
+      {
+        Authorization: `Bearer ${token}`,
+      },
+    );
 
     if (response?.data?.success) {
       toast.success(response.data.message || "Mensaje marcado como leído");
@@ -203,7 +246,10 @@ export const markMessageAsRead = async (messageId: string, token: string) => {
     }
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError?.response?.data?.message || "No se pudo marcar el mensaje como leído");
+    toast.error(
+      apiError?.response?.data?.message ||
+        "No se pudo marcar el mensaje como leído",
+    );
   } finally {
     toast.dismiss(toastId);
   }
@@ -217,9 +263,14 @@ export const archiveMessage = async (messageId: string, token: string) => {
   const toastId = toast.loading("Archivando mensaje...");
 
   try {
-    const response = await apiConnector<ApiResponse>("PATCH", `${ARCHIVE_MESSAGE_API}/${messageId}/archive`, {}, {
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await apiConnector<ApiResponse>(
+      "PATCH",
+      `${ARCHIVE_MESSAGE_API}/${messageId}/archive`,
+      {},
+      {
+        Authorization: `Bearer ${token}`,
+      },
+    );
 
     if (response?.data?.success) {
       toast.success(response.data.message || "Mensaje archivado exitosamente");
@@ -227,7 +278,9 @@ export const archiveMessage = async (messageId: string, token: string) => {
     }
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError?.response?.data?.message || "No se pudo archivar el mensaje");
+    toast.error(
+      apiError?.response?.data?.message || "No se pudo archivar el mensaje",
+    );
   } finally {
     toast.dismiss(toastId);
   }
@@ -236,14 +289,22 @@ export const archiveMessage = async (messageId: string, token: string) => {
 };
 
 // ================ Delete Message (Admin) ================
-export const deleteContactMessage = async (messageId: string, token: string) => {
+export const deleteContactMessage = async (
+  messageId: string,
+  token: string,
+) => {
   let result = false;
   const toastId = toast.loading("Eliminando mensaje...");
 
   try {
-    const response = await apiConnector<ApiResponse>("DELETE", `${DELETE_MESSAGE_API}/${messageId}`, undefined, {
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await apiConnector<ApiResponse>(
+      "DELETE",
+      `${DELETE_MESSAGE_API}/${messageId}`,
+      undefined,
+      {
+        Authorization: `Bearer ${token}`,
+      },
+    );
 
     if (response?.data?.success) {
       toast.success(response.data.message || "Mensaje eliminado exitosamente");
@@ -251,7 +312,9 @@ export const deleteContactMessage = async (messageId: string, token: string) => 
     }
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError?.response?.data?.message || "No se pudo eliminar el mensaje");
+    toast.error(
+      apiError?.response?.data?.message || "No se pudo eliminar el mensaje",
+    );
   } finally {
     toast.dismiss(toastId);
   }
@@ -264,7 +327,11 @@ export interface ReplyMessageData {
   replyMessage: string;
 }
 
-export const replyToMessage = async (messageId: string, replyMessage: string, token: string) => {
+export const replyToMessage = async (
+  messageId: string,
+  replyMessage: string,
+  token: string,
+) => {
   let result = false;
   const toastId = toast.loading("Enviando respuesta...", {
     id: `reply-loading-${messageId}`,
@@ -285,7 +352,7 @@ export const replyToMessage = async (messageId: string, replyMessage: string, to
       {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-      }
+      },
     );
 
     if (response?.data?.success) {
@@ -296,7 +363,7 @@ export const replyToMessage = async (messageId: string, replyMessage: string, to
           {
             duration: 5000,
             id: `reply-success-${messageId}`,
-          }
+          },
         );
       }, 100);
       result = true;
@@ -309,7 +376,7 @@ export const replyToMessage = async (messageId: string, replyMessage: string, to
           {
             duration: 5000,
             id: `reply-error-${messageId}`,
-          }
+          },
         );
       }, 100);
     }
@@ -329,7 +396,7 @@ export const replyToMessage = async (messageId: string, replyMessage: string, to
         {
           duration: 5000,
           id: `reply-error-${messageId}`,
-        }
+        },
       );
     }, 100);
   }
@@ -343,21 +410,29 @@ export const unarchiveMessage = async (messageId: string, token: string) => {
   const toastId = toast.loading("Desarchivando mensaje...");
 
   try {
-    const response = await apiConnector<ApiResponse>("PATCH", `${ARCHIVE_MESSAGE_API}/${messageId}/unarchive`, {}, {
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await apiConnector<ApiResponse>(
+      "PATCH",
+      `${ARCHIVE_MESSAGE_API}/${messageId}/unarchive`,
+      {},
+      {
+        Authorization: `Bearer ${token}`,
+      },
+    );
 
     if (response?.data?.success) {
-      toast.success(response.data.message || "Mensaje desarchivado exitosamente");
+      toast.success(
+        response.data.message || "Mensaje desarchivado exitosamente",
+      );
       result = true;
     }
   } catch (error) {
     const apiError = error as ApiError;
-    toast.error(apiError?.response?.data?.message || "No se pudo desarchivar el mensaje");
+    toast.error(
+      apiError?.response?.data?.message || "No se pudo desarchivar el mensaje",
+    );
   } finally {
     toast.dismiss(toastId);
   }
 
   return result;
 };
-

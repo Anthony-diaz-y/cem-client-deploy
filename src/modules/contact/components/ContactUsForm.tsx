@@ -22,10 +22,7 @@ const ContactUsForm = () => {
   } = useContactForm();
 
   return (
-    <form
-      className="flex flex-col gap-7"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-col gap-5 lg:flex-row">
         <div className="flex flex-col gap-2 lg:w-[48%]">
           <label htmlFor="firstname" className="lable-style">
@@ -39,7 +36,7 @@ const ContactUsForm = () => {
             {...register("firstname", { required: true })}
           />
           {errors.firstname && (
-            <span className="-mt-1 text-[12px] text-yellow-100">
+            <span className="-mt-1 text-[12px] text-red-500 font-medium">
               {CONTACT_TEXTS.form.fields.firstname.error}
             </span>
           )}
@@ -63,7 +60,7 @@ const ContactUsForm = () => {
         <label htmlFor="email" className="lable-style">
           {CONTACT_TEXTS.form.fields.email.label}{" "}
           {CONTACT_TEXTS.form.fields.email.required && (
-            <span className="text-pink-200">*</span>
+            <span className="text-red-500">*</span>
           )}
         </label>
         <input
@@ -74,7 +71,7 @@ const ContactUsForm = () => {
           {...register("email", { required: true })}
         />
         {errors.email && (
-          <span className="-mt-1 text-[12px] text-yellow-100">
+          <span className="-mt-1 text-[12px] text-red-500 font-medium">
             {CONTACT_TEXTS.form.fields.email.error}
           </span>
         )}
@@ -98,7 +95,7 @@ const ContactUsForm = () => {
           {CONTACT_TEXTS.form.fields.phone.label}
         </label>
 
-        <div className="flex gap-5">
+        <div className="flex gap-4">
           <CountryCodeDropdown
             selectedCountryCode={selectedCountryCode}
             countryCodeSearch={countryCodeSearch}
@@ -110,12 +107,12 @@ const ContactUsForm = () => {
             register={register}
           />
 
-          <div className="flex flex-1 flex-col gap-2">
+          <div className="flex flex-1 flex-col gap-1">
             <input
               type="tel"
               id="phonenumber"
               placeholder={CONTACT_TEXTS.form.fields.phone.placeholder}
-              className="form-style"
+              className="form-style w-full"
               {...register("phoneNo")}
             />
           </div>
@@ -126,26 +123,25 @@ const ContactUsForm = () => {
         <label htmlFor="message" className="lable-style">
           {CONTACT_TEXTS.form.fields.message.label}{" "}
           {CONTACT_TEXTS.form.fields.message.required && (
-            <span className="text-pink-200">*</span>
+            <span className="text-red-500">*</span>
           )}
         </label>
         <textarea
           id="message"
-          cols={30}
-          rows={7}
+          rows={5}
           placeholder={CONTACT_TEXTS.form.fields.message.placeholder}
-          className="form-style"
+          className="form-style resize-none"
           {...register("message", { required: true })}
         />
         {errors.message && (
-          <span className="-mt-1 text-[12px] text-yellow-100">
+          <span className="-mt-1 text-[12px] text-red-500 font-medium">
             {CONTACT_TEXTS.form.fields.message.error}
           </span>
         )}
       </div>
 
       {success && (
-        <div className="rounded-md bg-caribbeangreen-500/20 border border-caribbeangreen-500 px-4 py-3 text-sm text-caribbeangreen-200">
+        <div className="rounded-xl bg-cem-teal-50 border border-cem-teal-200 px-4 py-3 text-sm text-cem-primary font-semibold text-center animate-fadeIn">
           {CONTACT_TEXTS.form.success.message}
         </div>
       )}
@@ -153,11 +149,11 @@ const ContactUsForm = () => {
       <button
         disabled={loading}
         type="submit"
-        className={`rounded-md bg-yellow-50 px-6 py-3 text-center text-[13px] font-bold text-black shadow-[2px_2px_0px_0px_rgba(255,255,255,0.18)] 
+        className={`rounded-xl bg-cem-primary px-8 py-4 text-center text-base font-bold text-white shadow-lg shadow-cem-primary/20
          ${
            !loading &&
-           "transition-all duration-200 hover:scale-95 hover:shadow-none"
-         }  disabled:bg-richblack-500 sm:text-[16px] `}
+           "transition-all duration-300 hover:scale-[0.99] hover:bg-cem-primary-dark hover:shadow-xl active:scale-95"
+         }  disabled:bg-cem-neutral-gray-300 disabled:shadow-none disabled:cursor-not-allowed`}
       >
         {loading
           ? CONTACT_TEXTS.form.button.submitting

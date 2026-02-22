@@ -1,30 +1,34 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Domain, Category } from "../types";
-import { getAllDomains } from "../services/domainsAPI";
 import CategoryCard from "./CategoryCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { ConcentricCircles } from "../../home/components/shared";
 import { brandColors } from "../../../shared/design-tokens";
 import CategorySkeleton from "./CategorySkeleton";
-import LearningPathCard from "./LearningPathCard";
 import { HomeCourseCard } from "@/modules/home/components/courses/components/HomeCourseCard";
 import { useCoursesData } from "../../courses/hooks/useCoursesData";
 import { FiSearch } from "react-icons/fi";
 import { CoursesListSection } from "../../courses/components/coursesList/components/CoursesListSection";
 import ScrollToTop from "../../../shared/components/navigation/ScrollToTop";
 import { resolveCategoryIcon } from "../utils/categoryIcons";
-
-
+import { getCatalogGroups } from "../services/catalogAPI";
+import { getPublicLearningPaths } from "@/shared/services/learningPathAPI";
+import type { CatalogGroup, Category, CoursePreview } from "../types";
+import { LearningPathPublicCard } from "./LearningPathPublicCard";
 
 /** Página principal de cursos con categorías y cursos inline */
 const CategorySelectionPage: React.FC = () => {
-  const [domains, setDomains] = useState<Domain[]>([]);
-  const [loadingDomains, setLoadingDomains] = useState(true);
+  const [catalogGroups, setCatalogGroups] = useState<CatalogGroup[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    null,
+  );
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null,
   );
+  const [activeGroup, setActiveGroup] = useState<string | null>(null);
 
   const {
     courses: searchResults,
@@ -43,16 +47,30 @@ const CategorySelectionPage: React.FC = () => {
     setLocalSearchQuery(search || "");
   }, [search]);
 
+  const [learningPaths, setLearningPaths] = useState<any[]>([]);
+
   // Carga inicial de todos los dominios y categorías disponibles
   useEffect(() => {
-    const fetchDomains = async () => {
-      setLoadingDomains(true);
-      const data = await getAllDomains();
-      setDomains(data);
-      setLoadingDomains(false);
+    const fetchData = async () => {
+      setLoading(true);
+
+      const [groupsData, pathsData] = await Promise.all([
+        getCatalogGroups(),
+        getPublicLearningPaths(),
+      ]);
+
+      setCatalogGroups(groupsData);
+      setLearningPaths(pathsData);
+
+      // Si hay grupos y no hay una selección activa, activar el primero por defecto
+      if (groupsData.length > 0 && !activeGroup) {
+        setActiveGroup(groupsData[0].id);
+      }
+
+      setLoading(false);
     };
 
-    fetchDomains();
+    fetchData();
   }, []);
 
   const handleCategoryClick = (category: Category) => {
@@ -72,7 +90,7 @@ const CategorySelectionPage: React.FC = () => {
     }
   };
 
-  if (loadingDomains) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-cem-neutral-white relative mt-20 overflow-hidden">
         <div className="relative z-10 max-w-7xl mx-auto px-4 py-12">
@@ -165,7 +183,7 @@ const CategorySelectionPage: React.FC = () => {
           )}
         </AnimatePresence>
 
-        {/* Content: Search Results OR Domains & Categories */}
+        {/* Content: Search Results OR Domains */}
         <AnimatePresence mode="wait">
           {search ? (
             <motion.div
@@ -192,16 +210,9 @@ const CategorySelectionPage: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              {domains.map((domain) => {
-                const categoriesToShow = (domain.categories || []).filter(
-                  (cat) => cat.courses && cat.courses.length > 0,
-                );
+              {catalogGroups.map((group) => {
+                const categoriesToShow = group.categories || [];
                 if (categoriesToShow.length === 0) return null;
-
-                // Check if this domain is "Rutas de aprendizaje"
-                const isLearningPath =
-                  domain.name.toLowerCase().includes("ruta") ||
-                  domain.name.toLowerCase().includes("programa");
 
                 // Check if selected category belongs to this domain
                 const showCoursesInThisDomain =
@@ -211,86 +222,87 @@ const CategorySelectionPage: React.FC = () => {
                   );
 
                 return (
-                  <div key={domain.id} className="mb-20">
+                  <div key={group.id} className="mb-20">
                     <h2 className="text-4xl xl:text-[36px] font-bold xl:font-semibold text-cem-neutral-gray-900 mb-10 text-center">
-                      {domain.name}
+                      {group.name}
                     </h2>
 
-                    {isLearningPath ? (
-                      // Use Flex with justify-center to center 1, 2 or 3 cards perfectly
-                      <div className="flex flex-wrap justify-center gap-8 max-w-[1240px] mx-auto items-start">
+                    <>
+                      {/* Category Cards */}
+                      <div className="flex flex-wrap justify-center gap-x-12 gap-y-6">
                         {categoriesToShow.map((category) => (
-                          <div key={`learning-path-${category.id}`} className="w-full sm:w-[368px] flex-shrink-0">
-                            <LearningPathCard
-                              category={category}
-                              icon={resolveCategoryIcon(category.name, category.icon)}
-                            />
-                          </div>
+                          <CategoryCard
+                            key={category.id}
+                            category={category}
+                            icon={resolveCategoryIcon(
+                              category.name,
+                              category.icon,
+                            )}
+                            onClick={() => handleCategoryClick(category)}
+                            isActive={selectedCategory?.id === category.id}
+                            variant="default"
+                          />
                         ))}
                       </div>
-                    ) : (
-                      <>
-                        {/* Category Cards */}
-                        <div className="flex flex-wrap justify-center gap-x-12 gap-y-6">
-                          {categoriesToShow.map((category) => (
-                            <CategoryCard
-                              key={category.id}
-                              category={category}
-                              icon={resolveCategoryIcon(category.name, category.icon)}
-                              onClick={() => handleCategoryClick(category)}
-                              isActive={selectedCategory?.id === category.id}
-                              variant={
-                                domain.name.toLowerCase().includes("programa")
-                                  ? "primary"
-                                  : "default"
-                              }
-                            />
-                          ))}
-                        </div>
 
-                        {/* Courses Section - Shows below categories when one is selected */}
-                        <AnimatePresence>
-                          {showCoursesInThisDomain && selectedCategory && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: "auto", opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.4, ease: "easeInOut" }}
-                              className="overflow-hidden mt-14"
-                            >
-                              <div className="mb-6">
-                                <h3 className="text-2xl font-semibold text-cem-neutral-gray-900 mb-10 text-center">
-                                  {selectedCategory.name}
-                                </h3>
+                      {/* Courses Section - Shows below categories when one is selected */}
+                      <AnimatePresence>
+                        {showCoursesInThisDomain && selectedCategory && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.4, ease: "easeInOut" }}
+                            className="overflow-hidden mt-14"
+                          >
+                            <div className="mb-6">
+                              <h3 className="text-2xl font-semibold text-cem-neutral-gray-900 mb-10 text-center">
+                                {selectedCategory.name}
+                              </h3>
 
-                                {selectedCategory.courses &&
-                                  selectedCategory.courses.length > 0 ? (
-                                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {selectedCategory.courses.map(
-                                      (course, index) => (
-                                        <HomeCourseCard
-                                          key={course.id}
-                                          course={course}
-                                          index={index}
-                                          categoryName={selectedCategory.name}
-                                        />
-                                      ),
-                                    )}
-                                  </div>
-                                ) : (
-                                  <div className="text-center py-12 text-gray-500">
-                                    No hay cursos disponibles en esta categoría
-                                  </div>
-                                )}
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </>
-                    )}
+                              {selectedCategory.courses &&
+                              selectedCategory.courses.length > 0 ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                  {selectedCategory.courses.map(
+                                    (course, index) => (
+                                      <HomeCourseCard
+                                        key={course.id}
+                                        course={course}
+                                        index={index}
+                                        categoryName={selectedCategory.name}
+                                      />
+                                    ),
+                                  )}
+                                </div>
+                              ) : (
+                                <div className="text-center py-12 text-gray-500">
+                                  No hay cursos disponibles en esta categoría
+                                </div>
+                              )}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </>
                   </div>
                 );
               })}
+
+              {/* Seccion de Rutas de Aprendizaje - AHORA AL FINAL */}
+              {learningPaths.length > 0 && (
+                <div className="mt-28 mb-20 px-4">
+                  <h2 className="text-3xl lg:text-[42px] font-bold text-cem-neutral-gray-900 mb-16 text-center tracking-tight">
+                    Rutas de aprendizaje
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-[1300px] mx-auto">
+                    {learningPaths.map((path) => (
+                      <div key={path.id} className="flex justify-center">
+                        <LearningPathPublicCard learningPath={path} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Nueva sección: Todos los cursos (cuando no hay categoría seleccionada) */}
               {!selectedCategory && (
@@ -300,7 +312,8 @@ const CategorySelectionPage: React.FC = () => {
                       Nuestros cursos y programas
                     </h2>
                     <p className="text-cem-neutral-gray-500 max-w-2xl mx-auto">
-                      Cursos y programas para impulsar tu carrera en ciencias, con videos y recursos flexibles.
+                      Cursos y programas para impulsar tu carrera en ciencias,
+                      con videos y recursos flexibles.
                     </p>
                   </div>
 
@@ -355,7 +368,7 @@ const CategorySelectionPage: React.FC = () => {
         </AnimatePresence>
         <ScrollToTop />
       </div>
-    </div >
+    </div>
   );
 };
 

@@ -30,6 +30,7 @@ export interface Course {
   category: {
     id: string;
     name: string;
+    type?: "career" | "sector";
   }[];
   ratingAndReviews?: Review[] | unknown[];
   studentsEnrolled?: unknown[];

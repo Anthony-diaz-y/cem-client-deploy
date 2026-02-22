@@ -38,7 +38,7 @@ const EmailInput: React.FC<EmailInputProps> = ({
         className={`w-[296px] rounded-lg border px-4 py-3 text-base leading-6 text-gray-900 bg-white focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
           showValidationMessage && value && !isValid
             ? "border-red-500 focus:border-red-500"
-            : "border-gray-300 focus:border-teal-500"
+            : "border-gray-300 focus:border-cem-primary"
         }`}
       />
       {showValidationMessage && value && !isValid && (
@@ -51,4 +51,3 @@ const EmailInput: React.FC<EmailInputProps> = ({
 };
 
 export default EmailInput;
-

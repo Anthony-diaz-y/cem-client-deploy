@@ -1,10 +1,10 @@
 /** Categories Module - Public API */
 
 // Types
-export type { Domain, Category, CoursePreview } from "./types";
+export type { CatalogGroup, Category, CoursePreview } from "./types";
 
 // Services
-export { getAllDomains } from "./services/domainsAPI";
+export { getCatalogGroups } from "./services/catalogAPI";
 
 // Components
 export { default as CategorySelectionPage } from "./components/CategorySelectionPage";

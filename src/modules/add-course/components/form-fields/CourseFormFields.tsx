@@ -26,7 +26,10 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
     <>
       {/* 1. Course Title */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="courseTitle">
+        <label
+          className="text-sm text-cem-neutral-gray-900 font-medium"
+          htmlFor="courseTitle"
+        >
           Título del Curso <sup className="text-pink-200">*</sup>
         </label>
         <input
@@ -41,11 +44,14 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
           </span>
         )}
       </div>
-
       {/* 2. Course Description / Why take the course? */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="courseShortDesc">
-          Descripción / ¿Por qué llevar el Curso? <sup className="text-pink-200">*</sup>
+        <label
+          className="text-sm text-cem-neutral-gray-900 font-medium"
+          htmlFor="courseShortDesc"
+        >
+          Descripción / ¿Por qué llevar el Curso?{" "}
+          <sup className="text-pink-200">*</sup>
         </label>
         <textarea
           id="courseShortDesc"
@@ -59,12 +65,14 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
           </span>
         )}
       </div>
-
       {/* 3. Course Prices (PEN & USD) - Split into Integer and Cents */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Precio en PEN */}
         <div className="flex flex-col space-y-2 text-left">
-          <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="coursePrice_int">
+          <label
+            className="text-sm text-cem-neutral-gray-900 font-medium"
+            htmlFor="coursePrice_int"
+          >
             Precio (PEN) <sup className="text-pink-200">*</sup>
           </label>
           <div className="flex items-center gap-1.5">
@@ -75,14 +83,21 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
                 {...register("coursePrice_int", { required: true })}
                 className="form-style w-32 !pl-10 text-right pr-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 type="number"
-                onKeyDown={(e) => ["e", "E", "+", "-", ","].includes(e.key) && e.preventDefault()}
+                onKeyDown={(e) =>
+                  ["e", "E", "+", "-", ","].includes(e.key) &&
+                  e.preventDefault()
+                }
                 onBlur={(e) => {
                   if (!e.target.value) setValue("coursePrice_int" as any, "0");
                 }}
               />
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-cem-neutral-gray-400 font-bold">S/</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-cem-neutral-gray-400 font-bold">
+                S/
+              </span>
             </div>
-            <span className="text-xl font-bold text-cem-neutral-gray-300">.</span>
+            <span className="text-xl font-bold text-cem-neutral-gray-300">
+              .
+            </span>
             <div className="w-16">
               <input
                 id="coursePrice_cents"
@@ -95,7 +110,8 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
                 type="number"
                 onInput={(e) => {
                   const target = e.target as HTMLInputElement;
-                  if (target.value.length > 2) target.value = target.value.slice(0, 2);
+                  if (target.value.length > 2)
+                    target.value = target.value.slice(0, 2);
                 }}
                 onBlur={(e) => {
                   let val = e.target.value;
@@ -103,7 +119,10 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
                   if (val.length === 1) val = "0" + val;
                   setValue("coursePrice_cents" as any, val);
                 }}
-                onKeyDown={(e) => ["e", "E", "+", "-", ","].includes(e.key) && e.preventDefault()}
+                onKeyDown={(e) =>
+                  ["e", "E", "+", "-", ","].includes(e.key) &&
+                  e.preventDefault()
+                }
               />
             </div>
           </div>
@@ -116,8 +135,14 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
 
         {/* Precio en USD */}
         <div className="flex flex-col space-y-2 text-left">
-          <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="coursePriceUSD_int">
-            Precio (USD) <span className="text-xs text-cem-neutral-gray-400 font-normal ml-1">(Opcional)</span>
+          <label
+            className="text-sm text-cem-neutral-gray-900 font-medium"
+            htmlFor="coursePriceUSD_int"
+          >
+            Precio (USD){" "}
+            <span className="text-xs text-cem-neutral-gray-400 font-normal ml-1">
+              (Opcional)
+            </span>
           </label>
           <div className="flex items-center gap-1.5">
             <div className="relative w-32">
@@ -127,11 +152,18 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
                 {...register("coursePriceUSD_int")}
                 className="form-style w-32 !pl-10 text-right pr-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 type="number"
-                onKeyDown={(e) => ["e", "E", "+", "-", ","].includes(e.key) && e.preventDefault()}
+                onKeyDown={(e) =>
+                  ["e", "E", "+", "-", ","].includes(e.key) &&
+                  e.preventDefault()
+                }
               />
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-cem-neutral-gray-400 font-medium">$</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-cem-neutral-gray-400 font-medium">
+                $
+              </span>
             </div>
-            <span className="text-xl font-bold text-cem-neutral-gray-300">.</span>
+            <span className="text-xl font-bold text-cem-neutral-gray-300">
+              .
+            </span>
             <div className="w-16">
               <input
                 id="coursePriceUSD_cents"
@@ -143,7 +175,8 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
                 type="number"
                 onInput={(e) => {
                   const target = e.target as HTMLInputElement;
-                  if (target.value.length > 2) target.value = target.value.slice(0, 2);
+                  if (target.value.length > 2)
+                    target.value = target.value.slice(0, 2);
                 }}
                 onBlur={(e) => {
                   let val = e.target.value;
@@ -151,7 +184,10 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
                     setValue("coursePriceUSD_cents" as any, "0" + val);
                   }
                 }}
-                onKeyDown={(e) => ["e", "E", "+", "-", ","].includes(e.key) && e.preventDefault()}
+                onKeyDown={(e) =>
+                  ["e", "E", "+", "-", ","].includes(e.key) &&
+                  e.preventDefault()
+                }
               />
             </div>
           </div>
@@ -160,7 +196,6 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
           </p>
         </div>
       </div>
-      drum
       {/* 4. Course Category (Carrera) */}
       <CourseCategorySelect
         name="courseCategory"
@@ -172,8 +207,9 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         initialData={getCategoryIds(course?.category).carreraId}
         loading={loading}
         domainName="Según tu carrera"
+        categoryType="career"
+        required={true}
       />
-
       {/* 5. Course Sector */}
       <CourseCategorySelect
         name="courseSector"
@@ -185,8 +221,9 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         initialData={getCategoryIds(course?.category).sectorId}
         loading={loading}
         domainName="Según tu sector"
+        categoryType="sector"
+        required={false}
       />
-
       {/* 6. Docente del curso */}
       <CourseInstructorSelect
         name="courseInstructor"
@@ -200,7 +237,6 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
             : []
         }
       />
-
       {/* 7. Course Tags */}
       <ChipInput
         label="Etiquetas"
@@ -209,7 +245,6 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         register={register as any}
         setValue={setValue as any}
       />
-
       {/* 8. Course Thumbnail Image */}
       <Upload
         name="courseImage"
@@ -219,10 +254,12 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         errors={errors as any}
         editData={editCourse && course ? (course as Course).thumbnail : null}
       />
-
       {/* 9. Course Promotional Video Link */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="courseVideoUrl">
+        <label
+          className="text-sm text-cem-neutral-gray-900 font-medium"
+          htmlFor="courseVideoUrl"
+        >
           Link del video promocional <sup className="text-pink-200">*</sup>
         </label>
         <input
@@ -237,10 +274,12 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
           </span>
         )}
       </div>
-
       {/* 10. Benefits of the course */}
       <div className="flex flex-col space-y-2">
-        <label className="text-sm text-cem-neutral-gray-900 font-medium" htmlFor="courseBenefits">
+        <label
+          className="text-sm text-cem-neutral-gray-900 font-medium"
+          htmlFor="courseBenefits"
+        >
           Beneficios del Curso <sup className="text-pink-200">*</sup>
         </label>
         <textarea
@@ -255,7 +294,6 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
           </span>
         )}
       </div>
-
       {/* 11. Requirements/Instructions */}
       <RequirementsField
         name="courseRequirements"
@@ -263,9 +301,10 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         register={register}
         setValue={setValue}
         errors={errors}
-        initialData={editCourse && course ? (course as Course).instructions || [] : []}
+        initialData={
+          editCourse && course ? (course as Course).instructions || [] : []
+        }
       />
-
       {/* 12. Course Syllabus PDF */}
       <SyllabusUpload
         name="courseSyllabus"

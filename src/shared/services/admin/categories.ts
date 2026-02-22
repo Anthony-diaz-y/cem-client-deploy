@@ -95,7 +95,7 @@ export async function getPublicCategories(): Promise<Category[]> {
   try {
     const response = await apiConnector<GetPublicCategoriesResponse>(
       "GET",
-      categories.CATEGORIES_API,
+      categories.GET_PUBLIC_CATEGORIES_API,
       {},
       {
         "Content-Type": "application/json",
@@ -126,14 +126,17 @@ export async function updateCategory(
   description: string,
   token: string,
   icon?: string,
-  domainId?: string,
+  type?: "career" | "sector",
 ): Promise<Category | null> {
   const toastId = toast.loading("Actualizando categoría...");
   try {
     const response = await apiConnector<UpdateCategoryResponse>(
       "PUT",
       categories.UPDATE_CATEGORY_API,
-      { categoryId, name, description, icon, domainId } as unknown as Record<string, unknown>,
+      { categoryId, name, description, icon, type } as unknown as Record<
+        string,
+        unknown
+      >,
       {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -186,7 +189,7 @@ export async function getCategoryCourses(
     const apiError = error as ApiError;
     toast.error(
       apiError.response?.data?.message ||
-      "Error al obtener cursos de la categoría",
+        "Error al obtener cursos de la categoría",
     );
     return null;
   }
@@ -231,7 +234,7 @@ export async function changeCourseCategory(
     if (!silent) {
       toast.error(
         apiError.response?.data?.message ||
-        "Error al cambiar categoría del curso",
+          "Error al cambiar categoría del curso",
       );
       toast.dismiss(toastId);
     }
@@ -293,7 +296,7 @@ export async function changeMultipleCoursesCategory(
       } else {
         toast.success(
           response.data.message ||
-          `Todos los ${result.total} curso(s) fueron reasignados exitosamente`,
+            `Todos los ${result.total} curso(s) fueron reasignados exitosamente`,
           { id: toastId },
         );
       }

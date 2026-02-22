@@ -3,45 +3,46 @@
 
 export const CONTACT_TEXTS = {
   form: {
-    title: "Got a Idea? We've got the skills. Let's team up",
-    description: "Tell us more about yourself and what you're got in mind.",
+    title: "¿Tienes una idea? Tenemos las habilidades. Trabajemos juntos",
+    description: "Cuéntanos más sobre ti y lo que tienes en mente.",
     fields: {
       firstname: {
-        label: "First Name",
-        placeholder: "Enter first name",
-        error: "Please enter your name.",
+        label: "Nombres",
+        placeholder: "Ingresa tus nombres",
+        error: "Por favor ingresa tus nombres.",
       },
       lastname: {
-        label: "Last Name",
-        placeholder: "Enter last name",
+        label: "Apellidos",
+        placeholder: "Ingresa tus apellidos",
       },
       email: {
-        label: "Email Address",
-        placeholder: "Enter email address",
-        error: "Please enter your Email address.",
+        label: "Correo Electrónico",
+        placeholder: "Ingresa tu correo electrónico",
+        error: "Por favor ingresa un correo válido.",
         required: true,
       },
       subject: {
-        label: "Subject (Optional)",
-        placeholder: "Enter subject",
+        label: "Asunto (Opcional)",
+        placeholder: "Ingresa el asunto",
       },
       phone: {
-        label: "Phone Number (Optional)",
-        placeholder: "12345 67890",
+        label: "Número de Teléfono (Opcional)",
+        placeholder: "123 456 789",
       },
       message: {
-        label: "Message",
-        placeholder: "Enter your message here",
-        error: "Please enter your Message.",
+        label: "Mensaje",
+        placeholder: "Escribe tu mensaje aquí",
+        error: "Por favor escribe tu mensaje.",
         required: true,
       },
     },
     button: {
-      submit: "Send Message",
+      submit: "Enviar Mensaje",
       submitting: "Enviando...",
     },
     success: {
-      message: "¡Mensaje enviado exitosamente! Nos pondremos en contacto contigo pronto.",
+      message:
+        "¡Mensaje enviado exitosamente! Nos pondremos en contacto contigo pronto.",
     },
     countryCode: {
       placeholder: "Buscar código o país...",
@@ -50,8 +51,6 @@ export const CONTACT_TEXTS = {
     },
   },
   reviews: {
-    title: "Reviews from other learners",
+    title: "Lo que dicen nuestros estudiantes",
   },
 } as const;
-
-

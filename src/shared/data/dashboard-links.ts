@@ -57,6 +57,13 @@ export const sidebarLinks = [
     icon: "VscTag",
   },
   {
+    id: 16,
+    name: "Rutas",
+    path: "/dashboard/admin/learning-paths",
+    type: ACCOUNT_TYPE.ADMIN,
+    icon: "VscFolderOpened",
+  },
+  {
     id: 10,
     name: "Cursos",
     path: "/dashboard/admin/all-courses",

@@ -3,7 +3,11 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { FiEdit3 } from "react-icons/fi";
-import { Category, updateCategory, getPublicCategories } from "@shared/services/adminAPI";
+import {
+  Category,
+  updateCategory,
+  getPublicCategories,
+} from "@shared/services/adminAPI";
 import { CategoryFormFields } from "./components/CategoryFormFields";
 import { CategoryModalLayout } from "./components/CategoryModalLayout";
 
@@ -29,25 +33,8 @@ export default function EditCategoryModal({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [icon, setIcon] = useState("");
-  const [domainId, setDomainId] = useState("");
-  const [domains, setDomains] = useState<Array<{ id: string; name: string }>>([]);
+  const [type, setType] = useState<"career" | "sector" | "">("");
   const [loading, setLoading] = useState(false);
-
-  // Cargar dominios al abrir el modal
-  useEffect(() => {
-    if (isOpen) {
-      const fetchDomains = async () => {
-        try {
-          const { getAllDomains } = await import("../../../../modules/categories/services/domainsAPI");
-          const data = await getAllDomains();
-          setDomains(data || []);
-        } catch (error) {
-          // Error silenciado
-        }
-      };
-      fetchDomains();
-    }
-  }, [isOpen]);
 
   // Cargar datos al abrir
   useEffect(() => {
@@ -55,7 +42,7 @@ export default function EditCategoryModal({
       setName(category.name || "");
       setDescription(category.description || "");
       setIcon(category.icon || "");
-      setDomainId(category.domain?.id || "");
+      setType(category.type || "");
     }
   }, [category]);
 
@@ -64,7 +51,7 @@ export default function EditCategoryModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !description.trim() || !domainId) {
+    if (!name.trim() || !description.trim() || !type) {
       toast.error("Todos los campos son requeridos");
       return;
     }
@@ -77,7 +64,7 @@ export default function EditCategoryModal({
         description.trim(),
         token,
         icon || undefined,
-        domainId,
+        type as "career" | "sector",
       );
 
       if (result) {
@@ -86,12 +73,11 @@ export default function EditCategoryModal({
           await getPublicCategories();
         } catch (error) {
           console.error("Error al refrescar categorías públicas:", error);
-          // No mostrar error al usuario, es solo un refresh
         }
 
-        // Disparar evento personalizado para notificar a otros componentes (Navbar, etc.)
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('categoriesUpdated'));
+        // Disparar evento personalizado
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("categoriesUpdated"));
         }
 
         onSuccess();
@@ -131,7 +117,10 @@ export default function EditCategoryModal({
         </>
       }
     >
-      <form onSubmit={handleSubmit} className="flex-1 flex flex-col items-center justify-center">
+      <form
+        onSubmit={handleSubmit}
+        className="flex-1 flex flex-col items-center justify-center"
+      >
         <CategoryFormFields
           name={name}
           setName={setName}
@@ -139,14 +128,11 @@ export default function EditCategoryModal({
           setDescription={setDescription}
           icon={icon}
           setIcon={setIcon}
-          domainId={domainId}
-          setDomainId={setDomainId}
-          domains={domains}
+          type={type}
+          setType={setType}
           loading={loading}
         />
       </form>
     </CategoryModalLayout>
   );
 }
-
-
