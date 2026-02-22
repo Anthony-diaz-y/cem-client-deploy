@@ -58,8 +58,6 @@ export const getAllCourses = async () => {
     result = response?.data?.data || [];
   } catch (error) {
     const apiError = error as ApiError;
-    console.log("GET_ALL_COURSE_API API ERROR............", apiError);
-    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
     if (apiError.response?.status !== 401) {
       toast.error(
         apiError.response?.data?.message ||
@@ -111,18 +109,14 @@ export const fetchCourseDetails = async (courseId: string) => {
         courseId,
       } as Record<string, unknown>,
     );
-    console.log("COURSE_DETAILS_API API RESPONSE............", response);
 
-    // Verificar estructura de respuesta antes de desestructurar
     if (!response?.data) {
-      console.error("Invalid response structure: response.data is undefined");
       return null;
     }
 
     if (!response.data.success) {
       const errorMessage =
         response.data.message || "Could not fetch course details";
-      console.error("API returned success: false", errorMessage);
       throw new Error(errorMessage);
     }
 
@@ -130,19 +124,12 @@ export const fetchCourseDetails = async (courseId: string) => {
     if (response.data.data && response.data.data.courseDetails) {
       result = response.data;
     } else {
-      console.error(
-        "Invalid data structure: courseDetails not found in response",
-      );
       return null;
     }
   } catch (error) {
     const apiError = error as ApiError;
-    console.error("COURSE_DETAILS_API API ERROR............", apiError);
 
-    // Manejo específico de errores 500
     if (apiError.response?.status === 500) {
-      console.error("Error del servidor (500):", apiError.response.data);
-      // No retornar datos en caso de error 500
       return null;
     }
 
@@ -163,15 +150,12 @@ export const fetchCourseCategories = async () => {
       "GET",
       GET_ALL_CATEGORIES_API,
     );
-    console.log("COURSE_CATEGORIES_API RESPONSE............", response);
     if (!response?.data?.success) {
       throw new Error("Could Not Fetch Course Categories");
     }
     result = response?.data?.data || [];
   } catch (error) {
-    const apiError = error as ApiError;
-    console.log("COURSE_CATEGORY_API API ERROR............", apiError);
-    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
+    const apiError = error as ApiError; si es error 401 (el interceptor ya lo maneja)
     if (apiError.response?.status !== 401) {
       toast.error(
         apiError.response?.data?.message ||

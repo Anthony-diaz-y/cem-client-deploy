@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@shared/store/hooks";
 import { AppDispatch } from "@shared/store/store";
-import { sendOtp, signUp } from "@shared/services/authAPI";
+import { sendOtp, signUp } from "@modules/auth/services/authAPI";
 import type { SignupData } from "../types";
 
 export interface UseVerifyEmailReturn {

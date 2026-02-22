@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { usePathname } from "next/navigation";
-import { resetPassword } from "@shared/services/authAPI";
+import { resetPassword } from "@modules/auth/services/authAPI";
 import { RootState, AppDispatch } from "@shared/store/store";
 
 export interface UseUpdatePasswordReturn {

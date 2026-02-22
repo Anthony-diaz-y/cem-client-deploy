@@ -35,7 +35,6 @@ export function getUserDetails(token: string, navigate: NavigateFunction) {
     try {
       const response = await apiConnector<ApiResponse<UserData>>("GET", GET_USER_DETAILS_API, undefined, { Authorization: `Bearer ${token}`, })
 
-
       if (!response.data.success || !response.data.data) {
         throw new Error(response.data.message || "Could not get user details")
       }
@@ -44,13 +43,11 @@ export function getUserDetails(token: string, navigate: NavigateFunction) {
         ? userData.image
         : `https://api.dicebear.com/5.x/initials/svg?seed=${userData.firstName} ${userData.lastName}`
       dispatch(setUser({ ...userData, image: userImage }))
-    } catch (error: any) {
-
-      // No mostrar toast si es error 401 (el interceptor ya lo maneja)
-      if (error?.response?.status !== 401) {
-        toast.error("No se pudieron obtener los detalles del usuario")
+    } catch (error: unknown) {
+      if ((error as { response?: { status?: number } })?.response?.status !== 401) {
+        toast.error("No se pudieron obtener los detalles del usuario");
       }
-      dispatch(logout(navigate))
+      dispatch(logout(navigate));
     }
     toast.dismiss(toastId)
     dispatch(setLoading(false))
@@ -64,16 +61,12 @@ export async function getUserEnrolledCourses(token: string) {
   try {
     const response = await apiConnector<ApiResponse<unknown[]>>("GET", GET_USER_ENROLLED_COURSES_API, { token } as Record<string, unknown>, { Authorization: `Bearer ${token}`, })
 
-
-
     if (!response.data.success) {
       throw new Error(response.data.message || "Could not get enrolled courses")
     }
     result = response.data.data || []
-  } catch (error: any) {
-
-    // No mostrar toast si es error 401 (el interceptor ya lo maneja)
-    if (error?.response?.status !== 401) {
+  } catch (error: unknown) {
+    if ((error as { response?: { status?: number } })?.response?.status !== 401) {
       toast.error("No se pudieron obtener los cursos inscritos")
     }
   }
@@ -93,15 +86,11 @@ export async function getInstructorData(token: string) {
     const response = await apiConnector<InstructorDataResponse>("GET", GET_INSTRUCTOR_DATA_API, undefined, {
       Authorization: `Bearer ${token}`,
     })
-
     if (response?.data?.courses) {
       result = response.data.courses
     }
-  } catch (error: any) {
-
-    // No mostrar toast aquí si es un error 401 (el interceptor ya lo maneja)
-    // Solo mostrar toast para otros tipos de errores
-    if (error?.response?.status !== 401) {
+  } catch (error: unknown) {
+    if ((error as { response?: { status?: number } })?.response?.status !== 401) {
       toast.error("No se pudo obtener los datos del instructor")
     }
   }
