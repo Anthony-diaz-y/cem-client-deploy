@@ -34,7 +34,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ hero }) => {
               className="hidden md:block top-11 -left-24 absolute"
             />
 
-            <h1 className="text-[30px]  text-center xl:text-left md:text-5xl lg:text-6xl font-bold relative z-10 max-w-2xl mx-auto xl:mx-0 flex flex-col gap-1 xl:gap-3.5 leading-tight xl:leading-normal">
+            <h1 className="text-[30px]  text-center xl:text-left md:text-5xl lg:text-6xl font-bold relative z-10 max-w-2xl mx-auto xl:mx-0 flex flex-col gap-1 xl:gap-3.5 leading-tight ">
               <span className="text-cem-neutral-gray-900">
                 Da el <span className="text-cem-primary">siguiente</span>
               </span>

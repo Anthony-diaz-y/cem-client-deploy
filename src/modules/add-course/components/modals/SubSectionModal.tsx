@@ -7,7 +7,6 @@ import {
 } from "../../types/index";
 import { SubSection } from "../../../course/types";
 import { CEMModalLayout, RichTextEditor } from "@shared/components";
-import Upload from "../upload/Upload";
 import AttachmentUpload from "../upload/AttachmentUpload";
 import { useSubSectionForm } from "../../hooks/useSubSectionForm";
 import { useSubSectionHandlers } from "../../hooks/useSubSectionHandlers";
@@ -97,7 +96,7 @@ export default function SubSectionModal({
       loading={loading}
       footer={footer}
       width="575px"
-      height="480px"
+      height="650px"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-2">
         <div className="flex flex-col space-y-1.5">
@@ -129,11 +128,10 @@ export default function SubSectionModal({
               <button
                 type="button"
                 onClick={() => setShowTextContent(!showTextContent)}
-                className={`flex items-center justify-center gap-3 w-full h-[48px] rounded-xl border transition-all ${
-                  showTextContent
-                    ? "border-cem-primary bg-cem-primary/5 text-cem-primary shadow-sm"
-                    : "border-cem-neutral-gray-200 bg-[#F9FAFB] text-cem-neutral-gray-900 hover:border-cem-primary/40"
-                }`}
+                className={`flex items-center justify-center gap-3 w-full h-[48px] rounded-xl border transition-all ${showTextContent
+                  ? "border-cem-primary bg-cem-primary/5 text-cem-primary shadow-sm"
+                  : "border-cem-neutral-gray-200 bg-[#F9FAFB] text-cem-neutral-gray-900 hover:border-cem-primary/40"
+                  }`}
               >
                 <FiBook className="text-xl" />
                 <span className="font-bold text-sm">Texto</span>
@@ -142,11 +140,10 @@ export default function SubSectionModal({
               <button
                 type="button"
                 onClick={() => setShowVideo(!showVideo)}
-                className={`flex items-center justify-center gap-3 w-full h-[48px] rounded-xl border transition-all ${
-                  showVideo
-                    ? "border-cem-primary bg-cem-primary/5 text-cem-primary shadow-sm"
-                    : "border-cem-neutral-gray-200 bg-[#F9FAFB] text-cem-neutral-gray-900 hover:border-cem-primary/40"
-                }`}
+                className={`flex items-center justify-center gap-3 w-full h-[48px] rounded-xl border transition-all ${showVideo
+                  ? "border-cem-primary bg-cem-primary/5 text-cem-primary shadow-sm"
+                  : "border-cem-neutral-gray-200 bg-[#F9FAFB] text-cem-neutral-gray-900 hover:border-cem-primary/40"
+                  }`}
               >
                 <FiVideo className="text-xl" />
                 <span className="font-bold text-sm">Video</span>
@@ -155,11 +152,10 @@ export default function SubSectionModal({
               <button
                 type="button"
                 onClick={() => setShowAttachments(!showAttachments)}
-                className={`flex items-center justify-center gap-3 w-full h-[48px] rounded-xl border transition-all ${
-                  showAttachments
-                    ? "border-cem-primary bg-cem-primary/5 text-cem-primary shadow-sm"
-                    : "border-cem-neutral-gray-200 bg-[#F9FAFB] text-cem-neutral-gray-900 hover:border-cem-primary/40"
-                }`}
+                className={`flex items-center justify-center gap-3 w-full h-[48px] rounded-xl border transition-all ${showAttachments
+                  ? "border-cem-primary bg-cem-primary/5 text-cem-primary shadow-sm"
+                  : "border-cem-neutral-gray-200 bg-[#F9FAFB] text-cem-neutral-gray-900 hover:border-cem-primary/40"
+                  }`}
               >
                 <FiPaperclip className="text-xl" />
                 <span className="font-bold text-sm">Archivos</span>
@@ -169,11 +165,24 @@ export default function SubSectionModal({
         )}
 
         <div className="space-y-4">
+          <div className="flex flex-col space-y-2 animate-fadeIn">
+            <label className="text-xs font-bold text-cem-neutral-gray-900 flex items-center gap-2">
+              <FiBook className="text-cem-primary" />
+              Descripción (Pública)
+            </label>
+            <textarea
+              {...register("lectureDescription")}
+              disabled={view || loading}
+              placeholder="Breve resumen de la lección que verán todos los usuarios"
+              className="form-style w-full border-cem-neutral-gray-100 focus:border-cem-primary focus:ring-1 focus:ring-cem-primary py-2.5 min-h-[80px] text-sm"
+            />
+          </div>
+
           {showTextContent && (
             <div className="flex flex-col space-y-2 animate-fadeIn">
               <label className="text-xs font-bold text-cem-neutral-gray-900 flex items-center gap-2">
                 <FiBook className="text-cem-primary" />
-                Editor
+                Contenido de la Lección (Privado)
               </label>
               <RichTextEditor
                 value={richTextContent}

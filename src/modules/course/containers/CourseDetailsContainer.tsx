@@ -87,7 +87,7 @@ const CourseDetailsContainer = () => {
           } course-details-transition`}
       >
         {/* 1. Top Section - Blue Background (Hero) */}
-        <div className="w-full bg-cem-celeste-light mt-20 border-b border-transparent course-hero-enter">
+        <div className="w-full bg-cem-celeste-light px-28  mt-20 border-b border-transparent course-hero-enter">
           <div className="mx-auto max-w-[1260px] px-4 pt-10 pb-10 lg:pt-14 lg:pb-14">
             <div className="w-full lg:max-w-[760px]">
               <CourseHero
@@ -110,7 +110,7 @@ const CourseDetailsContainer = () => {
         </div>
 
         {/* 2. Bottom Section - White Background (Content) */}
-        <div className="w-full bg-white course-content-enter">
+        <div className="w-full bg-white px-28 course-content-enter">
           <div className="mx-auto max-w-[1260px] px-4 pb-16 pt-8 lg:pt-12">
             <div className="w-full lg:max-w-[760px] space-y-8 lg:space-y-12">
               <CourseInfoSection

@@ -49,7 +49,8 @@ export const useSubSectionHandlers = ({
     const formData = new FormData();
     formData.append("sectionId", modalData);
     formData.append("title", data.lectureTitle || "");
-    formData.append("description", data.lectureContent || "");
+    formData.append("description", data.lectureDescription || "");
+    formData.append("content", data.lectureContent || "");
 
     if (isQuiz && data.quizTitle) {
       formData.append("quizTitle", data.quizTitle);
@@ -134,11 +135,13 @@ export const useSubSectionHandlers = ({
     formData.append("subSectionId", String(subSectionId));
 
     // El título principal siempre es el de la lección
-    const title = currentValues.lectureTitle?.trim() || subSectionData.title || '';
-    const description = currentValues.lectureContent?.trim() || subSectionData.description || '';
+    const title = currentValues.lectureTitle?.trim() || subSectionData.title || "";
+    const description = currentValues.lectureDescription?.trim() || "";
+    const content = currentValues.lectureContent?.trim() || "";
 
     if (title) formData.append("title", title);
-    if (description) formData.append("description", description);
+    if (description !== undefined) formData.append("description", description);
+    if (content !== undefined) formData.append("content", content);
 
     // Manejar video
     const lectureVideo = currentValues.lectureVideo;

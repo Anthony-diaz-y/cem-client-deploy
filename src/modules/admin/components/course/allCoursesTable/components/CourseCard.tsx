@@ -61,11 +61,10 @@ export default function CourseCard({
         {/* Badge de estado flotante */}
         <div className="absolute top-4 right-4 z-10">
           <div
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold text-xs shadow-lg backdrop-blur-md ${
-              isPublished
-                ? "bg-[#22C55E] text-white"
-                : "bg-cem-neutral-gray-700/80 text-white"
-            }`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold text-xs shadow-lg backdrop-blur-md ${isPublished
+              ? "bg-[#22C55E] text-white"
+              : "bg-cem-neutral-gray-700/80 text-white"
+              }`}
           >
             {isPublished ? (
               <FiCheckCircle className="text-sm" />
@@ -80,25 +79,31 @@ export default function CourseCard({
       {/* Contenido */}
       <div className="p-5 flex flex-col flex-1">
         {/* Categorías */}
-        <div className="flex flex-wrap gap-2 mb-3">
-          {Array.isArray(course.category) ? (
-            course.category.map((cat: CourseCategory, index) => (
-              <span
-                key={cat.id || index}
-                className={`inline-flex px-3 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider w-fit ${
-                  index % 2 === 0
-                    ? "bg-[#EEF2FF] text-[#4F46E5]"
-                    : "bg-[#F0FDF4] text-[#16A34A]"
-                }`}
-              >
-                {cat.name}
-              </span>
-            ))
-          ) : course.category ? (
-            <span className="inline-flex px-3 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider w-fit bg-[#EEF2FF] text-[#4F46E5]">
-              {(course.category as CourseCategory).name}
+        <div className="flex flex-wrap gap-2 mb-2">
+          {/* Career → verde */}
+          {course.career && (
+            <span className="inline-flex px-3 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider w-fit bg-[#F0FDF4] text-[#16A34A]">
+              {course.career.name}
             </span>
-          ) : null}
+          )}
+          {/* Sector → violeta */}
+          {course.sector && (
+            <span className="inline-flex px-3 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider w-fit bg-[#EEF2FF] text-[#4F46E5]">
+              {course.sector.name}
+            </span>
+          )}
+          {/* Fallback: si sólo viene category (formato antiguo) */}
+          {!course.career && !course.sector && Array.isArray(course.category) && course.category.map((cat: CourseCategory & { type?: string }, index) => (
+            <span
+              key={cat.id || index}
+              className={`inline-flex px-3 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider w-fit ${cat.type === "sector"
+                ? "bg-[#EEF2FF] text-[#4F46E5]"
+                : "bg-[#F0FDF4] text-[#16A34A]"
+                }`}
+            >
+              {cat.name}
+            </span>
+          ))}
         </div>
 
         {/* Título - Altura fija para mantener la alineación de lo que sigue */}
@@ -200,11 +205,10 @@ export default function CourseCard({
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${
-                isMenuOpen
-                  ? "bg-cem-primary text-white shadow-lg"
-                  : "bg-[#DCEEEF] text-cem-primary hover:bg-[#D5E8E9]"
-              }`}
+              className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${isMenuOpen
+                ? "bg-cem-primary text-white shadow-lg"
+                : "bg-[#DCEEEF] text-cem-primary hover:bg-[#D5E8E9]"
+                }`}
             >
               <FiMoreHorizontal className="text-xl" />
             </button>
