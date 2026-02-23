@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "next/navigation";
 import { HiMenuAlt1 } from "react-icons/hi";
@@ -28,6 +28,8 @@ const VideoDetails = () => {
   const { courseViewSidebar } = useSelector(
     (state: RootState) => state.sidebar,
   );
+
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const subSectionId = Array.isArray(params?.subSectionId)
     ? params.subSectionId[0]
@@ -75,6 +77,92 @@ const VideoDetails = () => {
 
     loadDiscussionCount();
   }, [subSectionId]);
+
+  // Lógica para añadir botones de copiar a los bloques de código
+  useEffect(() => {
+    const container = contentRef.current;
+    if (!container || (!videoData?.content && !videoData?.description)) return;
+
+    // Pequeño timeout para asegurar que el HTML ya fue pintado en el DOM
+    const timer = setTimeout(() => {
+      const preBlocks = container.querySelectorAll("pre");
+
+      preBlocks.forEach((pre) => {
+        // Evitar duplicados
+        if (pre.querySelector("[data-copy-btn]")) return;
+
+        // Asegurar que el pre tenga position relative para que el botón se posicione bien
+        pre.style.position = "relative";
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.setAttribute("data-copy-btn", "true");
+
+        // Estilos inline para no depender del CSS global
+        Object.assign(button.style, {
+          position: "absolute",
+          top: "0.6rem",
+          right: "0.6rem",
+          backgroundColor: "#424854",
+          border: "1px solid #6b7280",
+          color: "#ffffff",
+          padding: "0.35rem 0.65rem",
+          borderRadius: "0.4rem",
+          fontSize: "0.72rem",
+          fontFamily: "ui-sans-serif, system-ui, sans-serif",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.35rem",
+          cursor: "pointer",
+          zIndex: "20",
+          lineHeight: "1.2",
+          userSelect: "none",
+          transition: "background-color 0.15s, color 0.15s, border-color 0.15s",
+        });
+
+        const copyIcon = `<svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="13" width="13" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+        const checkIcon = `<svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="13" width="13" xmlns="http://www.w3.org/2000/svg"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+
+        button.innerHTML = `${copyIcon}<span>Copiar</span>`;
+
+        button.addEventListener("mouseenter", () => {
+          button.style.backgroundColor = "#6b7280";
+          button.style.color = "#ffffff";
+          button.style.borderColor = "#ffd60a";
+        });
+        button.addEventListener("mouseleave", () => {
+          if (button.getAttribute("data-copied") !== "true") {
+            button.style.backgroundColor = "#424854";
+            button.style.color = "#ffffff";
+            button.style.borderColor = "#6b7280";
+          }
+        });
+
+        button.addEventListener("click", () => {
+          const code = pre.querySelector("code")?.innerText || pre.innerText;
+          navigator.clipboard.writeText(code).then(() => {
+            button.setAttribute("data-copied", "true");
+            button.style.backgroundColor = "#058527";
+            button.style.color = "#ffffff";
+            button.style.borderColor = "#058527";
+            button.innerHTML = `${checkIcon}<span>¡Copiado!</span>`;
+
+            setTimeout(() => {
+              button.removeAttribute("data-copied");
+              button.style.backgroundColor = "#2c333f";
+              button.style.color = "#afb2bf";
+              button.style.borderColor = "#424854";
+              button.innerHTML = `${copyIcon}<span>Copiar</span>`;
+            }, 2000);
+          });
+        });
+
+        pre.appendChild(button);
+      });
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [videoData?.content, videoData?.description]);
 
   // Handle client-side only rendering to avoid hydration errors
   const [mounted, setMounted] = React.useState(false);
@@ -271,6 +359,7 @@ const VideoDetails = () => {
             <div className="bg-richblack-800/50 backdrop-blur-sm rounded-2xl p-8 border border-richblack-700/50 shadow-xl">
               <div className="prose prose-invert prose-lg max-w-none">
                 <div
+                  ref={contentRef}
                   className="lesson-rich-content text-richblack-100 leading-relaxed text-base"
                   dangerouslySetInnerHTML={{
                     __html: videoData.content || videoData.description,
@@ -353,6 +442,21 @@ const VideoDetails = () => {
               font-size: 0.9em !important;
               color: #ffd60a !important;
             }
+            .lesson-rich-content pre {
+              background-color: #161d29 !important;
+              padding: 1.5rem 6rem 1.5rem 1.5rem !important;
+              border-radius: 0.75rem !important;
+              overflow-x: auto !important;
+              margin: 1.5rem 0 !important;
+              position: relative !important;
+              border: 1px solid #2c333f !important;
+            }
+            .lesson-rich-content pre code {
+              background-color: transparent !important;
+              padding: 0 !important;
+              border-radius: 0 !important;
+              color: #f1f2ff !important;
+              font-size: 0.95em !important;
           `}</style>
 
           {videoData.attachments && videoData.attachments.length > 0 && (

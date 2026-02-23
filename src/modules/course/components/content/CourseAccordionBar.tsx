@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useMemo } from "react";
-import { CourseAccordionBarProps } from "../../types";
+import { CourseAccordionBarProps, Section, SubSection } from "../../types";
 
 /**
  * CourseAccordionBar - Accordion item for course section
@@ -25,14 +25,12 @@ export default function CourseAccordionBar({
   );
 
   const subSectionsArray = useMemo(() => {
-    if (course.subSection && Array.isArray(course.subSection)) {
-      return course.subSection;
+    const c = course as Section & { subSections?: SubSection[] };
+    if (c.subSection && Array.isArray(c.subSection)) {
+      return c.subSection;
     }
-    if (
-      (course as any).subSections &&
-      Array.isArray((course as any).subSections)
-    ) {
-      return (course as any).subSections;
+    if (c.subSections && Array.isArray(c.subSections)) {
+      return c.subSections;
     }
     return [];
   }, [course]);
@@ -47,10 +45,8 @@ export default function CourseAccordionBar({
     return () => clearTimeout(timeoutId);
   }, [active, subSectionsArray]);
 
-  const firstSubSectionDescription = subSectionsArray[0]?.description;
-
   return (
-    <div className="bg-white border-b border-cem-neutral-gray-100 last:border-b-0">
+    <div className="bg-white border-b border-cem-neutral-gray-300 last:border-b-0">
       <div
         className="w-full flex items-center justify-between py-6 px-1 cursor-pointer transition-colors"
         onClick={() => handleActive(sectionId)}
@@ -64,7 +60,7 @@ export default function CourseAccordionBar({
             +
           </span>
           {/* Blue Title */}
-          <span className={`text-[19px] font-bold truncate transition-colors duration-300 ${active ? "text-cem-primary" : "text-cem-primary"
+          <span className={`text-[20px] font-bold truncate transition-colors duration-300 ${active ? "text-cem-primary" : "text-cem-primary"
             }`}>
             {course?.sectionName}
           </span>
@@ -101,15 +97,27 @@ export default function CourseAccordionBar({
           opacity: active ? 1 : 0,
         }}
       >
-        <div className="pb-8 pl-10 pr-6">
-          {firstSubSectionDescription ? (
-            <div
-              className="text-cem-neutral-gray-800 leading-relaxed text-[16px] max-w-[650px] prose prose-sm"
-              dangerouslySetInnerHTML={{ __html: firstSubSectionDescription }}
-            />
+        <div className="pb-8 pl-10 pr-6 space-y-6">
+          {subSectionsArray.length > 0 ? (
+            subSectionsArray.map((sub: SubSection, index: number) => (
+              <div key={sub._id || index} className="space-y-2">
+                <div className="flex items-start gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-cem-primary mt-2 flex-shrink-0" />
+                  <h4 className="text-[17px] font-bold text-cem-neutral-gray-900">
+                    {sub.title}
+                  </h4>
+                </div>
+                {sub.description && (
+                  <div
+                    className="text-cem-neutral-gray-700 leading-relaxed text-[15px] ml-4 prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ __html: sub.description }}
+                  />
+                )}
+              </div>
+            ))
           ) : (
-            <p className="text-cem-neutral-gray-800 leading-relaxed text-[16px] max-w-[650px] italic opacity-60">
-              No hay descripción disponible para esta sección.
+            <p className="text-cem-neutral-gray-800 leading-relaxed text-[16px] italic opacity-60">
+              No hay lecciones en esta sección.
             </p>
           )}
         </div>

@@ -21,6 +21,9 @@ export interface AdminCourse {
   updatedAt: string;
   instructor: CourseInstructor;
   category: CourseCategory | CourseCategory[];
+  career?: CourseCategory | null;
+  sector?: CourseCategory | null;
+  tag?: string[];
   totalStudentsEnrolled?: number;
   averageRating?: number;
   totalReviews?: number;

@@ -41,6 +41,7 @@ export default function AddCourse() {
           <ul className="list-disc pl-7 space-y-1 text-[14px] leading-[1.1] text-cem-neutral-gray-600">
             <li>Establece el precio del curso o hazlo gratuito.</li>
             <li>El tamaño estándar para la miniatura del curso es 1024x576.</li>
+            <li>Tamaño máximo: Imágenes (10MB) y Archivos/Videos (100MB).</li>
             <li>La sección de video controla el video de resumen del curso.</li>
             <li>El Constructor de Curso es donde creas y organizas un curso.</li>
             <li>

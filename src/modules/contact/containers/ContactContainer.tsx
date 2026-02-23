@@ -20,7 +20,7 @@ const ContactContainer = () => {
         </div>
       </div>
 
-      <div className="mt-32 px-5">
+      <div className="mt-32 px-5 hidden">
         <h1 className="text-center text-4xl font-bold mt-8 text-cem-neutral-gray-900">
           {CONTACT_TEXTS.reviews.title}
         </h1>

@@ -33,8 +33,9 @@ export const useSubSectionForm = ({
       setTimeout(() => {
         setValue("lectureTitle", subSectionData.title);
         setValue("lectureVideo", subSectionData.videoUrl);
+        setValue("lectureDescription", subSectionData.description || "");
 
-        const content = subSectionData.content || subSectionData.description || "";
+        const content = subSectionData.content || "";
         setRichTextContent(content);
         setValue("lectureContent", content);
 
@@ -55,7 +56,8 @@ export const useSubSectionForm = ({
 
     return (
       currentValues.lectureTitle !== subSectionData.title ||
-      currentValues.lectureContent !== subSectionData.description ||
+      currentValues.lectureDescription !== subSectionData.description ||
+      currentValues.lectureContent !== subSectionData.content ||
       currentValues.lectureVideo !== subSectionData.videoUrl ||
       !!(currentValues.lectureAttachments && currentValues.lectureAttachments.length > 0) ||
       !!(currentValues.deletedAttachments && currentValues.deletedAttachments.length > 0)
