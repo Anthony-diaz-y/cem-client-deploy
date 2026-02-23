@@ -52,28 +52,22 @@ const CourseDetailsContainer = () => {
   // Efecto para activar la animación cuando el contenido esté listo
   useEffect(() => {
     if (!courseLoading && response?.data?.courseDetails) {
-      // Pequeño delay para asegurar que el DOM esté listo
       const timer = setTimeout(() => {
         setIsContentReady(true);
       }, 50);
       return () => clearTimeout(timer);
-    } else {
-      setIsContentReady(false);
     }
   }, [courseLoading, response]);
 
   // Solo mostrar skeleton si paymentLoading está activo o si showSkeleton es true
-  // Esto evita el parpadeo cuando la carga es muy rápida
   if (
     paymentLoading ||
     loading ||
     (showSkeleton && courseLoading) ||
-    !response
+    !response ||
+    !response.data ||
+    !response.data.courseDetails
   ) {
-    return <CourseLoadingSkeleton />;
-  }
-
-  if (!response.data || !response.data.courseDetails) {
     return <CourseLoadingSkeleton />;
   }
 
@@ -83,61 +77,59 @@ const CourseDetailsContainer = () => {
   return (
     <>
       <div
-        className={`relative min-h-screen bg-cem-neutral-white course-details-enter ${isContentReady ? "opacity-100" : "opacity-0"
+        className={`relative min-h-screen bg-cem-neutral-white mt-20 course-details-enter ${isContentReady ? "opacity-100" : "opacity-0"
           } course-details-transition`}
       >
-        {/* 1. Top Section - Blue Background (Hero) */}
-        <div className="w-full bg-cem-celeste-light px-28  mt-20 border-b border-transparent course-hero-enter">
-          <div className="mx-auto max-w-[1260px] px-4 pt-10 pb-10 lg:pt-14 lg:pb-14">
-            <div className="w-full lg:max-w-[760px]">
-              <CourseHero
-                course={courseDetails}
-                avgReviewCount={avgReviewCount}
-              />
+        {/* Fondo decorativo del Hero (Solo azul superior) */}
+        <div className="absolute top-0 left-0 w-full h-[290px] bg-cem-celeste-light border-b border-transparent pointer-events-none" />
+
+        {/* Contenedor Principal en 2 Columnas */}
+        <div className="relative mx-auto max-w-[1260px] px-4 lg:px-16 xl:px-10">
+          <div className="flex flex-col lg:flex-row gap-12">
+
+            {/* Columna Izquierda: Información del Curso */}
+            <div className="w-full lg:max-w-[760px] flex-1">
+              {/* Cabecera (Hero Content) */}
+              <div className="pt-10 pb-10 lg:pt-14 lg:pb-14">
+                <CourseHero
+                  course={courseDetails}
+                  avgReviewCount={avgReviewCount}
+                />
+              </div>
+
+              {/* Sidebar Móvil (solo se ve en pantallas pequeñas) */}
+              <div className="lg:hidden -mt-4 mb-8">
+                <CourseDetailsCard
+                  course={courseDetails}
+                  setConfirmationModal={setConfirmationModal}
+                  handleBuyCourse={handleBuyCourse}
+                  handleAddToCart={handleAddToCart}
+                  isEnrolled={response.data.isEnrolled}
+                />
+              </div>
+
+              {/* Secciones de Información y Contenido */}
+              <div className="space-y-8 lg:space-y-12 pb-20">
+                <CourseInfoSection
+                  whatYouWillLearn={whatYouWillLearn}
+                  tag={courseDetails.tag}
+                />
+
+                <CourseContentSection
+                  response={response}
+                  totalNoOfLectures={totalNoOfLectures}
+                  isActive={isActive}
+                  handleActive={handleActive}
+                  onCollapseAll={handleCollapseAll}
+                />
+
+                <CourseAuthorSection instructor={instructor} instructors={instructors} />
+              </div>
             </div>
-          </div>
-        </div>
 
-        {/* Mobile Sidebar - Rendered between Hero and Content */}
-        <div className="lg:hidden px-4 -mt-4 mb-8 relative z-20 course-sidebar-enter">
-          <CourseDetailsCard
-            course={courseDetails}
-            setConfirmationModal={setConfirmationModal}
-            handleBuyCourse={handleBuyCourse}
-            handleAddToCart={handleAddToCart}
-            isEnrolled={response.data.isEnrolled}
-          />
-        </div>
-
-        {/* 2. Bottom Section - White Background (Content) */}
-        <div className="w-full bg-white px-28 course-content-enter">
-          <div className="mx-auto max-w-[1260px] px-4 pb-16 pt-8 lg:pt-12">
-            <div className="w-full lg:max-w-[760px] space-y-8 lg:space-y-12">
-              <CourseInfoSection
-                whatYouWillLearn={whatYouWillLearn}
-                tag={courseDetails.tag}
-                category={courseDetails.category}
-              />
-
-              <CourseContentSection
-                response={response}
-                totalNoOfLectures={totalNoOfLectures}
-                isActive={isActive}
-                handleActive={handleActive}
-                onCollapseAll={handleCollapseAll}
-              />
-
-              <CourseAuthorSection instructor={instructor} instructors={instructors} />
-            </div>
-          </div>
-        </div>
-
-        {/* 3. Desktop Sidebar Overlay */}
-        <div className="hidden lg:block absolute top-0 left-0 w-full h-full pointer-events-none z-30 course-sidebar-enter">
-          <div className="mx-auto max-w-[1260px] px-4 h-full relative">
-            {/* Position Sidebar on the right */}
-            <div className="absolute right-0 top-0 bottom-5">
-              <div className="sticky top-24 pt-11 w-[410px] pointer-events-auto">
+            {/* Columna Derecha: Tarjeta de Precio y Compra (Sticky) */}
+            <div className="hidden lg:block w-[410px] flex-shrink-0 relative">
+              <div className="sticky top-28 pt-12">
                 <CourseDetailsCard
                   course={courseDetails}
                   setConfirmationModal={setConfirmationModal}
@@ -147,6 +139,7 @@ const CourseDetailsContainer = () => {
                 />
               </div>
             </div>
+
           </div>
         </div>
       </div>
