@@ -60,7 +60,7 @@ export default function MobileProfileDropDown() {
           <Link href="/dashboard/my-profile" onClick={() => setOpen(false)}>
             <div className="flex w-full items-center gap-x-2 py-3 px-4 text-sm font-medium text-cem-neutral-gray-800 hover:bg-cem-teal-50 hover:text-cem-primary transition-colors">
               <VscAccount className="text-lg" />
-              My Profile
+              Mi Perfil
             </div>
           </Link>
 

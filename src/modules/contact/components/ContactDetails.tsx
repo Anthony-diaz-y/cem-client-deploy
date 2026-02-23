@@ -6,17 +6,17 @@ import { contactDetails } from "../data";
 
 const ContactDetails = () => {
   return (
-    <div className="flex flex-col gap-6 rounded-xl bg-cem-neutral-gray-900 p-6 lg:p-10 shadow-xl border border-cem-neutral-gray-800 h-full">
+    <div className="flex flex-col gap-6 rounded-xl bg-cem-primary p-6 lg:p-10 shadow-xl border border-white/10 h-full">
       {contactDetails.map((ele, i) => {
         const Icon =
           (Icon1 as Record<string, React.ComponentType<{ size?: number }>>)[
-            ele.icon
+          ele.icon
           ] ||
           (Icon2 as Record<string, React.ComponentType<{ size?: number }>>)[
-            ele.icon
+          ele.icon
           ] ||
           (Icon3 as Record<string, React.ComponentType<{ size?: number }>>)[
-            ele.icon
+          ele.icon
           ];
         return (
           <div
@@ -34,10 +34,10 @@ const ContactDetails = () => {
               </h1>
             </div>
 
-            <p className="font-medium text-cem-neutral-gray-400 text-base">
+            <p className="font-medium text-white/70 text-base">
               {ele?.description}
             </p>
-            <p className="font-semibold text-cem-primary-light text-base">
+            <p className="font-semibold text-white text-base">
               {ele?.details}
             </p>
           </div>

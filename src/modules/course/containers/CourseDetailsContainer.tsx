@@ -129,7 +129,7 @@ const CourseDetailsContainer = () => {
 
             {/* Columna Derecha: Tarjeta de Precio y Compra (Sticky) */}
             <div className="hidden lg:block w-[410px] flex-shrink-0 relative">
-              <div className="sticky top-28 pt-12">
+              <div className="sticky top-20 pt-12 mb-5">
                 <CourseDetailsCard
                   course={courseDetails}
                   setConfirmationModal={setConfirmationModal}
