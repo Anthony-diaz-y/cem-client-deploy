@@ -40,7 +40,6 @@ export { default as AdminClassFilters } from "./components/scheduled-classes/Adm
 export { default as ClassStatisticsCards } from "./components/scheduled-classes/ClassStatisticsCards";
 
 // Components - Instructor
-export { default as AllInstructorsTable } from "./components/instructor/AllInstructorsTable";
 export { default as PendingInstructorsTable } from "./components/instructor/PendingInstructorsTable";
 
 // Components - Shared
