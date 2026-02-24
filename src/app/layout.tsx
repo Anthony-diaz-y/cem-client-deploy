@@ -6,8 +6,8 @@ import ConditionalFooter from "@shared/components/navigation/ConditionalFooter";
 import "../index.css";
 
 export const metadata: Metadata = {
-  title: "CEM - Conectamos profesionales, fortalecemos competencias",
-  description: "Conectamos profesionales, fortalecemos competencias.",
+  title: "E-Learning Platform",
+  description: "Learn new skills today",
 };
 
 export default function RootLayout({
