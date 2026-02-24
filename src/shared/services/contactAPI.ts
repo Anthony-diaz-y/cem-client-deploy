@@ -26,12 +26,13 @@ export interface ContactFormData {
   phone?: string; // Nuevo campo opcional
   subject?: string;
   message: string;
+  captchaToken: string;
 }
 
 export const sendContactMessage = async (
   data: ContactFormData | Record<string, unknown>,
 ) => {
-  const toastId = toast.loading("Enviando mensaje...", {
+  toast.loading("Enviando mensaje...", {
     id: "contact-loading",
   });
   let result = null;
@@ -58,7 +59,7 @@ export const sendContactMessage = async (
     setTimeout(() => {
       toast.success(
         response.data.message ||
-          "¡Mensaje enviado exitosamente! Nos pondremos en contacto contigo pronto.",
+        "¡Mensaje enviado exitosamente! Nos pondremos en contacto contigo pronto.",
         {
           duration: 5000,
           id: "contact-success",
@@ -156,7 +157,7 @@ export const getContactMessages = async (
     const apiError = error as ApiError;
     toast.error(
       apiError?.response?.data?.message ||
-        "No se pudieron obtener los mensajes",
+      "No se pudieron obtener los mensajes",
     );
   }
 
@@ -218,7 +219,7 @@ export const getContactStats = async (token: string) => {
     const apiError = error as ApiError;
     toast.error(
       apiError?.response?.data?.message ||
-        "No se pudieron obtener las estadísticas",
+      "No se pudieron obtener las estadísticas",
     );
   }
 
@@ -248,7 +249,7 @@ export const markMessageAsRead = async (messageId: string, token: string) => {
     const apiError = error as ApiError;
     toast.error(
       apiError?.response?.data?.message ||
-        "No se pudo marcar el mensaje como leído",
+      "No se pudo marcar el mensaje como leído",
     );
   } finally {
     toast.dismiss(toastId);
@@ -333,7 +334,7 @@ export const replyToMessage = async (
   token: string,
 ) => {
   let result = false;
-  const toastId = toast.loading("Enviando respuesta...", {
+  toast.loading("Enviando respuesta...", {
     id: `reply-loading-${messageId}`,
   });
 

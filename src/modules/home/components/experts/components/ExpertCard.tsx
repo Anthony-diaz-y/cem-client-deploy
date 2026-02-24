@@ -5,6 +5,8 @@ import Image from "next/image";
 import type { Expert } from "../../../constants/experts.constants";
 import socialIcon from "@shared/assets/social/social-Icon.webp";
 
+import { ensureFullUrl } from "@shared/utils/urlHelper";
+
 interface ExpertCardProps {
   expert: Expert;
 }
@@ -43,8 +45,10 @@ export const ExpertCard: React.FC<ExpertCardProps> = ({ expert }) => {
       <div className="flex items-center justify-center gap-3 w-full">
         {/* Icono ID */}
         <a
-          href={expert.links?.orcid || "#"}
+          href={ensureFullUrl(expert.links?.orcid)}
           className="w-7 h-7 rounded-full bg-cem-neutral-gray-200 flex items-center justify-center"
+          target="_blank"
+          rel="noopener noreferrer"
           aria-label="ORCID"
         >
           <span className="text-[10px] font-bold text-cem-neutral-gray-600 leading-none relative">
@@ -56,8 +60,10 @@ export const ExpertCard: React.FC<ExpertCardProps> = ({ expert }) => {
 
         {/* Icono ResearchGate/Molecule - Icono de red/molecular */}
         <a
-          href={expert.links?.researchGate || "#"}
+          href={ensureFullUrl(expert.links?.researchGate)}
           className="flex items-center justify-center hover:opacity-80 transition-opacity group"
+          target="_blank"
+          rel="noopener noreferrer"
           aria-label="ResearchGate"
         >
           <div className="relative w-5 h-5">
@@ -67,8 +73,10 @@ export const ExpertCard: React.FC<ExpertCardProps> = ({ expert }) => {
 
         {/* LinkedIn */}
         <a
-          href={expert.links?.linkedin || "#"}
+          href={ensureFullUrl(expert.links?.linkedin)}
           className="w-7 h-7 rounded-lg bg-cem-neutral-gray-200 flex items-center justify-center"
+          target="_blank"
+          rel="noopener noreferrer"
           aria-label="LinkedIn"
         >
           <span className="text-[10px] font-bold text-cem-neutral-gray-600 leading-none relative">

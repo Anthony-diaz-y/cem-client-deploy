@@ -30,7 +30,7 @@ export default function AddCourse() {
         </div>
 
         {/* Course Upload Tips */}
-        <div className="sticky top-24 hidden xl:block w-full max-w-[371px] self-start mt-[5px] flex flex-col rounded-2xl border-[1px] border-cem-neutral-gray-200 bg-white  pl-4 pr-6 py-6 shadow-sm">
+        <div className="sticky top-24 hidden xl:flex w-full max-w-[371px] self-start mt-[5px] flex-col rounded-2xl border-[1px] border-cem-neutral-gray-200 bg-white pl-4 pr-6 py-6 shadow-sm">
           <div className="flex items-center w-full gap-x-0 mb-2">
             <span className="text-xl">⚡</span>
             <p className="text-xl text-cem-neutral-gray-900 font-semibold font-boogaloo">
@@ -52,6 +52,7 @@ export default function AddCourse() {
               La información de la sección Datos Adicionales aparece en la
               página individual del curso.
             </li>
+            <li>Se recomienda no agregar más de 4 requisitos por curso.</li>
             <li>Haz Anuncios para notificar cualquier</li>
             <li>Nota importante a todos los estudiantes inscritos a la vez.</li>
           </ul>

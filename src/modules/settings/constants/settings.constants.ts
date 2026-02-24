@@ -22,12 +22,18 @@ export const SETTINGS_TEXTS = {
       gender: "Género",
       contactNumber: "Número de Teléfono",
       about: "Acerca de mí",
+      linkedin: "LinkedIn",
+      orcid: "ORCID",
+      cti_vitae: "CTI Vitae / ResearchGate",
     },
     placeholders: {
       firstName: "Ingresa tu nombre",
       lastName: "Ingresa tu apellido",
       contactNumber: "Ingresa tu número de teléfono",
       about: "Cuéntanos algo sobre ti...",
+      linkedin: "Enlace a tu perfil de LinkedIn",
+      orcid: "Enlace a tu perfil de ORCID",
+      cti_vitae: "Enlace a tu CTI Vitae o ResearchGate",
     },
     validation: {
       firstNameRequired: "Por favor, ingresa tu nombre.",

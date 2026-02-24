@@ -3,6 +3,7 @@ import React from "react";
 import { useContactForm } from "../hooks/useContactForm";
 import { CONTACT_TEXTS } from "../constants/contact.constants";
 import CountryCodeDropdown from "./CountryCodeDropdown";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const ContactUsForm = () => {
   const {
@@ -19,10 +20,16 @@ const ContactUsForm = () => {
     setShowCountryDropdown,
     handleCountryCodeSelect,
     onSubmit,
+    recaptchaRef,
   } = useContactForm();
 
   return (
     <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
+      <ReCAPTCHA
+        ref={recaptchaRef}
+        size="invisible"
+        sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+      />
       <div className="flex flex-col gap-5 lg:flex-row">
         <div className="flex flex-col gap-2 lg:w-[48%]">
           <label htmlFor="firstname" className="lable-style">
@@ -150,10 +157,9 @@ const ContactUsForm = () => {
         disabled={loading}
         type="submit"
         className={`rounded-xl bg-cem-primary px-8 py-4 text-center text-base font-bold text-white shadow-lg shadow-cem-primary/20
-         ${
-           !loading &&
-           "transition-all duration-300 hover:scale-[0.99] hover:bg-cem-primary-dark hover:shadow-xl active:scale-95"
-         }  disabled:bg-cem-neutral-gray-300 disabled:shadow-none disabled:cursor-not-allowed`}
+         ${!loading &&
+          "transition-all duration-300 hover:scale-[0.99] hover:bg-cem-primary-dark hover:shadow-xl active:scale-95"
+          }  disabled:bg-cem-neutral-gray-300 disabled:shadow-none disabled:cursor-not-allowed`}
       >
         {loading
           ? CONTACT_TEXTS.form.button.submitting

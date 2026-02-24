@@ -83,6 +83,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
                 {...register("coursePrice_int", { required: true })}
                 className="form-style w-32 !pl-10 text-right pr-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 type="number"
+                onFocus={(e) => e.target.select()}
                 onKeyDown={(e) =>
                   ["e", "E", "+", "-", ","].includes(e.key) &&
                   e.preventDefault()
@@ -108,6 +109,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
                 })}
                 className="form-style w-16 p-0 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 type="number"
+                onFocus={(e) => e.target.select()}
                 onInput={(e) => {
                   const target = e.target as HTMLInputElement;
                   if (target.value.length > 2)
@@ -152,6 +154,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
                 {...register("coursePriceUSD_int")}
                 className="form-style w-32 !pl-10 text-right pr-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 type="number"
+                onFocus={(e) => e.target.select()}
                 onKeyDown={(e) =>
                   ["e", "E", "+", "-", ","].includes(e.key) &&
                   e.preventDefault()
@@ -173,6 +176,7 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
                 })}
                 className="form-style w-16 p-0 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 type="number"
+                onFocus={(e) => e.target.select()}
                 onInput={(e) => {
                   const target = e.target as HTMLInputElement;
                   if (target.value.length > 2)
@@ -265,7 +269,16 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         <input
           id="courseVideoUrl"
           placeholder="Pega aquí la url del video de Youtube o Vimeo"
-          {...register("courseVideoUrl")}
+          {...register("courseVideoUrl", {
+            required: {
+              value: true,
+              message: "El link del video promocional es requerido",
+            },
+            pattern: {
+              value: /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be|vimeo\.com)\/.*$/,
+              message: "El enlace debe ser de YouTube o Vimeo (ej: youtube.com/...)",
+            },
+          })}
           className="form-style w-full"
         />
         {errors.courseVideoUrl && (

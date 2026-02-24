@@ -207,9 +207,19 @@ export default function SubSectionModal({
                 disabled={view || loading}
                 id="lectureVideo"
                 placeholder="Pega aquí la url del video de Youtube o Vimeo"
-                {...register("lectureVideo")}
+                {...register("lectureVideo", {
+                  pattern: {
+                    value: /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be|vimeo\.com)\/.*$/,
+                    message: "El enlace debe ser de YouTube o Vimeo (ej: youtube.com/...)",
+                  },
+                })}
                 className="form-style w-full border-cem-neutral-gray-100 focus:border-cem-primary focus:ring-1 focus:ring-cem-primary py-2.5"
               />
+              {errors.lectureVideo && (
+                <span className="text-[10px] text-red-500 font-medium ml-1">
+                  {errors.lectureVideo.message}
+                </span>
+              )}
             </div>
           )}
 

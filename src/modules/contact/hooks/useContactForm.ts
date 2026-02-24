@@ -4,13 +4,15 @@ import { useForm } from "react-hook-form";
 import { ContactFormData } from "../types";
 import { sendContactMessage, type ContactAPIFormData } from "../services/contactAPI";
 import { CONTACT_TEXTS } from "../constants/contact.constants";
+import ReCAPTCHA from "react-google-recaptcha";
+import { toast } from "react-hot-toast";
 
 export interface UseContactFormReturn {
   // Form methods
   register: ReturnType<typeof useForm<ContactFormData>>["register"];
   handleSubmit: ReturnType<typeof useForm<ContactFormData>>["handleSubmit"];
   errors: ReturnType<typeof useForm<ContactFormData>>["formState"]["errors"];
-  
+
   // State
   loading: boolean;
   success: boolean;
@@ -18,7 +20,8 @@ export interface UseContactFormReturn {
   showCountryDropdown: boolean;
   selectedCountryCode: string;
   countryDropdownRef: React.RefObject<HTMLDivElement | null>;
-  
+  recaptchaRef: React.RefObject<ReCAPTCHA | null>;
+
   // Actions
   setCountryCodeSearch: (value: string) => void;
   setShowCountryDropdown: (value: boolean) => void;
@@ -33,6 +36,7 @@ export function useContactForm(): UseContactFormReturn {
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [selectedCountryCode, setSelectedCountryCode] = useState<string>(CONTACT_TEXTS.form.countryCode.default);
   const countryDropdownRef = useRef<HTMLDivElement>(null);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const {
     register,
@@ -115,6 +119,15 @@ export function useContactForm(): UseContactFormReturn {
         }
       }
 
+      // Obtener token de reCAPTCHA
+      const captchaToken = await recaptchaRef.current?.executeAsync();
+
+      if (!captchaToken) {
+        toast.error("Error al validar el captcha. Por favor intentalo de nuevo.");
+        setLoading(false);
+        return;
+      }
+
       // Preparar datos para el backend
       const contactData: ContactAPIFormData = {
         name,
@@ -122,6 +135,7 @@ export function useContactForm(): UseContactFormReturn {
         phone: phone || undefined,
         subject: data.subject || undefined,
         message: data.message,
+        captchaToken,
       };
 
       const result = await sendContactMessage(contactData);
@@ -129,6 +143,8 @@ export function useContactForm(): UseContactFormReturn {
       // Si el resultado existe, el mensaje se envió exitosamente
       if (result) {
         setSuccess(true);
+        // Resetear captcha
+        recaptchaRef.current?.reset();
         // Limpiar formulario después de éxito
         setTimeout(() => {
           reset({
@@ -145,7 +161,7 @@ export function useContactForm(): UseContactFormReturn {
           setSuccess(false); // Ocultar mensaje de éxito después de limpiar
         }, 3000); // Limpiar después de 3 segundos
       }
-    } catch (error: unknown) {
+    } catch {
       setSuccess(false);
       // El error ya se maneja en sendContactMessage con toast
     } finally {
@@ -167,6 +183,7 @@ export function useContactForm(): UseContactFormReturn {
     setShowCountryDropdown,
     handleCountryCodeSelect,
     onSubmit,
+    recaptchaRef,
   };
 }
 

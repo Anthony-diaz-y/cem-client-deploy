@@ -1,21 +1,18 @@
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { FiMove } from "react-icons/fi";
+import { FiBookOpen } from "react-icons/fi";
 import CategoryCourseItem from "../../CategoryCourseItem";
 import type { CategoryCardProps } from "../interfaces/CategoryCard.interface";
 
 interface CategoryCardContentProps extends Pick<
   CategoryCardProps,
-  "category" | "draggedCourse" | "onDragStart" | "onDragEnd"
+  "category"
 > {
   courseCount: number;
 }
 
 export const CategoryCardContent: React.FC<CategoryCardContentProps> = ({
   category,
-  draggedCourse,
-  onDragStart,
-  onDragEnd,
   courseCount,
 }) => {
   return (
@@ -56,13 +53,10 @@ export const CategoryCardContent: React.FC<CategoryCardContentProps> = ({
                 className="text-center py-8 bg-white rounded-2xl border border-dashed border-cem-neutral-gray-200"
               >
                 <div className="w-10 h-10 rounded-full bg-cem-neutral-gray-50 flex items-center justify-center mx-auto mb-3">
-                  <FiMove className="text-xl text-cem-neutral-gray-300" />
+                  <FiBookOpen className="text-xl text-cem-neutral-gray-300" />
                 </div>
                 <p className="text-sm font-bold text-cem-neutral-gray-900">
                   Esta categoría no tiene cursos
-                </p>
-                <p className="text-xs text-cem-neutral-gray-400 mt-1 font-medium italic">
-                  Arrastra cursos aquí desde otras categorías para organizarlos
                 </p>
               </motion.div>
             ) : (
@@ -77,9 +71,6 @@ export const CategoryCardContent: React.FC<CategoryCardContentProps> = ({
                     <CategoryCourseItem
                       course={course}
                       categoryId={category.id}
-                      draggedCourse={draggedCourse}
-                      onDragStart={onDragStart}
-                      onDragEnd={onDragEnd}
                     />
                   </div>
                 ))}

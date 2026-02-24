@@ -8,41 +8,14 @@ import type { CourseItem } from "../types";
 interface CategoryCourseItemProps {
   course: CourseItem;
   categoryId: string;
-  draggedCourse: {
-    courseId: string;
-    sourceCategoryId: string;
-    courseName: string;
-  } | null;
-  onDragStart: (
-    e: React.DragEvent,
-    courseId: string,
-    sourceCategoryId: string,
-    courseName: string,
-  ) => void;
-  onDragEnd: () => void;
 }
 
 export default function CategoryCourseItem({
   course,
-  categoryId,
-  draggedCourse,
-  onDragStart,
-  onDragEnd,
 }: CategoryCourseItemProps) {
-  const isDragging = draggedCourse?.courseId === course.id;
-
   return (
     <div
-      draggable
-      onDragStart={(e) =>
-        onDragStart(e, course.id, categoryId, course.courseName)
-      }
-      onDragEnd={onDragEnd}
-      className={`group flex items-center gap-4 p-5 rounded-2xl border transition-all cursor-move ${
-        isDragging
-          ? "opacity-50 border-cem-primary bg-cem-primary/5 scale-95"
-          : "bg-white border-cem-neutral-gray-100 hover:border-cem-primary hover:shadow-md"
-      }`}
+      className="group flex items-center gap-4 p-5 rounded-2xl border transition-all bg-white border-cem-neutral-gray-100 hover:border-cem-primary hover:shadow-md cursor-default"
     >
       <div className="flex-1 min-w-0">
         <h4 className="text-[17px] font-bold text-cem-neutral-gray-900 truncate mb-0.5">

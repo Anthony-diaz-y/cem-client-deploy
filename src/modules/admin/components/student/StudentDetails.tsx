@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   getStudentDetails,
@@ -12,7 +12,7 @@ import {
 import { Img, ConfirmationModal, Loading } from "@shared/components";
 import { formatDate } from "@shared/utils/formatDate";
 import { FiArrowLeft, FiEdit, FiCheckCircle, FiXCircle } from "react-icons/fi";
-import EditStudentModal from "./EditStudentModal";
+import { StatCard } from "../shared/StatCard";
 
 interface StudentDetailsProps {
   studentId: string;
@@ -38,17 +38,7 @@ export default function StudentDetails({
   }>({
     isOpen: false,
   });
-  const [editModal, setEditModal] = useState<{
-    isOpen: boolean;
-  }>({
-    isOpen: false,
-  });
-
-  useEffect(() => {
-    fetchDetails();
-  }, [studentId, token]);
-
-  const fetchDetails = async () => {
+  const fetchDetails = useCallback(async () => {
     if (!token || !studentId || studentId === "undefined") return;
     setLoading(true);
     try {
@@ -58,12 +48,16 @@ export default function StudentDetails({
         setStatistics(data.statistics);
         setCourses(data.enrolledCourses);
       }
-    } catch (error) {
+    } catch {
       // Error manejado por el servicio
     } finally {
       setLoading(false);
     }
-  };
+  }, [studentId, token]);
+
+  useEffect(() => {
+    fetchDetails();
+  }, [fetchDetails]);
 
   const handleToggleStatus = () => {
     if (!student) return;
@@ -98,94 +92,171 @@ export default function StudentDetails({
 
   return (
     <>
-      <div className="space-y-6">
+      <div className="space-y-8 animate-fadeIn">
         {/* Botón volver */}
         <button
           onClick={() => router.push("/dashboard/admin/students")}
-          className="flex items-center gap-2 text-richblack-300 hover:text-richblack-5 transition-colors"
+          className="flex items-center gap-2 text-cem-neutral-gray-400 hover:text-cem-primary transition-all group w-fit"
         >
-          <FiArrowLeft size={20} />
-          <span>Volver a la lista</span>
+          <div className="p-2 rounded-full group-hover:bg-cem-primary/10 transition-all">
+            <FiArrowLeft size={20} />
+          </div>
+          <span className="font-bold text-sm tracking-wide">Volver a la lista</span>
         </button>
 
         {/* Header del estudiante */}
-        <div className="bg-richblack-800 rounded-xl border border-richblack-700 p-6">
-          <div className="flex items-start gap-6">
-            <Img
-              src={
-                student.image ||
-                `https://api.dicebear.com/5.x/initials/svg?seed=${student.name}`
-              }
-              alt={`${student.name}`}
-              className="h-24 w-24 rounded-full object-cover"
-            />
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-richblack-5 mb-2">
-                {student.name}
-              </h1>
-              <p className="text-richblack-300 mb-4">{student.email}</p>
-              <div className="flex gap-3 mb-4">
-                <span
-                  className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${
-                    student.active
-                      ? "bg-green-500/20 text-green-400"
-                      : "bg-gray-500/20 text-gray-400"
+        <div className="bg-white rounded-[2.5rem] border border-cem-neutral-gray-100 p-8 shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
+            <div className="relative">
+              <Img
+                src={
+                  student.image ||
+                  `https://api.dicebear.com/5.x/initials/svg?seed=${student.name}`
+                }
+                alt={`${student.name}`}
+                className="h-32 w-32 rounded-full object-cover border-4 border-white shadow-lg"
+              />
+              <div
+                className={`absolute bottom-1 right-1 h-6 w-6 rounded-full border-4 border-white ${student.active ? "bg-green-500" : "bg-cem-neutral-gray-300"
                   }`}
-                >
-                  {student.active ? "Activo" : "Inactivo"}
-                </span>
-              </div>
+              ></div>
+            </div>
 
-              <div className="space-y-2 text-sm text-richblack-400">
+            <div className="flex-1 text-center lg:text-left">
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 mb-2">
+                <h1 className="text-3xl font-bold text-cem-neutral-gray-900 tracking-tight">
+                  {student.name}
+                </h1>
+                <div className="flex gap-2">
+                  <span
+                    className={`inline-flex items-center px-3 py-1 rounded-lg text-[10px] font-bold ${student.active
+                      ? "bg-cem-primary/10 text-cem-primary"
+                      : "bg-cem-neutral-gray-100 text-cem-neutral-gray-400"
+                      }`}
+                  >
+                    {student.active ? "ACTIVO" : "INACTIVO"}
+                  </span>
+                </div>
+              </div>
+              <p className="text-cem-neutral-gray-500 font-medium mb-6">
+                {student.email}
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-sm bg-cem-neutral-gray-50/50 p-6 rounded-2xl border border-cem-neutral-gray-100">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-white border border-cem-neutral-gray-100 flex items-center justify-center text-cem-primary shadow-sm">
+                    <FiCheckCircle size={16} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-wider">
+                      Miembro desde
+                    </p>
+                    <p className="font-bold text-cem-neutral-gray-700">
+                      {formatDate(student.createdAt)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-white border border-cem-neutral-gray-100 flex items-center justify-center text-cem-primary shadow-sm">
+                    <FiCheckCircle size={16} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-wider">
+                      ID Estudiante
+                    </p>
+                    <p className="font-bold text-cem-neutral-gray-700 font-mono">
+                      #{student.id.substring(0, 8).toUpperCase()}
+                    </p>
+                  </div>
+                </div>
+
+                {(student.contactNumber || student.additionalDetails?.contactNumber) && (
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-lg bg-white border border-cem-neutral-gray-100 flex items-center justify-center text-cem-primary shadow-sm">
+                      <FiCheckCircle size={16} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-wider">
+                        Contacto
+                      </p>
+                      <p className="font-bold text-cem-neutral-gray-700">
+                        {student.contactNumber || student.additionalDetails?.contactNumber}
+                      </p>
+                    </div>
+                  </div>
+                )}
                 {student.additionalDetails?.gender && (
-                  <p>Género: {student.additionalDetails.gender}</p>
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-lg bg-white border border-cem-neutral-gray-100 flex items-center justify-center text-cem-primary shadow-sm">
+                      <FiCheckCircle size={16} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-wider">
+                        Género
+                      </p>
+                      <p className="font-bold text-cem-neutral-gray-700">
+                        {student.additionalDetails.gender}
+                      </p>
+                    </div>
+                  </div>
                 )}
                 {student.additionalDetails?.dateOfBirth && (
-                  <p>
-                    Fecha de Nacimiento:{" "}
-                    {formatDate(student.additionalDetails.dateOfBirth)}
-                  </p>
-                )}
-                {(student.contactNumber ||
-                  student.additionalDetails?.contactNumber) && (
-                  <p>
-                    Contacto:{" "}
-                    {student.contactNumber ||
-                      student.additionalDetails?.contactNumber}
-                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-lg bg-white border border-cem-neutral-gray-100 flex items-center justify-center text-cem-primary shadow-sm">
+                      <FiCheckCircle size={16} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-wider">
+                        F. de Nacimiento
+                      </p>
+                      <p className="font-bold text-cem-neutral-gray-700">
+                        {formatDate(student.additionalDetails.dateOfBirth)}
+                      </p>
+                    </div>
+                  </div>
                 )}
                 {student.additionalDetails?.about && (
-                  <p className="mt-2 text-richblack-300">
-                    {student.additionalDetails.about}
-                  </p>
+                  <div className="col-span-full pt-4 border-t border-cem-neutral-gray-100 mt-2">
+                    <p className="text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-wider mb-2">
+                      Acerca de mí
+                    </p>
+                    <p className="text-cem-neutral-gray-600 leading-relaxed italic">
+                      &quot;{student.additionalDetails.about}&quot;
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
-            <div className="flex gap-2">
+
+            <div className="flex flex-col sm:flex-row lg:flex-col gap-3 w-full lg:w-auto">
               <button
-                onClick={() => setEditModal({ isOpen: true })}
-                className="px-4 py-2 bg-yellow-50 text-richblack-900 rounded-lg font-medium hover:bg-yellow-100 transition-colors flex items-center gap-2"
+                onClick={() =>
+                  router.push(
+                    `/dashboard/admin/students/${studentId}/edit`,
+                  )
+                }
+                className="px-6 py-3 bg-cem-primary text-white rounded-xl font-bold hover:bg-cem-primary-dark transition-all flex items-center justify-center gap-2 shadow-lg shadow-cem-primary/20"
               >
                 <FiEdit size={18} />
-                Editar
+                Editar Perfil
               </button>
               <button
                 onClick={handleToggleStatus}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${
-                  student.active
-                    ? "bg-orange-600 text-white hover:bg-orange-700"
-                    : "bg-green-600 text-white hover:bg-green-700"
-                }`}
+                className={`px-6 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 border-2 ${student.active
+                  ? "border-red-100 text-red-500 hover:bg-red-50"
+                  : "border-green-100 text-green-500 hover:bg-green-50"
+                  }`}
               >
                 {student.active ? (
                   <>
                     <FiXCircle size={18} />
-                    Desactivar
+                    Desactivar Cuenta
                   </>
                 ) : (
                   <>
                     <FiCheckCircle size={18} />
-                    Activar
+                    Activar Cuenta
                   </>
                 )}
               </button>
@@ -194,73 +265,77 @@ export default function StudentDetails({
         </div>
 
         {/* Estadísticas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
-            <p className="text-sm text-richblack-400 mb-2">Cursos Inscritos</p>
-            <p className="text-3xl font-bold text-richblack-5">
-              {statistics.enrolledCourses}
-            </p>
-          </div>
-          <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
-            <p className="text-sm text-richblack-400 mb-2">
-              Cursos Completados
-            </p>
-            <p className="text-3xl font-bold text-green-400">
-              {statistics.completedCourses}
-            </p>
-          </div>
-          <div className="bg-richblack-800 rounded-xl p-6 border border-richblack-700">
-            <p className="text-sm text-richblack-400 mb-2">Progreso Promedio</p>
-            <p className="text-3xl font-bold text-blue-400">
-              {statistics.averageProgress.toFixed(1)}%
-            </p>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <StatCard
+            title="Cursos Inscritos"
+            value={statistics.enrolledCourses}
+            height={119}
+            className="w-full"
+          />
+          <StatCard
+            title="Cursos Completados"
+            value={statistics.completedCourses}
+            height={119}
+            className="w-full"
+          />
+          <StatCard
+            title="Progreso Promedio"
+            value={Number(statistics.averageProgress.toFixed(1))}
+            height={119}
+            className="w-full"
+          />
         </div>
 
         {/* Lista de cursos (Inscritos) */}
-        <div className="bg-richblack-800 rounded-xl border border-richblack-700 overflow-hidden">
-          <div className="px-6 py-4 border-b border-richblack-700">
-            <h2 className="text-xl font-semibold text-richblack-5">
-              Cursos Inscritos ({courses.length})
+        <div className="bg-white rounded-[2.5rem] border border-cem-neutral-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+          <div className="px-8 py-6 border-b border-cem-neutral-gray-100 bg-cem-neutral-gray-50/50 flex justify-between items-center">
+            <h2 className="text-2xl font-medium text-cem-neutral-gray-900">
+              Cursos Inscritos{" "}
+              <span className="text-cem-neutral-gray-400 font-normal">
+                ({courses.length})
+              </span>
             </h2>
           </div>
           {courses.length === 0 ? (
-            <div className="p-8 text-center">
-              <p className="text-richblack-400">
+            <div className="p-16 text-center">
+              <div className="w-20 h-20 bg-cem-neutral-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FiCheckCircle className="text-3xl text-cem-neutral-gray-200" />
+              </div>
+              <p className="text-cem-neutral-gray-900 text-xl font-bold mb-1">
                 Este estudiante no tiene cursos inscritos
               </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-richblack-900">
-                  <tr>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider w-[40%]">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-cem-neutral-gray-50/30">
+                    <th className="px-8 py-4 text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-widest w-[40%]">
                       Curso
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider w-[15%]">
+                    <th className="px-6 py-4 text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-widest w-[15%]">
                       Categoría
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider w-[15%]">
+                    <th className="px-6 py-4 text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-widest w-[15%]">
                       Fecha de Inscripción
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider w-[20%]">
+                    <th className="px-6 py-4 text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-widest w-[20%]">
                       Progreso
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-richblack-400 uppercase tracking-wider w-[10%]">
+                    <th className="px-8 py-4 text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-widest text-right w-[10%]">
                       Estado
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-richblack-700">
+                <tbody className="divide-y divide-cem-neutral-gray-50">
                   {courses.map((course) => (
                     <tr
                       key={course.id}
-                      className="hover:bg-richblack-900/50 transition-colors"
+                      className="hover:bg-cem-neutral-gray-50/20 transition-all group"
                     >
-                      <td className="px-6 py-4">
+                      <td className="px-8 py-5">
                         <div className="flex items-start gap-4">
-                          <div className="relative h-[60px] w-[100px] flex-shrink-0 rounded-lg overflow-hidden border border-richblack-700">
+                          <div className="relative h-[60px] w-[100px] flex-shrink-0 rounded-lg overflow-hidden border border-cem-neutral-gray-100">
                             <Img
                               src={course.thumbnail}
                               alt={course.courseName}
@@ -268,54 +343,52 @@ export default function StudentDetails({
                             />
                           </div>
                           <div>
-                            <p className="text-sm font-semibold text-richblack-5 mb-1 line-clamp-2">
+                            <p className="text-sm font-bold text-cem-neutral-gray-800 mb-1 line-clamp-2">
                               {course.courseName}
                             </p>
-                            <p className="text-xs text-richblack-400">
-                              ID: {course.id.substring(0, 8)}...
+                            <p className="text-[10px] text-cem-neutral-gray-400 font-medium uppercase font-mono tracking-tighter">
+                              ID: {course.id.substring(0, 8)}
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-richblack-700 text-richblack-300 border border-richblack-600">
+                      <td className="px-6 py-5">
+                        <span className="inline-flex px-2.5 py-0.5 rounded-lg text-xs font-bold bg-cem-neutral-gray-50 text-cem-neutral-gray-500 border border-cem-neutral-gray-100">
                           {course.category?.name || "Sin categoría"}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-richblack-300">
+                      <td className="px-6 py-5 text-sm font-semibold text-cem-neutral-gray-700">
                         {formatDate(course.enrolledAt)}
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-5">
                         <div className="w-full">
                           <div className="flex justify-between items-center mb-1.5">
-                            <span className="text-xs font-medium text-richblack-300">
+                            <span className="text-xs font-bold text-cem-neutral-gray-700">
                               {course.progressPercentage}%
                             </span>
-                            <span className="text-xs text-richblack-400">
-                              Completado
+                            <span className="text-[10px] font-bold text-cem-neutral-gray-400 uppercase tracking-tighter">
+                              {course.completed ? "COMPLETADO" : "EN CURSO"}
                             </span>
                           </div>
-                          <div className="w-full bg-richblack-700 rounded-full h-2.5 overflow-hidden">
+                          <div className="w-full bg-cem-neutral-gray-100 rounded-full h-2 overflow-hidden">
                             <div
-                              className={`h-full rounded-full transition-all duration-500 ease-out ${
-                                course.progressPercentage === 100
-                                  ? "bg-gradient-to-r from-green-500 to-emerald-400"
-                                  : "bg-gradient-to-r from-yellow-50 to-yellow-200"
-                              }`}
+                              className={`h-full rounded-full transition-all duration-500 ease-out ${course.progressPercentage === 100
+                                ? "bg-cem-primary"
+                                : "bg-cem-primary/40"
+                                }`}
                               style={{ width: `${course.progressPercentage}%` }}
                             ></div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-8 py-5 text-right">
                         <span
-                          className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full border ${
-                            course.completed
-                              ? "bg-green-900/30 text-green-400 border-green-900"
-                              : "bg-blue-900/30 text-blue-400 border-blue-900"
-                          }`}
+                          className={`inline-flex px-3 py-1 text-[10px] font-bold rounded-lg ${course.completed
+                            ? "bg-green-50 text-green-500"
+                            : "bg-cem-primary/10 text-cem-primary"
+                            }`}
                         >
-                          {course.completed ? "Completado" : "En curso"}
+                          {course.completed ? "COMPLETADO" : "ACTIVO"}
                         </span>
                       </td>
                     </tr>
@@ -342,17 +415,6 @@ export default function StudentDetails({
             btn1Handler: handleConfirm,
             btn2Handler: () => setConfirmationModal({ isOpen: false }),
           }}
-        />
-      )}
-
-      {/* Modal de Edición */}
-      {editModal.isOpen && student && (
-        <EditStudentModal
-          isOpen={editModal.isOpen}
-          student={student}
-          token={token}
-          onClose={() => setEditModal({ isOpen: false })}
-          onUpdate={fetchDetails}
         />
       )}
     </>
