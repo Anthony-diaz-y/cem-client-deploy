@@ -34,6 +34,9 @@ export default function EditProfile() {
                 gender: user.additionalDetails?.gender || "Male",
                 contactNumber: user.additionalDetails?.contactNumber?.toString() || "",
                 about: user.additionalDetails?.about || user.additionalDetails?.biography || "",
+                linkedin: user.additionalDetails?.linkedin || "",
+                orcid: user.additionalDetails?.orcid || "",
+                cti_vitae: user.additionalDetails?.cti_vitae || "",
             });
         }
     }, [user, reset]);
@@ -198,6 +201,84 @@ export default function EditProfile() {
                             )}
                         </div>
                     </div>
+
+                    {/* Social Media - Only for Instructors */}
+                    {user?.accountType === "Instructor" && (
+                        <>
+                            <div className="flex flex-col gap-5 lg:flex-row">
+                                <div className="flex flex-col gap-2 lg:w-[48%]">
+                                    <label htmlFor="linkedin" className="lable-style">
+                                        {SETTINGS_TEXTS.editProfile.fields.linkedin}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="linkedin"
+                                        placeholder={SETTINGS_TEXTS.editProfile.placeholders.linkedin}
+                                        className="form-style"
+                                        {...register("linkedin", {
+                                            pattern: {
+                                                value: /^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/,
+                                                message: "El enlace debe ser válido (ej: linkedin.com/in/...)"
+                                            }
+                                        })}
+                                    />
+                                    {errors.linkedin && (
+                                        <span className="-mt-1 text-[12px] text-red-500 font-medium">
+                                            {errors.linkedin.message}
+                                        </span>
+                                    )}
+                                </div>
+
+                                <div className="flex flex-col gap-2 lg:w-[48%]">
+                                    <label htmlFor="orcid" className="lable-style">
+                                        {SETTINGS_TEXTS.editProfile.fields.orcid}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="orcid"
+                                        placeholder={SETTINGS_TEXTS.editProfile.placeholders.orcid}
+                                        className="form-style"
+                                        {...register("orcid", {
+                                            pattern: {
+                                                value: /^(https?:\/\/)?(www\.)?orcid\.org\/.*$/,
+                                                message: "El enlace debe ser válido (ej: orcid.org/0000...)"
+                                            }
+                                        })}
+                                    />
+                                    {errors.orcid && (
+                                        <span className="-mt-1 text-[12px] text-red-500 font-medium">
+                                            {errors.orcid.message}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col gap-5 lg:flex-row">
+                                <div className="flex flex-col gap-2 lg:w-full">
+                                    <label htmlFor="cti_vitae" className="lable-style">
+                                        {SETTINGS_TEXTS.editProfile.fields.cti_vitae}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="cti_vitae"
+                                        placeholder={SETTINGS_TEXTS.editProfile.placeholders.cti_vitae}
+                                        className="form-style"
+                                        {...register("cti_vitae", {
+                                            pattern: {
+                                                value: /^(https?:\/\/)?(www\.)?.+$/,
+                                                message: "El enlace debe ser una URL válida (ej: researchgate.net/...)"
+                                            }
+                                        })}
+                                    />
+                                    {errors.cti_vitae && (
+                                        <span className="-mt-1 text-[12px] text-red-500 font-medium">
+                                            {errors.cti_vitae.message}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 <div className="flex justify-end gap-2">

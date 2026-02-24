@@ -265,7 +265,16 @@ const CourseFormFields: React.FC<CourseFormFieldsProps> = ({
         <input
           id="courseVideoUrl"
           placeholder="Pega aquí la url del video de Youtube o Vimeo"
-          {...register("courseVideoUrl")}
+          {...register("courseVideoUrl", {
+            required: {
+              value: true,
+              message: "El link del video promocional es requerido",
+            },
+            pattern: {
+              value: /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be|vimeo\.com)\/.*$/,
+              message: "El enlace debe ser de YouTube o Vimeo (ej: youtube.com/...)",
+            },
+          })}
           className="form-style w-full"
         />
         {errors.courseVideoUrl && (

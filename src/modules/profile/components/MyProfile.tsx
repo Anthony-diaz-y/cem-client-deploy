@@ -132,6 +132,45 @@ export default function MyProfile() {
             </div>
           </div>
         </div>
+
+        {/* Social Networks Section - Only for Instructors */}
+        {user?.accountType === "Instructor" && (
+          <div className="mt-6 pt-10 border-t border-cem-neutral-gray-100">
+            <p className="text-2xl font-semibold text-cem-neutral-gray-900 tracking-tight mb-8">
+              Redes Académicas y Profesionales
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 max-w-4xl">
+              <div className="flex flex-col gap-y-6">
+                <div className="group">
+                  <p className="mb-1 text-[11px] font-bold text-cem-neutral-gray-400 uppercase tracking-widest">
+                    {PROFILE_TEXTS.myProfile.fields.linkedin}
+                  </p>
+                  <p className="text-lg font-semibold text-cem-neutral-gray-900 bg-white/50 p-3 rounded-xl border border-cem-neutral-gray-100 overflow-hidden text-ellipsis">
+                    {user?.additionalDetails?.linkedin || PROFILE_TEXTS.myProfile.placeholders.linkedin}
+                  </p>
+                </div>
+                <div className="group">
+                  <p className="mb-1 text-[11px] font-bold text-cem-neutral-gray-400 uppercase tracking-widest">
+                    {PROFILE_TEXTS.myProfile.fields.orcid}
+                  </p>
+                  <p className="text-lg font-semibold text-cem-neutral-gray-900 bg-white/50 p-3 rounded-xl border border-cem-neutral-gray-100 overflow-hidden text-ellipsis">
+                    {user?.additionalDetails?.orcid || PROFILE_TEXTS.myProfile.placeholders.orcid}
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-y-6">
+                <div className="group">
+                  <p className="mb-1 text-[11px] font-bold text-cem-neutral-gray-400 uppercase tracking-widest">
+                    {PROFILE_TEXTS.myProfile.fields.cti_vitae}
+                  </p>
+                  <p className="text-lg font-semibold text-cem-neutral-gray-900 bg-white/50 p-3 rounded-xl border border-cem-neutral-gray-100 overflow-hidden text-ellipsis">
+                    {user?.additionalDetails?.cti_vitae || PROFILE_TEXTS.myProfile.placeholders.cti_vitae}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

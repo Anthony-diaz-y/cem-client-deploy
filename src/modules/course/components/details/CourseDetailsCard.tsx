@@ -17,6 +17,7 @@ import { profileEndpoints, studentEndpoints } from "@shared/services/apis";
 import { apiConnector } from "@shared/services/apiConnector";
 import { getUserDetails } from "@shared/services/profileAPI";
 import PaymentModal from "./PaymentModal";
+import { ensureFullUrl } from "@shared/utils/urlHelper";
 
 /**
  * CourseDetailsCard - Sidebar card for course details
@@ -138,7 +139,7 @@ function CourseDetailsCard({
       const parts = path?.split("/") || [];
       return `https://player.vimeo.com/video/${parts[0]}${parts[1] ? `?h=${parts[1]}` : ""}`;
     }
-    return url;
+    return ensureFullUrl(url);
   };
 
   const [showVideoModal, setShowVideoModal] = useState(false);
@@ -237,7 +238,7 @@ function CourseDetailsCard({
         {/* Syllabus */}
         {course?.syllabus && (
           <div className="mb-10">
-            <a href={course.syllabus} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-3.5 px-4 rounded-xl bg-cem-neutral-gray-50/50 border border-cem-neutral-gray-200 text-cem-neutral-gray-900 font-bold hover:bg-gray-100">
+            <a href={ensureFullUrl(course.syllabus)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-3.5 px-4 rounded-xl bg-cem-neutral-gray-50/50 border border-cem-neutral-gray-200 text-cem-neutral-gray-900 font-bold hover:bg-gray-100">
               <HiOutlineDownload className="text-xl" /> Descargar Syllabus
             </a>
           </div>
