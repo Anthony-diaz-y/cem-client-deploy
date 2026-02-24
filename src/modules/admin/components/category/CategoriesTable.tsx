@@ -5,9 +5,7 @@ import { Category } from "@shared/services/adminAPI";
 import DeleteCategoryModal from "./DeleteCategoryModal";
 import EditCategoryModal from "./EditCategoryModal";
 import CategoryCard from "./components/CategoryCard/CategoryCard";
-import MoveCourseInfoModal from "./components/MoveCourseInfoModal";
 import { useCategoriesTable } from "../../hooks/category/useCategoriesTable";
-import { useAutoScroll } from "../../hooks/category/useAutoScroll";
 import { FiChevronRight } from "react-icons/fi";
 import CustomDropdown from "../dropdown/CustomDropdown";
 
@@ -23,7 +21,6 @@ interface CategoriesTableProps {
 
 /**
  * Tabla para mostrar todas las categorías del sistema con sus cursos
- * Permite arrastrar y soltar cursos entre categorías
  * Vista expandible para ver los cursos de cada categoría
  */
 export default function CategoriesTable({
@@ -37,28 +34,11 @@ export default function CategoriesTable({
 }: CategoriesTableProps) {
   const {
     categoriesWithCourses,
-    draggedCourse,
-    dragOverCategory,
-    moveConfirmation,
-    confirmMove,
-    cancelMove,
     toggleCategory,
-    handleDragStart,
-    handleDragOver,
-    handleDragLeave,
-    handleDrop,
-    handleDragEnd,
   } = useCategoriesTable({
     categories,
     token,
     onUpdate,
-  });
-
-  // Hook para scroll automático durante drag & drop
-  const { containerRef } = useAutoScroll({
-    isDragging: draggedCourse !== null,
-    scrollSpeed: 15,
-    scrollThreshold: 120,
   });
 
   const [deleteModal, setDeleteModal] = useState<{
@@ -147,16 +127,9 @@ export default function CategoriesTable({
               <CategoryCard
                 key={category.id}
                 category={category}
-                draggedCourse={draggedCourse}
-                isDragOver={dragOverCategory === category.id}
                 onToggle={toggleCategory}
                 onEdit={handleEditClick}
                 onDelete={handleDeleteClick}
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
               />
             ))}
           </div>
@@ -188,16 +161,6 @@ export default function CategoriesTable({
             setDeleteModal({ isOpen: false, category: null });
             onUpdate(updatedCategories);
           }}
-        />
-      )}
-      {/* Modal de confirmación para mover a Sector */}
-      {moveConfirmation && (
-        <MoveCourseInfoModal
-          isOpen={!!moveConfirmation}
-          courseName={moveConfirmation.courseName}
-          targetCategoryName={moveConfirmation.targetCategoryName}
-          onConfirm={confirmMove}
-          onCancel={cancelMove}
         />
       )}
     </>

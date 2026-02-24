@@ -9,14 +9,13 @@ import type { CategoryCardProps } from "../interfaces/CategoryCard.interface";
 
 interface CategoryCardHeaderProps extends Pick<
   CategoryCardProps,
-  "category" | "draggedCourse" | "onToggle" | "onEdit" | "onDelete"
+  "category" | "onToggle" | "onEdit" | "onDelete"
 > {
   courseCount: number;
 }
 
 export const CategoryCardHeader: React.FC<CategoryCardHeaderProps> = ({
   category,
-  draggedCourse,
   onToggle,
   onEdit,
   onDelete,
@@ -31,17 +30,9 @@ export const CategoryCardHeader: React.FC<CategoryCardHeaderProps> = ({
     <div className="flex flex-col md:flex-row md:items-center justify-between p-6 gap-4">
       <div className="flex gap-4 flex-1 items-center">
         <button
-          onClick={(e) => {
-            if (draggedCourse) {
-              e.preventDefault();
-              e.stopPropagation();
-              return;
-            }
-            onToggle(category.id);
-          }}
+          onClick={() => onToggle(category.id)}
           className="w-10 h-10 flex items-center justify-center transition-all bg-cem-neutral-gray-50 hover:bg-cem-neutral-gray-100 rounded-xl text-cem-neutral-gray-400 hover:text-cem-primary"
           title={category.expanded ? "Contraer" : "Expandir"}
-          disabled={!!draggedCourse}
         >
           {category.expanded ? (
             <FiChevronDown className="text-xl" />
@@ -82,12 +73,9 @@ export const CategoryCardHeader: React.FC<CategoryCardHeaderProps> = ({
         <button
           onClick={(e) => {
             e.stopPropagation();
-            if (!draggedCourse) {
-              onEdit(category);
-            }
+            onEdit(category);
           }}
-          disabled={!!draggedCourse}
-          className="w-[36px] h-[36px] flex items-center justify-center text-cem-primary bg-[#DCEEEF] rounded-lg hover:bg-cem-primary hover:text-white transition-all duration-300 disabled:opacity-50"
+          className="w-[36px] h-[36px] flex items-center justify-center text-cem-primary bg-[#DCEEEF] rounded-lg hover:bg-cem-primary hover:text-white transition-all duration-300"
           title="Editar categoría"
         >
           <FiEdit3 className="text-xl" />
@@ -95,12 +83,9 @@ export const CategoryCardHeader: React.FC<CategoryCardHeaderProps> = ({
         <button
           onClick={(e) => {
             e.stopPropagation();
-            if (!draggedCourse) {
-              onDelete(category);
-            }
+            onDelete(category);
           }}
-          disabled={!!draggedCourse}
-          className="w-[36px] h-[36px] flex items-center justify-center text-[#EF4444] bg-[#FEE2E2] rounded-lg hover:bg-[#EF4444] hover:text-white transition-all duration-300 disabled:opacity-50"
+          className="w-[36px] h-[36px] flex items-center justify-center text-[#EF4444] bg-[#FEE2E2] rounded-lg hover:bg-[#EF4444] hover:text-white transition-all duration-300"
           title="Eliminar categoría"
         >
           <FiTrash2 className="text-xl" />
