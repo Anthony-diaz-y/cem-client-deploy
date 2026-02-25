@@ -119,41 +119,97 @@ export default function CourseDetailsContainer({
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 text-[14px]">
-              <div>
-                <span className="text-cem-neutral-gray-400">Instructor: </span>
-                <span className="text-cem-neutral-gray-800 font-medium">
-                  {data.course.instructor.name}
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-[14px]">
+              {/* Instructores */}
+              <div className="flex items-center gap-2">
+                <span className="text-cem-neutral-gray-400 whitespace-nowrap">
+                  Instructor(es):{" "}
+                </span>
+                <span className="text-cem-neutral-gray-800 font-bold">
+                  {(() => {
+                    const allInstructors =
+                      data.course.instructors &&
+                      data.course.instructors.length > 0
+                        ? data.course.instructors
+                        : [data.course.instructor];
+                    return allInstructors.map((i) => i.name).join(" & ");
+                  })()}
                 </span>
               </div>
-              {data.course.category && (
-                <div>
-                  <span className="text-cem-neutral-gray-400">Categoría(s): </span>
-                  <span className="text-cem-neutral-gray-800 font-medium">
-                    {Array.isArray(data.course.category)
-                      ? data.course.category.map((c: any) => c.name).join(", ")
-                      : (data.course.category as any)?.name}
+
+              {/* Categorías (Carrera / Sector) con fallback robusto */}
+              {(() => {
+                const categories =
+                  data.course.category && data.course.category.length > 0
+                    ? data.course.category
+                    : [
+                        data.course.career
+                          ? { ...data.course.career, type: "career" as const }
+                          : null,
+                        data.course.sector
+                          ? { ...data.course.sector, type: "sector" as const }
+                          : null,
+                      ].filter(Boolean);
+
+                if (categories.length === 0) return null;
+
+                return (
+                  <div className="flex items-center gap-2">
+                    <span className="text-cem-neutral-gray-400 whitespace-nowrap">
+                      Pertenece a:{" "}
+                    </span>
+                    <div className="flex flex-wrap gap-2">
+                      {categories.map((cat, idx) => (
+                        <div
+                          key={cat!.id || idx}
+                          className="flex items-center gap-1"
+                        >
+                          <span
+                            className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-tight
+                              ${
+                                cat!.type === "career"
+                                  ? "bg-[#FAEBEF] text-[#D81B60]"
+                                  : "bg-cem-primary/10 text-cem-primary"
+                              }
+                            `}
+                          >
+                            {cat!.name}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              <div className="flex items-center gap-4">
+                {/* Precio */}
+                <div className="flex items-center gap-2">
+                  <span className="text-cem-neutral-gray-400 whitespace-nowrap">
+                    Precio:{" "}
+                  </span>
+                  <span className="text-cem-primary font-bold">
+                    S/{data.course.price.toFixed(2)}
                   </span>
                 </div>
-              )}
-              <div>
-                <span className="text-cem-neutral-gray-400">Precio: </span>
-                <span className="text-cem-primary font-bold">
-                  S/{data.course.price.toFixed(2)}
-                </span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-cem-neutral-gray-400">Estado: </span>
-                <span
-                  className={`px-2 py-0.5 rounded-full text-xs font-semibold ${data.course.status === "Published"
-                    ? "bg-emerald-100 text-emerald-600"
-                    : "bg-amber-100 text-amber-600"
+
+                {/* Estado */}
+                <div className="flex items-center gap-2">
+                  <span className="text-cem-neutral-gray-400 whitespace-nowrap">
+                    Estado:{" "}
+                  </span>
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+                      data.course.status === "Published"
+                        ? "bg-emerald-100 text-emerald-600"
+                        : "bg-amber-100 text-amber-600"
                     }`}
-                >
-                  {data.course.status === "Published"
-                    ? "Publicado"
-                    : "Borrador"}
-                </span>
+                  >
+                    {data.course.status === "Published"
+                      ? "Publicado"
+                      : "Borrador"}
+                  </span>
+                </div>
               </div>
             </div>
 

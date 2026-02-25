@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiBook, FiVideo, FiPaperclip } from "react-icons/fi";
-import { SubSectionModalFormData, SubSectionModalProps } from "../../types/index";
+import {
+  SubSectionModalFormData,
+  SubSectionModalProps,
+} from "../../types/index";
 import { SubSection } from "../../../course/types";
 import { CEMModalLayout, RichTextEditor } from "@shared/components";
-import Upload from "../upload/Upload";
 import AttachmentUpload from "../upload/AttachmentUpload";
 import { useSubSectionForm } from "../../hooks/useSubSectionForm";
 import { useSubSectionHandlers } from "../../hooks/useSubSectionHandlers";
@@ -94,11 +96,14 @@ export default function SubSectionModal({
       loading={loading}
       footer={footer}
       width="575px"
-      height="480px"
+      height="650px"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-2">
         <div className="flex flex-col space-y-1.5">
-          <label className="text-sm font-bold text-cem-neutral-gray-900" htmlFor="lectureTitle">
+          <label
+            className="text-sm font-bold text-cem-neutral-gray-900"
+            htmlFor="lectureTitle"
+          >
             Título de la Lección <sup className="text-red-500">*</sup>
           </label>
           <input
@@ -117,24 +122,6 @@ export default function SubSectionModal({
 
         <div className="w-full h-px border-t border-dashed border-cem-neutral-gray-100 my-1" />
 
-        <div className="flex flex-col space-y-1.5">
-          <label className="text-sm font-bold text-cem-neutral-gray-900" htmlFor="lectureDesc">
-            Contenido de la sección <sup className="text-red-500">*</sup>
-          </label>
-          <input
-            disabled={view || loading}
-            id="lectureDesc"
-            placeholder="Agrega una sección para construir tu curso"
-            {...register("lectureDesc", { required: true })}
-            className="form-style w-full border-cem-neutral-gray-100 focus:border-cem-primary focus:ring-1 focus:ring-cem-primary py-2.5"
-          />
-          {errors.lectureDesc && (
-            <span className="text-[10px] text-red-500 font-medium ml-1">
-              El contenido de la sección es requerido
-            </span>
-          )}
-        </div>
-
         {!view && (
           <div className="pt-1">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -142,8 +129,8 @@ export default function SubSectionModal({
                 type="button"
                 onClick={() => setShowTextContent(!showTextContent)}
                 className={`flex items-center justify-center gap-3 w-full h-[48px] rounded-xl border transition-all ${showTextContent
-                  ? 'border-cem-primary bg-cem-primary/5 text-cem-primary shadow-sm'
-                  : 'border-cem-neutral-gray-200 bg-[#F9FAFB] text-cem-neutral-gray-900 hover:border-cem-primary/40'
+                  ? "border-cem-primary bg-cem-primary/5 text-cem-primary shadow-sm"
+                  : "border-cem-neutral-gray-200 bg-[#F9FAFB] text-cem-neutral-gray-900 hover:border-cem-primary/40"
                   }`}
               >
                 <FiBook className="text-xl" />
@@ -154,8 +141,8 @@ export default function SubSectionModal({
                 type="button"
                 onClick={() => setShowVideo(!showVideo)}
                 className={`flex items-center justify-center gap-3 w-full h-[48px] rounded-xl border transition-all ${showVideo
-                  ? 'border-cem-primary bg-cem-primary/5 text-cem-primary shadow-sm'
-                  : 'border-cem-neutral-gray-200 bg-[#F9FAFB] text-cem-neutral-gray-900 hover:border-cem-primary/40'
+                  ? "border-cem-primary bg-cem-primary/5 text-cem-primary shadow-sm"
+                  : "border-cem-neutral-gray-200 bg-[#F9FAFB] text-cem-neutral-gray-900 hover:border-cem-primary/40"
                   }`}
               >
                 <FiVideo className="text-xl" />
@@ -166,8 +153,8 @@ export default function SubSectionModal({
                 type="button"
                 onClick={() => setShowAttachments(!showAttachments)}
                 className={`flex items-center justify-center gap-3 w-full h-[48px] rounded-xl border transition-all ${showAttachments
-                  ? 'border-cem-primary bg-cem-primary/5 text-cem-primary shadow-sm'
-                  : 'border-cem-neutral-gray-200 bg-[#F9FAFB] text-cem-neutral-gray-900 hover:border-cem-primary/40'
+                  ? "border-cem-primary bg-cem-primary/5 text-cem-primary shadow-sm"
+                  : "border-cem-neutral-gray-200 bg-[#F9FAFB] text-cem-neutral-gray-900 hover:border-cem-primary/40"
                   }`}
               >
                 <FiPaperclip className="text-xl" />
@@ -178,11 +165,24 @@ export default function SubSectionModal({
         )}
 
         <div className="space-y-4">
+          <div className="flex flex-col space-y-2 animate-fadeIn">
+            <label className="text-xs font-bold text-cem-neutral-gray-900 flex items-center gap-2">
+              <FiBook className="text-cem-primary" />
+              Descripción (Pública)
+            </label>
+            <textarea
+              {...register("lectureDescription")}
+              disabled={view || loading}
+              placeholder="Breve resumen de la lección que verán todos los usuarios"
+              className="form-style w-full border-cem-neutral-gray-100 focus:border-cem-primary focus:ring-1 focus:ring-cem-primary py-2.5 min-h-[80px] text-sm"
+            />
+          </div>
+
           {showTextContent && (
             <div className="flex flex-col space-y-2 animate-fadeIn">
               <label className="text-xs font-bold text-cem-neutral-gray-900 flex items-center gap-2">
                 <FiBook className="text-cem-primary" />
-                Editor
+                Contenido de la Lección (Privado)
               </label>
               <RichTextEditor
                 value={richTextContent}
@@ -197,16 +197,29 @@ export default function SubSectionModal({
 
           {showVideo && (
             <div className="flex flex-col space-y-1.5 animate-fadeIn">
-              <label className="text-sm font-bold text-cem-neutral-gray-900" htmlFor="lectureVideo">
+              <label
+                className="text-sm font-bold text-cem-neutral-gray-900"
+                htmlFor="lectureVideo"
+              >
                 URL del Video
               </label>
               <input
                 disabled={view || loading}
                 id="lectureVideo"
                 placeholder="Pega aquí la url del video de Youtube o Vimeo"
-                {...register("lectureVideo")}
+                {...register("lectureVideo", {
+                  pattern: {
+                    value: /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be|vimeo\.com)\/.*$/,
+                    message: "El enlace debe ser de YouTube o Vimeo (ej: youtube.com/...)",
+                  },
+                })}
                 className="form-style w-full border-cem-neutral-gray-100 focus:border-cem-primary focus:ring-1 focus:ring-cem-primary py-2.5"
               />
+              {errors.lectureVideo && (
+                <span className="text-[10px] text-red-500 font-medium ml-1">
+                  {errors.lectureVideo.message}
+                </span>
+              )}
             </div>
           )}
 
@@ -219,7 +232,11 @@ export default function SubSectionModal({
                 register={register}
                 setValue={setValue}
                 errors={errors}
-                existingAttachments={edit && modalData && typeof modalData === "object" ? (modalData as SubSection).attachments : []}
+                existingAttachments={
+                  edit && modalData && typeof modalData === "object"
+                    ? (modalData as SubSection).attachments
+                    : []
+                }
               />
             </div>
           )}
@@ -228,10 +245,18 @@ export default function SubSectionModal({
 
       <style jsx>{`
         @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(-8px); }
-          to { opacity: 1; transform: translateY(0); }
+          from {
+            opacity: 0;
+            transform: translateY(-8px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
-        .animate-fadeIn { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .animate-fadeIn {
+          animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
       `}</style>
     </CEMModalLayout>
   );

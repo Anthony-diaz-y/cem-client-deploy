@@ -30,6 +30,13 @@ export default function SyllabusUpload<T extends FieldValues = FieldValues>({
     const onDrop = (acceptedFiles: FileWithPath[]) => {
         const file = acceptedFiles[0];
         if (file) {
+            const maxSize = 100 * 1024 * 1024;
+            if (file.size > maxSize) {
+                import("react-hot-toast").then(({ toast }) => {
+                    toast.error(`El archivo es demasiado grande. Máximo 100MB`);
+                });
+                return;
+            }
             setSelectedFile(file);
             setFileName(file.name);
         }
@@ -108,7 +115,7 @@ export default function SyllabusUpload<T extends FieldValues = FieldValues>({
                                 Explorar un archivo
                             </p>
                             <p className="mt-2 text-[13px] leading-[18px] text-cem-neutral-gray-400">
-                                Peso máximo 10mb
+                                Peso máximo 100mb
                             </p>
                         </div>
                     </div>

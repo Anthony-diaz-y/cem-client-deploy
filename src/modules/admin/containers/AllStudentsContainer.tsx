@@ -2,18 +2,20 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useAppSelector } from "@shared/store/hooks";
-import AllStudentsTable from "../components/student/AllStudentsTable";
-import { getAllStudents, StudentFilters, Student } from "@shared/services/admin/students";
+import { getAllStudents, StudentFilters, Student, toggleStudentStatus } from "@shared/services/admin/students";
 import { Loading } from "@shared/components";
 import CustomDropdown from "../components/dropdown/CustomDropdown";
-import { FiSearch } from "react-icons/fi";
-
 import Pagination from "@shared/components/common/Pagination";
+import UserManagementTable from "../components/shared/UserManagementTable";
+import { StatCard } from "../components/shared/StatCard";
+import { AdminHeader } from "../components/shared/AdminHeader";
+import { AdminSearchBar } from "../components/shared/AdminSearchBar";
 
 export default function AllStudentsContainer() {
   const { token } = useAppSelector((state) => state.auth);
   const [students, setStudents] = useState<Student[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
   const [searching, setSearching] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [filters, setFilters] = useState<StudentFilters>({
@@ -36,15 +38,15 @@ export default function AllStudentsContainer() {
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialMount = useRef(true);
 
-  const fetchStudents = useCallback(async (currentFilters: StudentFilters, showLoading = true) => {
+  const fetchStudents = useCallback(async (currentFilters: StudentFilters, silent = false) => {
     if (!token) return;
-    if (showLoading) {
-      setLoading(true);
-    } else {
+
+    if (!silent) setLoading(true);
+    if (!silent) { // Only set searching if not silent
       setSearching(true);
     }
     try {
-      const response = await getAllStudents(token, currentFilters, true);
+      const response = await getAllStudents(token, currentFilters, silent);
       if (response && response.success) {
         setStudents(response.data.all || []);
         setCounts({
@@ -105,6 +107,24 @@ export default function AllStudentsContainer() {
     }
   }, [token, filters, fetchStudents]);
 
+  // Efecto para manejar el retraso del loader (evitar parpadeo en cargas rápidas)
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (loading) {
+      // Solo mostrar el loader si la carga dura más de 300ms
+      timer = setTimeout(() => {
+        setShowLoader(true);
+      }, 300);
+    } else {
+      setShowLoader(false);
+    }
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [loading]);
+
   if (!token) {
     return (
       <div className="text-center text-richblack-300 py-8">
@@ -119,110 +139,102 @@ export default function AllStudentsContainer() {
 
   return (
     <div className="space-y-8 animate-fadeIn">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-black text-cem-neutral-gray-900 tracking-tight">
-          Gestión de Estudiantes
-        </h1>
-        <p className="text-cem-neutral-gray-600 font-medium max-w-3xl leading-relaxed">
-          Administra todos los estudiantes del sistema. Filtra, busca, edita información y administra sus estados de manera integral.
-        </p>
-      </div>
+      <AdminHeader
+        title="Gestión de Estudiantes"
+        description="Administra todos los estudiantes del sistema. Filtra, busca, edita información y administra sus estados de manera integral."
+      />
 
-      {/* Contadores de estadísticas */}
+      {/* Grid de estadísticas - Distribución uniforme */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {[
-          { label: "Total Registrados", value: counts.total, color: "text-cem-neutral-gray-900", bg: "bg-white", border: "border-cem-neutral-gray-100" },
-          { label: "Estudiantes Activos", value: counts.active, color: "text-caribbeangreen-400", bg: "bg-white", border: "border-caribbeangreen-100" },
-          { label: "Cuentas Inactivas", value: counts.inactive, color: "text-cem-neutral-gray-400", bg: "bg-white", border: "border-cem-neutral-gray-100" },
+          { title: "Total Registrados", value: counts.total },
+          { title: "Estudiantes Activos", value: counts.active },
+          { title: "Cuentas Inactivas", value: counts.inactive },
         ].map((stat, idx) => (
-          <div
+          <StatCard
             key={idx}
-            className={`${stat.bg} ${stat.border} rounded-3xl p-6 border shadow-sm hover:shadow-md transition-all group`}
-          >
-            <p className="text-[10px] font-black text-cem-neutral-gray-400 uppercase tracking-[0.2em] mb-2 group-hover:text-cem-neutral-gray-600 transition-colors">
-              {stat.label}
-            </p>
-            <p className={`text-3xl font-black ${stat.color} tracking-tight`}>
-              {stat.value}
-            </p>
-          </div>
+            title={stat.title}
+            value={stat.value}
+            height={119}
+            className="w-full"
+          />
         ))}
       </div>
 
-      {/* Filtros y búsqueda */}
-      <div className="bg-white rounded-[2.5rem] border border-cem-neutral-gray-100 p-8 shadow-sm hover:shadow-md transition-shadow">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
-          <div className="md:col-span-4">
-            <CustomDropdown
-              label="Estado de la Cuenta"
-              value={
-                filters.active === undefined
-                  ? "all"
-                  : filters.active
-                    ? "true"
-                    : "false"
-              }
-              onChange={(value) => {
-                setFilters({
-                  ...filters,
-                  active: value === "all" ? undefined : value === "true",
-                  page: 1,
-                });
-              }}
-              options={[
-                { value: "all", label: "Todos los perfiles" },
-                { value: "true", label: "Solo Activos" },
-                { value: "false", label: "Solo Inactivos" },
-              ]}
-              placeholder="Estado"
+      {/* Contenedor Único: Filtros + Tabla */}
+      <div className="bg-white rounded-[2.5rem] border border-cem-neutral-gray-100 shadow-sm overflow-hidden">
+        <div className="p-8 pb-0">
+          <h2 className="text-2xl font-medium text-cem-neutral-gray-900 mb-6">
+            Estudiantes
+          </h2>
+
+          <div className="flex flex-col md:flex-row gap-6 items-end mb-8">
+            <div className="flex-1 w-full">
+              <CustomDropdown
+                label="Estado de la Cuenta"
+                value={
+                  filters.active === undefined
+                    ? "all"
+                    : filters.active
+                      ? "true"
+                      : "false"
+                }
+                onChange={(value) => {
+                  setFilters({
+                    ...filters,
+                    active: value === "all" ? undefined : value === "true",
+                    page: 1,
+                  });
+                }}
+                options={[
+                  { value: "all", label: "Todos los perfiles" },
+                  { value: "true", label: "Solo Activos" },
+                  { value: "false", label: "Solo Inactivos" },
+                ]}
+                placeholder="Estado"
+              />
+            </div>
+
+            <AdminSearchBar
+              value={searchInput}
+              onChange={setSearchInput}
+              label="Buscar estudiante por nombre o email..."
+              isSearching={searching}
+              className="w-full md:w-[50%]"
             />
           </div>
+        </div>
 
-          <div className="md:col-span-8 relative">
-            <label className="block text-[10px] font-black text-cem-neutral-gray-900 uppercase tracking-widest mb-2.5 ml-1">
-              Buscar estudiante por nombre o email
-            </label>
-            <div className="relative group">
-              <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-cem-neutral-gray-400 group-focus-within:text-cem-primary transition-colors" size={20} />
-              <input
-                type="text"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="Nombre, correo electrónico, ID de registro..."
-                className="w-full pl-12 pr-12 py-4 bg-cem-neutral-gray-50/50 border border-cem-neutral-gray-100 rounded-2xl text-cem-neutral-gray-900 font-bold placeholder-cem-neutral-gray-300 focus:outline-none focus:ring-4 focus:ring-cem-primary/5 focus:border-cem-primary transition-all"
+        <div className="min-h-[823px] border-t border-cem-neutral-gray-100 flex flex-col relative">
+          {showLoader && !searching ? (
+            <div className="absolute inset-0 z-10 bg-white/60 backdrop-blur-[1px] flex flex-col items-center justify-center animate-fadeIn">
+              <div className="w-12 h-12 border-4 border-cem-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+              <p className="text-xs font-black text-cem-neutral-gray-400 uppercase tracking-widest">Sincronizando estudiantes...</p>
+            </div>
+          ) : null}
+
+          <div className={`p-[23px] flex-1 flex flex-col transition-opacity duration-300 ${showLoader && !searching ? "opacity-30 pointer-events-none" : "opacity-100"}`}>
+            <UserManagementTable
+              users={students}
+              userLabel="Alumno"
+              basePath="/dashboard/admin/students"
+              token={token}
+              onUpdate={() => fetchStudents(filters, true)}
+              onToggleStatus={(id, status, token) => toggleStudentStatus(id, token)}
+              showValidationColumn={false}
+              hideContainerBorder={true}
+            />
+
+            <div className="mt-auto flex justify-center py-8">
+              <Pagination
+                currentPage={meta.page}
+                totalPages={meta.totalPages}
+                onPageChange={handlePageChange}
               />
-              {searching && (
-                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                  <div className="w-5 h-5 border-3 border-cem-primary border-t-transparent rounded-full animate-spin"></div>
-                </div>
-              )}
             </div>
           </div>
         </div>
       </div>
-
-      {loading && !searching ? (
-        <div className="h-[400px] flex flex-col items-center justify-center animate-pulse">
-          <div className="w-12 h-12 border-4 border-cem-primary border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-xs font-black text-cem-neutral-gray-400 uppercase tracking-widest">Sincronizando estudiantes...</p>
-        </div>
-      ) : (
-        <div className="space-y-8 animate-slideUp">
-          <AllStudentsTable
-            students={students}
-            token={token}
-            onUpdate={() => fetchStudents(filters, true)}
-          />
-
-          <div className="flex justify-center pb-8">
-            <Pagination
-              currentPage={meta.page}
-              totalPages={meta.totalPages}
-              onPageChange={handlePageChange}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

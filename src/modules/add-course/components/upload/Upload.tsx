@@ -25,6 +25,13 @@ export default function Upload({
   const onDrop = (acceptedFiles: FileWithPath[]) => {
     const file = acceptedFiles[0];
     if (file) {
+      const maxSize = !video ? 10 * 1024 * 1024 : 100 * 1024 * 1024;
+      if (file.size > maxSize) {
+        import("react-hot-toast").then(({ toast }) => {
+          toast.error(`El archivo es demasiado grande. Máximo ${!video ? "10MB" : "100MB"}`);
+        });
+        return;
+      }
       previewFile(file);
       setSelectedFile(file);
     }
@@ -137,7 +144,7 @@ export default function Upload({
                   un archivo
                 </p>
                 <div className="mt-2 text-[13px] leading-[18px] text-cem-neutral-gray-400">
-                  <p>Tamaño recomendado 1024x576.</p>
+                  <p>Tamaño recomendado 1024x576 (Máx. {!video ? "10MB" : "100MB"}).</p>
                   <p>Relación de aspecto 16:9</p>
                 </div>
               </div>

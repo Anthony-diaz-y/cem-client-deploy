@@ -35,7 +35,7 @@ const FormButton: React.FC<FormButtonProps> = ({
       type={type}
       onClick={onClick}
       disabled={disabled || isLoading}
-      className="w-[296px] font-medium text-white bg-[#14b8a6] rounded-full py-2.5 px-3.5 text-base leading-6 shadow-sm hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed mt-0"
+      className="w-[296px] font-bold text-white bg-cem-primary rounded-full py-3 px-4 text-base leading-6 shadow-md hover:bg-cem-primary-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-0 active:scale-[0.98]"
     >
       {isLoading ? "Cargando..." : children}
     </button>
@@ -43,4 +43,3 @@ const FormButton: React.FC<FormButtonProps> = ({
 };
 
 export default FormButton;
-

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useAppSelector } from "@shared/store/hooks";
 import CategoriesTable from "../components/category/CategoriesTable";
 import CreateCategoryModal from "../components/category/CreateCategoryModal";
@@ -10,8 +10,33 @@ import { ActionButton } from "../components/shared/ActionButton";
 
 export default function CategoriesContainer() {
   const { token } = useAppSelector((state) => state.auth);
-  const [isCreateCategoryModalOpen, setIsCreateCategoryModalOpen] = useState(false);
+  const [isCreateCategoryModalOpen, setIsCreateCategoryModalOpen] =
+    useState(false);
   const { categories, loading, refreshCategories } = useCategories(token);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
+
+  // Filter categories based on search term and type filter
+  const filteredCategories = useMemo(() => {
+    return categories.filter((category) => {
+      const name = category.name || "";
+      const description = category.description || "";
+
+      const matchesSearch =
+        name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        description.toLowerCase().includes(searchTerm.toLowerCase());
+
+      // Default to career if type is missing for backward compatibility/demo
+      const categoryType =
+        category.type ||
+        (name.toLowerCase().includes("carrera") ? "career" : "sector");
+
+      const matchesType = typeFilter === "all" || categoryType === typeFilter;
+
+      return matchesSearch && matchesType;
+    });
+  }, [categories, searchTerm, typeFilter]);
 
   if (!token) {
     return (
@@ -27,14 +52,17 @@ export default function CategoriesContainer() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-4">
-        <h1 className="text-3xl font-semibold text-cem-neutral-gray-900">
-          Gestión de Categorías
-        </h1>
-        <p className="text-cem-neutral-gray-600">
-          Administra las categorías del sistema. Visualiza, crea y elimina categorías.
-        </p>
-        <div className="flex items-center gap-3 pt-2">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-semibold text-cem-neutral-gray-900">
+            Gestión de Categorías
+          </h1>
+          <p className="text-cem-neutral-gray-600">
+            Administra las categorías del sistema. Visualiza, crea y elimina
+            categorías.
+          </p>
+        </div>
+        <div>
           <ActionButton
             label="Crear categoría"
             onClick={() => setIsCreateCategoryModalOpen(true)}
@@ -43,14 +71,14 @@ export default function CategoriesContainer() {
       </div>
 
       <CategoriesTable
-        categories={categories}
+        categories={filteredCategories}
         token={token}
-        onUpdate={async (updatedCategories) => {
-          if (updatedCategories) {
-            await refreshCategories();
-          } else {
-            await refreshCategories();
-          }
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        typeFilter={typeFilter}
+        setTypeFilter={setTypeFilter}
+        onUpdate={async () => {
+          await refreshCategories();
         }}
       />
 

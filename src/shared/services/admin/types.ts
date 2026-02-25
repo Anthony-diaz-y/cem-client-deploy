@@ -330,6 +330,9 @@ export interface AdminCourse {
   instructor: CourseInstructor;
   instructors?: CourseInstructor[];
   category: CourseCategory | CourseCategory[];
+  career?: CourseCategory | null;
+  sector?: CourseCategory | null;
+  tag?: string[];
   totalStudentsEnrolled?: number;
   averageRating?: number;
   totalReviews?: number;
@@ -409,7 +412,18 @@ export interface CourseDetailsCourseInfo {
   category: {
     id: string;
     name: string;
-    description: string;
+    description?: string;
+    type?: "career" | "sector";
+  }[];
+  career: {
+    id: string;
+    name: string;
+    description?: string;
+  } | null;
+  sector: {
+    id: string;
+    name: string;
+    description?: string;
   } | null;
 }
 
@@ -509,6 +523,8 @@ export interface Category {
   name: string;
   description: string;
   icon?: string | null;
+  type?: "career" | "sector";
+  courseCount?: number;
   domain?: {
     id: string;
     name: string;
@@ -519,7 +535,7 @@ export interface CreateCategoryRequest {
   name: string;
   description: string;
   icon?: string;
-  domainId?: string;
+  type?: "career" | "sector";
 }
 
 export interface CreateCategoryResponse {
@@ -537,7 +553,7 @@ export interface UpdateCategoryRequest {
   name: string;
   description: string;
   icon?: string;
-  domainId?: string;
+  type?: "career" | "sector";
 }
 
 export interface UpdateCategoryResponse {
@@ -719,4 +735,49 @@ export interface GlobalSearchResponse {
     courses: number;
     total: number;
   };
+}
+
+// ================ Learning Path Types ================
+export interface LearningPath {
+  id: string;
+  title: string;
+  description: string;
+  icon?: string | null;
+  courses: Array<{
+    id: string;
+    courseName: string;
+    status: "Published" | "Draft";
+    instructor: {
+      id: string;
+      name: string;
+    };
+  }>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateLearningPathRequest {
+  title: string;
+  description?: string;
+  icon?: string;
+  courseIds?: string[];
+}
+
+export interface UpdateLearningPathRequest {
+  title?: string;
+  description?: string;
+  icon?: string;
+  courseIds?: string[];
+}
+
+export interface LearningPathResponse {
+  success: boolean;
+  data: LearningPath;
+  message: string;
+}
+
+export interface ListLearningPathsResponse {
+  success: boolean;
+  data: LearningPath[];
+  message: string;
 }

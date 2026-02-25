@@ -107,6 +107,7 @@ const RegisterFormStep: React.FC<RegisterFormStepProps> = ({
           onToggleVisibility={() => setShowPassword(!showPassword)}
           showValidationMessage={touchedFields.contraseña}
           isValid={passwordIsValid}
+          showRequirements={true}
         />
 
         <div className="w-[296px] flex items-start gap-3 mt-2">

@@ -11,8 +11,9 @@ import Img from "../ui/Img";
 import StarRating from "../ui/StarRating";
 
 interface User {
-  firstName: string;
-  lastName: string;
+  id?: string;
+  name: string;
+  email?: string;
   image: string;
 }
 
@@ -41,11 +42,12 @@ const ReviewSlider = () => {
   useEffect(() => {
     (async () => {
       try {
+        console.log("Fetching reviews from:", ratingsEndpoints.REVIEWS_DETAILS_API);
         const response = await apiConnector<ApiResponse<Review[]>>(
           "GET",
           ratingsEndpoints.REVIEWS_DETAILS_API
         );
-        
+
         if (response?.data?.success) {
           setReviews(response.data.data || []);
           setError(null);
@@ -97,13 +99,15 @@ const ReviewSlider = () => {
                       src={
                         review?.user?.image
                           ? review?.user?.image
-                          : `https://api.dicebear.com/5.x/initials/svg?seed=${review?.user?.firstName} ${review?.user?.lastName}`
+                          : `https://api.dicebear.com/5.x/initials/svg?seed=${review?.user?.name}`
                       }
                       alt=""
                       className="h-9 w-9 rounded-full object-cover"
                     />
                     <div className="flex flex-col">
-                      <h1 className="font-semibold text-richblack-5 capitalize">{`${review?.user?.firstName} ${review?.user?.lastName}`}</h1>
+                      <h1 className="font-semibold text-richblack-5 capitalize">
+                        {review?.user?.name}
+                      </h1>
                       <h2 className="text-[12px] font-medium text-richblack-500">
                         {review?.course?.courseName}
                       </h2>
@@ -113,9 +117,9 @@ const ReviewSlider = () => {
                   <p className="font-medium text-richblack-25">
                     {review?.review.split(" ").length > truncateWords
                       ? `${review?.review
-                          .split(" ")
-                          .slice(0, truncateWords)
-                          .join(" ")} ...`
+                        .split(" ")
+                        .slice(0, truncateWords)
+                        .join(" ")} ...`
                       : `${review?.review}`}
                   </p>
 
@@ -124,8 +128,8 @@ const ReviewSlider = () => {
                       {review.rating}
                     </h3>
                     <StarRating
-                      rating={typeof review.rating === 'number' 
-                        ? review.rating 
+                      rating={typeof review.rating === 'number'
+                        ? review.rating
                         : (typeof review.rating === 'string' ? parseFloat(review.rating) : 0)}
                       readonly={true}
                       starSize={20}

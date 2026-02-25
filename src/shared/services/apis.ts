@@ -62,15 +62,10 @@ export const ratingsEndpoints = {
   GET_RATING_STATS_API: BASE_URL + "/course/rating",
 };
 
-// DOMAINS API
-export const domains = {
-  GET_ALL_DOMAINS_API: BASE_URL + "/domain/getAllDomains", //usando
-};
-
 // CATAGORIES API
 export const categories = {
   GET_ALL_CATEGORIES_API: BASE_URL + "/category/showAllCategories",
-  CATEGORIES_API: BASE_URL + "/category/showAllCategories",
+  GET_PUBLIC_CATEGORIES_API: BASE_URL + "/category/getPublicCategories",
   CREATE_CATEGORY_API: BASE_URL + "/category/createCategory",
   UPDATE_CATEGORY_API: BASE_URL + "/category/updateCategory",
   DELETE_CATEGORY_API: BASE_URL + "/category/deleteCategory",
@@ -82,8 +77,9 @@ export const categories = {
 
 // CATALOG PAGE DATA
 export const catalogData = {
-  CATALOGPAGEDATA_API: BASE_URL + "/category/getCategoryPageDetails",
+  CATALOGPAGEDATA_API: BASE_URL + "/category/getCategoryCourses",
 };
+
 // CONTACT-US API
 export const contactusEndpoint = {
   CONTACT_US_API: BASE_URL + "/contact",
@@ -153,8 +149,16 @@ export const subsectionDiscussionsEndpoints = {
   DELETE_REPLY: `${API_URL}/discussion/subsection-discussion/reply`,
 };
 
-
-//crear payments 
+//crear payments
 export const paymentsEndpoints = {
   CREATE_PAYMENT_INTENT_API: BASE_URL + "",
-}
+};
+
+// LEARNING PATHS ENDPOINTS
+export const learningPathsEndpoints = {
+  GET_ALL_LEARNING_PATHS_API: BASE_URL + "/learning-paths",
+  GET_LEARNING_PATH_DETAILS_API: BASE_URL + "/learning-paths",
+  CREATE_LEARNING_PATH_API: BASE_URL + "/learning-paths",
+  UPDATE_LEARNING_PATH_API: BASE_URL + "/learning-paths",
+  DELETE_LEARNING_PATH_API: BASE_URL + "/learning-paths",
+};

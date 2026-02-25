@@ -17,12 +17,18 @@ export const PROFILE_TEXTS = {
       gender: "Género",
       phoneNumber: "Número de Teléfono",
       dateOfBirth: "Fecha de Nacimiento",
+      linkedin: "LinkedIn",
+      orcid: "ORCID",
+      cti_vitae: "CTI Vitae / ResearchGate",
     },
     placeholders: {
       about: "Escribe algo sobre ti...",
       gender: "Agregar género",
       contactNumber: "Agregar número de contacto",
       dateOfBirth: "Agregar fecha de nacimiento",
+      linkedin: "Agregar enlace de LinkedIn",
+      orcid: "Agregar enlace de ORCID",
+      cti_vitae: "Agregar enlace de CTI Vitae / ResearchGate",
     },
   },
   api: {

@@ -12,7 +12,7 @@ import { formatDurationForBadge } from "../../../utils";
 interface HomeCourseCardProps {
   course: Course | CoursePreview;
   index?: number;
-  categoryName?: string; // Optional category name override
+  categoryName?: string;
 }
 
 export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
@@ -22,11 +22,9 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
 }) => {
   const courseId = course.id;
 
-  // Type guard para saber si es un objeto Course completo
   const isFullCourse = "instructor" in course || "instructors" in course;
   const fullCourse = isFullCourse ? (course as Course) : null;
 
-  // Lógica para Rating y Reviews (Solo disponibles en Course)
   const avgRating = fullCourse
     ? typeof fullCourse.averageRating === "number"
       ? fullCourse.averageRating
@@ -51,21 +49,23 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
 
   const badgeDuration = formatDurationForBadge(durationValue);
 
-  // Lógica para Instructor (Solo disponible en el objeto Course)
-  const displayInstructor = fullCourse
+  // Lógica para Instructores (Compatible con 1 o más)
+  const allInstructors = fullCourse
     ? fullCourse.instructors && fullCourse.instructors.length > 0
-      ? fullCourse.instructors[0]
+      ? fullCourse.instructors
       : fullCourse.instructor
-    : undefined;
+        ? [fullCourse.instructor]
+        : []
+    : [];
 
-  const instructorName = displayInstructor?.name || "Instructor";
-
-  const instructorImage = displayInstructor?.image;
-  const instructorTitle = displayInstructor?.additionalDetails?.professional_title || "Experto";
+  const mainInstructors = allInstructors.slice(0, 3); // Mostrar hasta 3 avatares
+  const instructorNames = allInstructors.map((i) => i.name).join(" & ");
+  const mainInstructorTitle =
+    allInstructors[0]?.additionalDetails?.professional_title || "Experto";
 
   // Lógica para Categorías (Estructuras distintas o IDs simples)
-  const categories = fullCourse && Array.isArray(fullCourse.category)
-    ? fullCourse.category
+  const categories = Array.isArray((course as any).category)
+    ? (course as any).category
     : [];
 
   const animationDelay = index * 0.1;
@@ -127,38 +127,35 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
 
       {/* Contenido de la tarjeta */}
       <div className="p-4 flex-1 flex flex-col">
-        {/* Categoría */}
-        {/* Categorías */}
-        {/* Categorías */}
-        <div className="flex flex-wrap gap-1.5 mb-2">
-          {categories.slice(0, 3).map((cat: { id?: string; name?: string }, index: number) => {
-            const colors = [
-              "bg-pink-100 text-pink-700",
-              "bg-green-100 text-green-700",
-              "bg-blue-100 text-blue-700",
-              "bg-purple-100 text-purple-700",
-              "bg-amber-100 text-amber-700",
-              "bg-cyan-100 text-cyan-700",
-            ];
-            const colorClass =
-              categoryName === cat.name
-                ? "bg-cem-primary text-white"
-                : colors[index % colors.length];
+        {/* Badges de Carrera y Sector (Figma Match) */}
+        <div className="flex flex-wrap gap-2 mb-2.5">
+          {categories.map((cat: any, idx: number) => {
+            // El backend ahora envía 'type'. Usamos eso como fuente principal.
+            const isCareer = cat.type === "career";
+            const isSector = cat.type === "sector";
+
+            // Si no hay type (fallback legacy), inferimos por posición
+            const finalIsCareer =
+              isCareer || (!isSector && idx === 0 && categories.length >= 1);
+            const finalIsSector = isSector || (!isCareer && idx === 1);
+
+            if (!finalIsCareer && !finalIsSector) return null;
 
             return (
               <span
-                key={cat.id || cat.name}
-                className={`inline-flex px-2 py-0.5 rounded text-[10px] font-medium ${colorClass}`}
+                key={cat.id || cat.name || idx}
+                className={`px-2.5 py-1 rounded-[6px] text-[10px] font-bold tracking-tight uppercase
+                  ${
+                    finalIsCareer
+                      ? "bg-[#FAEBEF] text-[#D81B60]"
+                      : "bg-cem-primary/10 text-cem-primary"
+                  }
+                `}
               >
-                {cat.name}
+                {cat.name || (finalIsCareer ? "Carrera" : "Sector")}
               </span>
             );
           })}
-          {categories.length > 3 && (
-            <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-medium bg-cem-neutral-gray-100 text-cem-neutral-gray-600">
-              +{categories.length - 3}
-            </span>
-          )}
         </div>
 
         {/* Título con flecha - min-h para alinear descripciones */}
@@ -199,24 +196,42 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
           </span>
         </div>
 
-        {/* Instructor y Precio */}
+        {/* Instructores y Precio */}
         <div className="mt-auto pt-3 border-t border-cem-neutral-gray-200 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2.5 flex-1 min-w-0">
-            <div className="w-9 h-9 rounded-full bg-cem-teal-100 flex items-center justify-center flex-shrink-0 overflow-hidden border border-cem-neutral-gray-100">
-              {instructorImage ? (
-                <Img src={instructorImage} alt={instructorName} className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-cem-primary font-semibold text-sm">
-                  {instructorName.charAt(0).toUpperCase() || "I"}
-                </span>
+            {/* Stack de Avatares */}
+            <div className="flex -space-x-2.5 overflow-hidden">
+              {mainInstructors.map((inst, i) => (
+                <div
+                  key={i}
+                  className="w-8 h-8 rounded-full bg-cem-teal-100 flex items-center justify-center flex-shrink-0 overflow-hidden border-2 border-white shadow-sm ring-1 ring-cem-neutral-gray-100"
+                >
+                  {inst.image ? (
+                    <Img
+                      src={inst.image}
+                      alt={inst.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-cem-primary font-bold text-[10px]">
+                      {inst.name.charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+              ))}
+              {allInstructors.length > 3 && (
+                <div className="w-8 h-8 rounded-full bg-cem-neutral-gray-100 flex items-center justify-center border-2 border-white shadow-sm text-[10px] font-bold text-cem-neutral-gray-600">
+                  +{allInstructors.length - 3}
+                </div>
               )}
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-cem-neutral-gray-900 truncate">
-                {instructorName}
+
+            <div className="flex-1 min-w-0 pl-1">
+              <p className="text-xs font-semibold text-cem-neutral-gray-900 line-clamp-1 leading-tight">
+                {instructorNames || "Instructor"}
               </p>
-              <p className="text-xs text-cem-neutral-gray-500 truncate">
-                {instructorTitle}
+              <p className="text-[10px] text-cem-neutral-gray-500 truncate mt-0.5">
+                {mainInstructorTitle}
               </p>
             </div>
           </div>
@@ -226,7 +241,10 @@ export const HomeCourseCard: React.FC<HomeCourseCardProps> = ({
               S/{course.price || 0}
             </p>
             <p className="text-xs font-medium text-cem-neutral-gray-500">
-              $ {course.priceUSD ? Number(course.priceUSD).toFixed(2) : (Number(course.price || 0) / 3.75).toFixed(2)}
+              ${" "}
+              {course.priceUSD
+                ? Number(course.priceUSD).toFixed(2)
+                : (Number(course.price || 0) / 3.75).toFixed(2)}
             </p>
           </div>
         </div>

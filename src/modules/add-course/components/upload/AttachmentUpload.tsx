@@ -26,6 +26,16 @@ function AttachmentUpload<TFieldValues extends FieldValues = FieldValues>({
   const [deletedUrls, setDeletedUrls] = useState<string[]>([]);
 
   const onDrop = (acceptedFiles: FileWithPath[]) => {
+    const maxSize = 100 * 1024 * 1024;
+    const oversizedFiles = acceptedFiles.filter(file => file.size > maxSize);
+
+    if (oversizedFiles.length > 0) {
+      import("react-hot-toast").then(({ toast }) => {
+        toast.error(`Algunos archivos superan el límite de 100MB`);
+      });
+      return;
+    }
+
     const newFiles = [...selectedFiles, ...acceptedFiles];
     setSelectedFiles(newFiles);
     setValue(name, newFiles as TFieldValues[Path<TFieldValues>]);
@@ -82,7 +92,7 @@ function AttachmentUpload<TFieldValues extends FieldValues = FieldValues>({
             Arrastra archivos o haz clic para <span className="font-bold text-cem-primary">Explorar</span>
           </p>
           <div className="mt-2 text-center text-[13px] leading-[18px] text-cem-neutral-gray-400">
-            <p>Tamaño máximo 10mb</p>
+            <p>Tamaño máximo 100mb</p>
             <p>Formatos: PDF, Word, Excel, PPT</p>
           </div>
         </div>

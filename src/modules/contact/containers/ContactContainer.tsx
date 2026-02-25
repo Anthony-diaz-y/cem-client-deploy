@@ -10,18 +10,18 @@ import { CONTACT_TEXTS } from "../constants/contact.constants";
  */
 const ContactContainer = () => {
   return (
-    <div>
-      <div className="mx-auto mt-20 flex w-11/12 max-w-maxContent flex-col justify-between gap-10 text-white lg:flex-row">
-        <div className="lg:w-[40%]">
+    <div className="min-h-[80vh] pt-24 pb-12 lg:pt-36 lg:pb-20">
+      <div className="mx-auto flex w-11/12 max-w-maxContent flex-col justify-between gap-10 lg:flex-row">
+        <div className="lg:w-[45%]">
           <ContactDetails />
         </div>
-        <div className="lg:w-[60%]">
+        <div className="lg:w-[55%]">
           <ContactForm />
         </div>
       </div>
 
-      <div className="my-20 px-5 text-white">
-        <h1 className="text-center text-4xl font-semibold mt-8">
+      <div className="mt-32 px-5 hidden">
+        <h1 className="text-center text-4xl font-bold mt-8 text-cem-neutral-gray-900">
           {CONTACT_TEXTS.reviews.title}
         </h1>
         <ReviewSlider />

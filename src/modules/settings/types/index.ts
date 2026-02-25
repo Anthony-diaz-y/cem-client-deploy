@@ -16,4 +16,7 @@ export type ProfileFormData = {
   gender: string;
   contactNumber: string;
   about: string;
+  linkedin?: string;
+  orcid?: string;
+  cti_vitae?: string;
 };

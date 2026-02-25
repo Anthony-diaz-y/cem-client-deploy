@@ -27,31 +27,14 @@ export default function CreateCategoryModal({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [icon, setIcon] = useState("");
-  const [domainId, setDomainId] = useState("");
-  const [domains, setDomains] = useState<Array<{ id: string; name: string }>>([]);
+  const [type, setType] = useState<"career" | "sector" | "">("");
   const [loading, setLoading] = useState(false);
-
-  // Cargar dominios al abrir el modal
-  React.useEffect(() => {
-    if (isOpen) {
-      const fetchDomains = async () => {
-        try {
-          const { getAllDomains } = await import("../../../../modules/categories/services/domainsAPI");
-          const data = await getAllDomains();
-          setDomains(data || []);
-        } catch (error) {
-          // Error silenciado
-        }
-      };
-      fetchDomains();
-    }
-  }, [isOpen]);
 
   // Maneja el envío del formulario y crea la categoría
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !description.trim() || !domainId) {
+    if (!name.trim() || !description.trim() || !type) {
       toast.error("Nombre, descripción y tipo de categoría son requeridos");
       return;
     }
@@ -63,9 +46,9 @@ export default function CreateCategoryModal({
           name: name.trim(),
           description: description.trim(),
           icon: icon || undefined,
-          domainId: domainId,
+          type: type as "career" | "sector",
         },
-        token
+        token,
       );
 
       if (success) {
@@ -77,19 +60,19 @@ export default function CreateCategoryModal({
         }
 
         // Disparar evento personalizado
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('categoriesUpdated'));
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("categoriesUpdated"));
         }
 
         // Reset states
         setName("");
         setDescription("");
         setIcon("");
-        setDomainId("");
+        setType("");
 
         onSuccess();
         onClose();
-        toast.success("Categoría creada exitosamente");
+        // El toast de éxito ya lo muestra el servicio
       }
     } catch {
       // Error manejado por el servicio
@@ -125,7 +108,10 @@ export default function CreateCategoryModal({
         </>
       }
     >
-      <form onSubmit={onSubmit} className="flex-1 flex flex-col items-center justify-center">
+      <form
+        onSubmit={onSubmit}
+        className="flex-1 flex flex-col items-center justify-center"
+      >
         <CategoryFormFields
           name={name}
           setName={setName}
@@ -133,9 +119,8 @@ export default function CreateCategoryModal({
           setDescription={setDescription}
           icon={icon}
           setIcon={setIcon}
-          domainId={domainId}
-          setDomainId={setDomainId}
-          domains={domains}
+          type={type}
+          setType={setType}
           loading={loading}
         />
       </form>

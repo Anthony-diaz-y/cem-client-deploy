@@ -8,6 +8,8 @@ import socialIcon from "@shared/assets/social/social-Icon.webp";
 import { BiChevronDown } from "react-icons/bi";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { ensureFullUrl } from "@shared/utils/urlHelper";
+
 /**
  * CourseAuthorSection - Sección Experto
  * Muestra perfil del docente con diseño profesional, iconos sociales y biografía colapsable.
@@ -104,7 +106,7 @@ const SingleInstructorProfile: React.FC<{ instructor: any; isMulti?: boolean }> 
             <div className="flex items-center justify-center md:justify-start gap-4">
               {instructor?.additionalDetails?.orcid || instructor?.links?.orcid ? (
                 <a
-                  href={instructor?.additionalDetails?.orcid || instructor?.links?.orcid}
+                  href={ensureFullUrl(instructor?.additionalDetails?.orcid || instructor?.links?.orcid)}
                   target="_blank"
                   rel="noopener noreferrer"
                   title="ORCID"
@@ -114,7 +116,7 @@ const SingleInstructorProfile: React.FC<{ instructor: any; isMulti?: boolean }> 
               ) : null}
               {instructor?.additionalDetails?.cti_vitae || instructor?.links?.researchGate ? (
                 <a
-                  href={instructor?.additionalDetails?.cti_vitae || instructor?.links?.researchGate}
+                  href={ensureFullUrl(instructor?.additionalDetails?.cti_vitae || instructor?.links?.researchGate)}
                   target="_blank"
                   rel="noopener noreferrer"
                   title="CTI Vitae / ResearchGate"
@@ -124,7 +126,7 @@ const SingleInstructorProfile: React.FC<{ instructor: any; isMulti?: boolean }> 
               ) : null}
               {instructor?.additionalDetails?.linkedin || instructor?.links?.linkedin ? (
                 <a
-                  href={instructor?.additionalDetails?.linkedin || instructor?.links?.linkedin}
+                  href={ensureFullUrl(instructor?.additionalDetails?.linkedin || instructor?.links?.linkedin)}
                   target="_blank"
                   rel="noopener noreferrer"
                   title="LinkedIn"

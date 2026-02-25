@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@shared/store/hooks";
-import { sendOtpForSignup, signUpNew } from "@shared/services/authAPI";
+import { sendOtpForSignup, signUpNew } from "@modules/auth/services/authAPI";
 import {
   isValidEmail as validateEmail,
   isValidPassword as validatePassword,

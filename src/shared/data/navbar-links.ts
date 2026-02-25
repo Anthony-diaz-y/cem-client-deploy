@@ -15,4 +15,8 @@ export const NavbarLinks = [
     title: "Empresas",
     path: "#",
   },
+  {
+    title: "Contacto",
+    path: "/contact",
+  },
 ];
